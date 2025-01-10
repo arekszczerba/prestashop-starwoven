@@ -35,7 +35,7 @@ import {
   type BrowserContext,
   type Page,
   utilsPlaywright,
-  BOBasePage,
+  //BOBasePage,
 } from '@prestashop-core/ui-testing';
 
 const baseContext: string = 'audit_BO_advancedParameters';
@@ -71,246 +71,246 @@ describe('BO - Advanced Parameters', async () => {
     expect(jsErrors.length).to.equals(0);
   });
 
-  // it('should go to \'Advanced Parameters > Informations\' page', async function () {
-  //   await testContext.addContextItem(this, 'testIdentifier', 'goToInformationsPage', baseContext);
-
-  //   await boDashboardPage.goToSubMenu(
-  //     page,
-  //     boDashboardPage.advancedParametersLink,
-  //     boDashboardPage.informationLink,
-  //   );
+  it('should go to \'Advanced Parameters > Informations\' page', async function () {
+    await testContext.addContextItem(this, 'testIdentifier', 'goToInformationsPage', baseContext);
+
+    await boDashboardPage.goToSubMenu(
+      page,
+      boDashboardPage.advancedParametersLink,
+      boDashboardPage.informationLink,
+    );
 
-  //   const pageTitle = await boInformationPage.getPageTitle(page);
-  //   expect(pageTitle).to.contains(boInformationPage.pageTitle);
+    const pageTitle = await boInformationPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boInformationPage.pageTitle);
 
-  //   const jsErrors = utilsPlaywright.getJsErrors();
-  //   expect(jsErrors.length).to.equals(0);
-  // });
+    const jsErrors = utilsPlaywright.getJsErrors();
+    expect(jsErrors.length).to.equals(0);
+  });
 
-  // it('should go to \'Advanced Parameters > Performance\' page', async function () {
-  //   await testContext.addContextItem(this, 'testIdentifier', 'goToPerformancePage', baseContext);
+  it('should go to \'Advanced Parameters > Performance\' page', async function () {
+    await testContext.addContextItem(this, 'testIdentifier', 'goToPerformancePage', baseContext);
 
-  //   await boDashboardPage.goToSubMenu(
-  //     page,
-  //     boDashboardPage.advancedParametersLink,
-  //     boDashboardPage.performanceLink,
-  //   );
+    await boDashboardPage.goToSubMenu(
+      page,
+      boDashboardPage.advancedParametersLink,
+      boDashboardPage.performanceLink,
+    );
 
-  //   const pageTitle = await boPerformancePage.getPageTitle(page);
-  //   expect(pageTitle).to.contains(boPerformancePage.pageTitle);
+    const pageTitle = await boPerformancePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boPerformancePage.pageTitle);
 
-  //   const jsErrors = utilsPlaywright.getJsErrors();
-  //   expect(jsErrors.length).to.equals(0);
-  // });
+    const jsErrors = utilsPlaywright.getJsErrors();
+    expect(jsErrors.length).to.equals(0);
+  });
 
-  // it('should go to \'Advanced Parameters > Administration\' page', async function () {
-  //   await testContext.addContextItem(this, 'testIdentifier', 'goToAdministrationPage', baseContext);
+  it('should go to \'Advanced Parameters > Administration\' page', async function () {
+    await testContext.addContextItem(this, 'testIdentifier', 'goToAdministrationPage', baseContext);
 
-  //   await boDashboardPage.goToSubMenu(
-  //     page,
-  //     boDashboardPage.advancedParametersLink,
-  //     boDashboardPage.administrationLink,
-  //   );
+    await boDashboardPage.goToSubMenu(
+      page,
+      boDashboardPage.advancedParametersLink,
+      boDashboardPage.administrationLink,
+    );
 
-  //   const pageTitle = await boAdministrationPage.getPageTitle(page);
-  //   expect(pageTitle).to.contains(boAdministrationPage.pageTitle);
+    const pageTitle = await boAdministrationPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boAdministrationPage.pageTitle);
 
-  //   const jsErrors = utilsPlaywright.getJsErrors();
-  //   expect(jsErrors.length).to.equals(0);
-  // });
+    const jsErrors = utilsPlaywright.getJsErrors();
+    expect(jsErrors.length).to.equals(0);
+  });
 
-  // it('should go to \'Advanced Parameters > E-mail\' page', async function () {
-  //   await testContext.addContextItem(this, 'testIdentifier', 'goToEmailPage', baseContext);
+  it('should go to \'Advanced Parameters > E-mail\' page', async function () {
+    await testContext.addContextItem(this, 'testIdentifier', 'goToEmailPage', baseContext);
 
-  //   await boDashboardPage.goToSubMenu(
-  //     page,
-  //     boDashboardPage.advancedParametersLink,
-  //     boDashboardPage.emailLink,
-  //   );
+    await boDashboardPage.goToSubMenu(
+      page,
+      boDashboardPage.advancedParametersLink,
+      boDashboardPage.emailLink,
+    );
 
-  //   const pageTitle = await boEmailPage.getPageTitle(page);
-  //   expect(pageTitle).to.contains(boEmailPage.pageTitle);
+    const pageTitle = await boEmailPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boEmailPage.pageTitle);
 
-  //   const jsErrors = utilsPlaywright.getJsErrors();
-  //   expect(jsErrors.length).to.equals(0);
-  // });
+    const jsErrors = utilsPlaywright.getJsErrors();
+    expect(jsErrors.length).to.equals(0);
+  });
 
-  // it('should go to \'Advanced Parameters > Import\' page', async function () {
-  //   await testContext.addContextItem(this, 'testIdentifier', 'goToImportPage', baseContext);
+  it('should go to \'Advanced Parameters > Import\' page', async function () {
+    await testContext.addContextItem(this, 'testIdentifier', 'goToImportPage', baseContext);
 
-  //   await boDashboardPage.goToSubMenu(
-  //     page,
-  //     boDashboardPage.advancedParametersLink,
-  //     boDashboardPage.importLink,
-  //   );
-  //   await boImportPage.closeSfToolBar(page);
+    await boDashboardPage.goToSubMenu(
+      page,
+      boDashboardPage.advancedParametersLink,
+      boDashboardPage.importLink,
+    );
+    await boImportPage.closeSfToolBar(page);
 
-  //   const pageTitle = await boImportPage.getPageTitle(page);
-  //   expect(pageTitle).to.contains(boImportPage.pageTitle);
+    const pageTitle = await boImportPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boImportPage.pageTitle);
 
-  //   const jsErrors = utilsPlaywright.getJsErrors();
-  //   expect(jsErrors.length).to.equals(0);
-  // });
+    const jsErrors = utilsPlaywright.getJsErrors();
+    expect(jsErrors.length).to.equals(0);
+  });
 
-  // it('should go to \'Advanced Parameters > Team\' page', async function () {
-  //   await testContext.addContextItem(this, 'testIdentifier', 'goToAdvancedParamsPage', baseContext);
+  it('should go to \'Advanced Parameters > Team\' page', async function () {
+    await testContext.addContextItem(this, 'testIdentifier', 'goToAdvancedParamsPage', baseContext);
 
-  //   await boDashboardPage.goToSubMenu(
-  //     page,
-  //     boDashboardPage.advancedParametersLink,
-  //     boDashboardPage.teamLink,
-  //   );
-  //   await boEmployeesPage.closeSfToolBar(page);
+    await boDashboardPage.goToSubMenu(
+      page,
+      boDashboardPage.advancedParametersLink,
+      boDashboardPage.teamLink,
+    );
+    await boEmployeesPage.closeSfToolBar(page);
 
-  //   const pageTitle = await boEmployeesPage.getPageTitle(page);
-  //   expect(pageTitle).to.contains(boEmployeesPage.pageTitle);
+    const pageTitle = await boEmployeesPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boEmployeesPage.pageTitle);
 
-  //   const jsErrors = utilsPlaywright.getJsErrors();
-  //   expect(jsErrors.length).to.equals(0);
-  // });
+    const jsErrors = utilsPlaywright.getJsErrors();
+    expect(jsErrors.length).to.equals(0);
+  });
 
-  // it('should go to \'Advanced Parameters > Team > Employee > Add new employee\' page', async function () {
-  //   await testContext.addContextItem(this, 'testIdentifier', 'goToNewEmployeePage', baseContext);
+  it('should go to \'Advanced Parameters > Team > Employee > Add new employee\' page', async function () {
+    await testContext.addContextItem(this, 'testIdentifier', 'goToNewEmployeePage', baseContext);
 
-  //   await boEmployeesPage.goToAddNewEmployeePage(page);
+    await boEmployeesPage.goToAddNewEmployeePage(page);
 
-  //   const pageTitle = await addEmployeePage.getPageTitle(page);
-  //   expect(pageTitle).to.contains(addEmployeePage.pageTitleCreate);
+    const pageTitle = await addEmployeePage.getPageTitle(page);
+    expect(pageTitle).to.contains(addEmployeePage.pageTitleCreate);
 
-  //   const jsErrors = utilsPlaywright.getJsErrors();
-  //   expect(jsErrors.length).to.equals(0);
-  // });
+    const jsErrors = utilsPlaywright.getJsErrors();
+    expect(jsErrors.length).to.equals(0);
+  });
 
-  // it('should go to \'Roles\' page', async function () {
-  //   await testContext.addContextItem(this, 'testIdentifier', 'goToRolesPage', baseContext);
+  it('should go to \'Roles\' page', async function () {
+    await testContext.addContextItem(this, 'testIdentifier', 'goToRolesPage', baseContext);
 
-  //   await boEmployeesPage.goToRolesPage(page);
+    await boEmployeesPage.goToRolesPage(page);
 
-  //   const pageTitle = await rolesPage.getPageTitle(page);
-  //   expect(pageTitle).to.contains(rolesPage.pageTitle);
+    const pageTitle = await rolesPage.getPageTitle(page);
+    expect(pageTitle).to.contains(rolesPage.pageTitle);
 
-  //   const jsErrors = utilsPlaywright.getJsErrors();
-  //   expect(jsErrors.length).to.equals(0);
-  // });
+    const jsErrors = utilsPlaywright.getJsErrors();
+    expect(jsErrors.length).to.equals(0);
+  });
 
-  // it('should go to \'Roles > Add new role page', async function () {
-  //   await testContext.addContextItem(this, 'testIdentifier', 'goToNewRolePage', baseContext);
+  it('should go to \'Roles > Add new role page', async function () {
+    await testContext.addContextItem(this, 'testIdentifier', 'goToNewRolePage', baseContext);
 
-  //   await rolesPage.goToAddNewRolePage(page);
+    await rolesPage.goToAddNewRolePage(page);
 
-  //   const pageTitle = await addRolePage.getPageTitle(page);
-  //   expect(pageTitle).to.contains(addRolePage.pageTitleCreate);
+    const pageTitle = await addRolePage.getPageTitle(page);
+    expect(pageTitle).to.contains(addRolePage.pageTitleCreate);
 
-  //   const jsErrors = utilsPlaywright.getJsErrors();
-  //   expect(jsErrors.length).to.equals(0);
-  // });
+    const jsErrors = utilsPlaywright.getJsErrors();
+    expect(jsErrors.length).to.equals(0);
+  });
 
-  // it('should go to \'Roles > Edit role page', async function () {
-  //   await testContext.addContextItem(this, 'testIdentifier', 'goToEditRole', baseContext);
+  it('should go to \'Roles > Edit role page', async function () {
+    await testContext.addContextItem(this, 'testIdentifier', 'goToEditRole', baseContext);
 
-  //   await boEmployeesPage.goToRolesPage(page);
-  //   await rolesPage.goToEditRolePage(page, 1);
+    await boEmployeesPage.goToRolesPage(page);
+    await rolesPage.goToEditRolePage(page, 1);
 
-  //   const pageTitle = await addRolePage.getPageTitle(page);
-  //   expect(pageTitle).to.contains(addRolePage.pageTitleEdit('SuperAdmin'));
+    const pageTitle = await addRolePage.getPageTitle(page);
+    expect(pageTitle).to.contains(addRolePage.pageTitleEdit('SuperAdmin'));
 
-  //   const jsErrors = utilsPlaywright.getJsErrors();
-  //   expect(jsErrors.length).to.equals(0);
-  // });
+    const jsErrors = utilsPlaywright.getJsErrors();
+    expect(jsErrors.length).to.equals(0);
+  });
 
-  // it('should go to \'Permissions\' tab', async function () {
-  //   await testContext.addContextItem(this, 'testIdentifier', 'goToPermissionsTab', baseContext);
+  it('should go to \'Permissions\' tab', async function () {
+    await testContext.addContextItem(this, 'testIdentifier', 'goToPermissionsTab', baseContext);
 
-  //   const isTabOpened = await boEmployeesPage.goToPermissionsTab(page);
-  //   expect(isTabOpened, 'Permissions tab is not opened!').to.eq(true);
+    const isTabOpened = await boEmployeesPage.goToPermissionsTab(page);
+    expect(isTabOpened, 'Permissions tab is not opened!').to.eq(true);
 
-  //   const jsErrors = utilsPlaywright.getJsErrors();
-  //   expect(jsErrors.length).to.equals(0);
-  // });
+    const jsErrors = utilsPlaywright.getJsErrors();
+    expect(jsErrors.length).to.equals(0);
+  });
 
-  // it('should go to \'Advanced Parameters > Database\' page', async function () {
-  //   await testContext.addContextItem(this, 'testIdentifier', 'goToDatabasePageToCreateNewSQLQuery', baseContext);
+  it('should go to \'Advanced Parameters > Database\' page', async function () {
+    await testContext.addContextItem(this, 'testIdentifier', 'goToDatabasePageToCreateNewSQLQuery', baseContext);
 
-  //   await boDashboardPage.goToSubMenu(
-  //     page,
-  //     boDashboardPage.advancedParametersLink,
-  //     boDashboardPage.databaseLink,
-  //   );
+    await boDashboardPage.goToSubMenu(
+      page,
+      boDashboardPage.advancedParametersLink,
+      boDashboardPage.databaseLink,
+    );
 
-  //   await boSqlManagerPage.closeSfToolBar(page);
+    await boSqlManagerPage.closeSfToolBar(page);
 
-  //   const pageTitle = await boSqlManagerPage.getPageTitle(page);
-  //   expect(pageTitle).to.contains(boSqlManagerPage.pageTitle);
+    const pageTitle = await boSqlManagerPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boSqlManagerPage.pageTitle);
 
-  //   const jsErrors = utilsPlaywright.getJsErrors();
-  //   expect(jsErrors.length).to.equals(0);
-  // });
+    const jsErrors = utilsPlaywright.getJsErrors();
+    expect(jsErrors.length).to.equals(0);
+  });
 
-  // it('should go to \'New SQL query\' page', async function () {
-  //   await testContext.addContextItem(this, 'testIdentifier', 'goToNewSQLQueryPage', baseContext);
+  it('should go to \'New SQL query\' page', async function () {
+    await testContext.addContextItem(this, 'testIdentifier', 'goToNewSQLQueryPage', baseContext);
 
-  //   await boSqlManagerPage.goToNewSQLQueryPage(page);
+    await boSqlManagerPage.goToNewSQLQueryPage(page);
 
-  //   const pageTitle = await boSqlManagerCreatePage.getPageTitle(page);
-  //   expect(pageTitle).to.contains(boSqlManagerCreatePage.pageTitle);
+    const pageTitle = await boSqlManagerCreatePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boSqlManagerCreatePage.pageTitle);
 
-  //   const jsErrors = utilsPlaywright.getJsErrors();
-  //   expect(jsErrors.length).to.equals(0);
-  // });
+    const jsErrors = utilsPlaywright.getJsErrors();
+    expect(jsErrors.length).to.equals(0);
+  });
 
-  // it('should go to \'DB Backup\' page', async function () {
-  //   await testContext.addContextItem(this, 'testIdentifier', 'goToDbBackupPage', baseContext);
+  it('should go to \'DB Backup\' page', async function () {
+    await testContext.addContextItem(this, 'testIdentifier', 'goToDbBackupPage', baseContext);
 
-  //   await boSqlManagerPage.goToDbBackupPage(page);
+    await boSqlManagerPage.goToDbBackupPage(page);
 
-  //   const pageTitle = await boDbBackupPage.getPageTitle(page);
-  //   expect(pageTitle).to.contains(boDbBackupPage.pageTitle);
+    const pageTitle = await boDbBackupPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boDbBackupPage.pageTitle);
 
-  //   const jsErrors = utilsPlaywright.getJsErrors();
-  //   expect(jsErrors.length).to.equals(0);
-  // });
+    const jsErrors = utilsPlaywright.getJsErrors();
+    expect(jsErrors.length).to.equals(0);
+  });
 
-  // it('should go to \'Advanced Parameters > Logs\' page', async function () {
-  //   await testContext.addContextItem(this, 'testIdentifier', 'goToLogsPageToEraseLogs', baseContext);
+  it('should go to \'Advanced Parameters > Logs\' page', async function () {
+    await testContext.addContextItem(this, 'testIdentifier', 'goToLogsPageToEraseLogs', baseContext);
 
-  //   await boDashboardPage.goToSubMenu(page, boDashboardPage.advancedParametersLink, boDashboardPage.logsLink);
-  //   await logsPage.closeSfToolBar(page);
+    await boDashboardPage.goToSubMenu(page, boDashboardPage.advancedParametersLink, boDashboardPage.logsLink);
+    await logsPage.closeSfToolBar(page);
 
-  //   const pageTitle = await logsPage.getPageTitle(page);
-  //   expect(pageTitle).to.contains(logsPage.pageTitle);
+    const pageTitle = await logsPage.getPageTitle(page);
+    expect(pageTitle).to.contains(logsPage.pageTitle);
 
-  //   const jsErrors = utilsPlaywright.getJsErrors();
-  //   expect(jsErrors.length).to.equals(0);
-  // });
+    const jsErrors = utilsPlaywright.getJsErrors();
+    expect(jsErrors.length).to.equals(0);
+  });
 
-  // it('should go to \'Advanced Parameters > Webservice\' page', async function () {
-  //   await testContext.addContextItem(this, 'testIdentifier', 'goToWebservicePage', baseContext);
+  it('should go to \'Advanced Parameters > Webservice\' page', async function () {
+    await testContext.addContextItem(this, 'testIdentifier', 'goToWebservicePage', baseContext);
 
-  //   await boDashboardPage.goToSubMenu(
-  //     page,
-  //     boDashboardPage.advancedParametersLink,
-  //     boDashboardPage.webserviceLink,
-  //   );
-  //   await webservicePage.closeSfToolBar(page);
+    await boDashboardPage.goToSubMenu(
+      page,
+      boDashboardPage.advancedParametersLink,
+      boDashboardPage.webserviceLink,
+    );
+    await webservicePage.closeSfToolBar(page);
 
-  //   const pageTitle = await webservicePage.getPageTitle(page);
-  //   expect(pageTitle).to.contains(webservicePage.pageTitle);
+    const pageTitle = await webservicePage.getPageTitle(page);
+    expect(pageTitle).to.contains(webservicePage.pageTitle);
 
-  //   const jsErrors = utilsPlaywright.getJsErrors();
-  //   expect(jsErrors.length).to.equals(0);
-  // });
+    const jsErrors = utilsPlaywright.getJsErrors();
+    expect(jsErrors.length).to.equals(0);
+  });
 
-  // it('should go to \'Advanced Parameters > Webservice > Add new webservice key\' page', async function () {
-  //   await testContext.addContextItem(this, 'testIdentifier', 'goToAddNewWebserviceKeyPage', baseContext);
+  it('should go to \'Advanced Parameters > Webservice > Add new webservice key\' page', async function () {
+    await testContext.addContextItem(this, 'testIdentifier', 'goToAddNewWebserviceKeyPage', baseContext);
 
-  //   await webservicePage.goToAddNewWebserviceKeyPage(page);
+    await webservicePage.goToAddNewWebserviceKeyPage(page);
 
-  //   const pageTitle = await addWebservicePage.getPageTitle(page);
-  //   expect(pageTitle).to.contains(addWebservicePage.pageTitleCreate);
+    const pageTitle = await addWebservicePage.getPageTitle(page);
+    expect(pageTitle).to.contains(addWebservicePage.pageTitleCreate);
 
-  //   const jsErrors = utilsPlaywright.getJsErrors();
-  //   expect(jsErrors.length).to.equals(0);
-  // });
+    const jsErrors = utilsPlaywright.getJsErrors();
+    expect(jsErrors.length).to.equals(0);
+  });
 
   it('should go to \'Advanced Parameters > Multistore\' page', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToMultiStorePage', baseContext);
@@ -325,17 +325,17 @@ describe('BO - Advanced Parameters', async () => {
     expect(pageTitle).to.contains(multiStorePage.pageTitle);
   });
 
-  // it('should go to \'Advanced Parameters > Multistore > Add new shop group\' page', async function () {
-  //   await testContext.addContextItem(this, 'testIdentifier', 'goToAddNewShopGroupPage', baseContext);
+  it('should go to \'Advanced Parameters > Multistore > Add new shop group\' page', async function () {
+    await testContext.addContextItem(this, 'testIdentifier', 'goToAddNewShopGroupPage', baseContext);
 
-  //   await multiStorePage.goToNewShopGroupPage(page);
+    await multiStorePage.goToNewShopGroupPage(page);
 
-  //   const pageTitle = await addShopGroupPage.getPageTitle(page);
-  //   expect(pageTitle).to.contains(addShopGroupPage.pageTitleCreate);
+    const pageTitle = await addShopGroupPage.getPageTitle(page);
+    expect(pageTitle).to.contains(addShopGroupPage.pageTitleCreate);
 
-  //   const jsErrors = utilsPlaywright.getJsErrors();
-  //   expect(jsErrors.length).to.equals(0);
-  // });
+    const jsErrors = utilsPlaywright.getJsErrors();
+    expect(jsErrors.length).to.equals(0);
+  });
 
   // CANT FIND GROUP SHOP NAME
   // it('should go to \'Advanced Parameters > Multistore > Edit shop group\' page', async function () {
