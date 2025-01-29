@@ -49,7 +49,7 @@ class ImagePathFactory
      *
      * @return string
      */
-    public function getPath(int|string $imageName): string
+    public function getPath($imageName): string
     {
         return sprintf('%s/%s.jpg', $this->pathToBaseDir, $imageName);
     }
