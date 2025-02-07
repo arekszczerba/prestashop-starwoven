@@ -1,9 +1,6 @@
 import {expect} from 'chai';
 import testContext from '@utils/testContext';
 
-// Import commonTests
-import setMultiStoreStatus from '@commonTests/BO/advancedParameters/multistore';
-
 // Import pages
 import addEmployeePage from '@pages/BO/advancedParameters/team/add';
 import rolesPage from '@pages/BO/advancedParameters/team/roles';
@@ -14,10 +11,8 @@ import addWebservicePage from '@pages/BO/advancedParameters/webservice/add';
 import multiStorePage from '@pages/BO/advancedParameters/multistore';
 import addShopGroupPage from '@pages/BO/advancedParameters/multistore/add';
 import addShopPage from '@pages/BO/advancedParameters/multistore/shop/add';
-import shopPage from '@pages/BO/advancedParameters/multistore/shop';
 import shopUrlPage from '@pages/BO/advancedParameters/multistore/url';
 import editShopUrlPage from '@pages/BO/advancedParameters/multistore/url/addURL';
-
 
 import {
   boDashboardPage,
@@ -33,12 +28,10 @@ import {
   boDbBackupPage,
   boFeatureFlagPage,
   boApiClientsPage,
-  boApiClientsCreatePage,
   boSecurityPage,
   type BrowserContext,
   type Page,
   utilsPlaywright,
-  BOBasePage,
   boShopParametersPage,
 } from '@prestashop-core/ui-testing';
 
@@ -349,23 +342,23 @@ describe('BO - Advanced Parameters', async () => {
     expect(jsErrors.length).to.equals(0);
   });
 
-it('should go to \'Advanced Parameters > Multistore > Edit shop group\' page', async function () {
-  await testContext.addContextItem(this, 'testIdentifier', 'goToEditShopGroupPage', baseContext);
+  it('should go to \'Advanced Parameters > Multistore > Edit shop group\' page', async function () {
+    await testContext.addContextItem(this, 'testIdentifier', 'goToEditShopGroupPage', baseContext);
 
-  await boDashboardPage.goToSubMenu(
-    page,
-    boDashboardPage.advancedParametersLink,
-    boDashboardPage.multistoreLink,
-  );
+    await boDashboardPage.goToSubMenu(
+      page,
+      boDashboardPage.advancedParametersLink,
+      boDashboardPage.multistoreLink,
+    );
 
-  const pageTitle = await multiStorePage.getPageTitle(page);
-  expect(pageTitle).to.contains(multiStorePage.pageTitle);
+    const pageTitle = await multiStorePage.getPageTitle(page);
+    expect(pageTitle).to.contains(multiStorePage.pageTitle);
 
-  await page.locator('#table-shop_group tbody tr:first-child .edit').click();
+    await page.locator('#table-shop_group tbody tr:first-child .edit').click();
 
-  const jsErrors = utilsPlaywright.getJsErrors();
-  expect(jsErrors.length).to.equals(0);
-});
+    const jsErrors = utilsPlaywright.getJsErrors();
+    expect(jsErrors.length).to.equals(0);
+  });
 
   it('should go to \'Advanced Parameters > Multistore > Add new shop group\' page', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToAddNewShopGroupPage', baseContext);
