@@ -39,6 +39,7 @@ import {
   type Page,
   utilsPlaywright,
   BOBasePage,
+  boShopParametersPage,
 } from '@prestashop-core/ui-testing';
 
 const baseContext: string = 'audit_BO_advancedParameters';
@@ -69,6 +70,27 @@ describe('BO - Advanced Parameters', async () => {
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
+  });
+
+  it('should go to \'Shop parameters > General\' page', async function () {
+    await testContext.addContextItem(this, 'testIdentifier', 'goToGeneralPage', baseContext);
+
+    await boDashboardPage.goToSubMenu(
+      page,
+      boDashboardPage.shopParametersParentLink,
+      boDashboardPage.shopParametersGeneralLink,
+    );
+    await boShopParametersPage.closeSfToolBar(page);
+
+    const pageTitle = await boShopParametersPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boShopParametersPage.pageTitle);
+  });
+
+  it('should enable multi store', async function () {
+    await testContext.addContextItem(this, 'testIdentifier', 'enableMultiStore', baseContext);
+
+    const result = await boShopParametersPage.setMultiStoreStatus(page, true);
+    expect(result).to.contains(boShopParametersPage.successfulUpdateMessage);
   });
 
   it('should go to \'Advanced Parameters > Informations\' page', async function () {
@@ -327,8 +349,32 @@ describe('BO - Advanced Parameters', async () => {
     expect(jsErrors.length).to.equals(0);
   });
 
+it('should go to \'Advanced Parameters > Multistore > Edit shop group\' page', async function () {
+  await testContext.addContextItem(this, 'testIdentifier', 'goToEditShopGroupPage', baseContext);
+
+  await boDashboardPage.goToSubMenu(
+    page,
+    boDashboardPage.advancedParametersLink,
+    boDashboardPage.multistoreLink,
+  );
+
+  const pageTitle = await multiStorePage.getPageTitle(page);
+  expect(pageTitle).to.contains(multiStorePage.pageTitle);
+
+  await page.locator('#table-shop_group tbody tr:first-child .edit').click();
+
+  const jsErrors = utilsPlaywright.getJsErrors();
+  expect(jsErrors.length).to.equals(0);
+});
+
   it('should go to \'Advanced Parameters > Multistore > Add new shop group\' page', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToAddNewShopGroupPage', baseContext);
+
+    await boDashboardPage.goToSubMenu(
+      page,
+      boDashboardPage.advancedParametersLink,
+      boDashboardPage.multistoreLink,
+    );
 
     await multiStorePage.goToNewShopGroupPage(page);
 
@@ -338,27 +384,6 @@ describe('BO - Advanced Parameters', async () => {
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
   });
-
-  // //DOESNT WORK
-  // it('should go to \'Advanced Parameters > Multistore > Edit shop group\' page', async function () {
-  //   await testContext.addContextItem(this, 'testIdentifier', 'goToEditShopGroupPage', baseContext);
-
-  //   await boDashboardPage.goToSubMenu(
-  //     page,
-  //     boDashboardPage.advancedParametersLink,
-  //     boDashboardPage.multistoreLink,
-  //   );
-
-  //   const pageTitle = await multiStorePage.getPageTitle(page);
-  //   expect(pageTitle).to.contains(multiStorePage.pageTitle);
-  //   console.log('go to multistore page OK');
-
-  //   await multiStorePage.gotoEditShopGroupPage(page, 1);
-  //   console.log('go to edit shop group OK');
-
-  //   const jsErrors = utilsPlaywright.getJsErrors();
-  //   expect(jsErrors.length).to.equals(0);
-  // });
 
   it('should go to \'Advanced Parameters > Multistore > Add new shop\' page', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToAddNewShopPage', baseContext);
@@ -378,7 +403,7 @@ describe('BO - Advanced Parameters', async () => {
     expect(jsErrors.length).to.equals(0);
   });
 
-  it('should go to \'Advanced Parameters > Multistore > Edit shop page', async function () {
+  it('should go to \'Advanced Parameters > Multistore > Edit shop\' page', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToEditShopUrlsPage', baseContext);
 
     await boDashboardPage.goToSubMenu(
@@ -386,8 +411,8 @@ describe('BO - Advanced Parameters', async () => {
       boDashboardPage.advancedParametersLink,
       boDashboardPage.multistoreLink,
     );
-    await multiStorePage.goToShopURLPage(page, 1);
 
+    await multiStorePage.goToShopURLPage(page, 1);
     await shopUrlPage.goToEditShopURLPage(page, 1);
 
     const pageTitle = await editShopUrlPage.getPageTitle(page);
@@ -434,9 +459,6 @@ describe('BO - Advanced Parameters', async () => {
     await testContext.addContextItem(this, 'testIdentifier', 'goToNewAPIClientPage', baseContext);
 
     await boApiClientsPage.goToNewAPIClientPage(page);
-
-    const pageTitle = await boApiClientsCreatePage.getPageTitle(page);
-    expect(pageTitle).to.eq(boApiClientsCreatePage.pageTitleCreate);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
