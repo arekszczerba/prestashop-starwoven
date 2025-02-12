@@ -4,14 +4,10 @@ import testContext from '@utils/testContext';
 // Import pages
 import rolesPage from '@pages/BO/advancedParameters/team/roles';
 import addRolePage from '@pages/BO/advancedParameters/team/roles/add';
-import logsPage from '@pages/BO/advancedParameters/logs';
 import webservicePage from '@pages/BO/advancedParameters/webservice';
 import addWebservicePage from '@pages/BO/advancedParameters/webservice/add';
-import multiStorePage from '@pages/BO/advancedParameters/multistore';
 import addShopGroupPage from '@pages/BO/advancedParameters/multistore/add';
-import addShopPage from '@pages/BO/advancedParameters/multistore/shop/add';
 import shopUrlPage from '@pages/BO/advancedParameters/multistore/url';
-import editShopUrlPage from '@pages/BO/advancedParameters/multistore/url/addURL';
 
 import {
   boDashboardPage,
@@ -23,11 +19,15 @@ import {
   boImportPage,
   boEmployeesPage,
   boEmployeesCreatePage,
+  boLogsPage,
   boSqlManagerPage,
   boSqlManagerCreatePage,
   boDbBackupPage,
   boFeatureFlagPage,
   boApiClientsPage,
+  boMultistorePage,
+  boMultistoreShopCreatePage,
+  boMultistoreShopUrlCreatePage,
   boSecurityPage,
   type BrowserContext,
   type Page,
@@ -288,10 +288,10 @@ describe('BO - Advanced Parameters', async () => {
     await testContext.addContextItem(this, 'testIdentifier', 'goToLogsPageToEraseLogs', baseContext);
 
     await boDashboardPage.goToSubMenu(page, boDashboardPage.advancedParametersLink, boDashboardPage.logsLink);
-    await logsPage.closeSfToolBar(page);
+    await boLogsPage.closeSfToolBar(page);
 
-    const pageTitle = await logsPage.getPageTitle(page);
-    expect(pageTitle).to.contains(logsPage.pageTitle);
+    const pageTitle = await boLogsPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boLogsPage.pageTitle);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
@@ -335,8 +335,8 @@ describe('BO - Advanced Parameters', async () => {
       boDashboardPage.multistoreLink,
     );
 
-    const pageTitle = await multiStorePage.getPageTitle(page);
-    expect(pageTitle).to.contains(multiStorePage.pageTitle);
+    const pageTitle = await boMultistorePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boMultistorePage.pageTitle);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
@@ -351,8 +351,8 @@ describe('BO - Advanced Parameters', async () => {
       boDashboardPage.multistoreLink,
     );
 
-    const pageTitle = await multiStorePage.getPageTitle(page);
-    expect(pageTitle).to.contains(multiStorePage.pageTitle);
+    const pageTitle = await boMultistorePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boMultistorePage.pageTitle);
 
     await page.locator('#table-shop_group tbody tr:first-child .edit').click();
 
@@ -369,7 +369,7 @@ describe('BO - Advanced Parameters', async () => {
       boDashboardPage.multistoreLink,
     );
 
-    await multiStorePage.goToNewShopGroupPage(page);
+    await boMultistorePage.goToNewShopGroupPage(page);
 
     const pageTitle = await addShopGroupPage.getPageTitle(page);
     expect(pageTitle).to.contains(addShopGroupPage.pageTitleCreate);
@@ -387,10 +387,10 @@ describe('BO - Advanced Parameters', async () => {
       boDashboardPage.multistoreLink,
     );
 
-    await multiStorePage.goToNewShopPage(page);
+    await boMultistorePage.goToNewShopPage(page);
 
-    const pageTitle = await addShopPage.getPageTitle(page);
-    expect(pageTitle).to.contains(addShopPage.pageTitleCreate);
+    const pageTitle = await boMultistoreShopCreatePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boMultistoreShopCreatePage.pageTitleCreate);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
@@ -405,11 +405,14 @@ describe('BO - Advanced Parameters', async () => {
       boDashboardPage.multistoreLink,
     );
 
-    await multiStorePage.goToShopURLPage(page, 1);
+    await boMultistorePage.goToShopURLPage(page, 1);
     await shopUrlPage.goToEditShopURLPage(page, 1);
 
-    const pageTitle = await editShopUrlPage.getPageTitle(page);
-    expect(pageTitle).to.contains(editShopUrlPage.pageTitleEdit);
+    // const pageTitle = await editShopUrlPage.getPageTitle(page);
+    // expect(pageTitle).to.contains(editShopUrlPage.pageTitleEdit);
+
+    const pageTitle = await boMultistoreShopUrlCreatePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boMultistoreShopUrlCreatePage.pageTitleEdit);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
