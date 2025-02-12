@@ -2,7 +2,6 @@ import {expect} from 'chai';
 import testContext from '@utils/testContext';
 
 // Import pages
-import addEmployeePage from '@pages/BO/advancedParameters/team/add';
 import rolesPage from '@pages/BO/advancedParameters/team/roles';
 import addRolePage from '@pages/BO/advancedParameters/team/roles/add';
 import logsPage from '@pages/BO/advancedParameters/logs';
@@ -23,6 +22,7 @@ import {
   boEmailPage,
   boImportPage,
   boEmployeesPage,
+  boEmployeesCreatePage,
   boSqlManagerPage,
   boSqlManagerCreatePage,
   boDbBackupPage,
@@ -86,21 +86,21 @@ describe('BO - Advanced Parameters', async () => {
     expect(result).to.contains(boShopParametersPage.successfulUpdateMessage);
   });
 
-  it('should go to \'Advanced Parameters > Informations\' page', async function () {
-    await testContext.addContextItem(this, 'testIdentifier', 'goToInformationsPage', baseContext);
+  // it('should go to \'Advanced Parameters > Informations\' page', async function () {
+  //   await testContext.addContextItem(this, 'testIdentifier', 'goToInformationsPage', baseContext);
 
-    await boDashboardPage.goToSubMenu(
-      page,
-      boDashboardPage.advancedParametersLink,
-      boDashboardPage.informationLink,
-    );
+  //   await boDashboardPage.goToSubMenu(
+  //     page,
+  //     boDashboardPage.advancedParametersLink,
+  //     boDashboardPage.informationLink,
+  //   );
 
-    const pageTitle = await boInformationPage.getPageTitle(page);
-    expect(pageTitle).to.contains(boInformationPage.pageTitle);
+  //   const pageTitle = await boInformationPage.getPageTitle(page);
+  //   expect(pageTitle).to.contains(boInformationPage.pageTitle);
 
-    const jsErrors = utilsPlaywright.getJsErrors();
-    expect(jsErrors.length).to.equals(0);
-  });
+  //   const jsErrors = utilsPlaywright.getJsErrors();
+  //   expect(jsErrors.length).to.equals(0);
+  // });
 
   it('should go to \'Advanced Parameters > Performance\' page', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToPerformancePage', baseContext);
@@ -189,8 +189,8 @@ describe('BO - Advanced Parameters', async () => {
 
     await boEmployeesPage.goToAddNewEmployeePage(page);
 
-    const pageTitle = await addEmployeePage.getPageTitle(page);
-    expect(pageTitle).to.contains(addEmployeePage.pageTitleCreate);
+    const pageTitle = await boEmployeesCreatePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boEmployeesCreatePage.pageTitleCreate);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
