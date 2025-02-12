@@ -149,6 +149,13 @@ class CarrierGridDefinitionFactory extends AbstractGridDefinitionFactory
                     ])
             )
             ->add(
+                (new DataColumn('external_module_name'))
+                    ->setName($this->trans('Module name', [], 'Admin.Global'))
+                    ->setOptions([
+                        'field' => 'external_module_name',
+                    ])
+            )
+            ->add(
                 (new ActionColumn('actions'))
                     ->setName($this->trans('Actions', [], 'Admin.Global'))
                     ->setOptions([
@@ -207,6 +214,13 @@ class CarrierGridDefinitionFactory extends AbstractGridDefinitionFactory
             ->add(
                 (new Filter('position', ReorderPositionsButtonType::class))
                     ->setAssociatedColumn('position')
+            )
+            ->add(
+                (new Filter('external_module_name', TextType::class))
+                    ->setAssociatedColumn('external_module_name')
+                    ->setTypeOptions([
+                        'required' => false,
+                    ])
             )
             ->add(
                 (new Filter('actions', SearchAndResetType::class))
