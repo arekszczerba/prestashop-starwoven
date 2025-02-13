@@ -30,11 +30,11 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table()
+ *
  * @ORM\Entity()
  */
 class ShipmentProduct
 {
-
     /**
      * @ORM\Column(name="shipment_product_id", type="integer")
      */
@@ -42,7 +42,9 @@ class ShipmentProduct
 
     /**
      * @ORM\Id
+     *
      * @ORM\ManyToOne(targetEntity="PrestaShopBundle\Entity\Shipment", inversedBy="products")
+     *
      * @ORM\JoinColumn(name="shipment_id", referencedColumnName="id_shipment", nullable=false)
      */
     private Shipment $shipmentId;
@@ -80,24 +82,28 @@ class ShipmentProduct
     public function setShipmentProductId(int $shipmentProductId): self
     {
         $this->shipmentProductId = $shipmentProductId;
+
         return $this;
     }
 
     public function setShipment(Shipment $shipment): self
     {
         $this->shipmentId = $shipment;
+
         return $this;
     }
 
     public function setOrderDetailId(int $orderDetailId): self
     {
         $this->orderDetailId = $orderDetailId;
+
         return $this;
     }
 
     public function setQuantity(int $quantity): self
     {
         $this->quantity = $quantity;
+
         return $this;
     }
 }

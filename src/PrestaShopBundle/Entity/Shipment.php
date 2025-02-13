@@ -26,20 +26,23 @@
 
 namespace PrestaShopBundle\Entity;
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use DateTime;
 
 /**
  * @ORM\Table()
+ *
  * @ORM\Entity()
  */
 class Shipment
 {
     /**
      * @ORM\Id
+     *
      * @ORM\Column(name="id_shipment", type="integer")
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private int $id;
@@ -108,8 +111,8 @@ class Shipment
 
     public function __construct()
     {
-        $this->createdAt = new DateTime("now");
-        $this->updatedAt = new DateTime("now");
+        $this->createdAt = new DateTime('now');
+        $this->updatedAt = new DateTime('now');
         $this->products = new ArrayCollection();
     }
 
@@ -181,66 +184,77 @@ class Shipment
     public function setId(int $id): self
     {
         $this->id = $id;
+
         return $this;
     }
 
     public function setOrderId(int $orderId): self
     {
         $this->orderId = $orderId;
+
         return $this;
     }
 
     public function setCarrierId(int $carrierId): self
     {
         $this->carrierId = $carrierId;
+
         return $this;
     }
 
     public function setDeliveryAddressId(int $deliveryAddressId): self
     {
         $this->deliveryAddressId = $deliveryAddressId;
+
         return $this;
     }
 
     public function setShippingCostTaxExcluded(float $shippingCostTaxExcluded): self
     {
         $this->shippingCostTaxExcluded = $shippingCostTaxExcluded;
+
         return $this;
     }
 
     public function setShippingCostTaxIncluded(float $shippingCostTaxIncluded): self
     {
         $this->shippingCostTaxIncluded = $shippingCostTaxIncluded;
+
         return $this;
     }
 
     public function setPackedAt(?DateTime $packedAt): self
     {
         $this->packedAt = $packedAt;
+
         return $this;
     }
 
     public function setShippedAt(?DateTime $shippedAt): self
     {
         $this->shippedAt = $shippedAt;
+
         return $this;
     }
 
     public function setDeliveredAt(?DateTime $deliveredAt): self
     {
         $this->deliveredAt = $deliveredAt;
+
         return $this;
     }
 
     public function setTrakingNumber(?string $trakingNumber): self
     {
         $this->trakingNumber = $trakingNumber;
+
         return $this;
     }
 
     public function setProducts(Collection $products): self
     {
         $this->products[] = $products;
+
         return $this;
     }
 }
