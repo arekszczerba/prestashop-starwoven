@@ -42,8 +42,8 @@ class ShipmentProduct
 
     /**
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="PrestaShopBundle\Entity\Shipment", inversedBy="shipmentProduct")
-     * @ORM\JoinColumn(name="shipment_id", referencedColumnName="id_tab", nullable=false)
+     * @ORM\ManyToOne(targetEntity="PrestaShopBundle\Entity\Shipment", inversedBy="products")
+     * @ORM\JoinColumn(name="shipment_id", referencedColumnName="id_shipment", nullable=false)
      */
     private Shipment $shipmentId;
 
@@ -62,7 +62,7 @@ class ShipmentProduct
         return $this->shipmentProductId;
     }
 
-    public function getShipmentId(): Shipment
+    public function getShipment(): Shipment
     {
         return $this->shipmentId;
     }
@@ -83,9 +83,9 @@ class ShipmentProduct
         return $this;
     }
 
-    public function setShipmentId(int $shipmentId): self
+    public function setShipment(Shipment $shipment): self
     {
-        $this->shipmentId = $shipmentId;
+        $this->shipmentId = $shipment;
         return $this;
     }
 

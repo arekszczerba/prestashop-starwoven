@@ -55,7 +55,6 @@ class Shipment
     private int $carrierId;
 
     /**
-     * @deprecated
      * @ORM\Column(name="id_delivery_address", type="integer")
      */
     private int $deliveryAddressId;
@@ -109,23 +108,9 @@ class Shipment
 
     public function __construct()
     {
-        $this->products = new ArrayCollection();
-    }
-
-        /**
-     * @ORM\PrePersist
-     */
-    public function onPrePersist()
-    {
         $this->createdAt = new DateTime("now");
-    }
-
-    /**
-     * @ORM\PreUpdate
-     */
-    public function onPreUpdate()
-    {
         $this->updatedAt = new DateTime("now");
+        $this->products = new ArrayCollection();
     }
 
     public function getProducts(): Collection
