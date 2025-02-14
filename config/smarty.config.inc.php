@@ -131,6 +131,8 @@ smartyRegisterFunction($smarty, 'modifier', 'trim', 'trim');
 smartyRegisterFunction($smarty, 'modifier', 'ucfirst', 'ucfirst');
 smartyRegisterFunction($smarty, 'modifier', 'urlencode', 'urlencode');
 smartyRegisterFunction($smarty, 'modifier', 'var_dump', 'var_dump');
+smartyRegisterFunction($smarty, 'modifier', 'file_exists', 'file_exists');
+smartyRegisterFunction($smarty, 'modifier', 'strpos', 'strpos');
 
 function smarty_modifier_htmlentitiesUTF8($string)
 {
