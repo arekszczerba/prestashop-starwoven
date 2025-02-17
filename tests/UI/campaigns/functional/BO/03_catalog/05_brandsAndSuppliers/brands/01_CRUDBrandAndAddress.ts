@@ -3,11 +3,11 @@ import testContext from '@utils/testContext';
 
 // Import pages
 import addBrandPage from '@pages/BO/catalog/brands/add';
-import addBrandAddressPage from '@pages/BO/catalog/brands/addAddress';
 import viewBrandPage from '@pages/BO/catalog/brands/view';
 
 import {expect} from 'chai';
 import {
+  boBrandAdressesCreatePage,
   boBrandsPage,
   boDashboardPage,
   boLoginPage,
@@ -120,14 +120,14 @@ describe('BO - Catalog - Brands & suppliers : CRUD Brand and Address', async () 
 
       await boBrandsPage.goToAddNewBrandAddressPage(page);
 
-      const pageTitle = await addBrandAddressPage.getPageTitle(page);
-      expect(pageTitle).to.contains(addBrandAddressPage.pageTitle);
+      const pageTitle = await boBrandAdressesCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contains(boBrandAdressesCreatePage.pageTitle);
     });
 
     it('should create brand address', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'createAddress', baseContext);
 
-      const result = await addBrandAddressPage.createEditBrandAddress(page, createBrandAddressData);
+      const result = await boBrandAdressesCreatePage.createEditBrandAddress(page, createBrandAddressData);
       expect(result).to.equal(boBrandsPage.successfulCreationMessage);
 
       const numberOfBrandsAddressesAfterCreation = await boBrandsPage.getNumberOfElementInGrid(page, addressesTable);
@@ -264,7 +264,7 @@ describe('BO - Catalog - Brands & suppliers : CRUD Brand and Address', async () 
     it('should edit brand address', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'updateAddress', baseContext);
 
-      const result = await addBrandAddressPage.createEditBrandAddress(page, editBrandAddressData);
+      const result = await boBrandAdressesCreatePage.createEditBrandAddress(page, editBrandAddressData);
       expect(result).to.equal(boBrandsPage.successfulUpdateMessage);
     });
 

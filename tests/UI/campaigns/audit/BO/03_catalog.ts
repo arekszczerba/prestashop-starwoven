@@ -1,6 +1,5 @@
 import {expect} from 'chai';
 import addBrandPage from '@pages/BO/catalog/brands/add';
-import addBrandAddressPage from '@pages/BO/catalog/brands/addAddress';
 import viewBrandPage from '@pages/BO/catalog/brands/view';
 import addFilePage from '@pages/BO/catalog/files/add';
 import suppliersPage from '@pages/BO/catalog/suppliers';
@@ -12,6 +11,7 @@ import {
   boAttributesCreatePage,
   boAttributesValueCreatePage,
   boAttributesViewPage,
+  boBrandAdressesCreatePage,
   boBrandsPage,
   boCartRulesPage,
   boCartRulesCreatePage,
@@ -369,8 +369,8 @@ describe('BO - Catalog', async () => {
     );
     await boBrandsPage.goToAddNewBrandAddressPage(page);
 
-    const pageTitle = await addBrandAddressPage.getPageTitle(page);
-    expect(pageTitle).to.contains(addBrandAddressPage.pageTitle);
+    const pageTitle = await boBrandAdressesCreatePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boBrandAdressesCreatePage.pageTitle);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
