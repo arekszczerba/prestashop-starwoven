@@ -1,13 +1,12 @@
-// Import utils
 import testContext from '@utils/testContext';
+import {expect} from 'chai';
 
 // Import pages
-import addBrandPage from '@pages/BO/catalog/brands/add';
 import viewBrandPage from '@pages/BO/catalog/brands/view';
 
-import {expect} from 'chai';
 import {
   boBrandAdressesCreatePage,
+  boBrandsCreatePage,
   boBrandsPage,
   boDashboardPage,
   boLoginPage,
@@ -98,14 +97,14 @@ describe('BO - Catalog - Brands & suppliers : CRUD Brand and Address', async () 
 
       await boBrandsPage.goToAddNewBrandPage(page);
 
-      const pageTitle = await addBrandPage.getPageTitle(page);
-      expect(pageTitle).to.contains(addBrandPage.pageTitle);
+      const pageTitle = await boBrandsCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contains(boBrandsCreatePage.pageTitle);
     });
 
     it('should create brand', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'createBrand', baseContext);
 
-      const result = await addBrandPage.createEditBrand(page, createBrandData);
+      const result = await boBrandsCreatePage.createEditBrand(page, createBrandData);
       expect(result).to.equal(boBrandsPage.successfulCreationMessage);
 
       const numberOfBrandsAfterCreation = await boBrandsPage.getNumberOfElementInGrid(page, brandsTable);
@@ -206,14 +205,14 @@ describe('BO - Catalog - Brands & suppliers : CRUD Brand and Address', async () 
 
       await boBrandsPage.goToEditBrandPage(page, 1);
 
-      const pageTitle = await addBrandPage.getPageTitle(page);
-      expect(pageTitle).to.contains(addBrandPage.pageTitleEdit);
+      const pageTitle = await boBrandsCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contains(boBrandsCreatePage.pageTitleEdit);
     });
 
     it('should edit brand', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'updateBrand', baseContext);
 
-      const result = await addBrandPage.createEditBrand(page, editBrandData);
+      const result = await boBrandsCreatePage.createEditBrand(page, editBrandData);
       expect(result).to.equal(boBrandsPage.successfulUpdateMessage);
 
       editBrandData.addresses += 1;
@@ -257,8 +256,8 @@ describe('BO - Catalog - Brands & suppliers : CRUD Brand and Address', async () 
 
       await boBrandsPage.goToEditBrandAddressPage(page, 1);
 
-      const pageTitle = await addBrandPage.getPageTitle(page);
-      expect(pageTitle).to.contains(addBrandPage.pageTitleEdit);
+      const pageTitle = await boBrandsCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contains(boBrandsCreatePage.pageTitleEdit);
     });
 
     it('should edit brand address', async function () {
