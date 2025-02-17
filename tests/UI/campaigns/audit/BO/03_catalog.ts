@@ -1,5 +1,4 @@
 import {expect} from 'chai';
-import viewBrandPage from '@pages/BO/catalog/brands/view';
 import addFilePage from '@pages/BO/catalog/files/add';
 import suppliersPage from '@pages/BO/catalog/suppliers';
 import viewSupplierPage from '@pages/BO/catalog/suppliers/view';
@@ -13,6 +12,7 @@ import {
   boBrandAdressesCreatePage,
   boBrandsCreatePage,
   boBrandsPage,
+  boBrandsViewPage,
   boCartRulesPage,
   boCartRulesCreatePage,
   boCatalogPriceRulesPage,
@@ -318,7 +318,7 @@ describe('BO - Catalog', async () => {
 
     await boBrandsPage.viewBrand(page, 1);
 
-    const pageTitle = await viewBrandPage.getPageTitle(page);
+    const pageTitle = await boBrandsViewPage.getPageTitle(page);
     expect(pageTitle).to.contains('Graphic Corner');
 
     const jsErrors = utilsPlaywright.getJsErrors();
