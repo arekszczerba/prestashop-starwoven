@@ -1,5 +1,4 @@
 import {expect} from 'chai';
-import addFilePage from '@pages/BO/catalog/files/add';
 import testContext from '@utils/testContext';
 
 import {
@@ -22,6 +21,7 @@ import {
   boFeaturesCreatePage,
   boFeaturesValueCreatePage,
   boFeaturesViewPage,
+  boFilesCreatePage,
   boFilesPage,
   boLoginPage,
   boMonitoringPage,
@@ -462,8 +462,8 @@ describe('BO - Catalog', async () => {
 
     await boFilesPage.goToAddNewFilePage(page);
 
-    const pageTitle = await addFilePage.getPageTitle(page);
-    expect(pageTitle).to.contains(addFilePage.pageTitle);
+    const pageTitle = await boFilesCreatePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boFilesCreatePage.pageTitle);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
