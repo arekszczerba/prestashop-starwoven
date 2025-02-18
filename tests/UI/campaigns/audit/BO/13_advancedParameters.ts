@@ -354,10 +354,7 @@ describe('BO - Advanced Parameters', async () => {
     const pageTitle = await boMultistorePage.getPageTitle(page);
     expect(pageTitle).to.contains(boMultistorePage.pageTitle);
 
-    // works only for normal buttons (Edit + dropdown)
-    //await boMultistorePage.gotoEditShopGroupPage(page, 1);
-
-    //locator to use : '#table-shop_group tbody tr :nth-child(1) td .btn-group a.edit'
+    await boMultistorePage.gotoEditShopGroupPage(page, 2);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
