@@ -1,9 +1,7 @@
-// Import utils
 import testContext from '@utils/testContext';
+import {expect} from 'chai';
 
 // Import pages
-// Import BO pages
-import zonesPage from '@pages/BO/international/locations';
 // Import FO pages
 import {addressesPage} from '@pages/FO/classic/myAccount/addresses';
 import {addAddressPage} from '@pages/FO/classic/myAccount/addAddress';
@@ -12,6 +10,7 @@ import {
   boCountriesPage,
   boDashboardPage,
   boLoginPage,
+  boZonesPages,
   type BrowserContext,
   dataCountries,
   dataCustomers,
@@ -21,8 +20,6 @@ import {
   type Page,
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
-
-import {expect} from 'chai';
 
 const baseContext: string = 'functional_BO_international_locations_countries_countriesRestrictions';
 
@@ -67,16 +64,16 @@ describe('BO - International - Countries : Restrict country selections in front 
       boDashboardPage.internationalParentLink,
       boDashboardPage.locationsLink,
     );
-    await zonesPage.closeSfToolBar(page);
+    await boZonesPages.closeSfToolBar(page);
 
-    const pageTitle = await zonesPage.getPageTitle(page);
-    expect(pageTitle).to.contains(zonesPage.pageTitle);
+    const pageTitle = await boZonesPages.getPageTitle(page);
+    expect(pageTitle).to.contains(boZonesPages.pageTitle);
   });
 
   it('should go to \'Countries\' page', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToCountriesPage', baseContext);
 
-    await zonesPage.goToSubTabCountries(page);
+    await boZonesPages.goToSubTabCountries(page);
 
     const pageTitle = await boCountriesPage.getPageTitle(page);
     expect(pageTitle).to.contains(boCountriesPage.pageTitle);
