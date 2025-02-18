@@ -1,16 +1,13 @@
-// Import utils
 import testContext from '@utils/testContext';
-
-// Import pages
-import viewSupplierPage from '@pages/BO/catalog/suppliers/view';
-
 import {expect} from 'chai';
+
 import {
   boBrandsPage,
   boDashboardPage,
   boLoginPage,
   boSuppliersCreatePage,
   boSuppliersPage,
+  boSuppliersViewPage,
   type BrowserContext,
   FakerSupplier,
   type Page,
@@ -120,14 +117,14 @@ describe('BO - Catalog - Brands & Suppliers : CRUD supplier', async () => {
       // view supplier first row
       await boSuppliersPage.viewSupplier(page, 1);
 
-      const pageTitle = await viewSupplierPage.getPageTitle(page);
+      const pageTitle = await boSuppliersViewPage.getPageTitle(page);
       expect(pageTitle).to.contains(createSupplierData.name);
     });
 
     it('should return suppliers page', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'returnToSuppliersPageAfterCreation', baseContext);
 
-      await viewSupplierPage.goToPreviousPage(page);
+      await boSuppliersViewPage.goToPreviousPage(page);
 
       const pageTitle = await boSuppliersPage.getPageTitle(page);
       expect(pageTitle).to.contains(boSuppliersPage.pageTitle);
@@ -171,14 +168,14 @@ describe('BO - Catalog - Brands & Suppliers : CRUD supplier', async () => {
       // view supplier first row
       await boSuppliersPage.viewSupplier(page, 1);
 
-      const pageTitle = await viewSupplierPage.getPageTitle(page);
+      const pageTitle = await boSuppliersViewPage.getPageTitle(page);
       expect(pageTitle).to.contains(editSupplierData.name);
     });
 
     it('should return to suppliers page', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'returnToSuppliersPageAfterUpdate', baseContext);
 
-      await viewSupplierPage.goToPreviousPage(page);
+      await boSuppliersViewPage.goToPreviousPage(page);
 
       const pageTitle = await boSuppliersPage.getPageTitle(page);
       expect(pageTitle).to.contains(boSuppliersPage.pageTitle);

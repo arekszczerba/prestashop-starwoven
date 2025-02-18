@@ -1,6 +1,5 @@
 import {expect} from 'chai';
 import addFilePage from '@pages/BO/catalog/files/add';
-import viewSupplierPage from '@pages/BO/catalog/suppliers/view';
 import testContext from '@utils/testContext';
 
 import {
@@ -32,6 +31,7 @@ import {
   boStockMovementsPage,
   boSuppliersCreatePage,
   boSuppliersPage,
+  boSuppliersViewPage,
   type BrowserContext,
   dataAttributes,
   dataCategories,
@@ -398,7 +398,7 @@ describe('BO - Catalog', async () => {
 
     await boSuppliersPage.viewSupplier(page, 1);
 
-    const pageTitle = await viewSupplierPage.getPageTitle(page);
+    const pageTitle = await boSuppliersViewPage.getPageTitle(page);
     expect(pageTitle).to.contains(dataSuppliers.accessories.name);
 
     const jsErrors = utilsPlaywright.getJsErrors();
