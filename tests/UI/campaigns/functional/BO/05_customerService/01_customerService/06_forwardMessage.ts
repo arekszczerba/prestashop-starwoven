@@ -5,8 +5,6 @@ import {setupSmtpConfigTest, resetSmtpConfigTest} from '@commonTests/BO/advanced
 
 // Import BO pages
 import viewPage from '@pages/BO/customerService/customerService/view';
-// Import FO pages
-import {blockCartModal} from '@pages/FO/classic/modal/blockCart';
 
 import {
   boCustomerServicePage,
@@ -23,6 +21,7 @@ import {
   foClassicCheckoutOrderConfirmationPage,
   foClassicHomePage,
   foClassicLoginPage,
+  foClassicModalBlockCartPage,
   foClassicModalQuickViewPage,
   foClassicMyAccountPage,
   foClassicMyOrderDetailsPage,
@@ -141,7 +140,7 @@ describe('BO - Customer Service : Forward message', async () => {
       await testContext.addContextItem(this, 'testIdentifier', 'addProductToCart', baseContext);
 
       await foClassicModalQuickViewPage.addToCartByQuickView(page);
-      await blockCartModal.proceedToCheckout(page);
+      await foClassicModalBlockCartPage.proceedToCheckout(page);
 
       const pageTitle = await foClassicCartPage.getPageTitle(page);
       expect(pageTitle).to.equal(foClassicCartPage.pageTitle);

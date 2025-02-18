@@ -1,11 +1,8 @@
-// Import utils
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
 // BO pages
 import customerServiceMessageViewPage from '@pages/BO/customerService/customerService/view';
-// FO pages
-import {blockCartModal} from '@pages/FO/classic/modal/blockCart';
 
 import {
   boCustomerServicePage,
@@ -22,6 +19,7 @@ import {
   foClassicContactUsPage,
   foClassicHomePage,
   foClassicLoginPage,
+  foClassicModalBlockCartPage,
   foClassicModalQuickViewPage,
   foClassicMyAccountPage,
   type Page,
@@ -113,7 +111,7 @@ describe('FO - Order confirmation : Contact us', async () => {
 
       await foClassicHomePage.quickViewProduct(page, 1);
       await foClassicModalQuickViewPage.addToCartByQuickView(page);
-      await blockCartModal.proceedToCheckout(page);
+      await foClassicModalBlockCartPage.proceedToCheckout(page);
 
       const pageTitle = await foClassicCartPage.getPageTitle(page);
       expect(pageTitle).to.equal(foClassicCartPage.pageTitle);
