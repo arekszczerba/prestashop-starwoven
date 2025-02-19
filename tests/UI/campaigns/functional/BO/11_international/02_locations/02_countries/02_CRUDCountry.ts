@@ -1,10 +1,6 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-// Import pages
-// Import FO pages
-import {addAddressPage} from '@pages/FO/classic/myAccount/addAddress';
-
 import {
   boCountriesPage,
   boCountriesCreatePage,
@@ -18,6 +14,7 @@ import {
   foClassicLoginPage,
   foClassicMyAccountPage,
   foClassicMyAddressesPage,
+  foClassicMyAddressesCreatePage,
   type Page,
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
@@ -185,7 +182,7 @@ describe('BO - International - Countries : CRUD country', async () => {
 
       await foClassicMyAddressesPage.openNewAddressForm(page);
 
-      const countryExist = await addAddressPage.countryExist(page, createCountryData.name);
+      const countryExist = await foClassicMyAddressesCreatePage.countryExist(page, createCountryData.name);
       expect(countryExist, 'Country does not exist').to.eq(true);
     });
 
@@ -288,7 +285,7 @@ describe('BO - International - Countries : CRUD country', async () => {
 
       await foClassicMyAddressesPage.openNewAddressForm(page);
 
-      const countryExist = await addAddressPage.countryExist(page, editCountryData.name);
+      const countryExist = await foClassicMyAddressesCreatePage.countryExist(page, editCountryData.name);
       expect(countryExist, 'Country exist').to.eq(false);
     });
 

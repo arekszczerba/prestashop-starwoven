@@ -1,10 +1,6 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-// Import pages
-// Import FO pages
-import {addAddressPage} from '@pages/FO/classic/myAccount/addAddress';
-
 import {
   boCountriesPage,
   boDashboardPage,
@@ -17,6 +13,7 @@ import {
   foClassicLoginPage,
   foClassicMyAccountPage,
   foClassicMyAddressesPage,
+  foClassicMyAddressesCreatePage,
   type Page,
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
@@ -159,7 +156,7 @@ describe('BO - International - Countries : Restrict country selections in front 
 
       await foClassicMyAddressesPage.openNewAddressForm(page);
 
-      const countryExist = await addAddressPage.countryExist(page, dataCountries.afghanistan.name);
+      const countryExist = await foClassicMyAddressesCreatePage.countryExist(page, dataCountries.afghanistan.name);
       expect(countryExist).to.equal(status.args.isCountryVisible);
     });
 

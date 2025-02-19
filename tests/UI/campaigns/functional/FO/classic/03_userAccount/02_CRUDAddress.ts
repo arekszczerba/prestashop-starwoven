@@ -1,13 +1,9 @@
-// Import utils
 import testContext from '@utils/testContext';
+import {expect} from 'chai';
 
-// Import commonTests
 import deleteCacheTest from '@commonTests/BO/advancedParameters/cache';
 import {deleteCustomerTest} from '@commonTests/BO/customers/customer';
 import {createAccountTest} from '@commonTests/FO/classic/account';
-
-// Import FO pages
-import {addAddressPage} from '@pages/FO/classic/myAccount/addAddress';
 
 import {
   type BrowserContext,
@@ -20,12 +16,11 @@ import {
   foClassicLoginPage,
   foClassicMyAccountPage,
   foClassicMyAddressesPage,
+  foClassicMyAddressesCreatePage,
   foClassicProductPage,
   type Page,
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
-
-import {expect} from 'chai';
 
 const baseContext: string = 'functional_FO_classic_userAccount_CRUDAddress';
 
@@ -120,7 +115,7 @@ describe('FO - Account : CRUD address', async () => {
     it('should create new address', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'createAddress', baseContext);
 
-      const textResult = await addAddressPage.setAddress(page, createAddressData);
+      const textResult = await foClassicMyAddressesCreatePage.setAddress(page, createAddressData);
       expect(textResult).to.equal(foClassicMyAddressesPage.addAddressSuccessfulMessage);
     });
   });
@@ -132,21 +127,21 @@ describe('FO - Account : CRUD address', async () => {
       const addressPosition = await foClassicMyAddressesPage.getAddressPosition(page, createAddressData.alias);
       await foClassicMyAddressesPage.goToEditAddressPage(page, addressPosition);
 
-      const pageHeaderTitle = await addAddressPage.getHeaderTitle(page);
-      expect(pageHeaderTitle).to.equal(addAddressPage.updateFormTitle);
+      const pageHeaderTitle = await foClassicMyAddressesCreatePage.getHeaderTitle(page);
+      expect(pageHeaderTitle).to.equal(foClassicMyAddressesCreatePage.updateFormTitle);
     });
 
     it('should update the address', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'updateAddress', baseContext);
 
-      const textResult = await addAddressPage.setAddress(page, editAddressData);
+      const textResult = await foClassicMyAddressesCreatePage.setAddress(page, editAddressData);
       expect(textResult).to.equal(foClassicMyAddressesPage.updateAddressSuccessfulMessage);
     });
 
     it('should go back to \'Your account page\'', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'goBackYourAccountPage', baseContext);
 
-      await addAddressPage.clickOnBreadCrumbLink(page, 'my-account');
+      await foClassicMyAddressesCreatePage.clickOnBreadCrumbLink(page, 'my-account');
 
       const pageHeaderTitle = await foClassicMyAccountPage.getPageTitle(page);
       expect(pageHeaderTitle).to.equal(foClassicMyAccountPage.pageTitle);
@@ -175,14 +170,14 @@ describe('FO - Account : CRUD address', async () => {
 
       await foClassicMyAddressesPage.openNewAddressForm(page);
 
-      const pageHeaderTitle = await addAddressPage.getHeaderTitle(page);
-      expect(pageHeaderTitle).to.equal(addAddressPage.creationFormTitle);
+      const pageHeaderTitle = await foClassicMyAddressesCreatePage.getHeaderTitle(page);
+      expect(pageHeaderTitle).to.equal(foClassicMyAddressesCreatePage.creationFormTitle);
     });
 
     it('should create new address', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'createAddress2', baseContext);
 
-      const textResult = await addAddressPage.setAddress(page, secondAddressData);
+      const textResult = await foClassicMyAddressesCreatePage.setAddress(page, secondAddressData);
       expect(textResult).to.equal(foClassicMyAddressesPage.addAddressSuccessfulMessage);
     });
   });

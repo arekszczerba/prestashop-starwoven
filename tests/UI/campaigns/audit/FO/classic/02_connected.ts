@@ -1,5 +1,4 @@
 import {expect} from 'chai';
-import {addAddressPage as foClassicAddressesCreatePage} from '@pages/FO/classic/myAccount/addAddress';
 import {accountIdentityPage as foClassicAccountIdentityPage} from '@pages/FO/classic/myAccount/identity';
 import {creditSlipPage as foClassicCreditSlipsPage} from '@pages/FO/classic/myAccount/creditSlips';
 import {gdprPersonalDataPage as foClassicGdprPersonalDataPage} from '@pages/FO/classic/myAccount/gdprPersonalData';
@@ -12,6 +11,7 @@ import {
   foClassicLoginPage,
   foClassicMyAccountPage,
   foClassicMyAddressesPage,
+  foClassicMyAddressesCreatePage,
   foClassicMyOrderDetailsPage,
   foClassicMyOrderHistoryPage,
   foClassicMyWishlistsPage,
@@ -119,8 +119,8 @@ describe('Check FO connected pages', async () => {
 
     await foClassicMyAddressesPage.openNewAddressForm(page);
 
-    const pageHeaderTitle = await foClassicAddressesCreatePage.getHeaderTitle(page);
-    expect(pageHeaderTitle).to.equal(foClassicAddressesCreatePage.creationFormTitle);
+    const pageHeaderTitle = await foClassicMyAddressesCreatePage.getHeaderTitle(page);
+    expect(pageHeaderTitle).to.equal(foClassicMyAddressesCreatePage.creationFormTitle);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);

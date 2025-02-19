@@ -1,13 +1,9 @@
-// Import utils
 import testContext from '@utils/testContext';
+import {expect} from 'chai';
 
-// Import commonTests
 import {deleteCustomerTest} from '@commonTests/BO/customers/customer';
 import {createAccountTest} from '@commonTests/FO/classic/account';
 import {enableHummingbird, disableHummingbird} from '@commonTests/BO/design/hummingbird';
-
-// Import FO pages
-import addAddressPage from '@pages/FO/hummingbird/myAccount/addAddress';
 
 import {
   type BrowserContext,
@@ -20,12 +16,12 @@ import {
   foHummingbirdLoginPage,
   foHummingbirdMyAccountPage,
   foHummingbirdMyAddressesPage,
+  foHummingbirdMyAddressesCreatePage,
   foHummingbirdProductPage,
   type Page,
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
 
-import {expect} from 'chai';
 
 const baseContext: string = 'functional_FO_hummingbird_userAccount_CRUDAddress';
 
@@ -121,7 +117,7 @@ describe('FO - Account : CRUD address', async () => {
     it('should create new address', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'createAddress', baseContext);
 
-      const textResult = await addAddressPage.setAddress(page, createAddressData);
+      const textResult = await foHummingbirdMyAddressesCreatePage.setAddress(page, createAddressData);
       expect(textResult).to.equal(foHummingbirdMyAddressesPage.addAddressSuccessfulMessage);
     });
   });
@@ -133,21 +129,21 @@ describe('FO - Account : CRUD address', async () => {
       const addressPosition = await foHummingbirdMyAddressesPage.getAddressPosition(page, createAddressData.alias);
       await foHummingbirdMyAddressesPage.goToEditAddressPage(page, addressPosition);
 
-      const pageHeaderTitle = await addAddressPage.getHeaderTitle(page);
-      expect(pageHeaderTitle).to.equal(addAddressPage.updateFormTitle);
+      const pageHeaderTitle = await foHummingbirdMyAddressesCreatePage.getHeaderTitle(page);
+      expect(pageHeaderTitle).to.equal(foHummingbirdMyAddressesCreatePage.updateFormTitle);
     });
 
     it('should update the address', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'updateAddress', baseContext);
 
-      const textResult = await addAddressPage.setAddress(page, editAddressData);
+      const textResult = await foHummingbirdMyAddressesCreatePage.setAddress(page, editAddressData);
       expect(textResult).to.equal(foHummingbirdMyAddressesPage.updateAddressSuccessfulMessage);
     });
 
     it('should go back to \'Your account page\'', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'goBackYourAccountPage', baseContext);
 
-      await addAddressPage.clickOnBreadCrumbLink(page, 'my-account');
+      await foHummingbirdMyAddressesCreatePage.clickOnBreadCrumbLink(page, 'my-account');
 
       const pageHeaderTitle = await foHummingbirdMyAccountPage.getPageTitle(page);
       expect(pageHeaderTitle).to.equal(foHummingbirdMyAccountPage.pageTitle);
@@ -176,14 +172,14 @@ describe('FO - Account : CRUD address', async () => {
 
       await foHummingbirdMyAddressesPage.openNewAddressForm(page);
 
-      const pageHeaderTitle = await addAddressPage.getHeaderTitle(page);
-      expect(pageHeaderTitle).to.equal(addAddressPage.creationFormTitle);
+      const pageHeaderTitle = await foHummingbirdMyAddressesCreatePage.getHeaderTitle(page);
+      expect(pageHeaderTitle).to.equal(foHummingbirdMyAddressesCreatePage.creationFormTitle);
     });
 
     it('should create new address', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'createAddress2', baseContext);
 
-      const textResult = await addAddressPage.setAddress(page, secondAddressData);
+      const textResult = await foHummingbirdMyAddressesCreatePage.setAddress(page, secondAddressData);
       expect(textResult).to.equal(foHummingbirdMyAddressesPage.addAddressSuccessfulMessage);
     });
   });

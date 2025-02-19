@@ -1,6 +1,5 @@
 import {expect} from 'chai';
 import {disableHummingbird, enableHummingbird} from '@commonTests/BO/design/hummingbird';
-import foHummingbirdAddressesCreatePage from '@pages/FO/hummingbird/myAccount/addAddress';
 import foHummingbirdAccountIdentityPage from '@pages/FO/hummingbird/myAccount/identity';
 import foHummingbirdCreditSlipsPage from '@pages/FO/hummingbird/myAccount/creditSlips';
 import foHummingbirdGdprPersonalDataPage from '@pages/FO/hummingbird/myAccount/gdprPersonalData';
@@ -13,6 +12,7 @@ import {
   foHummingbirdLoginPage,
   foHummingbirdMyAccountPage,
   foHummingbirdMyAddressesPage,
+  foHummingbirdMyAddressesCreatePage,
   foHummingbirdMyOrderDetailsPage,
   foHummingbirdMyOrderHistoryPage,
   foHummingbirdMyWishlistsPage,
@@ -124,8 +124,8 @@ describe('Check FO connected pages', async () => {
 
       await foHummingbirdMyAddressesPage.openNewAddressForm(page);
 
-      const pageHeaderTitle = await foHummingbirdAddressesCreatePage.getHeaderTitle(page);
-      expect(pageHeaderTitle).to.equal(foHummingbirdAddressesCreatePage.creationFormTitle);
+      const pageHeaderTitle = await foHummingbirdMyAddressesCreatePage.getHeaderTitle(page);
+      expect(pageHeaderTitle).to.equal(foHummingbirdMyAddressesCreatePage.creationFormTitle);
 
       const jsErrors = utilsPlaywright.getJsErrors();
       expect(jsErrors.length).to.equals(0);

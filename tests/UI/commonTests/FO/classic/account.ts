@@ -1,8 +1,6 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-import {addAddressPage} from '@pages/FO/classic/myAccount/addAddress';
-
 import {
   type BrowserContext,
   FakerAddress,
@@ -12,6 +10,7 @@ import {
   foClassicLoginPage,
   foClassicMyAccountPage,
   foClassicMyAddressesPage,
+  foClassicMyAddressesCreatePage,
   type Page,
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
@@ -147,21 +146,21 @@ function createAddressTest(
 
       await foClassicMyAddressesPage.openNewAddressForm(page);
 
-      const pageHeaderTitle = await addAddressPage.getHeaderTitle(page);
-      expect(pageHeaderTitle).to.equal(addAddressPage.creationFormTitle);
+      const pageHeaderTitle = await foClassicMyAddressesCreatePage.getHeaderTitle(page);
+      expect(pageHeaderTitle).to.equal(foClassicMyAddressesCreatePage.creationFormTitle);
     });
 
     it('should create address', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'createAddress', baseContext);
 
-      const textResult = await addAddressPage.setAddress(page, addressData);
+      const textResult = await foClassicMyAddressesCreatePage.setAddress(page, addressData);
       expect(textResult).to.equal(foClassicMyAddressesPage.addAddressSuccessfulMessage);
     });
 
     it('should sign out from FO', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'signOutFO', baseContext);
 
-      await addAddressPage.goToHomePage(page);
+      await foClassicMyAddressesCreatePage.goToHomePage(page);
       await foClassicHomePage.logout(page);
 
       const isCustomerConnected = await foClassicHomePage.isCustomerConnected(page);
