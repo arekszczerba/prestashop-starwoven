@@ -1,11 +1,9 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-// BO pages
-import customerServiceMessageViewPage from '@pages/BO/customerService/customerService/view';
-
 import {
   boCustomerServicePage,
+  boCustomerServiceViewPage,
   boDashboardPage,
   boLoginPage,
   type BrowserContext,
@@ -234,14 +232,14 @@ describe('FO - Order confirmation : Contact us', async () => {
 
       await boCustomerServicePage.goToViewMessagePage(page);
 
-      const pageTitle = await customerServiceMessageViewPage.getPageTitle(page);
-      expect(pageTitle).to.contains(customerServiceMessageViewPage.pageTitle);
+      const pageTitle = await boCustomerServiceViewPage.getPageTitle(page);
+      expect(pageTitle).to.contains(boCustomerServiceViewPage.pageTitle);
     });
 
     it('should check the message content and uploaded file', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'checkMessageContentAndFile', baseContext);
 
-      const messageContent = await customerServiceMessageViewPage.getCustomerMessage(page);
+      const messageContent = await boCustomerServiceViewPage.getCustomerMessage(page);
       expect(messageContent).to.contains(contactUsData.message);
       expect(messageContent).to.contains('Attachment');
     });
