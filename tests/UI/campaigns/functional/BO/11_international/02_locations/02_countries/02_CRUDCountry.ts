@@ -3,7 +3,6 @@ import {expect} from 'chai';
 
 // Import pages
 // Import FO pages
-import {addressesPage} from '@pages/FO/classic/myAccount/addresses';
 import {addAddressPage} from '@pages/FO/classic/myAccount/addAddress';
 
 import {
@@ -18,6 +17,7 @@ import {
   foClassicHomePage,
   foClassicLoginPage,
   foClassicMyAccountPage,
+  foClassicMyAddressesPage,
   type Page,
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
@@ -176,14 +176,14 @@ describe('BO - International - Countries : CRUD country', async () => {
       await foClassicHomePage.goToMyAccountPage(page);
       await foClassicMyAccountPage.goToAddressesPage(page);
 
-      const pageTitle = await addressesPage.getPageTitle(page);
-      expect(pageTitle, 'Fail to open addresses page').to.contains(addressesPage.pageTitle);
+      const pageTitle = await foClassicMyAddressesPage.getPageTitle(page);
+      expect(pageTitle, 'Fail to open addresses page').to.contains(foClassicMyAddressesPage.pageTitle);
     });
 
     it(`should check that the new country '${createCountryData.name}' exist`, async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'checkIsNewCountryExist', baseContext);
 
-      await addressesPage.openNewAddressForm(page);
+      await foClassicMyAddressesPage.openNewAddressForm(page);
 
       const countryExist = await addAddressPage.countryExist(page, createCountryData.name);
       expect(countryExist, 'Country does not exist').to.eq(true);
@@ -192,9 +192,9 @@ describe('BO - International - Countries : CRUD country', async () => {
     it('should sign out from FO', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'sighOutFO_1', baseContext);
 
-      await addressesPage.logout(page);
+      await foClassicMyAddressesPage.logout(page);
 
-      const isCustomerConnected = await addressesPage.isCustomerConnected(page);
+      const isCustomerConnected = await foClassicMyAddressesPage.isCustomerConnected(page);
       expect(isCustomerConnected, 'Customer is connected').to.eq(false);
     });
 
@@ -279,14 +279,14 @@ describe('BO - International - Countries : CRUD country', async () => {
       await foClassicHomePage.goToMyAccountPage(page);
       await foClassicMyAccountPage.goToAddressesPage(page);
 
-      const pageTitle = await addressesPage.getPageTitle(page);
-      expect(pageTitle, 'Fail to open addresses page').to.contains(addressesPage.pageTitle);
+      const pageTitle = await foClassicMyAddressesPage.getPageTitle(page);
+      expect(pageTitle, 'Fail to open addresses page').to.contains(foClassicMyAddressesPage.pageTitle);
     });
 
     it(`should check that the edited country '${editCountryData.name}' not exist`, async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'checkIsCountryNotExist', baseContext);
 
-      await addressesPage.openNewAddressForm(page);
+      await foClassicMyAddressesPage.openNewAddressForm(page);
 
       const countryExist = await addAddressPage.countryExist(page, editCountryData.name);
       expect(countryExist, 'Country exist').to.eq(false);

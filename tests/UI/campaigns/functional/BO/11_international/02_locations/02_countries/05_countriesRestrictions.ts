@@ -3,7 +3,6 @@ import {expect} from 'chai';
 
 // Import pages
 // Import FO pages
-import {addressesPage} from '@pages/FO/classic/myAccount/addresses';
 import {addAddressPage} from '@pages/FO/classic/myAccount/addAddress';
 
 import {
@@ -17,6 +16,7 @@ import {
   foClassicHomePage,
   foClassicLoginPage,
   foClassicMyAccountPage,
+  foClassicMyAddressesPage,
   type Page,
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
@@ -150,14 +150,14 @@ describe('BO - International - Countries : Restrict country selections in front 
 
       await foClassicMyAccountPage.goToAddressesPage(page);
 
-      const pageTitle = await addressesPage.getPageTitle(page);
-      expect(pageTitle, 'Fail to open addresses page').to.contains(addressesPage.pageTitle);
+      const pageTitle = await foClassicMyAddressesPage.getPageTitle(page);
+      expect(pageTitle, 'Fail to open addresses page').to.contains(foClassicMyAddressesPage.pageTitle);
     });
 
     it(`should check if the country '${dataCountries.afghanistan.name}' exist`, async function () {
       await testContext.addContextItem(this, 'testIdentifier', `checkIsNewCountryExist${index}`, baseContext);
 
-      await addressesPage.openNewAddressForm(page);
+      await foClassicMyAddressesPage.openNewAddressForm(page);
 
       const countryExist = await addAddressPage.countryExist(page, dataCountries.afghanistan.name);
       expect(countryExist).to.equal(status.args.isCountryVisible);
@@ -166,9 +166,9 @@ describe('BO - International - Countries : Restrict country selections in front 
     it('should sign out from FO', async function () {
       await testContext.addContextItem(this, 'testIdentifier', `sighOutFO${index}`, baseContext);
 
-      await addressesPage.logout(page);
+      await foClassicMyAddressesPage.logout(page);
 
-      const isCustomerConnected = await addressesPage.isCustomerConnected(page);
+      const isCustomerConnected = await foClassicMyAddressesPage.isCustomerConnected(page);
       expect(isCustomerConnected, 'Customer is connected').to.eq(false);
     });
 

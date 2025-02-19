@@ -12,7 +12,6 @@ import {bestSalesPage} from '@pages/FO/classic/bestSales';
 import {deliveryPage} from '@pages/FO/classic/delivery';
 import {legalNoticePage} from '@pages/FO/classic/legalNotice';
 import {addAddressPage} from '@pages/FO/classic/myAccount/addAddress';
-import {addressesPage} from '@pages/FO/classic/myAccount/addresses';
 import {creditSlipPage} from '@pages/FO/classic/myAccount/creditSlips';
 import {accountIdentityPage} from '@pages/FO/classic/myAccount/identity';
 import {guestOrderTrackingPage} from '@pages/FO/classic/orderTracking/guestOrderTracking';
@@ -31,6 +30,7 @@ import {
   foClassicCreateAccountPage,
   foClassicHomePage,
   foClassicLoginPage,
+  foClassicMyAddressesPage,
   foClassicMyOrderHistoryPage,
   foClassicMyWishlistsPage,
   foClassicSitemapPage,
@@ -165,7 +165,7 @@ describe('FO - Header and Footer : Check links in footer page', async () => {
 
     [
       {linkSelector: 'Information', pageTitle: accountIdentityPage.pageTitle},
-      {linkSelector: 'Addresses', pageTitle: addressesPage.pageTitle},
+      {linkSelector: 'Addresses', pageTitle: foClassicMyAddressesPage.pageTitle},
       {linkSelector: 'Orders', pageTitle: foClassicMyOrderHistoryPage.pageTitle},
       {linkSelector: 'Credit slips', pageTitle: creditSlipPage.pageTitle},
       {linkSelector: 'Wishlist', pageTitle: foClassicMyWishlistsPage.pageTitle},

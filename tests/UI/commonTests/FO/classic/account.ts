@@ -1,7 +1,6 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-import {addressesPage} from '@pages/FO/classic/myAccount/addresses';
 import {addAddressPage} from '@pages/FO/classic/myAccount/addAddress';
 
 import {
@@ -12,6 +11,7 @@ import {
   foClassicHomePage,
   foClassicLoginPage,
   foClassicMyAccountPage,
+  foClassicMyAddressesPage,
   type Page,
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
@@ -134,18 +134,18 @@ function createAddressTest(
     });
 
     it('should go to \'Addresses\' page', async function () {
-      await testContext.addContextItem(this, 'testIdentifier', 'goToaddressesPage', baseContext);
+      await testContext.addContextItem(this, 'testIdentifier', 'goTofoClassicMyAddressesPage', baseContext);
 
       await foClassicMyAccountPage.goToAddressesPage(page);
 
-      const pageHeaderTitle = await addressesPage.getPageTitle(page);
-      expect(pageHeaderTitle).to.include(addressesPage.addressPageTitle);
+      const pageHeaderTitle = await foClassicMyAddressesPage.getPageTitle(page);
+      expect(pageHeaderTitle).to.include(foClassicMyAddressesPage.addressPageTitle);
     });
 
     it('should go to create address page', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'goToNewAddressPage', baseContext);
 
-      await addressesPage.openNewAddressForm(page);
+      await foClassicMyAddressesPage.openNewAddressForm(page);
 
       const pageHeaderTitle = await addAddressPage.getHeaderTitle(page);
       expect(pageHeaderTitle).to.equal(addAddressPage.creationFormTitle);
@@ -155,7 +155,7 @@ function createAddressTest(
       await testContext.addContextItem(this, 'testIdentifier', 'createAddress', baseContext);
 
       const textResult = await addAddressPage.setAddress(page, addressData);
-      expect(textResult).to.equal(addressesPage.addAddressSuccessfulMessage);
+      expect(textResult).to.equal(foClassicMyAddressesPage.addAddressSuccessfulMessage);
     });
 
     it('should sign out from FO', async function () {

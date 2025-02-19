@@ -1,6 +1,5 @@
 import {expect} from 'chai';
 import {disableHummingbird, enableHummingbird} from '@commonTests/BO/design/hummingbird';
-import foHummingbirdAddressesPage from '@pages/FO/hummingbird/myAccount/addresses';
 import foHummingbirdAddressesCreatePage from '@pages/FO/hummingbird/myAccount/addAddress';
 import foHummingbirdAccountIdentityPage from '@pages/FO/hummingbird/myAccount/identity';
 import foHummingbirdCreditSlipsPage from '@pages/FO/hummingbird/myAccount/creditSlips';
@@ -13,6 +12,7 @@ import {
   foHummingbirdHomePage,
   foHummingbirdLoginPage,
   foHummingbirdMyAccountPage,
+  foHummingbirdMyAddressesPage,
   foHummingbirdMyOrderDetailsPage,
   foHummingbirdMyOrderHistoryPage,
   foHummingbirdMyWishlistsPage,
@@ -112,8 +112,8 @@ describe('Check FO connected pages', async () => {
       await foHummingbirdAccountIdentityPage.goToMyAccountPage(page);
       await foHummingbirdMyAccountPage.goToAddressesPage(page);
 
-      const pageHeaderTitle = await foHummingbirdAddressesPage.getPageTitle(page);
-      expect(pageHeaderTitle).to.equal(foHummingbirdAddressesPage.pageTitle);
+      const pageHeaderTitle = await foHummingbirdMyAddressesPage.getPageTitle(page);
+      expect(pageHeaderTitle).to.equal(foHummingbirdMyAddressesPage.pageTitle);
 
       const jsErrors = utilsPlaywright.getJsErrors();
       expect(jsErrors.length).to.equals(0);
@@ -122,7 +122,7 @@ describe('Check FO connected pages', async () => {
     it('should go to the "New address" page', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'goToNewAddressPage', baseContext);
 
-      await foHummingbirdAddressesPage.openNewAddressForm(page);
+      await foHummingbirdMyAddressesPage.openNewAddressForm(page);
 
       const pageHeaderTitle = await foHummingbirdAddressesCreatePage.getHeaderTitle(page);
       expect(pageHeaderTitle).to.equal(foHummingbirdAddressesCreatePage.creationFormTitle);

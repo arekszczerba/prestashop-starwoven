@@ -12,7 +12,6 @@ import bestSalesPage from '@pages/FO/hummingbird/bestSales';
 import deliveryPage from '@pages/FO/hummingbird/delivery';
 import legalNoticePage from '@pages/FO/hummingbird/legalNotice';
 import addAddressPage from '@pages/FO/hummingbird/myAccount/addAddress';
-import addressesPage from '@pages/FO/hummingbird/myAccount/addresses';
 import creditSlipsPage from '@pages/FO/hummingbird/myAccount/creditSlips';
 import personalInfoPage from '@pages/FO/hummingbird/myAccount/identity';
 import guestOrderTrackingPage from '@pages/FO/hummingbird/orderTracking/guestOrderTracking';
@@ -31,6 +30,7 @@ import {
   foHummingbirdCreateAccountPage,
   foHummingbirdHomePage,
   foHummingbirdLoginPage,
+  foHummingbirdMyAddressesPage,
   foHummingbirdMyOrderHistoryPage,
   foHummingbirdMyWishlistsPage,
   foHummingbirdSitemapPage,
@@ -168,7 +168,7 @@ describe('FO - Header and Footer : Check links in footer page', async () => {
 
     [
       {linkSelector: 'Information', pageTitle: personalInfoPage.pageTitle},
-      {linkSelector: 'Addresses', pageTitle: addressesPage.pageTitle},
+      {linkSelector: 'Addresses', pageTitle: foHummingbirdMyAddressesPage.pageTitle},
       {linkSelector: 'Orders', pageTitle: foHummingbirdMyOrderHistoryPage.pageTitle},
       {linkSelector: 'Credit slips', pageTitle: creditSlipsPage.pageTitle},
       {linkSelector: 'Wishlist', pageTitle: foHummingbirdMyWishlistsPage.pageTitle},

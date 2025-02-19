@@ -3,7 +3,6 @@ import testContext from '@utils/testContext';
 
 // Import pages
 // Import FO pages
-import {addressesPage as foAddressesPage} from '@pages/FO/classic/myAccount/addresses';
 import {addAddressPage} from '@pages/FO/classic/myAccount/addAddress';
 
 import {
@@ -16,6 +15,7 @@ import {
   foClassicHomePage,
   foClassicLoginPage,
   foClassicMyAccountPage,
+  foClassicMyAddressesPage,
   type Page,
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
@@ -111,14 +111,14 @@ describe('BO - Customers - Addresses : Set required fields for addresses', async
       await foClassicHomePage.goToMyAccountPage(page);
       await foClassicMyAccountPage.goToAddressesPage(page);
 
-      const pageHeaderTitle = await foAddressesPage.getPageTitle(page);
-      expect(pageHeaderTitle).to.equal(foAddressesPage.pageTitle);
+      const pageHeaderTitle = await foClassicMyAddressesPage.getPageTitle(page);
+      expect(pageHeaderTitle).to.equal(foClassicMyAddressesPage.pageTitle);
     });
 
     it('should go to create address page', async function () {
       await testContext.addContextItem(this, 'testIdentifier', `goToNewAddressPage${index}`, baseContext);
 
-      await foAddressesPage.openNewAddressForm(page);
+      await foClassicMyAddressesPage.openNewAddressForm(page);
 
       const pageHeaderTitle = await addAddressPage.getHeaderTitle(page);
       expect(pageHeaderTitle).to.equal(addAddressPage.creationFormTitle);
