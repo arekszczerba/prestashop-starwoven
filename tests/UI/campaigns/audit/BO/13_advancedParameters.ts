@@ -354,7 +354,7 @@ describe('BO - Advanced Parameters', async () => {
     const pageTitle = await boMultistorePage.getPageTitle(page);
     expect(pageTitle).to.contains(boMultistorePage.pageTitle);
 
-    await boMultistorePage.gotoEditShopGroupPage(page, 2);
+    await boMultistorePage.gotoEditShopGroupPage(page, 1);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
