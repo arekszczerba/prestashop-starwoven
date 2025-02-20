@@ -15,7 +15,6 @@ import {
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
 
-
 const baseContext: string = 'functional_BO_shopParameters_customerSettings_customers_redisplayCartAtLogin';
 
 /*

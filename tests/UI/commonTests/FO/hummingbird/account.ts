@@ -11,7 +11,6 @@ import {
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
 
-
 let browserContext: BrowserContext;
 let page: Page;
 

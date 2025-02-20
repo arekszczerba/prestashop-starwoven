@@ -17,7 +17,6 @@ import {
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
 
-
 const baseContext: string = 'functional_FO_classic_login_createAccount';
 
 describe('FO - Login : Create account', async () => {

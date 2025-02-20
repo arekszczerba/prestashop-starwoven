@@ -4,7 +4,6 @@ import {expect} from 'chai';
 import {createCartRuleTest, deleteCartRuleTest} from '@commonTests/BO/catalog/cartRule';
 import {enableHummingbird, disableHummingbird} from '@commonTests/BO/design/hummingbird';
 
-
 import {
   type BrowserContext,
   dataProducts,

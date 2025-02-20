@@ -22,7 +22,6 @@ import {
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
 
-
 const baseContext: string = 'functional_FO_hummingbird_userAccount_CRUDAddress';
 
 /*

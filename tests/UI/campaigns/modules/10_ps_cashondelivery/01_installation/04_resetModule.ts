@@ -18,7 +18,6 @@ import {
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
 
-
 const baseContext: string = 'modules_ps_cashondelivery_installation_resetModule';
 
 describe('Cash on delivery (COD) module - Reset module', async () => {

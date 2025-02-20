@@ -15,7 +15,6 @@ import {
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
 
-
 const baseContext: string = 'functional_FO_classic_headerAndFooter_checkLinksInHeader';
 
 /*
