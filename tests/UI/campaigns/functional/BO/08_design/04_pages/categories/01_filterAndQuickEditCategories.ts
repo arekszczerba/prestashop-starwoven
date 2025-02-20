@@ -1,10 +1,8 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-// Import pages
-import addPageCategoryPage from '@pages/BO/design/pages/pageCategory/add';
-
 import {
+  boCMSPageCategoriesCreatePage,
   boCMSPagesPage,
   boDashboardPage,
   boLoginPage,
@@ -73,14 +71,14 @@ describe('BO - Design - Pages : Filter and quick edit categories table', async (
 
         await boCMSPagesPage.goToAddNewPageCategory(page);
 
-        const pageTitle = await addPageCategoryPage.getPageTitle(page);
-        expect(pageTitle).to.contains(addPageCategoryPage.pageTitleCreate);
+        const pageTitle = await boCMSPageCategoriesCreatePage.getPageTitle(page);
+        expect(pageTitle).to.contains(boCMSPageCategoriesCreatePage.pageTitleCreate);
       });
 
       it(`should create category n°${index + 1}`, async function () {
         await testContext.addContextItem(this, 'testIdentifier', `createCategory${index + 1}`, baseContext);
 
-        const textResult = await addPageCategoryPage.createEditPageCategory(page, categoryToCreate);
+        const textResult = await boCMSPageCategoriesCreatePage.createEditPageCategory(page, categoryToCreate);
         expect(textResult).to.equal(boCMSPagesPage.successfulCreationMessage);
       });
 

@@ -4,11 +4,11 @@ import {expect} from 'chai';
 // Import pages
 // Import BO pages
 import addPagePage from '@pages/BO/design/pages/add';
-import addPageCategoryPage from '@pages/BO/design/pages/pageCategory/add';
 // Import FO pages
 import cmsPage from '@pages/FO/classic/cms';
 
 import {
+  boCMSPageCategoriesCreatePage,
   boCMSPagesPage,
   boDashboardPage,
   boLoginPage,
@@ -95,14 +95,14 @@ describe('BO - Design - Pages : CRUD category and page', async () => {
 
       await boCMSPagesPage.goToAddNewPageCategory(page);
 
-      const pageTitle = await addPageCategoryPage.getPageTitle(page);
-      expect(pageTitle).to.contains(addPageCategoryPage.pageTitleCreate);
+      const pageTitle = await boCMSPageCategoriesCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contains(boCMSPageCategoriesCreatePage.pageTitleCreate);
     });
 
     it('should create category ', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'CreatePageCategory', baseContext);
 
-      const textResult = await addPageCategoryPage.createEditPageCategory(page, createCategoryData);
+      const textResult = await boCMSPageCategoriesCreatePage.createEditPageCategory(page, createCategoryData);
       expect(textResult).to.equal(boCMSPagesPage.successfulCreationMessage);
     });
 
@@ -279,15 +279,15 @@ describe('BO - Design - Pages : CRUD category and page', async () => {
 
       await boCMSPagesPage.goToEditCategoryPage(page, 1);
 
-      const pageTitle = await addPageCategoryPage.getPageTitle(page);
-      expect(pageTitle).to.contains(addPageCategoryPage.pageTitleEdit);
+      const pageTitle = await boCMSPageCategoriesCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contains(boCMSPageCategoriesCreatePage.pageTitleEdit);
     });
 
     it('should update the created page category', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'UpdateCategory', baseContext);
 
-      const textResult = await addPageCategoryPage.createEditPageCategory(page, editCategoryData);
-      expect(textResult).to.equal(addPageCategoryPage.successfulUpdateMessage);
+      const textResult = await boCMSPageCategoriesCreatePage.createEditPageCategory(page, editCategoryData);
+      expect(textResult).to.equal(boCMSPageCategoriesCreatePage.successfulUpdateMessage);
     });
 
     it('should go back to categories list', async function () {

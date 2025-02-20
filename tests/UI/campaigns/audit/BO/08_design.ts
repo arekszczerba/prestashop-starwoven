@@ -4,10 +4,10 @@ import addImageTypePage from '@pages/BO/design/imageSettings/add';
 import linkWidgetsPage from '@pages/BO/design/linkWidgets';
 import addLinkWidgetPage from '@pages/BO/design/linkWidgets/add';
 import addPagePage from '@pages/BO/design/pages/add';
-import addPageCategoryPage from '@pages/BO/design/pages/pageCategory/add';
 import testContext from '@utils/testContext';
 
 import {
+  boCMSPageCategoriesCreatePage,
   boCMSPagesPage,
   boDashboardPage,
   boDesignEmailThemesPage,
@@ -178,8 +178,8 @@ describe('BO - Design', async () => {
 
     await boCMSPagesPage.goToAddNewPageCategory(page);
 
-    const pageTitle = await addPageCategoryPage.getPageTitle(page);
-    expect(pageTitle).to.contains(addPageCategoryPage.pageTitleCreate);
+    const pageTitle = await boCMSPageCategoriesCreatePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boCMSPageCategoriesCreatePage.pageTitleCreate);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
@@ -188,7 +188,7 @@ describe('BO - Design', async () => {
   it('should go to \'Design > Pages > Add new page\' page', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToAddPage', baseContext);
 
-    await addPageCategoryPage.goToPreviousPage(page);
+    await boCMSPageCategoriesCreatePage.goToPreviousPage(page);
     await boCMSPagesPage.goToAddNewPage(page);
 
     const pageTitle = await addPagePage.getPageTitle(page);
@@ -201,7 +201,7 @@ describe('BO - Design', async () => {
   it('should go to \'Design > Pages > Edit page\' page', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToEditPage', baseContext);
 
-    await addPageCategoryPage.goToPreviousPage(page);
+    await boCMSPageCategoriesCreatePage.goToPreviousPage(page);
     await boCMSPagesPage.goToEditPage(page, 1);
 
     const pageTitle = await addPagePage.getPageTitle(page);
