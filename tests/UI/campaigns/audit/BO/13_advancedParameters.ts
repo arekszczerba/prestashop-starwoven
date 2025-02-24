@@ -86,8 +86,8 @@ describe('BO - Advanced Parameters', async () => {
     expect(result).to.contains(boShopParametersPage.successfulUpdateMessage);
   });
 
-  it('should go to \'Advanced Parameters > Informations\' page', async function () {
-    await testContext.addContextItem(this, 'testIdentifier', 'goToInformationsPage', baseContext);
+  it('should go to \'Advanced Parameters > Information\' page', async function () {
+    await testContext.addContextItem(this, 'testIdentifier', 'goToInformationPage', baseContext);
 
     await boDashboardPage.goToSubMenu(
       page,
