@@ -58,6 +58,7 @@ body {
     &[href] {
       // Exclude classes that don't need underline
       &:not(
+      .breadcrumb a,
       [class*="btn"],
       [class*="dropdown"],
       [class*="list-group-item"],
