@@ -716,11 +716,9 @@ $(function()
     });
 
   // Ensure the spinner is hidden if no AJAX requests are running when the page loads
-  $(document).ready(function() {
-    if ($.active === 0) {
-      $('#ajax_running').hide();
-    }
-  });
+  if ($.active === 0) {
+    $('#ajax_running').hide();
+  }
 
   //Check filters value on submit filter
   $("[name='submitFilter']").on('click', function(event) {
