@@ -1,5 +1,5 @@
-// Import utils
 import testContext from '@utils/testContext';
+import {expect} from 'chai';
 
 // Import webservices
 import StoreWS from '@webservices/store/storeWS';
@@ -10,17 +10,16 @@ import {addWebserviceKey, removeWebserviceKey, setWebserviceStatus} from '@commo
 
 // Import BO pages
 import webservicePage from '@pages/BO/advancedParameters/webservice';
-import contactPage from '@pages/BO/shopParameters/contact';
 import storesPage from '@pages/BO/shopParameters/stores';
 import addStorePage from '@pages/BO/shopParameters/stores/add';
 
 // Import data
 import {getStoreXml, getUpdateStoreXml} from '@data/xml/store';
 
-import {expect} from 'chai';
 import {
   type APIRequestContext,
   type APIResponse,
+  boContactsPage,
   boDashboardPage,
   boLoginPage,
   type BrowserContext,
@@ -436,16 +435,16 @@ describe('WS - Stores : CRUD', async () => {
             boDashboardPage.shopParametersParentLink,
             boDashboardPage.contactLink,
           );
-          await contactPage.closeSfToolBar(page);
+          await boContactsPage.closeSfToolBar(page);
 
-          const pageTitle = await contactPage.getPageTitle(page);
-          expect(pageTitle).to.contains(contactPage.pageTitle);
+          const pageTitle = await boContactsPage.getPageTitle(page);
+          expect(pageTitle).to.contains(boContactsPage.pageTitle);
         });
 
         it('should go to \'Stores\' page', async function () {
           await testContext.addContextItem(this, 'testIdentifier', 'goToStoresPagePost', baseContext);
 
-          await contactPage.goToStoresPage(page);
+          await boContactsPage.goToStoresPage(page);
 
           const pageTitle = await storesPage.getPageTitle(page);
           expect(pageTitle).to.contains(storesPage.pageTitle);
@@ -645,7 +644,7 @@ describe('WS - Stores : CRUD', async () => {
         it('should go to \'Stores\' page', async function () {
           await testContext.addContextItem(this, 'testIdentifier', 'goToStoresPagePostReset', baseContext);
 
-          await contactPage.goToStoresPage(page);
+          await boContactsPage.goToStoresPage(page);
 
           const pageTitle = await storesPage.getPageTitle(page);
           expect(pageTitle).to.contains(storesPage.pageTitle);
@@ -992,7 +991,7 @@ describe('WS - Stores : CRUD', async () => {
         it('should go to \'Stores\' page', async function () {
           await testContext.addContextItem(this, 'testIdentifier', 'goToStoresPagePostReset2', baseContext);
 
-          await contactPage.goToStoresPage(page);
+          await boContactsPage.goToStoresPage(page);
 
           const pageTitle = await storesPage.getPageTitle(page);
           expect(pageTitle).to.contains(storesPage.pageTitle);

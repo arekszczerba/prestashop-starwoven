@@ -1,13 +1,12 @@
-// Import utils
 import testContext from '@utils/testContext';
+import {expect} from 'chai';
 
 // Import pages
-import contactPage from '@pages/BO/shopParameters/contact';
 import storesPage from '@pages/BO/shopParameters/stores';
 import addStorePage from '@pages/BO/shopParameters/stores/add';
 
-import {expect} from 'chai';
 import {
+  boContactsPage,
   boDashboardPage,
   boLoginPage,
   type BrowserContext,
@@ -56,16 +55,16 @@ describe('BO - Shop Parameters - Contact : Enable/Disable/Delete with Bulk Actio
       boDashboardPage.shopParametersParentLink,
       boDashboardPage.contactLink,
     );
-    await contactPage.closeSfToolBar(page);
+    await boContactsPage.closeSfToolBar(page);
 
-    const pageTitle = await contactPage.getPageTitle(page);
-    expect(pageTitle).to.contains(contactPage.pageTitle);
+    const pageTitle = await boContactsPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boContactsPage.pageTitle);
   });
 
   it('should go to \'Stores\' page', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToStoresPage', baseContext);
 
-    await contactPage.goToStoresPage(page);
+    await boContactsPage.goToStoresPage(page);
 
     const pageTitle = await storesPage.getPageTitle(page);
     expect(pageTitle).to.contains(storesPage.pageTitle);

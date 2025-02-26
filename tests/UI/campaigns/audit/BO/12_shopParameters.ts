@@ -7,7 +7,6 @@ import addOrderStatusPage from '@pages/BO/shopParameters/orderSettings/statuses/
 import addOrderReturnStatusPage from '@pages/BO/shopParameters/orderSettings/statuses/returnStatus/add';
 import titlesPage from '@pages/BO/shopParameters/customerSettings/titles';
 import addTitlePage from '@pages/BO/shopParameters/customerSettings/titles/add';
-import contactsPage from '@pages/BO/shopParameters/contact';
 import addContactPage from '@pages/BO/shopParameters/contact/add';
 import storesPage from '@pages/BO/shopParameters/stores';
 import addStorePage from '@pages/BO/shopParameters/stores/add';
@@ -19,6 +18,7 @@ import tagsPage from '@pages/BO/shopParameters/search/tags';
 import addTagPage from '@pages/BO/shopParameters/search/tags/add';
 
 import {
+  boContactsPage,
   boDashboardPage,
   boLoginPage,
   boShopParametersPage,
@@ -291,10 +291,10 @@ describe('BO - Shop Parameters', async () => {
       boDashboardPage.shopParametersParentLink,
       boDashboardPage.contactLink,
     );
-    await contactsPage.closeSfToolBar(page);
+    await boContactsPage.closeSfToolBar(page);
 
-    const pageTitle = await contactsPage.getPageTitle(page);
-    expect(pageTitle).to.contains(contactsPage.pageTitle);
+    const pageTitle = await boContactsPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boContactsPage.pageTitle);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
@@ -303,7 +303,7 @@ describe('BO - Shop Parameters', async () => {
   it('should go to \'Shop parameters > Contacts > New Contact\' page', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToAddNewContact', baseContext);
 
-    await contactsPage.goToAddNewContactPage(page);
+    await boContactsPage.goToAddNewContactPage(page);
 
     const pageTitle = await addContactPage.getPageTitle(page);
     expect(pageTitle).to.contains(addContactPage.pageTitleCreate);
@@ -321,7 +321,7 @@ describe('BO - Shop Parameters', async () => {
       boDashboardPage.contactLink,
     );
 
-    await contactsPage.goToEditContactPage(page, 1);
+    await boContactsPage.goToEditContactPage(page, 1);
 
     const pageTitle = await addContactPage.getPageTitle(page);
     expect(pageTitle).to.contains(addContactPage.pageTitleEdit);
@@ -333,7 +333,7 @@ describe('BO - Shop Parameters', async () => {
   it('should go to \'Shop parameters > Contacts > Stores\' page', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToStoresPage', baseContext);
 
-    await contactsPage.goToStoresPage(page);
+    await boContactsPage.goToStoresPage(page);
 
     const pageTitle = await storesPage.getPageTitle(page);
     expect(pageTitle).to.contains(storesPage.pageTitle);
@@ -357,7 +357,7 @@ describe('BO - Shop Parameters', async () => {
   it('should go to \'Shop parameters > Contacts > Stores > Edit Store\' page', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToEditStorePage', baseContext);
 
-    await contactsPage.goToStoresPage(page);
+    await boContactsPage.goToStoresPage(page);
     await storesPage.gotoEditStorePage(page, 1);
 
     const pageTitle = await addStorePage.getPageTitle(page);
