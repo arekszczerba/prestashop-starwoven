@@ -1,10 +1,6 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-// Import pages
-// Import FO pages
-import cmsPage from '@pages/FO/classic/cms';
-
 import {
   boCMSPageCategoriesCreatePage,
   boCMSPagesPage,
@@ -14,6 +10,7 @@ import {
   type BrowserContext,
   FakerCMSCategory,
   FakerCMSPage,
+  foClassicCmsPage,
   foClassicHomePage,
   foClassicSitemapPage,
   type Page,
@@ -233,20 +230,20 @@ describe('BO - Design - Pages : CRUD category and page', async () => {
 
       page = await boCMSPagesCreatePage.previewPage(page);
 
-      const pageTitle = await cmsPage.getTextContent(page, cmsPage.pageTitle);
+      const pageTitle = await foClassicCmsPage.getTextContent(page, foClassicCmsPage.pageTitle);
       expect(pageTitle).to.contains(createPageData.title);
 
-      const metaTitle = await cmsPage.getPageTitle(page);
+      const metaTitle = await foClassicCmsPage.getPageTitle(page);
       expect(metaTitle).to.equal(createPageData.metaTitle);
 
-      const pageContent = await cmsPage.getTextContent(page, cmsPage.pageContent);
+      const pageContent = await foClassicCmsPage.getTextContent(page, foClassicCmsPage.pageContent);
       expect(pageContent).to.include(createPageData.content);
     });
 
     it('should go back to BO', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'goBackToBO2', baseContext);
 
-      page = await cmsPage.closePage(browserContext, page, 0);
+      page = await foClassicCmsPage.closePage(browserContext, page, 0);
 
       const pageTitle = await boCMSPagesCreatePage.getPageTitle(page);
       expect(pageTitle).to.contains(boCMSPagesCreatePage.editPageTitle(createPageData.title));
@@ -407,14 +404,14 @@ describe('BO - Design - Pages : CRUD category and page', async () => {
 
       page = await boCMSPagesCreatePage.previewPage(page);
 
-      const pageTitle = await cmsPage.getTextContent(page, cmsPage.pageTitle);
-      expect(pageTitle).to.include(cmsPage.pageNotFound);
+      const pageTitle = await foClassicCmsPage.getTextContent(page, foClassicCmsPage.pageTitle);
+      expect(pageTitle).to.include(foClassicCmsPage.pageNotFound);
     });
 
     it('should go back to BO', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'goBackToBO4', baseContext);
 
-      page = await cmsPage.closePage(browserContext, page, 0);
+      page = await foClassicCmsPage.closePage(browserContext, page, 0);
 
       const pageTitle = await boCMSPagesCreatePage.getPageTitle(page);
       expect(pageTitle).to.contains(boCMSPagesCreatePage.editPageTitle(editPageData.title));
