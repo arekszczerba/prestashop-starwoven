@@ -3,7 +3,6 @@ import imageSettingsPage from '@pages/BO/design/imageSettings';
 import addImageTypePage from '@pages/BO/design/imageSettings/add';
 import linkWidgetsPage from '@pages/BO/design/linkWidgets';
 import addLinkWidgetPage from '@pages/BO/design/linkWidgets/add';
-import addPagePage from '@pages/BO/design/pages/add';
 import testContext from '@utils/testContext';
 
 import {
@@ -12,6 +11,7 @@ import {
   boDashboardPage,
   boDesignEmailThemesPage,
   boDesignEmailThemesPreviewPage,
+  boCMSPagesCreatePage,
   boDesignPositionsHookModulePage,
   boDesignPositionsPage,
   boLoginPage,
@@ -191,8 +191,8 @@ describe('BO - Design', async () => {
     await boCMSPageCategoriesCreatePage.goToPreviousPage(page);
     await boCMSPagesPage.goToAddNewPage(page);
 
-    const pageTitle = await addPagePage.getPageTitle(page);
-    expect(pageTitle).to.contains(addPagePage.pageTitleCreate);
+    const pageTitle = await boCMSPagesCreatePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boCMSPagesCreatePage.pageTitleCreate);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
@@ -204,8 +204,8 @@ describe('BO - Design', async () => {
     await boCMSPageCategoriesCreatePage.goToPreviousPage(page);
     await boCMSPagesPage.goToEditPage(page, 1);
 
-    const pageTitle = await addPagePage.getPageTitle(page);
-    expect(pageTitle).to.contains(addPagePage.editPageTitle(dataCMSPages.delivery.title));
+    const pageTitle = await boCMSPagesCreatePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boCMSPagesCreatePage.editPageTitle(dataCMSPages.delivery.title));
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
