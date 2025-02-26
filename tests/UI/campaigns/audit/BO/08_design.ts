@@ -1,5 +1,4 @@
 import {expect} from 'chai';
-import imageSettingsPage from '@pages/BO/design/imageSettings';
 import addImageTypePage from '@pages/BO/design/imageSettings/add';
 import linkWidgetsPage from '@pages/BO/design/linkWidgets';
 import addLinkWidgetPage from '@pages/BO/design/linkWidgets/add';
@@ -14,6 +13,7 @@ import {
   boCMSPagesCreatePage,
   boDesignPositionsHookModulePage,
   boDesignPositionsPage,
+  boImageSettingsPage,
   boLoginPage,
   boThemeAdvancedConfigurationPage,
   boThemeAndLogoChooseLayoutsPage,
@@ -248,10 +248,10 @@ describe('BO - Design', async () => {
       boDashboardPage.designParentLink,
       boDashboardPage.imageSettingsLink,
     );
-    await imageSettingsPage.closeSfToolBar(page);
+    await boImageSettingsPage.closeSfToolBar(page);
 
-    const pageTitle = await imageSettingsPage.getPageTitle(page);
-    expect(pageTitle).to.contains(imageSettingsPage.pageTitle);
+    const pageTitle = await boImageSettingsPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boImageSettingsPage.pageTitle);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
@@ -260,7 +260,7 @@ describe('BO - Design', async () => {
   it('should go to \'Design > Image Settings > Add new image type\' page', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToAddImageTypePage', baseContext);
 
-    await imageSettingsPage.goToNewImageTypePage(page);
+    await boImageSettingsPage.goToNewImageTypePage(page);
 
     const pageTitle = await addImageTypePage.getPageTitle(page);
     expect(pageTitle).to.equal(addImageTypePage.pageTitleCreate);
@@ -273,7 +273,7 @@ describe('BO - Design', async () => {
     await testContext.addContextItem(this, 'testIdentifier', 'goToEditImageTypePage', baseContext);
 
     await addImageTypePage.goToPreviousPage(page);
-    await imageSettingsPage.gotoEditImageTypePage(page, 1);
+    await boImageSettingsPage.gotoEditImageTypePage(page, 1);
 
     const pageTitle = await addImageTypePage.getPageTitle(page);
     expect(pageTitle).to.equal(addImageTypePage.pageTitleEdit('cart_default'));
