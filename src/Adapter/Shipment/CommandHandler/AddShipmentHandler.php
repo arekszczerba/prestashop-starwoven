@@ -27,30 +27,48 @@
 namespace PrestaShop\PrestaShop\Adapter\Shipment\CommandHandler;
 
 use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsCommandHandler;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\GetOrderShipmentsCommand;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\CommandHandler\GetOrderShipmentsHandlerInterface;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentNotFoundException;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\AddShipmentCommand;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\CommandHandler\AddShipmentHandlerInterface;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\CannotAddShipmentException;
 use PrestaShopBundle\Entity\Repository\ShipmentRepository;
 use PrestaShopBundle\Entity\Shipment;
+use PrestaShopBundle\Entity\ShipmentProduct;
 
 #[AsCommandHandler]
-class GetOrderShipmentsHandler implements GetOrderShipmentsHandlerInterface
+class AddShipmentHandler implements AddShipmentHandlerInterface
 {
     public function __construct(
         private readonly ShipmentRepository $repository,
     ) {
     }
 
-    public function handle(GetOrderShipmentsCommand $command): Shipment
+    public function handle(AddShipmentCommand $command): void
     {
-        $orderId = $command->getOrderId()->getValue();
+        $shipment = new Shipment();
+        $shipment->setOrderId($command->getOrderId());
+        $shipment->setCarrierId($command->getCarrierId());
+        $shipment->setTrakingNumber($command->getTrackingNumber());
+        $shipment->setDeliveryAddressId($command->getDeliveryAddressId());
+        $shipment->setShippingCostTaxExcluded($command->getShippingCostTaxExcluded());
+        $shipment->setShippingCostTaxIncluded($command->getShippingCostTaxIncluded());
+        $shipment->setProducts($command->getProducts());
 
-        try {
-            $shipment = $this->repository->findByOrderId($orderId);
-        } catch (\Throwable $e) {
-           throw new ShipmentNotFoundException(sprintf('Could not find shipment for order with id "%s"', $orderId), 0, $e);
+        if ($command->getPackedAt() !== null) {
+            $shipment->setPackedAt($command->getPackedAt());
         }
 
-        return new Shipment($shipment);
+        if ($command->getShippedAt() !== null) {
+            $shipment->setShippedAt($command->getShippedAt());
+        }
+
+        if ($command->getDeliveredAt() !== null) {
+            $shipment->setDeliveredAt($command->getDeliveredAt());
+        }
+
+        try {
+            $this->repository->save($shipment);
+        } catch (\Throwable $e) {
+           throw new CannotAddShipmentException("An error occured while creating shipment", 0, $e);
+        }
     }
 }

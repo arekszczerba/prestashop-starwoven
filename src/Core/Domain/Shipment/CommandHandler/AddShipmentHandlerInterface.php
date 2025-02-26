@@ -24,30 +24,11 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 
-declare(strict_types=1);
+namespace PrestaShop\PrestaShop\Core\Domain\Shipment\CommandHandler;
 
-namespace PrestaShopBundle\Entity\Repository;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\AddShipmentCommand;
 
-use Doctrine\ORM\EntityRepository;
-use PrestaShopBundle\Entity\Shipment;
-
-class ShipmentRepository extends EntityRepository
+interface AddShipmentHandlerInterface
 {
-    public function findByOrderId(int $orderId): array
-    {
-        return $this->findBy(['orderId' => $orderId]);
-    }
-
-    public function findByCarrierId(int $carrierId): array
-    {
-        return $this->findBy(['carrierId' => $carrierId]);
-    }
-
-    public function save(Shipment $shipment): int
-    {
-        $this->getEntityManager()->persist($shipment);
-        $this->getEntityManager()->flush();
-
-        return $shipment->getId();
-    }
+    public function handle(AddShipmentCommand $command): void;
 }

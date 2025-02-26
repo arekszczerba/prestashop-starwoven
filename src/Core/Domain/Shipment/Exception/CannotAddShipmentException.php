@@ -24,17 +24,10 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 
-namespace PrestaShop\PrestaShop\Core\Domain\Shipment\CommandHandler;
+declare(strict_types=1);
 
-use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\GetOrderShipmentsCommand;
-use PrestaShopBundle\Entity\Shipment;
+namespace PrestaShop\PrestaShop\Core\Domain\Shipment\Exception;
 
-interface GetOrderShipmentsHandlerInterface
+class CannotAddShipmentException extends ShipmentException
 {
-    /**
-     * @param GetOrderShipmentsCommand $command
-     *
-     * @return void
-     */
-    public function handle(GetOrderShipmentsCommand $command): Shipment;
 }

@@ -21,11 +21,11 @@
 
 declare(strict_types=1);
 
-namespace PrestaShop\PrestaShop\Core\Domain\Shipment\Command;
+namespace PrestaShop\PrestaShop\Core\Domain\Shipment\Query;
 
 use PrestaShop\PrestaShop\Core\Domain\Order\ValueObject\OrderId;
 
-class GetOrderShipmentsCommand
+class GetOrderShipmentsQuery
 {
     /**
      * @var OrderId
