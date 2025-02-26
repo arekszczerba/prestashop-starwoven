@@ -1,11 +1,10 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-import addImageTypePage from '@pages/BO/design/imageSettings/add';
-
 import {
   boDashboardPage,
   boImageSettingsPage,
+  boImageSettingsCreatePage,
   boLoginPage,
   type BrowserContext,
   FakerImageType,
@@ -76,14 +75,14 @@ describe('BO - Design - Image Settings : CRUD image type in BO', async () => {
 
       await boImageSettingsPage.goToNewImageTypePage(page);
 
-      const pageTitle = await addImageTypePage.getPageTitle(page);
-      expect(pageTitle).to.equal(addImageTypePage.pageTitleCreate);
+      const pageTitle = await boImageSettingsCreatePage.getPageTitle(page);
+      expect(pageTitle).to.equal(boImageSettingsCreatePage.pageTitleCreate);
     });
 
     it('should create image type and check result', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'createImageType', baseContext);
 
-      const textResult = await addImageTypePage.createEditImageType(page, createImageTypeData);
+      const textResult = await boImageSettingsCreatePage.createEditImageType(page, createImageTypeData);
       expect(textResult).to.contains(boImageSettingsPage.successfulCreationMessage);
 
       const numberOfImageTypesAfterCreation = await boImageSettingsPage.getNumberOfElementInGrid(page);
@@ -113,14 +112,14 @@ describe('BO - Design - Image Settings : CRUD image type in BO', async () => {
 
       await boImageSettingsPage.gotoEditImageTypePage(page, 1);
 
-      const pageTitle = await addImageTypePage.getPageTitle(page);
-      expect(pageTitle).to.equal(addImageTypePage.pageTitleEdit(createImageTypeData.name));
+      const pageTitle = await boImageSettingsCreatePage.getPageTitle(page);
+      expect(pageTitle).to.equal(boImageSettingsCreatePage.pageTitleEdit(createImageTypeData.name));
     });
 
     it('should update image type', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'updateImageType', baseContext);
 
-      const textResult = await addImageTypePage.createEditImageType(page, editImageTypeData);
+      const textResult = await boImageSettingsCreatePage.createEditImageType(page, editImageTypeData);
       expect(textResult).to.contains(boImageSettingsPage.successfulUpdateMessage);
 
       const numberOfImageTypesAfterUpdate = await boImageSettingsPage.resetAndGetNumberOfLines(page);

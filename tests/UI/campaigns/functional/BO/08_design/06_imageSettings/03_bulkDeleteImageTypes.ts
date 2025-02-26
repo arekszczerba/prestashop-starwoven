@@ -1,11 +1,10 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-import addImageTypePage from '@pages/BO/design/imageSettings/add';
-
 import {
   boDashboardPage,
   boImageSettingsPage,
+  boImageSettingsCreatePage,
   boLoginPage,
   type BrowserContext,
   FakerImageType,
@@ -77,14 +76,14 @@ describe('BO - Design - Image Settings : Bulk delete image types', async () => {
 
         await boImageSettingsPage.goToNewImageTypePage(page);
 
-        const pageTitle = await addImageTypePage.getPageTitle(page);
-        expect(pageTitle).to.contains(addImageTypePage.pageTitleCreate);
+        const pageTitle = await boImageSettingsCreatePage.getPageTitle(page);
+        expect(pageTitle).to.contains(boImageSettingsCreatePage.pageTitleCreate);
       });
 
       it(`should create image type n° ${index + 1} and check result`, async function () {
         await testContext.addContextItem(this, 'testIdentifier', `createImageType${index + 1}`, baseContext);
 
-        const textResult = await addImageTypePage.createEditImageType(page, ImageTypeToCreate);
+        const textResult = await boImageSettingsCreatePage.createEditImageType(page, ImageTypeToCreate);
         expect(textResult).to.contains(boImageSettingsPage.successfulCreationMessage);
 
         const numberOfImageTypesAfterCreation = await boImageSettingsPage.getNumberOfElementInGrid(page);

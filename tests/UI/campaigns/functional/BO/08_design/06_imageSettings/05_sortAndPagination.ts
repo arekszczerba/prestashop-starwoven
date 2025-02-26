@@ -1,12 +1,10 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-// Import pages
-import addImageTypePage from '@pages/BO/design/imageSettings/add';
-
 import {
   boDashboardPage,
   boImageSettingsPage,
+  boImageSettingsCreatePage,
   boLoginPage,
   type BrowserContext,
   FakerImageType,
@@ -80,14 +78,14 @@ describe('BO - Design - Image Settings : Pagination and sort image settings', as
 
         await boImageSettingsPage.goToNewImageTypePage(page);
 
-        const pageTitle = await addImageTypePage.getPageTitle(page);
-        expect(pageTitle).to.contains(addImageTypePage.pageTitleCreate);
+        const pageTitle = await boImageSettingsCreatePage.getPageTitle(page);
+        expect(pageTitle).to.contains(boImageSettingsCreatePage.pageTitleCreate);
       });
 
       it(`should create image type n°${index + 1}`, async function () {
         await testContext.addContextItem(this, 'testIdentifier', `createImageType${index}`, baseContext);
 
-        const textResult = await addImageTypePage.createEditImageType(page, createImageTypeData);
+        const textResult = await boImageSettingsCreatePage.createEditImageType(page, createImageTypeData);
         expect(textResult).to.contains(boImageSettingsPage.successfulCreationMessage);
 
         const numberOfImageTypesAfterCreation = await boImageSettingsPage.getNumberOfElementInGrid(page);

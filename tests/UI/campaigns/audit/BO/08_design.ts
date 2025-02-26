@@ -1,5 +1,4 @@
 import {expect} from 'chai';
-import addImageTypePage from '@pages/BO/design/imageSettings/add';
 import linkWidgetsPage from '@pages/BO/design/linkWidgets';
 import addLinkWidgetPage from '@pages/BO/design/linkWidgets/add';
 import testContext from '@utils/testContext';
@@ -14,6 +13,7 @@ import {
   boDesignPositionsHookModulePage,
   boDesignPositionsPage,
   boImageSettingsPage,
+  boImageSettingsCreatePage,
   boLoginPage,
   boThemeAdvancedConfigurationPage,
   boThemeAndLogoChooseLayoutsPage,
@@ -262,8 +262,8 @@ describe('BO - Design', async () => {
 
     await boImageSettingsPage.goToNewImageTypePage(page);
 
-    const pageTitle = await addImageTypePage.getPageTitle(page);
-    expect(pageTitle).to.equal(addImageTypePage.pageTitleCreate);
+    const pageTitle = await boImageSettingsCreatePage.getPageTitle(page);
+    expect(pageTitle).to.equal(boImageSettingsCreatePage.pageTitleCreate);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
@@ -272,11 +272,11 @@ describe('BO - Design', async () => {
   it('should go to \'Design > Image Settings > Edit image type\' page', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToEditImageTypePage', baseContext);
 
-    await addImageTypePage.goToPreviousPage(page);
+    await boImageSettingsCreatePage.goToPreviousPage(page);
     await boImageSettingsPage.gotoEditImageTypePage(page, 1);
 
-    const pageTitle = await addImageTypePage.getPageTitle(page);
-    expect(pageTitle).to.equal(addImageTypePage.pageTitleEdit('cart_default'));
+    const pageTitle = await boImageSettingsCreatePage.getPageTitle(page);
+    expect(pageTitle).to.equal(boImageSettingsCreatePage.pageTitleEdit('cart_default'));
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
