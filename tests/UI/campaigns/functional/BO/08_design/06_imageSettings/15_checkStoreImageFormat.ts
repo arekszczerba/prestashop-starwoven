@@ -1,10 +1,6 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-// Import pages
-// Import FO pages
-import {storesPage as storePage} from '@pages/FO/classic/stores';
-
 import {
   boContactsPage,
   boDashboardPage,
@@ -15,6 +11,7 @@ import {
   type BrowserContext,
   FakerStore,
   foClassicHomePage,
+  foClassicStoresPage,
   type Page,
   utilsFile,
   utilsPlaywright,
@@ -130,7 +127,7 @@ describe('BO - Design - Image Settings - Check store image format', async () => 
         it('should go to BO', async function () {
           await testContext.addContextItem(this, 'testIdentifier', `goToBoStores${arg.extOriginal}`, baseContext);
 
-          await storePage.goToBO(page);
+          await foClassicStoresPage.goToBO(page);
 
           const pageTitle = await boDashboardPage.getPageTitle(page);
           expect(pageTitle).to.contains(boDashboardPage.pageTitle);
@@ -239,15 +236,15 @@ describe('BO - Design - Image Settings - Check store image format', async () => 
 
         await foClassicHomePage.goToFooterLink(page, 'Stores');
 
-        const pageTitle = await storePage.getPageTitle(page);
-        expect(pageTitle).to.be.eq(storePage.pageTitle);
+        const pageTitle = await foClassicStoresPage.getPageTitle(page);
+        expect(pageTitle).to.be.eq(foClassicStoresPage.pageTitle);
       });
 
       it('should check that the main image of the store is a WebP', async function () {
         await testContext.addContextItem(this, 'testIdentifier', `checkStoreImageMain${arg.extOriginal}`, baseContext);
 
         // Check the WebP file from the Stores page
-        const quickViewImageMain = await storePage.getStoreImageMain(page, idStore);
+        const quickViewImageMain = await foClassicStoresPage.getStoreImageMain(page, idStore);
         expect(quickViewImageMain).to.not.eq(null);
 
         await utilsFile.downloadFile(quickViewImageMain as string, 'image.img');
@@ -285,7 +282,7 @@ describe('BO - Design - Image Settings - Check store image format', async () => 
         it('should go to BO', async function () {
           await testContext.addContextItem(this, 'testIdentifier', `goToBoStores${arg.extension}`, baseContext);
 
-          await storePage.goToBO(page);
+          await foClassicStoresPage.goToBO(page);
 
           const pageTitle = await boDashboardPage.getPageTitle(page);
           expect(pageTitle).to.contains(boDashboardPage.pageTitle);
