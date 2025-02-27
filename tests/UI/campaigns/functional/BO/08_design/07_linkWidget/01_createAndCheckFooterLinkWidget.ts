@@ -1,15 +1,11 @@
-// Import utils
 import testContext from '@utils/testContext';
-
-// Import pages
-// Import BO pages
-import addLinkWidgetPage from '@pages/BO/design/linkWidgets/add';
-
 import {expect} from 'chai';
+
 import {
   boDashboardPage,
   boLoginPage,
   boDesignLinkListPage,
+  boDesignLinkListCreatePage,
   type BrowserContext,
   dataHooks,
   dataLinkWidgets,
@@ -78,14 +74,14 @@ describe('BO - Design - Link Widget : Create footer link widget and check it in 
 
       await boDesignLinkListPage.goToNewLinkWidgetPage(page);
 
-      const pageTitle = await addLinkWidgetPage.getPageTitle(page);
-      expect(pageTitle).to.contains(addLinkWidgetPage.pageTitle);
+      const pageTitle = await boDesignLinkListCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contains(boDesignLinkListCreatePage.pageTitle);
     });
 
     it('should create link widget', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'createFooterLInkWidget', baseContext);
 
-      const textResult = await addLinkWidgetPage.addLinkWidget(page, dataLinkWidgets.demo_1);
+      const textResult = await boDesignLinkListCreatePage.addLinkWidget(page, dataLinkWidgets.demo_1);
       expect(textResult).to.equal(boDesignLinkListPage.successfulCreationMessage);
 
       const numberOfLinkWidget = await boDesignLinkListPage.getNumberOfElementInGrid(page, dataHooks.displayFooter.name);

@@ -1,5 +1,4 @@
 import {expect} from 'chai';
-import addLinkWidgetPage from '@pages/BO/design/linkWidgets/add';
 import testContext from '@utils/testContext';
 
 import {
@@ -9,6 +8,7 @@ import {
   boDesignEmailThemesPage,
   boDesignEmailThemesPreviewPage,
   boDesignLinkListPage,
+  boDesignLinkListCreatePage,
   boCMSPagesCreatePage,
   boDesignPositionsHookModulePage,
   boDesignPositionsPage,
@@ -304,8 +304,8 @@ describe('BO - Design', async () => {
 
     await boDesignLinkListPage.goToNewLinkWidgetPage(page);
 
-    const pageTitle = await addLinkWidgetPage.getPageTitle(page);
-    expect(pageTitle).to.contains(addLinkWidgetPage.pageTitle);
+    const pageTitle = await boDesignLinkListCreatePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boDesignLinkListCreatePage.pageTitle);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
@@ -314,11 +314,11 @@ describe('BO - Design', async () => {
   it('should go to \'Design > Link List > Edit block\' page', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToEditLinkWidgetPage', baseContext);
 
-    await addLinkWidgetPage.goToPreviousPage(page);
+    await boDesignLinkListCreatePage.goToPreviousPage(page);
     await boDesignLinkListPage.goToEditBlock(page, dataHooks.displayFooter.name, 1);
 
-    const pageTitle = await addLinkWidgetPage.getPageTitle(page);
-    expect(pageTitle).to.contains(addLinkWidgetPage.pageTitle);
+    const pageTitle = await boDesignLinkListCreatePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boDesignLinkListCreatePage.pageTitle);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
