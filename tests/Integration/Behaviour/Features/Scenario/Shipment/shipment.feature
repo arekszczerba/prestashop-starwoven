@@ -6,15 +6,10 @@ Feature: Retrieving shipment for orders
   In order to be able to track the shipment of this order
 
   Scenario: Retrieve shipmets for existing order
-    Given I add new shipment with the following properties
-      | order_id            | 1 |
-      | carrier_id            | 1 |
-      | delivery_address_id            | 9 |
-      | shipping_cost_tax_excl            | 2.00 |
-      | shipping_cost_tax_incl            | 4.00 |
-      | packed_at            | 0 |
-      | shipped_at            | 0 |
-      | delivered_at            | 0 |
-      | tracking_number            | qwertyuiop123456789 |
-    And I update shipment with following products
-      |               |   |
+    Given I add new shipment with the following properties:
+      | order_id               |                2 |
+      | carrier_id             |                2 |
+      | delivery_address_id    |                1 |
+      | shipping_cost_tax_excl |             2.00 |
+      | shipping_cost_tax_incl |             4.00 |
+      | tracking_number        | qwertyuiop123456 |

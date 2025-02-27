@@ -672,3 +672,9 @@ default:
         - Tests\Integration\Behaviour\Features\Context\LanguageFeatureContext
         - Tests\Integration\Behaviour\Features\Context\ShopFeatureContext
         - Tests\Integration\Behaviour\Features\Transform\StringToBoolTransformContext
+    shipment:
+      paths:
+        - "%paths.base%/Features/Scenario/Shipment"
+      contexts:
+        - Tests\Integration\Behaviour\Features\Context\CommonFeatureContext
+        - Tests\Integration\Behaviour\Features\Context\Domain\ShipmentFeatureContext

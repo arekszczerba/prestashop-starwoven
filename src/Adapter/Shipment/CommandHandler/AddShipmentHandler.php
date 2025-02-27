@@ -32,15 +32,13 @@ use PrestaShop\PrestaShop\Core\Domain\Shipment\CommandHandler\AddShipmentHandler
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\CannotAddShipmentException;
 use PrestaShopBundle\Entity\Repository\ShipmentRepository;
 use PrestaShopBundle\Entity\Shipment;
-use PrestaShopBundle\Entity\ShipmentProduct;
 
 #[AsCommandHandler]
-class AddShipmentHandler implements AddShipmentHandlerInterface
+final class AddShipmentHandler implements AddShipmentHandlerInterface
 {
     public function __construct(
-        private readonly ShipmentRepository $repository,
-    ) {
-    }
+        private readonly ShipmentRepository $repository
+    ) {}
 
     public function handle(AddShipmentCommand $command): void
     {
@@ -49,9 +47,15 @@ class AddShipmentHandler implements AddShipmentHandlerInterface
         $shipment->setCarrierId($command->getCarrierId());
         $shipment->setTrakingNumber($command->getTrackingNumber());
         $shipment->setDeliveryAddressId($command->getDeliveryAddressId());
-        $shipment->setShippingCostTaxExcluded($command->getShippingCostTaxExcluded());
-        $shipment->setShippingCostTaxIncluded($command->getShippingCostTaxIncluded());
-        $shipment->setProducts($command->getProducts());
+        $shipment->setShippingCostTaxExcluded(
+            $command->getShippingCostTaxExcluded()
+        );
+        $shipment->setShippingCostTaxIncluded(
+            $command->getShippingCostTaxIncluded()
+        );
+        foreach ($command->getProducts() as $product) {
+            $shipment->setProducts($product);
+        }
 
         if ($command->getPackedAt() !== null) {
             $shipment->setPackedAt($command->getPackedAt());
@@ -68,7 +72,11 @@ class AddShipmentHandler implements AddShipmentHandlerInterface
         try {
             $this->repository->save($shipment);
         } catch (\Throwable $e) {
-           throw new CannotAddShipmentException("An error occured while creating shipment", 0, $e);
+            throw new CannotAddShipmentException(
+                "An error occured while creating shipment",
+                0,
+                $e
+            );
         }
     }
 }

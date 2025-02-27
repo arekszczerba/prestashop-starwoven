@@ -24,8 +24,10 @@ declare(strict_types=1);
 namespace PrestaShop\PrestaShop\Core\Domain\Shipment\Command;
 
 use DateTime;
-use Doctrine\Common\Collections\Collection;
 
+/**
+ * Add shipment.
+ */
 class AddShipmentCommand
 {
     public function __construct(
@@ -34,14 +36,12 @@ class AddShipmentCommand
         private readonly int $deliveryAddressId,
         private readonly float $shippingCostTaxExcluded,
         private readonly float $shippingCostTaxIncluded,
+        private readonly array $products,
+        private readonly ?string $trakingNumber,
         private readonly ?DateTime $packedAt = null,
         private readonly ?DateTime $shippedAt = null,
-        private readonly ?DateTime $deliveredAt = null,
-        private readonly ?string $trakingNumber,
-        private readonly Collection $products,
-    )
-    {
-    }
+        private readonly ?DateTime $deliveredAt = null
+    ) {}
 
     public function getOrderId(): int
     {
@@ -88,7 +88,7 @@ class AddShipmentCommand
         return $this->trakingNumber;
     }
 
-    public function getProducts(): Collection
+    public function getProducts(): array
     {
         return $this->products;
     }

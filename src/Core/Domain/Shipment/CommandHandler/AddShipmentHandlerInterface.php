@@ -28,7 +28,13 @@ namespace PrestaShop\PrestaShop\Core\Domain\Shipment\CommandHandler;
 
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\AddShipmentCommand;
 
+/**
+ * Defines contract for AddShipmentHandler.
+ */
 interface AddShipmentHandlerInterface
 {
+    /**
+     * @param AddShipmentCommand $command
+     */
     public function handle(AddShipmentCommand $command): void;
 }

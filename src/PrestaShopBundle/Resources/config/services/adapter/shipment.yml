@@ -1,0 +1,11 @@
+services:
+  _defaults:
+    public: true
+
+  prestashop.adapter.shipment.command_handler.add_shipment_handler:
+    class: PrestaShop\PrestaShop\Adapter\Shipment\CommandHandler\AddShipmentHandler
+    autoconfigure: true
+
+  prestashop.adapter.shipment.query_handler.get_order_shipments_handler:
+    class: PrestaShop\PrestaShop\Adapter\Shipment\QueryHandler\GetOrderShipmentsHandler
+    autoconfigure: true
