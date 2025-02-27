@@ -10,7 +10,6 @@ import {addWebserviceKey, removeWebserviceKey, setWebserviceStatus} from '@commo
 
 // Import BO pages
 import webservicePage from '@pages/BO/advancedParameters/webservice';
-import storesPage from '@pages/BO/shopParameters/stores';
 import addStorePage from '@pages/BO/shopParameters/stores/add';
 
 // Import data
@@ -22,6 +21,7 @@ import {
   boContactsPage,
   boDashboardPage,
   boLoginPage,
+  boStoresPage,
   type BrowserContext,
   type Page,
   utilsPlaywright,
@@ -446,29 +446,29 @@ describe('WS - Stores : CRUD', async () => {
 
           await boContactsPage.goToStoresPage(page);
 
-          const pageTitle = await storesPage.getPageTitle(page);
-          expect(pageTitle).to.contains(storesPage.pageTitle);
+          const pageTitle = await boStoresPage.getPageTitle(page);
+          expect(pageTitle).to.contains(boStoresPage.pageTitle);
         });
 
         it('should filter store by ID', async function () {
           await testContext.addContextItem(this, 'testIdentifier', 'filterToUpdateAfterPost', baseContext);
 
           // Filter
-          await storesPage.resetFilter(page);
-          await storesPage.filterTable(page, 'input', 'id_store', storeNodeID as string);
+          await boStoresPage.resetFilter(page);
+          await boStoresPage.filterTable(page, 'input', 'id_store', storeNodeID as string);
 
           // Check number of stores
-          const numberOfStoresAfterFilter = await storesPage.getNumberOfElementInGrid(page);
+          const numberOfStoresAfterFilter = await boStoresPage.getNumberOfElementInGrid(page);
           expect(numberOfStoresAfterFilter).to.be.eq(1);
 
-          const textColumn = await storesPage.getTextColumn(page, 1, 'id_store');
+          const textColumn = await boStoresPage.getTextColumn(page, 1, 'id_store');
           expect(textColumn).to.contains(storeNodeID as string);
         });
 
         it('should go to edit store page', async function () {
           await testContext.addContextItem(this, 'testIdentifier', 'goToEditStorePageAfterPost', baseContext);
 
-          await storesPage.gotoEditStorePage(page, 1);
+          await boStoresPage.gotoEditStorePage(page, 1);
 
           const pageTitle = await addStorePage.getPageTitle(page);
           expect(pageTitle).to.contains(addStorePage.pageTitleEdit);
@@ -646,14 +646,14 @@ describe('WS - Stores : CRUD', async () => {
 
           await boContactsPage.goToStoresPage(page);
 
-          const pageTitle = await storesPage.getPageTitle(page);
-          expect(pageTitle).to.contains(storesPage.pageTitle);
+          const pageTitle = await boStoresPage.getPageTitle(page);
+          expect(pageTitle).to.contains(boStoresPage.pageTitle);
         });
 
         it('should reset all filters', async function () {
           await testContext.addContextItem(this, 'testIdentifier', 'resetFilterFirstAfterPost', baseContext);
 
-          const numberOfStores = await storesPage.resetAndGetNumberOfLines(page);
+          const numberOfStores = await boStoresPage.resetAndGetNumberOfLines(page);
           expect(numberOfStores).to.be.above(0);
         });
       });
@@ -794,21 +794,21 @@ describe('WS - Stores : CRUD', async () => {
           await testContext.addContextItem(this, 'testIdentifier', 'filterToUpdateAfterPost2', baseContext);
 
           // Filter
-          await storesPage.resetFilter(page);
-          await storesPage.filterTable(page, 'input', 'id_store', storeNodeID as string);
+          await boStoresPage.resetFilter(page);
+          await boStoresPage.filterTable(page, 'input', 'id_store', storeNodeID as string);
 
           // Check number of stores
-          const numberOfStoresAfterFilter = await storesPage.getNumberOfElementInGrid(page);
+          const numberOfStoresAfterFilter = await boStoresPage.getNumberOfElementInGrid(page);
           expect(numberOfStoresAfterFilter).to.be.eq(1);
 
-          const textColumn = await storesPage.getTextColumn(page, 1, 'id_store');
+          const textColumn = await boStoresPage.getTextColumn(page, 1, 'id_store');
           expect(textColumn).to.contains(storeNodeID as string);
         });
 
         it('should go to edit store page', async function () {
           await testContext.addContextItem(this, 'testIdentifier', 'goToEditStorePageAfterPost2', baseContext);
 
-          await storesPage.gotoEditStorePage(page, 1);
+          await boStoresPage.gotoEditStorePage(page, 1);
 
           const pageTitle = await addStorePage.getPageTitle(page);
           expect(pageTitle).to.contains(addStorePage.pageTitleEdit);
@@ -993,14 +993,14 @@ describe('WS - Stores : CRUD', async () => {
 
           await boContactsPage.goToStoresPage(page);
 
-          const pageTitle = await storesPage.getPageTitle(page);
-          expect(pageTitle).to.contains(storesPage.pageTitle);
+          const pageTitle = await boStoresPage.getPageTitle(page);
+          expect(pageTitle).to.contains(boStoresPage.pageTitle);
         });
 
         it('should reset all filters', async function () {
           await testContext.addContextItem(this, 'testIdentifier', 'resetFilterFirstAfterPost2', baseContext);
 
-          const numberOfStores = await storesPage.resetAndGetNumberOfLines(page);
+          const numberOfStores = await boStoresPage.resetAndGetNumberOfLines(page);
           expect(numberOfStores).to.be.above(0);
         });
       });
@@ -1035,18 +1035,18 @@ describe('WS - Stores : CRUD', async () => {
         await testContext.addContextItem(this, 'testIdentifier', 'filterToUpdateAfterDelete', baseContext);
 
         // Filter
-        await storesPage.resetFilter(page);
-        await storesPage.filterTable(page, 'input', 'id_store', storeNodeID as string);
+        await boStoresPage.resetFilter(page);
+        await boStoresPage.filterTable(page, 'input', 'id_store', storeNodeID as string);
 
         // Check number of stores
-        const numberOfStoresAfterFilter = await storesPage.getNumberOfElementInGrid(page);
+        const numberOfStoresAfterFilter = await boStoresPage.getNumberOfElementInGrid(page);
         expect(numberOfStoresAfterFilter).to.be.eq(0);
       });
 
       it('should reset all filters', async function () {
         await testContext.addContextItem(this, 'testIdentifier', 'resetFilterFirst', baseContext);
 
-        const numberOfStores = await storesPage.resetAndGetNumberOfLines(page);
+        const numberOfStores = await boStoresPage.resetAndGetNumberOfLines(page);
         expect(numberOfStores).to.be.above(0);
       });
     });

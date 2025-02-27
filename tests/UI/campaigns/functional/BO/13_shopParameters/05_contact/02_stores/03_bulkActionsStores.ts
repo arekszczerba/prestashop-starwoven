@@ -2,13 +2,13 @@ import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
 // Import pages
-import storesPage from '@pages/BO/shopParameters/stores';
 import addStorePage from '@pages/BO/shopParameters/stores/add';
 
 import {
   boContactsPage,
   boDashboardPage,
   boLoginPage,
+  boStoresPage,
   type BrowserContext,
   FakerStore,
   type Page,
@@ -66,14 +66,14 @@ describe('BO - Shop Parameters - Contact : Enable/Disable/Delete with Bulk Actio
 
     await boContactsPage.goToStoresPage(page);
 
-    const pageTitle = await storesPage.getPageTitle(page);
-    expect(pageTitle).to.contains(storesPage.pageTitle);
+    const pageTitle = await boStoresPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boStoresPage.pageTitle);
   });
 
   it('should reset all filters and get number of stores in BO', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'resetFilterFirst', baseContext);
 
-    numberOfStores = await storesPage.resetAndGetNumberOfLines(page);
+    numberOfStores = await boStoresPage.resetAndGetNumberOfLines(page);
     expect(numberOfStores).to.be.above(0);
   });
 
@@ -82,7 +82,7 @@ describe('BO - Shop Parameters - Contact : Enable/Disable/Delete with Bulk Actio
       it('should go to add new store page', async function () {
         await testContext.addContextItem(this, 'testIdentifier', `goToNewStorePage${index + 1}`, baseContext);
 
-        await storesPage.goToNewStorePage(page);
+        await boStoresPage.goToNewStorePage(page);
 
         const pageTitle = await addStorePage.getPageTitle(page);
         expect(pageTitle).to.contains(addStorePage.pageTitleCreate);
@@ -92,9 +92,9 @@ describe('BO - Shop Parameters - Contact : Enable/Disable/Delete with Bulk Actio
         await testContext.addContextItem(this, 'testIdentifier', `CreateStore${index + 1}`, baseContext);
 
         const textResult = await addStorePage.createEditStore(page, storeToCreate);
-        expect(textResult).to.contains(storesPage.successfulCreationMessage);
+        expect(textResult).to.contains(boStoresPage.successfulCreationMessage);
 
-        const numberOfStoresAfterCreation = await storesPage.getNumberOfElementInGrid(page);
+        const numberOfStoresAfterCreation = await boStoresPage.getNumberOfElementInGrid(page);
         expect(numberOfStoresAfterCreation).to.be.equal(numberOfStores + index + 1);
       });
     });
@@ -104,18 +104,18 @@ describe('BO - Shop Parameters - Contact : Enable/Disable/Delete with Bulk Actio
     it('should filter list by name', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'filterForBulkDelete', baseContext);
 
-      await storesPage.filterTable(
+      await boStoresPage.filterTable(
         page,
         'input',
         'sl!name',
         'todelete',
       );
 
-      const numberOfStoresAfterFilter = await storesPage.getNumberOfElementInGrid(page);
+      const numberOfStoresAfterFilter = await boStoresPage.getNumberOfElementInGrid(page);
       expect(numberOfStoresAfterFilter).to.be.at.most(numberOfStores);
 
       for (let i = 1; i <= numberOfStoresAfterFilter; i++) {
-        const textColumn = await storesPage.getTextColumn(page, i, 'sl!name');
+        const textColumn = await boStoresPage.getTextColumn(page, i, 'sl!name');
         expect(textColumn).to.contains('todelete');
       }
     });
@@ -129,12 +129,12 @@ describe('BO - Shop Parameters - Contact : Enable/Disable/Delete with Bulk Actio
       it(`should bulk ${test.args.action} elements in grid`, async function () {
         await testContext.addContextItem(this, 'testIdentifier', `${test.args.action}Stores`, baseContext);
 
-        await storesPage.bulkUpdateStoreStatus(page, test.args.statusWanted);
+        await boStoresPage.bulkUpdateStoreStatus(page, test.args.statusWanted);
 
-        const numberOfStoresAfterBulkUpdateStatus = await storesPage.getNumberOfElementInGrid(page);
+        const numberOfStoresAfterBulkUpdateStatus = await boStoresPage.getNumberOfElementInGrid(page);
 
         for (let row = 1; row <= numberOfStoresAfterBulkUpdateStatus; row++) {
-          const storeStatus = await storesPage.getStoreStatus(page, row);
+          const storeStatus = await boStoresPage.getStoreStatus(page, row);
           expect(storeStatus).to.equal(test.args.statusWanted);
         }
       });
@@ -143,14 +143,14 @@ describe('BO - Shop Parameters - Contact : Enable/Disable/Delete with Bulk Actio
     it('should delete stores with Bulk Actions and check result', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'bulkDeleteStores', baseContext);
 
-      const deleteTextResult = await storesPage.bulkDeleteStores(page);
-      expect(deleteTextResult).to.be.contains(storesPage.successfulMultiDeleteMessage);
+      const deleteTextResult = await boStoresPage.bulkDeleteStores(page);
+      expect(deleteTextResult).to.be.contains(boStoresPage.successfulMultiDeleteMessage);
     });
 
     it('should reset all filters', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'resetFilterAfterDelete', baseContext);
 
-      const numberOfStoresAfterReset = await storesPage.resetAndGetNumberOfLines(page);
+      const numberOfStoresAfterReset = await boStoresPage.resetAndGetNumberOfLines(page);
       expect(numberOfStoresAfterReset).to.be.equal(numberOfStores);
     });
   });

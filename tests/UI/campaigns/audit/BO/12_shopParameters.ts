@@ -8,7 +8,6 @@ import addOrderReturnStatusPage from '@pages/BO/shopParameters/orderSettings/sta
 import titlesPage from '@pages/BO/shopParameters/customerSettings/titles';
 import addTitlePage from '@pages/BO/shopParameters/customerSettings/titles/add';
 import addContactPage from '@pages/BO/shopParameters/contact/add';
-import storesPage from '@pages/BO/shopParameters/stores';
 import addStorePage from '@pages/BO/shopParameters/stores/add';
 import seoAndUrlsPage from '@pages/BO/shopParameters/trafficAndSeo/seoAndUrls';
 import addSeoAndUrlPage from '@pages/BO/shopParameters/trafficAndSeo/seoAndUrls/add';
@@ -31,6 +30,7 @@ import {
   boSearchPage,
   boSearchAliasPage,
   boSearchAliasCreatePage,
+  boStoresPage,
   type BrowserContext,
   type Page,
   utilsPlaywright,
@@ -335,8 +335,8 @@ describe('BO - Shop Parameters', async () => {
 
     await boContactsPage.goToStoresPage(page);
 
-    const pageTitle = await storesPage.getPageTitle(page);
-    expect(pageTitle).to.contains(storesPage.pageTitle);
+    const pageTitle = await boStoresPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boStoresPage.pageTitle);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
@@ -345,7 +345,7 @@ describe('BO - Shop Parameters', async () => {
   it('should go to \'Shop parameters > Contacts > Stores > New Store\' page', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToAddNewStore', baseContext);
 
-    await storesPage.goToNewStorePage(page);
+    await boStoresPage.goToNewStorePage(page);
 
     const pageTitle = await addStorePage.getPageTitle(page);
     expect(pageTitle).to.contains(addStorePage.pageTitleCreate);
@@ -358,7 +358,7 @@ describe('BO - Shop Parameters', async () => {
     await testContext.addContextItem(this, 'testIdentifier', 'goToEditStorePage', baseContext);
 
     await boContactsPage.goToStoresPage(page);
-    await storesPage.gotoEditStorePage(page, 1);
+    await boStoresPage.gotoEditStorePage(page, 1);
 
     const pageTitle = await addStorePage.getPageTitle(page);
     expect(pageTitle).to.contains(addStorePage.pageTitleEdit);

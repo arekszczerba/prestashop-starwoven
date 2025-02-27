@@ -1,13 +1,11 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-// Import pages
-import storesPage from '@pages/BO/shopParameters/stores';
-
 import {
   boContactsPage,
   boDashboardPage,
   boLoginPage,
+  boStoresPage,
   type BrowserContext,
   dataStores,
   FakerStore,
@@ -63,22 +61,22 @@ describe('BO - Shop Parameters - Contact : Configure contact details', async () 
 
     await boContactsPage.goToStoresPage(page);
 
-    const pageTitle = await storesPage.getPageTitle(page);
-    expect(pageTitle).to.contains(storesPage.pageTitle);
+    const pageTitle = await boStoresPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boStoresPage.pageTitle);
   });
 
   it('should fill contact details form', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'configureContactDetails', baseContext);
 
-    const textResult = await storesPage.setContactDetails(page, storesContactToCreate);
-    expect(textResult).to.contains(storesPage.contactFormSuccessfulUpdateMessage);
+    const textResult = await boStoresPage.setContactDetails(page, storesContactToCreate);
+    expect(textResult).to.contains(boStoresPage.contactFormSuccessfulUpdateMessage);
   });
 
   it('should view my shop', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'viewMyShop', baseContext);
 
     // View my shop and init pages
-    page = await storesPage.viewMyShop(page);
+    page = await boStoresPage.viewMyShop(page);
     await foClassicHomePage.changeLanguage(page, 'en');
 
     const isHomePage = await foClassicHomePage.isHomePage(page);
@@ -107,14 +105,14 @@ describe('BO - Shop Parameters - Contact : Configure contact details', async () 
     // Close tab and init other page objects with new current tab
     page = await foClassicHomePage.closePage(browserContext, page, 0);
 
-    const pageTitle = await storesPage.getPageTitle(page);
-    expect(pageTitle).to.contains(storesPage.pageTitle);
+    const pageTitle = await boStoresPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boStoresPage.pageTitle);
   });
 
   it('should back to default contact details information', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'backToDefaultInformation', baseContext);
 
-    const textResult = await storesPage.setContactDetails(page, dataStores.contact);
-    expect(textResult).to.contains(storesPage.contactFormSuccessfulUpdateMessage);
+    const textResult = await boStoresPage.setContactDetails(page, dataStores.contact);
+    expect(textResult).to.contains(boStoresPage.contactFormSuccessfulUpdateMessage);
   });
 });

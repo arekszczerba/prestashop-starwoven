@@ -2,7 +2,6 @@ import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
 // Import pages
-import storesPage from '@pages/BO/shopParameters/stores';
 import createStoresPage from '@pages/BO/shopParameters/stores/add';
 // Import FO pages
 import {storesPage as storePage} from '@pages/FO/classic/stores';
@@ -12,6 +11,7 @@ import {
   boDashboardPage,
   boImageSettingsPage,
   boLoginPage,
+  boStoresPage,
   type BrowserContext,
   FakerStore,
   foClassicHomePage,
@@ -156,14 +156,14 @@ describe('BO - Design - Image Settings - Check store image format', async () => 
 
         await boContactsPage.goToStoresPage(page);
 
-        const pageTitle = await storesPage.getPageTitle(page);
-        expect(pageTitle).to.contains(storesPage.pageTitle);
+        const pageTitle = await boStoresPage.getPageTitle(page);
+        expect(pageTitle).to.contains(boStoresPage.pageTitle);
       });
 
       it('should click on \'Add new store\' button', async function () {
         await testContext.addContextItem(this, 'testIdentifier', `clickOnNewStoreButton${arg.extOriginal}`, baseContext);
 
-        await storesPage.goToNewStorePage(page);
+        await boStoresPage.goToNewStorePage(page);
 
         const pageTitle = await createStoresPage.getPageTitle(page);
         expect(pageTitle).to.contains(createStoresPage.pageTitleCreate);
@@ -173,24 +173,24 @@ describe('BO - Design - Image Settings - Check store image format', async () => 
         await testContext.addContextItem(this, 'testIdentifier', `createStore${arg.extOriginal}`, baseContext);
 
         const createMessage = await createStoresPage.createEditStore(page, arg.store);
-        expect(createMessage).to.contains(storesPage.successfulCreationMessage);
+        expect(createMessage).to.contains(boStoresPage.successfulCreationMessage);
       });
 
       it('should search for the new store and fetch the ID', async function () {
         await testContext.addContextItem(this, 'testIdentifier', `searchCreatedCategory${arg.extOriginal}`, baseContext);
 
-        await storesPage.resetFilter(page);
-        await storesPage.filterTable(
+        await boStoresPage.resetFilter(page);
+        await boStoresPage.filterTable(
           page,
           'input',
           'sl!name',
           arg.store.name,
         );
 
-        const textColumn = await storesPage.getTextColumn(page, 1, 'sl!name');
+        const textColumn = await boStoresPage.getTextColumn(page, 1, 'sl!name');
         expect(textColumn).to.contains(arg.store.name);
 
-        idStore = parseInt(await storesPage.getTextColumn(page, 1, 'id_store'), 10);
+        idStore = parseInt(await boStoresPage.getTextColumn(page, 1, 'id_store'), 10);
       });
 
       it('should check that images are generated', async function () {
@@ -227,7 +227,7 @@ describe('BO - Design - Image Settings - Check store image format', async () => 
       it('should go to FO page', async function () {
         await testContext.addContextItem(this, 'testIdentifier', `goToFo${arg.extOriginal}`, baseContext);
 
-        page = await storesPage.viewMyShop(page);
+        page = await boStoresPage.viewMyShop(page);
         await foClassicHomePage.changeLanguage(page, 'en');
 
         const isHomePage = await foClassicHomePage.isHomePage(page);
@@ -310,26 +310,26 @@ describe('BO - Design - Image Settings - Check store image format', async () => 
 
           await boContactsPage.goToStoresPage(page);
 
-          const pageTitle = await storesPage.getPageTitle(page);
-          expect(pageTitle).to.contains(storesPage.pageTitle);
+          const pageTitle = await boStoresPage.getPageTitle(page);
+          expect(pageTitle).to.contains(boStoresPage.pageTitle);
         });
       }
 
       it('should filter list by name', async function () {
         await testContext.addContextItem(this, 'testIdentifier', `filterForDelete${arg.extension}`, baseContext);
 
-        await storesPage.resetFilter(page);
-        await storesPage.filterTable(page, 'input', 'sl!name', arg.store.name);
+        await boStoresPage.resetFilter(page);
+        await boStoresPage.filterTable(page, 'input', 'sl!name', arg.store.name);
 
-        const storeName = await storesPage.getTextColumn(page, 1, 'sl!name');
+        const storeName = await boStoresPage.getTextColumn(page, 1, 'sl!name');
         expect(storeName).to.contains(arg.store.name);
       });
 
       it('should delete store', async function () {
         await testContext.addContextItem(this, 'testIdentifier', `deleteStore${arg.extension}`, baseContext);
 
-        const textResult = await storesPage.deleteStore(page, 1);
-        expect(textResult).to.contains(storesPage.successfulDeleteMessage);
+        const textResult = await boStoresPage.deleteStore(page, 1);
+        expect(textResult).to.contains(boStoresPage.successfulDeleteMessage);
       });
     });
   });
