@@ -1,4 +1,5 @@
-{# **
+<?php
+/**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
  *
@@ -21,20 +22,25 @@
  * @author    PrestaShop SA and Contributors <contact@prestashop.com>
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
- * #}
-{% extends '@PrestaShop/Admin/layout.html.twig' %}
+ */
 
-{% block content %}
-  {% block discount_listing %}
-    {{ include('@PrestaShop/Admin/Common/Grid/grid_panel.html.twig', {grid: discountGrid}) }}
-  {% endblock %}
+namespace PrestaShopBundle\Form\Admin\Sell\Discount;
 
-  {{ include('@PrestaShop/Admin/Sell/Catalog/Discount/create_discount_modal.html.twig') }}
-{% endblock %}
+use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountType;
+use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\FormBuilderInterface;
 
-{% block javascripts %}
-  {{ parent() }}
-
-  <script src="{{ asset('themes/default/js/bundle/pagination.js') }}"></script>
-  <script src="{{ asset('themes/new-theme/public/discount.bundle.js') }}"></script>
-{% endblock %}
+class CreateDiscountType extends TranslatorAwareType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('type', ChoiceType::class, [
+                'choices' => [
+                    $this->trans('On free shipping', 'Admin.Catalog.Feature') => DiscountType::FREE_SHIPPING,
+                ],
+            ])
+        ;
+    }
+}

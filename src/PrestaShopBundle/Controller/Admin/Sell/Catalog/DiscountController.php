@@ -32,6 +32,8 @@ use PrestaShop\PrestaShop\Core\Domain\CartRule\Command\ToggleCartRuleStatusComma
 use PrestaShop\PrestaShop\Core\Domain\CartRule\Exception\CartRuleException;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Query\GetDiscountForEditing;
 use PrestaShop\PrestaShop\Core\Domain\Discount\QueryResult\DiscountForEditing;
+use PrestaShop\PrestaShop\Core\Form\IdentifiableObject\Builder\FormBuilderInterface;
+use PrestaShop\PrestaShop\Core\Form\IdentifiableObject\Handler\FormHandlerInterface;
 use PrestaShop\PrestaShop\Core\Grid\GridFactoryInterface;
 use PrestaShop\PrestaShop\Core\Search\Filters\DiscountFilters;
 use PrestaShopBundle\Controller\Admin\PrestaShopAdminController;
@@ -57,7 +59,9 @@ class DiscountController extends PrestaShopAdminController
         Request $request,
         DiscountFilters $discountFilters,
         #[Autowire(service: 'prestashop.core.grid.grid_factory.discount')]
-        GridFactoryInterface $discountFactory
+        GridFactoryInterface $discountFactory,
+        #[Autowire(service: 'prestashop.core.form.identifiable_object.builder.create_discount_form_builder')]
+        FormBuilderInterface $formBuilder,
     ): Response {
         $discountGrid = $discountFactory->getGrid($discountFilters);
 
@@ -65,8 +69,42 @@ class DiscountController extends PrestaShopAdminController
             'enableSidebar' => true,
             'help_link' => $this->generateSidebarLink($request->attributes->get('_legacy_controller')),
             'discountGrid' => $this->presentGrid($discountGrid),
+            'createDiscountForm' => $formBuilder->getForm()->createView(),
             'layoutTitle' => $this->trans('Discounts', [], 'Admin.Navigation.Menu'),
+            'layoutHeaderToolbarBtn' => [
+                'add_discount' => [
+                    'desc' => $this->trans('Add new discount', [], 'Admin.Catalog.Feature'),
+                    'icon' => 'add_circle_outline',
+                    'modal_target' => '#createDiscountModal',
+                ],
+            ],
         ]);
+    }
+
+    #[DemoRestricted(redirectRoute: 'admin_discounts_index')]
+    #[AdminSecurity("is_granted('create', request.get('_legacy_controller'))", redirectRoute: 'admin_discounts_index')]
+    public function createAction(
+        Request $request,
+        #[Autowire(service: 'prestashop.core.form.identifiable_object.builder.create_discount_form_builder')]
+        FormBuilderInterface $formBuilder,
+        #[Autowire(service: 'prestashop.core.form.identifiable_object.handler.discount_form_handler')]
+        FormHandlerInterface $formHandler,
+    ): RedirectResponse {
+        $form = $formBuilder->getForm();
+        $form->handleRequest($request);
+
+        try {
+            $handlerResult = $formHandler->handle($form);
+            if ($handlerResult->isSubmitted() && $handlerResult->isValid()) {
+                $this->addFlash('success', $this->trans('Successful creation', [], 'Admin.Notifications.Success'));
+
+                // @todo: redirect to edition page when it is implemented
+            }
+        } catch (Exception $e) {
+            $this->addFlash('error', $this->getErrorMessageForException($e, $this->getErrorMessages($e)));
+        }
+
+        return $this->redirectToRoute('admin_discounts_index');
     }
 
     /**
