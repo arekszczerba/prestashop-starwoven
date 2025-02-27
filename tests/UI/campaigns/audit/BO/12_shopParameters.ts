@@ -8,7 +8,6 @@ import addOrderReturnStatusPage from '@pages/BO/shopParameters/orderSettings/sta
 import titlesPage from '@pages/BO/shopParameters/customerSettings/titles';
 import addTitlePage from '@pages/BO/shopParameters/customerSettings/titles/add';
 import addContactPage from '@pages/BO/shopParameters/contact/add';
-import addStorePage from '@pages/BO/shopParameters/stores/add';
 import seoAndUrlsPage from '@pages/BO/shopParameters/trafficAndSeo/seoAndUrls';
 import addSeoAndUrlPage from '@pages/BO/shopParameters/trafficAndSeo/seoAndUrls/add';
 import searchEnginesPage from '@pages/BO/shopParameters/trafficAndSeo/searchEngines';
@@ -31,6 +30,7 @@ import {
   boSearchAliasPage,
   boSearchAliasCreatePage,
   boStoresPage,
+  boStoresCreatePage,
   type BrowserContext,
   type Page,
   utilsPlaywright,
@@ -347,8 +347,8 @@ describe('BO - Shop Parameters', async () => {
 
     await boStoresPage.goToNewStorePage(page);
 
-    const pageTitle = await addStorePage.getPageTitle(page);
-    expect(pageTitle).to.contains(addStorePage.pageTitleCreate);
+    const pageTitle = await boStoresCreatePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boStoresCreatePage.pageTitleCreate);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
@@ -360,8 +360,8 @@ describe('BO - Shop Parameters', async () => {
     await boContactsPage.goToStoresPage(page);
     await boStoresPage.gotoEditStorePage(page, 1);
 
-    const pageTitle = await addStorePage.getPageTitle(page);
-    expect(pageTitle).to.contains(addStorePage.pageTitleEdit);
+    const pageTitle = await boStoresCreatePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boStoresCreatePage.pageTitleEdit);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);

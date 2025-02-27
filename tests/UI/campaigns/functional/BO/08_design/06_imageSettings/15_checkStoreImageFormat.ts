@@ -2,7 +2,6 @@ import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
 // Import pages
-import createStoresPage from '@pages/BO/shopParameters/stores/add';
 // Import FO pages
 import {storesPage as storePage} from '@pages/FO/classic/stores';
 
@@ -12,6 +11,7 @@ import {
   boImageSettingsPage,
   boLoginPage,
   boStoresPage,
+  boStoresCreatePage,
   type BrowserContext,
   FakerStore,
   foClassicHomePage,
@@ -165,14 +165,14 @@ describe('BO - Design - Image Settings - Check store image format', async () => 
 
         await boStoresPage.goToNewStorePage(page);
 
-        const pageTitle = await createStoresPage.getPageTitle(page);
-        expect(pageTitle).to.contains(createStoresPage.pageTitleCreate);
+        const pageTitle = await boStoresCreatePage.getPageTitle(page);
+        expect(pageTitle).to.contains(boStoresCreatePage.pageTitleCreate);
       });
 
       it('should create a store', async function () {
         await testContext.addContextItem(this, 'testIdentifier', `createStore${arg.extOriginal}`, baseContext);
 
-        const createMessage = await createStoresPage.createEditStore(page, arg.store);
+        const createMessage = await boStoresCreatePage.createEditStore(page, arg.store);
         expect(createMessage).to.contains(boStoresPage.successfulCreationMessage);
       });
 

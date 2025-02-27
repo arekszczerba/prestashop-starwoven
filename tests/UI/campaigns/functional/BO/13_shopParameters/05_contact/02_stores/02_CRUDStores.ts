@@ -1,14 +1,12 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-// Import pages
-import addStorePage from '@pages/BO/shopParameters/stores/add';
-
 import {
   boContactsPage,
   boDashboardPage,
   boLoginPage,
   boStoresPage,
+  boStoresCreatePage,
   type BrowserContext,
   FakerStore,
   type Page,
@@ -81,14 +79,14 @@ describe('BO - Shop Parameters - Contact : Create, update and delete Store in BO
 
       await boStoresPage.goToNewStorePage(page);
 
-      const pageTitle = await addStorePage.getPageTitle(page);
-      expect(pageTitle).to.contains(addStorePage.pageTitleCreate);
+      const pageTitle = await boStoresCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contains(boStoresCreatePage.pageTitleCreate);
     });
 
     it('should create store and check result', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'createStore', baseContext);
 
-      const textResult = await addStorePage.createEditStore(page, createStoreData);
+      const textResult = await boStoresCreatePage.createEditStore(page, createStoreData);
       expect(textResult).to.contains(boStoresPage.successfulCreationMessage);
 
       const numberOfStoresAfterCreation = await boStoresPage.getNumberOfElementInGrid(page);
@@ -112,14 +110,14 @@ describe('BO - Shop Parameters - Contact : Create, update and delete Store in BO
 
       await boStoresPage.gotoEditStorePage(page, 1);
 
-      const pageTitle = await addStorePage.getPageTitle(page);
-      expect(pageTitle).to.contains(addStorePage.pageTitleEdit);
+      const pageTitle = await boStoresCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contains(boStoresCreatePage.pageTitleEdit);
     });
 
     it('should update store', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'updateStore', baseContext);
 
-      const textResult = await addStorePage.createEditStore(page, editStoreData);
+      const textResult = await boStoresCreatePage.createEditStore(page, editStoreData);
       expect(textResult).to.contains(boStoresPage.successfulUpdateMessage);
 
       const numberOfStoresAfterUpdate = await boStoresPage.resetAndGetNumberOfLines(page);

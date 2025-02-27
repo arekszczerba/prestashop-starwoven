@@ -1,14 +1,12 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-// Import pages
-import addStorePage from '@pages/BO/shopParameters/stores/add';
-
 import {
   boContactsPage,
   boDashboardPage,
   boLoginPage,
   boStoresPage,
+  boStoresCreatePage,
   type BrowserContext,
   FakerStore,
   type Page,
@@ -84,14 +82,14 @@ describe('BO - Shop Parameters - Contact : Enable/Disable/Delete with Bulk Actio
 
         await boStoresPage.goToNewStorePage(page);
 
-        const pageTitle = await addStorePage.getPageTitle(page);
-        expect(pageTitle).to.contains(addStorePage.pageTitleCreate);
+        const pageTitle = await boStoresCreatePage.getPageTitle(page);
+        expect(pageTitle).to.contains(boStoresCreatePage.pageTitleCreate);
       });
 
       it('should create store and check result', async function () {
         await testContext.addContextItem(this, 'testIdentifier', `CreateStore${index + 1}`, baseContext);
 
-        const textResult = await addStorePage.createEditStore(page, storeToCreate);
+        const textResult = await boStoresCreatePage.createEditStore(page, storeToCreate);
         expect(textResult).to.contains(boStoresPage.successfulCreationMessage);
 
         const numberOfStoresAfterCreation = await boStoresPage.getNumberOfElementInGrid(page);
