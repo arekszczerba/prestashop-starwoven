@@ -1,5 +1,4 @@
 import {expect} from 'chai';
-import linkWidgetsPage from '@pages/BO/design/linkWidgets';
 import addLinkWidgetPage from '@pages/BO/design/linkWidgets/add';
 import testContext from '@utils/testContext';
 
@@ -9,6 +8,7 @@ import {
   boDashboardPage,
   boDesignEmailThemesPage,
   boDesignEmailThemesPreviewPage,
+  boDesignLinkListPage,
   boCMSPagesCreatePage,
   boDesignPositionsHookModulePage,
   boDesignPositionsPage,
@@ -290,10 +290,10 @@ describe('BO - Design', async () => {
       boDashboardPage.designParentLink,
       boDashboardPage.linkWidgetLink,
     );
-    await linkWidgetsPage.closeSfToolBar(page);
+    await boDesignLinkListPage.closeSfToolBar(page);
 
-    const pageTitle = await linkWidgetsPage.getPageTitle(page);
-    expect(pageTitle).to.contains(linkWidgetsPage.pageTitle);
+    const pageTitle = await boDesignLinkListPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boDesignLinkListPage.pageTitle);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
@@ -302,7 +302,7 @@ describe('BO - Design', async () => {
   it('should go to \'Design > Link List > New block\' page', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToNewLinkWidgetPage', baseContext);
 
-    await linkWidgetsPage.goToNewLinkWidgetPage(page);
+    await boDesignLinkListPage.goToNewLinkWidgetPage(page);
 
     const pageTitle = await addLinkWidgetPage.getPageTitle(page);
     expect(pageTitle).to.contains(addLinkWidgetPage.pageTitle);
@@ -315,7 +315,7 @@ describe('BO - Design', async () => {
     await testContext.addContextItem(this, 'testIdentifier', 'goToEditLinkWidgetPage', baseContext);
 
     await addLinkWidgetPage.goToPreviousPage(page);
-    await linkWidgetsPage.goToEditLinkWidgetPage(page, dataHooks.displayFooter.name, 1);
+    await boDesignLinkListPage.goToEditBlock(page, dataHooks.displayFooter.name, 1);
 
     const pageTitle = await addLinkWidgetPage.getPageTitle(page);
     expect(pageTitle).to.contains(addLinkWidgetPage.pageTitle);
