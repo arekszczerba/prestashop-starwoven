@@ -121,20 +121,6 @@ class Shipment
         $this->products = new ArrayCollection();
     }
 
-    /**
-     * @ORM\PrePersist
-     *
-     * @ORM\PreUpdate
-     */
-    public function updatedTimestamps(): void
-    {
-        $this->updatedAt = new DateTime();
-
-        if (!isset($this->createdAt)) {
-            $this->createdAt = new DateTime();
-        }
-    }
-
     public function getProducts(): array
     {
         return $this->products->toArray();
@@ -287,5 +273,19 @@ class Shipment
         $this->products[] = $shipmentProduct;
 
         return $this;
+    }
+
+    /**
+     * @ORM\PrePersist
+     *
+     * @ORM\PreUpdate
+     */
+    public function updatedTimestamps(): void
+    {
+        $this->updatedAt = new DateTime();
+
+        if (!isset($this->createdAt)) {
+            $this->createdAt = new DateTime();
+        }
     }
 }

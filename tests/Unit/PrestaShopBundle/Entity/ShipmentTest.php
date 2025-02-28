@@ -44,39 +44,39 @@ class ShipmentTest extends TestCase
         $shipment->setOrderId(1);
         $shipment->setShippingCostTaxExcluded(10.5);
         $shipment->setShippingCostTaxIncluded(12.6);
-        $shipment->setTrakingNumber("FR123456789");
+        $shipment->setTrakingNumber('FR123456789');
 
         $this->assertEquals(1, $shipment->getCarrierId());
         $this->assertEquals(1, $shipment->getDeliveryAddressId());
         $this->assertEquals(1, $shipment->getOrderId());
         $this->assertEquals(10.5, $shipment->getShippingCostTaxExcluded());
         $this->assertEquals(12.6, $shipment->getShippingCostTaxIncluded());
-        $this->assertEquals("FR123456789", $shipment->getTrakingNumber());
+        $this->assertEquals('FR123456789', $shipment->getTrakingNumber());
     }
 
     public function testShipmentLifecycle(): void
     {
         $shipment = new Shipment();
-        $shipment->setPackedAt(new DateTime("2024-02-01 10:00:00"));
-        $shipment->setShippedAt(new DateTime("2024-02-02 12:00:00"));
-        $shipment->setDeliveredAt(new DateTime("2024-02-03 15:00:00"));
-        $shipment->setCancelledAt(new DateTime("2024-02-04 18:00:00"));
+        $shipment->setPackedAt(new DateTime('2024-02-01 10:00:00'));
+        $shipment->setShippedAt(new DateTime('2024-02-02 12:00:00'));
+        $shipment->setDeliveredAt(new DateTime('2024-02-03 15:00:00'));
+        $shipment->setCancelledAt(new DateTime('2024-02-04 18:00:00'));
 
         $this->assertEquals(
-            "2024-02-01 10:00:00",
-            $shipment->getPackedAt()->format("Y-m-d H:i:s")
+            '2024-02-01 10:00:00',
+            $shipment->getPackedAt()->format('Y-m-d H:i:s')
         );
         $this->assertEquals(
-            "2024-02-02 12:00:00",
-            $shipment->getShippedAt()->format("Y-m-d H:i:s")
+            '2024-02-02 12:00:00',
+            $shipment->getShippedAt()->format('Y-m-d H:i:s')
         );
         $this->assertEquals(
-            "2024-02-03 15:00:00",
-            $shipment->getDeliveredAt()->format("Y-m-d H:i:s")
+            '2024-02-03 15:00:00',
+            $shipment->getDeliveredAt()->format('Y-m-d H:i:s')
         );
         $this->assertEquals(
-            "2024-02-04 18:00:00",
-            $shipment->getCancelledAt()->format("Y-m-d H:i:s")
+            '2024-02-04 18:00:00',
+            $shipment->getCancelledAt()->format('Y-m-d H:i:s')
         );
     }
 
@@ -99,7 +99,7 @@ class ShipmentTest extends TestCase
     {
         $shipment = new Shipment();
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 5; ++$i) {
             $shipmentProduct = new ShipmentProduct();
             $shipmentProduct->setQuantity($i + 1);
             $shipmentProduct->setOrderDetailId($i);
