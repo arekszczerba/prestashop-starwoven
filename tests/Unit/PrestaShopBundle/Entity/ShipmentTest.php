@@ -42,36 +42,42 @@ class ShipmentTest extends TestCase
         $shipment->setCarrierId(1);
         $shipment->setDeliveryAddressId(1);
         $shipment->setOrderId(1);
-        $shipment->setShippingCostTaxExcluded(10.50);
-        $shipment->setShippingCostTaxIncluded(12.60);
-        $shipment->setTrakingNumber('FR123456789');
+        $shipment->setShippingCostTaxExcluded(10.5);
+        $shipment->setShippingCostTaxIncluded(12.6);
+        $shipment->setTrakingNumber("FR123456789");
 
         $this->assertEquals(1, $shipment->getCarrierId());
         $this->assertEquals(1, $shipment->getDeliveryAddressId());
         $this->assertEquals(1, $shipment->getOrderId());
-        $this->assertEquals(10.50, $shipment->getShippingCostTaxExcluded());
-        $this->assertEquals(12.60, $shipment->getShippingCostTaxIncluded());
-        $this->assertEquals('FR123456789', $shipment->getTrakingNumber());
-    }
-
-    public function testShipmentTimestamps(): void
-    {
-        $shipment = new Shipment();
-
-        $this->assertInstanceOf(DateTime::class, $shipment->getCreatedAt());
-        $this->assertInstanceOf(DateTime::class, $shipment->getUpdatedAt());
+        $this->assertEquals(10.5, $shipment->getShippingCostTaxExcluded());
+        $this->assertEquals(12.6, $shipment->getShippingCostTaxIncluded());
+        $this->assertEquals("FR123456789", $shipment->getTrakingNumber());
     }
 
     public function testShipmentLifecycle(): void
     {
         $shipment = new Shipment();
-        $shipment->setPackedAt(new DateTime('2024-02-01 10:00:00'));
-        $shipment->setShippedAt(new DateTime('2024-02-02 12:00:00'));
-        $shipment->setDeliveredAt(new DateTime('2024-02-03 15:00:00'));
+        $shipment->setPackedAt(new DateTime("2024-02-01 10:00:00"));
+        $shipment->setShippedAt(new DateTime("2024-02-02 12:00:00"));
+        $shipment->setDeliveredAt(new DateTime("2024-02-03 15:00:00"));
+        $shipment->setCancelledAt(new DateTime("2024-02-04 18:00:00"));
 
-        $this->assertEquals('2024-02-01 10:00:00', $shipment->getPackedAt()->format('Y-m-d H:i:s'));
-        $this->assertEquals('2024-02-02 12:00:00', $shipment->getShippedAt()->format('Y-m-d H:i:s'));
-        $this->assertEquals('2024-02-03 15:00:00', $shipment->getDeliveredAt()->format('Y-m-d H:i:s'));
+        $this->assertEquals(
+            "2024-02-01 10:00:00",
+            $shipment->getPackedAt()->format("Y-m-d H:i:s")
+        );
+        $this->assertEquals(
+            "2024-02-02 12:00:00",
+            $shipment->getShippedAt()->format("Y-m-d H:i:s")
+        );
+        $this->assertEquals(
+            "2024-02-03 15:00:00",
+            $shipment->getDeliveredAt()->format("Y-m-d H:i:s")
+        );
+        $this->assertEquals(
+            "2024-02-04 18:00:00",
+            $shipment->getCancelledAt()->format("Y-m-d H:i:s")
+        );
     }
 
     public function testShipmentProductAssociation(): void
@@ -82,6 +88,7 @@ class ShipmentTest extends TestCase
         $shipmentProduct->setShipment($shipment);
         $shipmentProduct->setOrderDetailId(101);
         $shipmentProduct->setQuantity(3);
+        $shipmentProduct->setShipment($shipment);
 
         $this->assertEquals(101, $shipmentProduct->getOrderDetailId());
         $this->assertEquals(3, $shipmentProduct->getQuantity());
@@ -91,20 +98,19 @@ class ShipmentTest extends TestCase
     public function testAddProductsToShipment(): void
     {
         $shipment = new Shipment();
-        $product1 = new ShipmentProduct();
-        $product2 = new ShipmentProduct();
 
-        $product1->setShipment($shipment);
-        $product1->setOrderDetailId(201);
-        $product1->setQuantity(2);
+        for ($i = 0; $i < 5; $i++) {
+            $shipmentProduct = new ShipmentProduct();
+            $shipmentProduct->setQuantity($i + 1);
+            $shipmentProduct->setOrderDetailId($i);
+            $shipmentProduct->setShipment($shipment);
+            $shipment->setShipmentProduct($shipmentProduct);
+        }
 
-        $product2->setShipment($shipment);
-        $product2->setOrderDetailId(202);
-        $product2->setQuantity(5);
-
-        $shipment->getProducts()->add($product1);
-        $shipment->getProducts()->add($product2);
-
-        $this->assertCount(2, $shipment->getProducts());
+        $this->assertCount(5, $shipment->getShipmentProducts());
+        $this->assertEquals(1, $shipment->getShipmentProducts()[0]->getQuantity());
+        $this->assertEquals(2, $shipment->getShipmentProducts()[1]->getQuantity());
+        $this->assertEquals(3, $shipment->getShipmentProducts()[2]->getQuantity());
+        $this->assertEquals(4, $shipment->getShipmentProducts()[3]->getQuantity());
     }
 }

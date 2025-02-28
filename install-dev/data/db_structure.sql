@@ -3040,16 +3040,17 @@ CREATE TABLE `PREFIX_shipment` (
   `packed_at` datetime DEFAULT NULL,
   `shipped_at` datetime DEFAULT NULL,
   `delivered_at` datetime DEFAULT NULL,
+  `cancelled_at` DATETIME DEFAULT NULL,
   `tracking_number` varchar(255) DEFAULT NULL,
-  `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL,
+  `date_add` datetime NOT NULL,
+  `date_upd` datetime NOT NULL,
   PRIMARY KEY (`id_shipment`)
 ) ENGINE=ENGINE_TYPE DEFAULT CHARSET=utf8mb4 COLLATION;
 
 CREATE TABLE `PREFIX_shipment_product` (
-  `shipment_product_id` int(10) NOT NULL,
-  `shipment_id` int(10) NOT NULL,
-  `order_detail_id` int(10) NOT NULL,
+  `id_shipment_product` INT AUTO_INCREMENT NOT NULL,
+  `id_shipment` int(10) NOT NULL,
+  `id_order_detail` int(10) NOT NULL,
   `quantity` int(10) DEFAULT NULL,
-   PRIMARY KEY(shipment_id)
+  PRIMARY KEY (id_shipment_product)
 ) ENGINE=ENGINE_TYPE DEFAULT CHARSET=utf8mb4 COLLATION;

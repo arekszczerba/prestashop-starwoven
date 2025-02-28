@@ -35,6 +35,8 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table()
  *
  * @ORM\Entity()
+ *
+ * @ORM\HasLifecycleCallbacks
  */
 class Shipment
 {
@@ -88,45 +90,62 @@ class Shipment
     private ?DateTime $deliveredAt;
 
     /**
+     * @ORM\Column(name="cancelled_at", type="datetime", nullable=true)
+     */
+    private ?DateTime $cancelledAt;
+
+    /**
      * @ORM\Column(name="tracking_number", type="string", nullable=true)
      */
     private ?string $trakingNumber;
 
     /**
-     * @ORM\Column(name="created_at", type="datetime", nullable=false)
+     * @ORM\Column(name="date_add", type="datetime", nullable=false)
      */
     private DateTime $createdAt;
 
     /**
-     * @ORM\Column(name="updated_at", type="datetime", nullable=false)
+     * @ORM\Column(name="date_upd", type="datetime", nullable=false)
      */
     private DateTime $updatedAt;
 
     /**
      * @var Collection<ShipmentProduct>
      *
-     * @ORM\OneToMany(targetEntity="PrestaShopBundle\Entity\ShipmentProduct", mappedBy="shipment")
+     * @ORM\OneToMany(targetEntity="PrestaShopBundle\Entity\ShipmentProduct", mappedBy="shipment", cascade={"persist"})
      */
     private Collection $products;
 
     public function __construct()
     {
-        $this->createdAt = new DateTime('now');
-        $this->updatedAt = new DateTime('now');
         $this->products = new ArrayCollection();
     }
 
-    public function getProducts(): Collection
+    /**
+     * @ORM\PrePersist
+     *
+     * @ORM\PreUpdate
+     */
+    public function updatedTimestamps(): void
     {
-        return $this->products;
+        $this->updatedAt = new DateTime();
+
+        if (!isset($this->createdAt)) {
+            $this->createdAt = new DateTime();
+        }
     }
 
-    public function getUpdatedAt()
+    public function getProducts(): array
+    {
+        return $this->products->toArray();
+    }
+
+    public function getUpdatedAt(): DateTime
     {
         return $this->updatedAt;
     }
 
-    public function getCreatedAt()
+    public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
@@ -176,16 +195,19 @@ class Shipment
         return $this->deliveredAt;
     }
 
+    public function getCancelledAt(): ?DateTime
+    {
+        return $this->cancelledAt;
+    }
+
     public function getTrakingNumber(): ?string
     {
         return $this->trakingNumber;
     }
 
-    public function setId(int $id): self
+    public function getShipmentProducts(): array
     {
-        $this->id = $id;
-
-        return $this;
+        return $this->products->toArray();
     }
 
     public function setOrderId(int $orderId): self
@@ -209,15 +231,17 @@ class Shipment
         return $this;
     }
 
-    public function setShippingCostTaxExcluded(float $shippingCostTaxExcluded): self
-    {
+    public function setShippingCostTaxExcluded(
+        float $shippingCostTaxExcluded
+    ): self {
         $this->shippingCostTaxExcluded = $shippingCostTaxExcluded;
 
         return $this;
     }
 
-    public function setShippingCostTaxIncluded(float $shippingCostTaxIncluded): self
-    {
+    public function setShippingCostTaxIncluded(
+        float $shippingCostTaxIncluded
+    ): self {
         $this->shippingCostTaxIncluded = $shippingCostTaxIncluded;
 
         return $this;
@@ -251,9 +275,16 @@ class Shipment
         return $this;
     }
 
-    public function setProducts(Collection $products): self
+    public function setCancelledAt(?DateTime $cancelledAt): self
     {
-        $this->products[] = $products;
+        $this->cancelledAt = $cancelledAt;
+
+        return $this;
+    }
+
+    public function setShipmentProduct(ShipmentProduct $shipmentProduct): self
+    {
+        $this->products[] = $shipmentProduct;
 
         return $this;
     }

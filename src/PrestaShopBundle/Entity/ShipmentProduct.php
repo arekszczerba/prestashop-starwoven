@@ -36,21 +36,23 @@ use Doctrine\ORM\Mapping as ORM;
 class ShipmentProduct
 {
     /**
-     * @ORM\Column(name="shipment_product_id", type="integer")
+     * @ORM\Id
+     *
+     * @ORM\Column(name="id_shipment_product", type="integer")
+     *
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private int $shipmentProductId;
 
     /**
-     * @ORM\Id
+     * @ORM\ManyToOne(targetEntity="PrestaShopBundle\Entity\Shipment", inversedBy="products", cascade={"persist"})
      *
-     * @ORM\ManyToOne(targetEntity="PrestaShopBundle\Entity\Shipment", inversedBy="products")
-     *
-     * @ORM\JoinColumn(name="shipment_id", referencedColumnName="id_shipment", nullable=false)
+     * @ORM\JoinColumn(name="id_shipment", referencedColumnName="id_shipment", nullable=false)
      */
-    private Shipment $shipmentId;
+    private Shipment $shipment;
 
     /**
-     * @ORM\Column(name="order_detail_id", type="integer")
+     * @ORM\Column(name="id_order_detail", type="integer")
      */
     private int $orderDetailId;
 
@@ -66,7 +68,7 @@ class ShipmentProduct
 
     public function getShipment(): Shipment
     {
-        return $this->shipmentId;
+        return $this->shipment;
     }
 
     public function getOrderDetailId(): int
@@ -79,16 +81,9 @@ class ShipmentProduct
         return $this->quantity;
     }
 
-    public function setShipmentProductId(int $shipmentProductId): self
-    {
-        $this->shipmentProductId = $shipmentProductId;
-
-        return $this;
-    }
-
     public function setShipment(Shipment $shipment): self
     {
-        $this->shipmentId = $shipment;
+        $this->shipment = $shipment;
 
         return $this;
     }
