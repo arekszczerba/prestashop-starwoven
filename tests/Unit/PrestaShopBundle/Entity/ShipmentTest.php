@@ -104,7 +104,7 @@ class ShipmentTest extends TestCase
             $shipmentProduct->setQuantity($i + 1);
             $shipmentProduct->setOrderDetailId($i);
             $shipmentProduct->setShipment($shipment);
-            $shipment->setShipmentProduct($shipmentProduct);
+            $shipment->addShipmentProduct($shipmentProduct);
         }
 
         $this->assertCount(5, $shipment->getShipmentProducts());

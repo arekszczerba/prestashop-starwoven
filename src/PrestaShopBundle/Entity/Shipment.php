@@ -191,9 +191,9 @@ class Shipment
         return $this->trakingNumber;
     }
 
-    public function getShipmentProducts(): array
+    public function getShipmentProducts(): Collection
     {
-        return $this->products->toArray();
+        return $this->products;
     }
 
     public function setOrderId(int $orderId): self
@@ -268,9 +268,11 @@ class Shipment
         return $this;
     }
 
-    public function setShipmentProduct(ShipmentProduct $shipmentProduct): self
+    public function addShipmentProduct(ShipmentProduct $shipmentProduct): self
     {
         $this->products[] = $shipmentProduct;
+
+        $shipmentProduct->setShipment($this);
 
         return $this;
     }
