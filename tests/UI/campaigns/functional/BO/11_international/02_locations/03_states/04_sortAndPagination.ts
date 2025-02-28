@@ -6,7 +6,7 @@ import statesPage from '@pages/BO/international/locations/states';
 import {
   boDashboardPage,
   boLoginPage,
-  boZonesPages,
+  boZonesPage,
   type BrowserContext,
   dataCountries,
   type Page,
@@ -53,14 +53,14 @@ describe('BO - International - States : Sort and pagination', async () => {
       boDashboardPage.locationsLink,
     );
 
-    const pageTitle = await boZonesPages.getPageTitle(page);
-    expect(pageTitle).to.contains(boZonesPages.pageTitle);
+    const pageTitle = await boZonesPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boZonesPage.pageTitle);
   });
 
   it('should go to \'States\' page', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToStatesPage', baseContext);
 
-    await boZonesPages.goToSubTabStates(page);
+    await boZonesPage.goToSubTabStates(page);
 
     const pageTitle = await statesPage.getPageTitle(page);
     expect(pageTitle).to.contains(statesPage.pageTitle);
