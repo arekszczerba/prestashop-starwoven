@@ -1,7 +1,6 @@
 import {expect} from 'chai';
 import testContext from '@utils/testContext';
 
-import statesPage from '@pages/BO/international/locations/states';
 import addStatePage from '@pages/BO/international/locations/states/add';
 import addTaxPage from '@pages/BO/international/taxes/add';
 
@@ -16,6 +15,7 @@ import {
   boLocalizationPage,
   boLanguagesPage,
   boLanguagesCreatePage,
+  boStatesPage,
   boTaxesPage,
   boTaxRulesPage,
   boTaxRulesCreatePage,
@@ -250,8 +250,8 @@ describe('BO - International', async () => {
 
     await boZonesPage.goToSubTabStates(page);
 
-    const pageTitle = await statesPage.getPageTitle(page);
-    expect(pageTitle).to.contains(statesPage.pageTitle);
+    const pageTitle = await boStatesPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boStatesPage.pageTitle);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
@@ -260,7 +260,7 @@ describe('BO - International', async () => {
   it('should go to \'Locations > States > New State\' page', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToAddNewStatePage', baseContext);
 
-    await statesPage.goToAddNewStatePage(page);
+    await boStatesPage.goToAddNewStatePage(page);
 
     const pageTitle = await addStatePage.getPageTitle(page);
     expect(pageTitle).to.contains(addStatePage.pageTitleCreate);
@@ -273,7 +273,7 @@ describe('BO - International', async () => {
     await testContext.addContextItem(this, 'testIdentifier', 'goToEditStatesPage', baseContext);
 
     await boZonesPage.goToSubTabStates(page);
-    await statesPage.goToEditStatePage(page, 1);
+    await boStatesPage.goToEditStatePage(page, 1);
 
     const pageTitle = await addStatePage.getPageTitle(page);
     expect(pageTitle).to.contains(addStatePage.pageTitleEdit);
