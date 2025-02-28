@@ -42,7 +42,7 @@ class ShipmentProduct
      *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private int $shipmentProductId;
+    private int $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="PrestaShopBundle\Entity\Shipment", inversedBy="products", cascade={"persist"})
@@ -61,9 +61,9 @@ class ShipmentProduct
      */
     private int $quantity;
 
-    public function getShipmentProductId(): int
+    public function getId(): int
     {
-        return $this->shipmentProductId;
+        return $this->id;
     }
 
     public function getShipment(): Shipment

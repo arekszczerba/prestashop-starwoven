@@ -62,7 +62,7 @@ class Shipment
     /**
      * @ORM\Column(name="id_delivery_address", type="integer")
      */
-    private int $deliveryAddressId;
+    private int $addressId;
 
     /**
      * @ORM\Column(name="shipping_cost_tax_excl", type="float")
@@ -151,9 +151,9 @@ class Shipment
         return $this->carrierId;
     }
 
-    public function getDeliveryAddressId(): int
+    public function getAddressId(): int
     {
-        return $this->deliveryAddressId;
+        return $this->addressId;
     }
 
     public function getShippingCostTaxExcluded(): float
@@ -210,9 +210,9 @@ class Shipment
         return $this;
     }
 
-    public function setDeliveryAddressId(int $deliveryAddressId): self
+    public function setAddressId(int $addressId): self
     {
-        $this->deliveryAddressId = $deliveryAddressId;
+        $this->addressId = $addressId;
 
         return $this;
     }
