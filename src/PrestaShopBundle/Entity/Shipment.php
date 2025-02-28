@@ -186,7 +186,7 @@ class Shipment
         return $this->trakingNumber;
     }
 
-    public function getShipmentProducts(): Collection
+    public function getProducts(): Collection
     {
         return $this->products;
     }

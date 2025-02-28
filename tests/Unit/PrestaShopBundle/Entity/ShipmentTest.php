@@ -107,10 +107,10 @@ class ShipmentTest extends TestCase
             $shipment->addShipmentProduct($shipmentProduct);
         }
 
-        $this->assertCount(5, $shipment->getShipmentProducts());
-        $this->assertEquals(1, $shipment->getShipmentProducts()[0]->getQuantity());
-        $this->assertEquals(2, $shipment->getShipmentProducts()[1]->getQuantity());
-        $this->assertEquals(3, $shipment->getShipmentProducts()[2]->getQuantity());
-        $this->assertEquals(4, $shipment->getShipmentProducts()[3]->getQuantity());
+        $this->assertCount(5, $shipment->getProducts());
+        $this->assertEquals(1, $shipment->getProducts()[0]->getQuantity());
+        $this->assertEquals(2, $shipment->getProducts()[1]->getQuantity());
+        $this->assertEquals(3, $shipment->getProducts()[2]->getQuantity());
+        $this->assertEquals(4, $shipment->getProducts()[3]->getQuantity());
     }
 }
