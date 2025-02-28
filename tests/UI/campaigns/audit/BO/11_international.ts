@@ -1,7 +1,6 @@
 import {expect} from 'chai';
 import testContext from '@utils/testContext';
 
-import geolocationPage from '@pages/BO/international/localization/geolocation';
 import addZonePage from '@pages/BO/international/locations/add';
 import statesPage from '@pages/BO/international/locations/states';
 import addStatePage from '@pages/BO/international/locations/states/add';
@@ -13,6 +12,7 @@ import {
   boCurrenciesPage,
   boCurrenciesCreatePage,
   boDashboardPage,
+  boGeolocationPage,
   boLoginPage,
   boLocalizationPage,
   boLanguagesPage,
@@ -157,8 +157,8 @@ describe('BO - International', async () => {
 
     await boLocalizationPage.goToSubTabGeolocation(page);
 
-    const pageTitle = await geolocationPage.getPageTitle(page);
-    expect(pageTitle).to.equal(geolocationPage.pageTitle);
+    const pageTitle = await boGeolocationPage.getPageTitle(page);
+    expect(pageTitle).to.equal(boGeolocationPage.pageTitle);
   });
 
   it('should go to \'Locations > Zones\' page', async function () {
