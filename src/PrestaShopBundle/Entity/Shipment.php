@@ -121,11 +121,6 @@ class Shipment
         $this->products = new ArrayCollection();
     }
 
-    public function getProducts(): array
-    {
-        return $this->products->toArray();
-    }
-
     public function getUpdatedAt(): DateTime
     {
         return $this->updatedAt;
