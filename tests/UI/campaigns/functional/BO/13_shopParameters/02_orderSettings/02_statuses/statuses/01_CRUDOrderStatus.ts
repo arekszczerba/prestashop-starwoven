@@ -2,7 +2,6 @@ import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
 // Import pages
-import statusesPage from '@pages/BO/shopParameters/orderSettings/statuses';
 import addOrderStatusPage from '@pages/BO/shopParameters/orderSettings/statuses/add';
 
 import {
@@ -11,6 +10,7 @@ import {
   boOrdersPage,
   boOrdersViewBasePage,
   boOrderSettingsPage,
+  boOrderStatusesPage,
   type BrowserContext,
   FakerOrderStatus,
   type Page,
@@ -85,14 +85,14 @@ describe('BO - Shop Parameters - Order Settings - Statuses : CRUD order status',
 
     await boOrderSettingsPage.goToStatusesPage(page);
 
-    const pageTitle = await statusesPage.getPageTitle(page);
-    expect(pageTitle).to.contains(statusesPage.pageTitle);
+    const pageTitle = await boOrderStatusesPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boOrderStatusesPage.pageTitle);
   });
 
   it('should reset all filters and get number of order statuses', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'resetFilterFirst', baseContext);
 
-    numberOfOrderStatuses = await statusesPage.resetAndGetNumberOfLines(page, tableName);
+    numberOfOrderStatuses = await boOrderStatusesPage.resetAndGetNumberOfLines(page, tableName);
     expect(numberOfOrderStatuses).to.be.above(0);
   });
 
@@ -101,7 +101,7 @@ describe('BO - Shop Parameters - Order Settings - Statuses : CRUD order status',
     it('should go to add new order status page', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'goToaddOrderStatusPage', baseContext);
 
-      await statusesPage.goToNewOrderStatusPage(page);
+      await boOrderStatusesPage.goToNewOrderStatusPage(page);
 
       const pageTitle = await addOrderStatusPage.getPageTitle(page);
       expect(pageTitle).to.contains(addOrderStatusPage.pageTitleCreate);
@@ -111,9 +111,9 @@ describe('BO - Shop Parameters - Order Settings - Statuses : CRUD order status',
       await testContext.addContextItem(this, 'testIdentifier', 'createOrderStatus', baseContext);
 
       const textResult = await addOrderStatusPage.setOrderStatus(page, createOrderStatusData);
-      expect(textResult).to.contains(statusesPage.successfulCreationMessage);
+      expect(textResult).to.contains(boOrderStatusesPage.successfulCreationMessage);
 
-      const numberOfLinesAfterCreation = await statusesPage.getNumberOfElementInGrid(page, tableName);
+      const numberOfLinesAfterCreation = await boOrderStatusesPage.getNumberOfElementInGrid(page, tableName);
       expect(numberOfLinesAfterCreation).to.be.equal(numberOfOrderStatuses + 1);
     });
   });
@@ -123,10 +123,10 @@ describe('BO - Shop Parameters - Order Settings - Statuses : CRUD order status',
     it('should go to the orders page', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'goToOrdersPage', baseContext);
 
-      await statusesPage.goToSubMenu(
+      await boOrderStatusesPage.goToSubMenu(
         page,
-        statusesPage.ordersParentLink,
-        statusesPage.ordersLink,
+        boOrderStatusesPage.ordersParentLink,
+        boOrderStatusesPage.ordersLink,
       );
 
       const pageTitle = await boOrdersPage.getPageTitle(page);
@@ -170,15 +170,15 @@ describe('BO - Shop Parameters - Order Settings - Statuses : CRUD order status',
 
       await boOrderSettingsPage.goToStatusesPage(page);
 
-      const pageTitle = await statusesPage.getPageTitle(page);
-      expect(pageTitle).to.contains(statusesPage.pageTitle);
+      const pageTitle = await boOrderStatusesPage.getPageTitle(page);
+      expect(pageTitle).to.contains(boOrderStatusesPage.pageTitle);
     });
 
     it('should filter list by name', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'filterForUpdate', baseContext);
 
-      await statusesPage.resetFilter(page, tableName);
-      await statusesPage.filterTable(
+      await boOrderStatusesPage.resetFilter(page, tableName);
+      await boOrderStatusesPage.filterTable(
         page,
         tableName,
         'input',
@@ -186,14 +186,14 @@ describe('BO - Shop Parameters - Order Settings - Statuses : CRUD order status',
         createOrderStatusData.name,
       );
 
-      const textEmail = await statusesPage.getTextColumn(page, tableName, 1, 'name');
+      const textEmail = await boOrderStatusesPage.getTextColumn(page, tableName, 1, 'name');
       expect(textEmail).to.contains(createOrderStatusData.name);
     });
 
     it('should go to edit order status page', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'goToEditOrderStatusPage', baseContext);
 
-      await statusesPage.goToEditPage(page, tableName, 1);
+      await boOrderStatusesPage.goToEditPage(page, tableName, 1);
 
       const pageTitle = await addOrderStatusPage.getPageTitle(page);
       expect(pageTitle).to.contains(addOrderStatusPage.pageTitleEdit(createOrderStatusData.name));
@@ -203,9 +203,9 @@ describe('BO - Shop Parameters - Order Settings - Statuses : CRUD order status',
       await testContext.addContextItem(this, 'testIdentifier', 'updateOrderStatus', baseContext);
 
       const textResult = await addOrderStatusPage.setOrderStatus(page, editOrderStatusData);
-      expect(textResult).to.contains(statusesPage.successfulUpdateMessage);
+      expect(textResult).to.contains(boOrderStatusesPage.successfulUpdateMessage);
 
-      const numberOfOrderStatusesAfterUpdate = await statusesPage.resetAndGetNumberOfLines(page, tableName);
+      const numberOfOrderStatusesAfterUpdate = await boOrderStatusesPage.resetAndGetNumberOfLines(page, tableName);
       expect(numberOfOrderStatusesAfterUpdate).to.be.equal(numberOfOrderStatuses + 1);
     });
   });
@@ -215,8 +215,8 @@ describe('BO - Shop Parameters - Order Settings - Statuses : CRUD order status',
     it('should filter list by name', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'filterToDelete', baseContext);
 
-      await statusesPage.resetFilter(page, tableName);
-      await statusesPage.filterTable(
+      await boOrderStatusesPage.resetFilter(page, tableName);
+      await boOrderStatusesPage.filterTable(
         page,
         tableName,
         'input',
@@ -224,17 +224,17 @@ describe('BO - Shop Parameters - Order Settings - Statuses : CRUD order status',
         editOrderStatusData.name,
       );
 
-      const textEmail = await statusesPage.getTextColumn(page, tableName, 1, 'name');
+      const textEmail = await boOrderStatusesPage.getTextColumn(page, tableName, 1, 'name');
       expect(textEmail).to.contains(editOrderStatusData.name);
     });
 
     it('should delete order status', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'deleteOrderStatus', baseContext);
 
-      const textResult = await statusesPage.deleteOrderStatus(page, tableName, 1);
-      expect(textResult).to.contains(statusesPage.successfulDeleteMessage);
+      const textResult = await boOrderStatusesPage.deleteOrderStatus(page, tableName, 1);
+      expect(textResult).to.contains(boOrderStatusesPage.successfulDeleteMessage);
 
-      const numberOfOrderStatusesAfterDelete = await statusesPage.resetAndGetNumberOfLines(page, tableName);
+      const numberOfOrderStatusesAfterDelete = await boOrderStatusesPage.resetAndGetNumberOfLines(page, tableName);
       expect(numberOfOrderStatusesAfterDelete).to.be.equal(numberOfOrderStatuses);
     });
   });
