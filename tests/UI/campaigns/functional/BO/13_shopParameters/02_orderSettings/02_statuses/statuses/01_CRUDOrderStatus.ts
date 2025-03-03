@@ -1,9 +1,6 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-// Import pages
-import addOrderStatusPage from '@pages/BO/shopParameters/orderSettings/statuses/add';
-
 import {
   boDashboardPage,
   boLoginPage,
@@ -11,6 +8,7 @@ import {
   boOrdersViewBasePage,
   boOrderSettingsPage,
   boOrderStatusesPage,
+  boOrderStatusesCreatePage,
   type BrowserContext,
   FakerOrderStatus,
   type Page,
@@ -99,18 +97,18 @@ describe('BO - Shop Parameters - Order Settings - Statuses : CRUD order status',
   // 1 - Create order status
   describe('Create order status', async () => {
     it('should go to add new order status page', async function () {
-      await testContext.addContextItem(this, 'testIdentifier', 'goToaddOrderStatusPage', baseContext);
+      await testContext.addContextItem(this, 'testIdentifier', 'goToboOrderStatusesCreatePage', baseContext);
 
       await boOrderStatusesPage.goToNewOrderStatusPage(page);
 
-      const pageTitle = await addOrderStatusPage.getPageTitle(page);
-      expect(pageTitle).to.contains(addOrderStatusPage.pageTitleCreate);
+      const pageTitle = await boOrderStatusesCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contains(boOrderStatusesCreatePage.pageTitleCreate);
     });
 
     it('should create order status and check result', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'createOrderStatus', baseContext);
 
-      const textResult = await addOrderStatusPage.setOrderStatus(page, createOrderStatusData);
+      const textResult = await boOrderStatusesCreatePage.setOrderStatus(page, createOrderStatusData);
       expect(textResult).to.contains(boOrderStatusesPage.successfulCreationMessage);
 
       const numberOfLinesAfterCreation = await boOrderStatusesPage.getNumberOfElementInGrid(page, tableName);
@@ -195,14 +193,14 @@ describe('BO - Shop Parameters - Order Settings - Statuses : CRUD order status',
 
       await boOrderStatusesPage.goToEditPage(page, tableName, 1);
 
-      const pageTitle = await addOrderStatusPage.getPageTitle(page);
-      expect(pageTitle).to.contains(addOrderStatusPage.pageTitleEdit(createOrderStatusData.name));
+      const pageTitle = await boOrderStatusesCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contains(boOrderStatusesCreatePage.pageTitleEdit(createOrderStatusData.name));
     });
 
     it('should update order status', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'updateOrderStatus', baseContext);
 
-      const textResult = await addOrderStatusPage.setOrderStatus(page, editOrderStatusData);
+      const textResult = await boOrderStatusesCreatePage.setOrderStatus(page, editOrderStatusData);
       expect(textResult).to.contains(boOrderStatusesPage.successfulUpdateMessage);
 
       const numberOfOrderStatusesAfterUpdate = await boOrderStatusesPage.resetAndGetNumberOfLines(page, tableName);

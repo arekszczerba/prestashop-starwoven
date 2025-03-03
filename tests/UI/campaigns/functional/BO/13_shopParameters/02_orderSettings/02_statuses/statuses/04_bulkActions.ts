@@ -1,14 +1,12 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-// Import pages
-import addOrderStatusPage from '@pages/BO/shopParameters/orderSettings/statuses/add';
-
 import {
   boDashboardPage,
   boLoginPage,
   boOrderSettingsPage,
   boOrderStatusesPage,
+  boOrderStatusesCreatePage,
   type BrowserContext,
   FakerOrderStatus,
   type Page,
@@ -103,14 +101,14 @@ describe('BO - Shop Parameters - Order Settings - Statuses : Bulk actions in ord
 
         await boOrderStatusesPage.goToNewOrderStatusPage(page);
 
-        const pageTitle = await addOrderStatusPage.getPageTitle(page);
-        expect(pageTitle).to.contains(addOrderStatusPage.pageTitleCreate);
+        const pageTitle = await boOrderStatusesCreatePage.getPageTitle(page);
+        expect(pageTitle).to.contains(boOrderStatusesCreatePage.pageTitleCreate);
       });
 
       it('should create order status and check result', async function () {
         await testContext.addContextItem(this, 'testIdentifier', `createOrderStatus${index}`, baseContext);
 
-        const textResult = await addOrderStatusPage.setOrderStatus(page, orderStatusData);
+        const textResult = await boOrderStatusesCreatePage.setOrderStatus(page, orderStatusData);
         expect(textResult).to.contains(boOrderStatusesPage.successfulCreationMessage);
 
         const numberOfLinesAfterCreation = await boOrderStatusesPage.getNumberOfElementInGrid(page, tableName);
