@@ -3,7 +3,6 @@ import testContext from '@utils/testContext';
 
 // Import pages
 import addOrderStatusPage from '@pages/BO/shopParameters/orderSettings/statuses/add';
-import addOrderReturnStatusPage from '@pages/BO/shopParameters/orderSettings/statuses/returnStatus/add';
 import titlesPage from '@pages/BO/shopParameters/customerSettings/titles';
 import addTitlePage from '@pages/BO/shopParameters/customerSettings/titles/add';
 import addContactPage from '@pages/BO/shopParameters/contact/add';
@@ -16,6 +15,9 @@ import addTagPage from '@pages/BO/shopParameters/search/tags/add';
 
 import {
   boContactsPage,
+  boCustomerSettingsPage,
+  boCustomerGroupsPage,
+  boCustomerGroupsCreatePage,
   boDashboardPage,
   boLoginPage,
   boShopParametersPage,
@@ -23,9 +25,7 @@ import {
   boOrderSettingsPage,
   boOrderStatusesPage,
   boProductSettingsPage,
-  boCustomerSettingsPage,
-  boCustomerGroupsPage,
-  boCustomerGroupsCreatePage,
+  boReturnStatusesCreatePage,
   boSearchPage,
   boSearchAliasPage,
   boSearchAliasCreatePage,
@@ -156,8 +156,8 @@ describe('BO - Shop Parameters', async () => {
     await boOrderSettingsPage.goToStatusesPage(page);
     await boOrderStatusesPage.goToNewOrderReturnStatusPage(page);
 
-    const pageTitle = await addOrderReturnStatusPage.getPageTitle(page);
-    expect(pageTitle).to.eq(addOrderReturnStatusPage.pageTitleCreate);
+    const pageTitle = await boReturnStatusesCreatePage.getPageTitle(page);
+    expect(pageTitle).to.eq(boReturnStatusesCreatePage.pageTitleCreate);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
@@ -171,8 +171,8 @@ describe('BO - Shop Parameters', async () => {
     await boOrderSettingsPage.goToStatusesPage(page);
     await boOrderStatusesPage.goToEditPage(page, tableName, 1);
 
-    const pageTitle = await addOrderReturnStatusPage.getPageTitle(page);
-    expect(pageTitle).to.contains(addOrderReturnStatusPage.pageTitleEdit('Waiting for confirmation'));
+    const pageTitle = await boReturnStatusesCreatePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boReturnStatusesCreatePage.pageTitleEdit('Waiting for confirmation'));
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);

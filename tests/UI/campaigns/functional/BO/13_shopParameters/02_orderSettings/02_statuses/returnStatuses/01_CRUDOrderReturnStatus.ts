@@ -1,13 +1,12 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-import addOrderReturnStatusPage from '@pages/BO/shopParameters/orderSettings/statuses/returnStatus/add';
-
 import {
   boDashboardPage,
   boLoginPage,
   boOrderSettingsPage,
   boOrderStatusesPage,
+  boReturnStatusesCreatePage,
   type BrowserContext,
   FakerOrderReturnStatus,
   type Page,
@@ -88,14 +87,14 @@ describe('BO - Shop Parameters - Order Settings - Statuses : CRUD order return s
 
       await boOrderStatusesPage.goToNewOrderReturnStatusPage(page);
 
-      const pageTitle = await addOrderReturnStatusPage.getPageTitle(page);
-      expect(pageTitle).to.eq(addOrderReturnStatusPage.pageTitleCreate);
+      const pageTitle = await boReturnStatusesCreatePage.getPageTitle(page);
+      expect(pageTitle).to.eq(boReturnStatusesCreatePage.pageTitleCreate);
     });
 
     it('should create order return status and check result', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'createOrderStatus', baseContext);
 
-      const textResult = await addOrderReturnStatusPage.setOrderReturnStatus(page, createOrderReturnStatusData);
+      const textResult = await boReturnStatusesCreatePage.setOrderReturnStatus(page, createOrderReturnStatusData);
       expect(textResult).to.contains(boOrderStatusesPage.successfulCreationMessage);
 
       const numberOfLinesAfterCreation = await boOrderStatusesPage.getNumberOfElementInGrid(page, tableName);
@@ -126,14 +125,14 @@ describe('BO - Shop Parameters - Order Settings - Statuses : CRUD order return s
 
       await boOrderStatusesPage.goToEditPage(page, tableName, 1);
 
-      const pageTitle = await addOrderReturnStatusPage.getPageTitle(page);
-      expect(pageTitle).to.contains(addOrderReturnStatusPage.pageTitleEdit(createOrderReturnStatusData.name));
+      const pageTitle = await boReturnStatusesCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contains(boReturnStatusesCreatePage.pageTitleEdit(createOrderReturnStatusData.name));
     });
 
     it('should update order return status', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'updateOrderReturnStatus', baseContext);
 
-      const textResult = await addOrderReturnStatusPage.setOrderReturnStatus(page, editOrderStatusData);
+      const textResult = await boReturnStatusesCreatePage.setOrderReturnStatus(page, editOrderStatusData);
       expect(textResult).to.contains(boOrderStatusesPage.successfulUpdateMessage);
 
       const numberOfOrderReturnStatusesAfterUpdate = await boOrderStatusesPage.resetAndGetNumberOfLines(page, tableName);

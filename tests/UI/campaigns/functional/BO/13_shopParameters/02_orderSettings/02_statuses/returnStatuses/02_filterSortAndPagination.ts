@@ -1,13 +1,12 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-import addOrderReturnStatusPage from '@pages/BO/shopParameters/orderSettings/statuses/returnStatus/add';
-
 import {
   boDashboardPage,
   boLoginPage,
   boOrderSettingsPage,
   boOrderStatusesPage,
+  boReturnStatusesCreatePage,
   type BrowserContext,
   dataOrderReturnStatuses,
   FakerOrderReturnStatus,
@@ -230,14 +229,14 @@ describe('BO - Shop Parameters - Order Settings - Statuses : Filter, sort and '
 
         await boOrderStatusesPage.goToNewOrderReturnStatusPage(page);
 
-        const pageTitle = await addOrderReturnStatusPage.getPageTitle(page);
-        expect(pageTitle).to.contains(addOrderReturnStatusPage.pageTitleCreate);
+        const pageTitle = await boReturnStatusesCreatePage.getPageTitle(page);
+        expect(pageTitle).to.contains(boReturnStatusesCreatePage.pageTitleCreate);
       });
 
       it('should create order status and check result', async function () {
         await testContext.addContextItem(this, 'testIdentifier', `createOrderReturnStatus${index}`, baseContext);
 
-        const textResult = await addOrderReturnStatusPage.setOrderReturnStatus(page, orderReturnStatusData);
+        const textResult = await boReturnStatusesCreatePage.setOrderReturnStatus(page, orderReturnStatusData);
         expect(textResult).to.contains(boOrderStatusesPage.successfulCreationMessage);
 
         const numberOfLinesAfterCreation = await boOrderStatusesPage.getNumberOfElementInGrid(page, tableName);
