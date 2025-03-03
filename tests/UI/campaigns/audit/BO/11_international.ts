@@ -1,8 +1,6 @@
 import {expect} from 'chai';
 import testContext from '@utils/testContext';
 
-import addTaxPage from '@pages/BO/international/taxes/add';
-
 import {
   boCountriesPage,
   boCountriesCreatePage,
@@ -17,6 +15,7 @@ import {
   boStatesPage,
   boStatesCreatePage,
   boTaxesPage,
+  boTaxesCreatePage,
   boTaxRulesPage,
   boTaxRulesCreatePage,
   boTranslationsPage,
@@ -303,8 +302,8 @@ describe('BO - International', async () => {
 
     await boTaxesPage.goToAddNewTaxPage(page);
 
-    const pageTitle = await addTaxPage.getPageTitle(page);
-    expect(pageTitle).to.contains(addTaxPage.pageTitleCreate);
+    const pageTitle = await boTaxesCreatePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boTaxesCreatePage.pageTitleCreate);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
@@ -313,15 +312,15 @@ describe('BO - International', async () => {
   it('should go to \'International > Taxes > Edit Tax\' page', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToEditTaxesPage', baseContext);
 
-    await addTaxPage.goToSubMenu(
+    await boTaxesCreatePage.goToSubMenu(
       page,
       boDashboardPage.internationalParentLink,
       boDashboardPage.taxesLink,
     );
     await boTaxesPage.goToEditTaxPage(page, 1);
 
-    const pageTitle = await addTaxPage.getPageTitle(page);
-    expect(pageTitle).to.contains(addTaxPage.pageTitleEdit);
+    const pageTitle = await boTaxesCreatePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boTaxesCreatePage.pageTitleEdit);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
