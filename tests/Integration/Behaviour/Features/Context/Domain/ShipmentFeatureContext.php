@@ -30,54 +30,61 @@ declare(strict_types=1);
 namespace Tests\Integration\Behaviour\Features\Context\Domain;
 
 use Behat\Gherkin\Node\TableNode;
+use DateTime;
+use Order;
 use RuntimeException;
+use PHPUnit\Framework\Assert;
 use Tests\Integration\Behaviour\Features\Context\SharedStorage;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentException;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipmentsQuery;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\AddShipmentCommand;
+use PrestaShopBundle\Entity\ShipmentProduct;
 
 class ShipmentFeatureContext extends AbstractDomainFeatureContext
 {
     /**
-     * @Given I add new shipment with the following properties:
+     * @Given I add new shipment :shipmentReference for :orderReference
      *
      * @param TableNode $table
      */
-    public function createShipmentUsingCommand(TableNode $table)
+    public function createShipmentUsingCommand(string $shipmentReference, string $orderReference)
     {
-        $data = $this->localizeByRows($table);
+        $orderId = SharedStorage::getStorage()->get($orderReference);
+        $order = new Order($orderId);
+        $orderProducts = $order->getProducts();
 
         try {
-            $this->getCommandBus()->handle(
+            $shipmentId = $this->getCommandBus()->handle(
                 new AddShipmentCommand(
-                    (int) $data["order_id"],
-                    (int) $data["carrier_id"],
-                    (int) $data["delivery_address_id"],
-                    (float) $data["shipping_cost_tax_excl"],
-                    (float) $data["shipping_cost_tax_incl"],
+                    (int) $order->id,
+                    (int) $order->id_carrier,
+                    (int) $order->id_address_delivery,
+                    (float) $order->total_shipping_tax_excl,
+                    (float) $order->total_shipping_tax_incl,
                     [],
-                    $data["tracking_number"],
-                    empty($data["packed_at"]) ? null : $data["packed_at"],
-                    empty($data["shipped_at"]) ? null : $data["shipped_at"],
-                    empty($data["delivered_at"]) ? null : $data["delivered_at"]
+                    "",
+                    null,
+                    null,
+                    strtotime($order->delivery_date) === 'strtotime' ? null : new DateTime('now')
                 )
             );
+            SharedStorage::getStorage()->set('shipment1', (int) $shipmentId);
         } catch (ShipmentException $e) {
             $this->setLastException($e);
         }
     }
 
     /**
-     * @Then order :orderReference has shipment :shipment
+     * @Then the shipment :shipmentReference should linked to an order
      *
-     * @param string $orderReference
+     * @param string $shipmentReference
      * @throws RuntimeException
      */
-    public function orderHasShipment(string $orderReference)
+    public function orderHasShipment(string $shipmentReference)
     {
-        $orderId = SharedStorage::getStorage()->get($orderReference);
+        $orderId = SharedStorage::getStorage()->get($shipmentReference);
         $shipments = $this->getQueryBus()->handle(
-            new GetOrderShipmentsQuery($orderId)
+            new GetOrderShipments($orderId)
         );
 
         if (count($shipments) === 0) {
@@ -85,11 +92,11 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
             throw new RuntimeException($msg);
         }
 
-        // foreach ($shipments as $shipment) {
-        //     if ($shipment->getOrderId() !== $orderId) {
-        //         throw new RuntimeException("Shipment [" . $shipment->getId() . "] does not belong to order [" . $orderId . "]");
-        //     }
-        // }
+        foreach ($shipments as $shipment) {
+            if ($shipment->getOrderId() !== $orderId) {
+                throw new RuntimeException("Shipment [" . $shipment->getId() . "] does not belong to order [" . $orderId . "]");
+            }
+        }
 
         return $shipments;
     }

@@ -1,9 +1,9 @@
 services:
   _defaults:
-    public: true
+    public: false
     autowire: true
     autoconfigure: true
 
   PrestaShop\PrestaShop\Adapter\Shipment\CommandHandler\AddShipmentHandler:
 
-  PrestaShop\PrestaShop\Adapter\Shipment\QueryHandler\GetOrderShipmentsHandler:
+  PrestaShop\PrestaShop\Adapter\Shipment\QueryHandler\GetOrderShipmentsForViewingHandler:

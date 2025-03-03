@@ -34,13 +34,13 @@ use PrestaShopBundle\Entity\Repository\ShipmentRepository;
 use PrestaShopBundle\Entity\Shipment;
 
 #[AsCommandHandler]
-final class AddShipmentHandler implements AddShipmentHandlerInterface
+class AddShipmentHandler implements AddShipmentHandlerInterface
 {
     public function __construct(
         private readonly ShipmentRepository $repository
     ) {}
 
-    public function handle(AddShipmentCommand $command): void
+    public function handle(AddShipmentCommand $command): int
     {
         $shipment = new Shipment();
         $shipment->setOrderId($command->getOrderId());
@@ -70,7 +70,7 @@ final class AddShipmentHandler implements AddShipmentHandlerInterface
         }
 
         try {
-            $this->repository->save($shipment);
+            return $this->repository->save($shipment);
         } catch (\Throwable $e) {
             throw new CannotAddShipmentException(
                 "An error occured while creating shipment",

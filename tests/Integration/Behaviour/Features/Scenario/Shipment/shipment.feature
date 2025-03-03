@@ -5,11 +5,24 @@ Feature: Retrieving shipment for orders
   I want to retrieve the list of shipments associated with a specific order
   In order to be able to track the shipment of this order
 
+  Background:
+    Given I register a disabled feature flag "improved_shipment"
+    When I enable feature flag "improved_shipment"
+    And the current currency is "USD"
+    And country "US" is enabled
+    And the module "dummy_payment" is installed
+    And I am logged in as "test@prestashop.com" employee
+    And there is customer "testCustomer" with email "pub@prestashop.com"
+    And customer "testCustomer" has address in "US" country
+    And a carrier "default_carrier" with name "My carrier" exists
+    And I create an empty cart "dummy_cart" for customer "testCustomer"
+    And I select "US" address as delivery and invoice address for customer "testCustomer" in cart "dummy_cart"
+    And I add 2 products "Mug The best is yet to come" to the cart "dummy_cart"
+    And I add order "bo_order1" with the following details:
+      | cart                | dummy_cart                 |
+      | message             | test                       |
+      | payment module name | dummy_payment              |
+      | status              | Awaiting bank wire payment |
+
   Scenario: Retrieve shipmets for existing order
-    Given I add new shipment with the following properties:
-      | order_id               |                2 |
-      | carrier_id             |                2 |
-      | delivery_address_id    |                1 |
-      | shipping_cost_tax_excl |             2.00 |
-      | shipping_cost_tax_incl |             4.00 |
-      | tracking_number        | qwertyuiop123456 |
+    Given I add new shipment "shipment1" for "bo_order1"

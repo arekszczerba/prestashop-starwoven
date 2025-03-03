@@ -36,5 +36,5 @@ interface AddShipmentHandlerInterface
     /**
      * @param AddShipmentCommand $command
      */
-    public function handle(AddShipmentCommand $command): void;
+    public function handle(AddShipmentCommand $command): int;
 }

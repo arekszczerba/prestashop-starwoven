@@ -27,30 +27,27 @@
 namespace PrestaShop\PrestaShop\Adapter\Shipment\QueryHandler;
 
 use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsQueryHandler;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipmentsQuery;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryHandler\GetOrderShipmentsHandlerInterface;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryHandler\GetOrderShipmentForViewingHandlerInterface;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentNotFoundException;
 use PrestaShopBundle\Entity\Repository\ShipmentRepository;
-use PrestaShopBundle\Entity\Shipment;
 
 #[AsQueryHandler]
-class GetOrderShipmentsHandler implements GetOrderShipmentsHandlerInterface
+class GetOrderShipmentsForViewingHandler implements GetOrderShipmentForViewingHandlerInterface
 {
     public function __construct(
         private readonly ShipmentRepository $repository,
     ) {
     }
 
-    public function handle(GetOrderShipmentsQuery $query): array
+    public function handle(GetOrderShipments $query): array
     {
         $orderId = $query->getOrderId()->getValue();
         $shipments = [];
 
         try {
             $getShipments = $this->repository->findByOrderId($orderId);
-            foreach ($getShipments as $shipment) {
-                $shipments[] = new Shipment($shipment);
-            }
+            return $getShipments;
         } catch (\Throwable $e) {
            throw new ShipmentNotFoundException(sprintf('Could not find shipment for order with id "%s"', $orderId), 0, $e);
         }

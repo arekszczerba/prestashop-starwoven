@@ -26,9 +26,9 @@ namespace PrestaShop\PrestaShop\Core\Domain\Shipment\Query;
 use PrestaShop\PrestaShop\Core\Domain\Order\ValueObject\OrderId;
 
 /**
- * Gets shipments for order.
+ * Get shipments for order.
  */
-class GetOrderShipmentsQuery
+class GetOrderShipments
 {
     /**
      * @var OrderId
