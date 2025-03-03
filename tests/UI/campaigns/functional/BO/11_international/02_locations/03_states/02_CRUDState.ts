@@ -1,12 +1,11 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-import addStatePage from '@pages/BO/international/locations/states/add';
-
 import {
   boDashboardPage,
   boLoginPage,
   boStatesPage,
+  boStatesCreatePage,
   boZonesPage,
   type BrowserContext,
   FakerState,
@@ -80,14 +79,14 @@ describe('BO - International - States : CRUD state', async () => {
 
       await boStatesPage.goToAddNewStatePage(page);
 
-      const pageTitle = await addStatePage.getPageTitle(page);
-      expect(pageTitle).to.contains(addStatePage.pageTitleCreate);
+      const pageTitle = await boStatesCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contains(boStatesCreatePage.pageTitleCreate);
     });
 
     it('should create new state', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'createNewState', baseContext);
 
-      const textResult = await addStatePage.createEditState(page, createStateData);
+      const textResult = await boStatesCreatePage.createEditState(page, createStateData);
       expect(textResult).to.to.contains(boStatesPage.successfulCreationMessage);
 
       const numberOfStatesAfterCreation = await boStatesPage.getNumberOfElement(page);
@@ -116,14 +115,14 @@ describe('BO - International - States : CRUD state', async () => {
 
       await boStatesPage.goToEditStatePage(page, 1);
 
-      const pageTitle = await addStatePage.getPageTitle(page);
-      expect(pageTitle).to.contains(addStatePage.pageTitleEdit);
+      const pageTitle = await boStatesCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contains(boStatesCreatePage.pageTitleEdit);
     });
 
     it('should edit state', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'ediState', baseContext);
 
-      const textResult = await addStatePage.createEditState(page, editStateData);
+      const textResult = await boStatesCreatePage.createEditState(page, editStateData);
       expect(textResult).to.to.contains(boStatesPage.successfulUpdateMessage);
 
       const numberOfStatesAfterReset = await boStatesPage.resetAndGetNumberOfLines(page);

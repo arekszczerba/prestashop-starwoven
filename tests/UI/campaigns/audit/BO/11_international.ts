@@ -1,7 +1,6 @@
 import {expect} from 'chai';
 import testContext from '@utils/testContext';
 
-import addStatePage from '@pages/BO/international/locations/states/add';
 import addTaxPage from '@pages/BO/international/taxes/add';
 
 import {
@@ -16,6 +15,7 @@ import {
   boLanguagesPage,
   boLanguagesCreatePage,
   boStatesPage,
+  boStatesCreatePage,
   boTaxesPage,
   boTaxRulesPage,
   boTaxRulesCreatePage,
@@ -262,8 +262,8 @@ describe('BO - International', async () => {
 
     await boStatesPage.goToAddNewStatePage(page);
 
-    const pageTitle = await addStatePage.getPageTitle(page);
-    expect(pageTitle).to.contains(addStatePage.pageTitleCreate);
+    const pageTitle = await boStatesCreatePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boStatesCreatePage.pageTitleCreate);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
@@ -275,8 +275,8 @@ describe('BO - International', async () => {
     await boZonesPage.goToSubTabStates(page);
     await boStatesPage.goToEditStatePage(page, 1);
 
-    const pageTitle = await addStatePage.getPageTitle(page);
-    expect(pageTitle).to.contains(addStatePage.pageTitleEdit);
+    const pageTitle = await boStatesCreatePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boStatesCreatePage.pageTitleEdit);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);

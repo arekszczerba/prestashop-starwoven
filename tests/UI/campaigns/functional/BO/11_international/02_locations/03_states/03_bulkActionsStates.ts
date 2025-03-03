@@ -1,12 +1,11 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-import addStatePage from '@pages/BO/international/locations/states/add';
-
 import {
   boDashboardPage,
   boLoginPage,
   boStatesPage,
+  boStatesCreatePage,
   boZonesPage,
   type BrowserContext,
   FakerState,
@@ -85,14 +84,14 @@ describe('BO - International - States : Bulk edit status and bulk delete', async
 
         await boStatesPage.goToAddNewStatePage(page);
 
-        const pageTitle = await addStatePage.getPageTitle(page);
-        expect(pageTitle).to.contains(addStatePage.pageTitleCreate);
+        const pageTitle = await boStatesCreatePage.getPageTitle(page);
+        expect(pageTitle).to.contains(boStatesCreatePage.pageTitleCreate);
       });
 
       it('should create state and check result', async function () {
         await testContext.addContextItem(this, 'testIdentifier', `createState${index + 1}`, baseContext);
 
-        const textResult = await addStatePage.createEditState(page, stateToCreate);
+        const textResult = await boStatesCreatePage.createEditState(page, stateToCreate);
         expect(textResult).to.contains(boStatesPage.successfulCreationMessage);
 
         const numberOfStatesAfterCreation = await boStatesPage.getNumberOfElement(page);
