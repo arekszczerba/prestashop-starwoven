@@ -32,14 +32,14 @@ namespace Tests\Integration\Behaviour\Features\Context\Domain;
 use Behat\Gherkin\Node\TableNode;
 use DateTime;
 use Order;
-use RuntimeException;
 use PHPUnit\Framework\Assert;
-use Tests\Integration\Behaviour\Features\Context\SharedStorage;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\AddShipmentCommand;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentException;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\AddShipmentCommand;
-use PrestaShopBundle\Entity\ShipmentProduct;
 use PrestaShopBundle\Entity\Shipment;
+use PrestaShopBundle\Entity\ShipmentProduct;
+use RuntimeException;
+use Tests\Integration\Behaviour\Features\Context\SharedStorage;
 
 class ShipmentFeatureContext extends AbstractDomainFeatureContext
 {
@@ -55,7 +55,7 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
         $orderProducts = $order->getProducts();
         $shipmentProducts = [];
 
-        foreach($orderProducts as $product) {
+        foreach ($orderProducts as $product) {
             $shipmentProduct = new ShipmentProduct();
             $shipmentProduct->setOrderDetailId($product['id_order_detail']);
             $shipmentProduct->setQuantity($product['product_quantity']);
@@ -71,7 +71,7 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
                     (float) $order->total_shipping_tax_excl,
                     (float) $order->total_shipping_tax_incl,
                     $shipmentProducts,
-                    "",
+                    '',
                     null,
                     null,
                     strtotime($order->delivery_date) === 'strtotime' ? null : new DateTime('now')
@@ -87,6 +87,7 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
      * @Then I should see :shipmentNumber shipments in order :orderReference
      *
      * @param string $shipmentReference
+     *
      * @throws RuntimeException
      */
     public function orderHasShipment(string $shipmentNumber, string $orderReference)
@@ -98,17 +99,17 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
         );
 
         if (count($shipments) === 0) {
-            $msg = "Order [" . $orderId . "] has no shipments";
+            $msg = 'Order [' . $orderId . '] has no shipments';
             throw new RuntimeException($msg);
         }
 
         if (count($shipments) > (int) $shipmentNumber) {
-            throw new RuntimeException("Order [" . $orderId . "] has exactly " . $shipmentNumber . " shipments");
+            throw new RuntimeException('Order [' . $orderId . '] has exactly ' . $shipmentNumber . ' shipments');
         }
 
         foreach ($shipments as $shipment) {
             if ($shipment->getOrderId() !== $orderId) {
-                throw new RuntimeException("Shipment [" . $shipment->getId() . "] does not belong to order [" . $orderId . "]");
+                throw new RuntimeException('Shipment [' . $shipment->getId() . '] does not belong to order [' . $orderId . ']');
             }
         }
 
@@ -136,13 +137,13 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
         }
 
         $ids = [];
-        foreach (explode(",", $references) as $reference) {
+        foreach (explode(',', $references) as $reference) {
             $reference = trim($reference);
 
             if (!$this->getSharedStorage()->exists($reference)) {
                 throw new RuntimeException(
                     sprintf(
-                        "Reference %s does not exist in shared storage",
+                        'Reference %s does not exist in shared storage',
                         $reference
                     )
                 );

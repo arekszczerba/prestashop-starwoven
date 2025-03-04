@@ -27,10 +27,11 @@
 namespace PrestaShop\PrestaShop\Adapter\Shipment\QueryHandler;
 
 use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsQueryHandler;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentNotFoundException;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryHandler\GetOrderShipmentForViewingHandlerInterface;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentNotFoundException;
 use PrestaShopBundle\Entity\Repository\ShipmentRepository;
+use Throwable;
 
 #[AsQueryHandler]
 class GetOrderShipmentsForViewingHandler implements GetOrderShipmentForViewingHandlerInterface
@@ -47,9 +48,10 @@ class GetOrderShipmentsForViewingHandler implements GetOrderShipmentForViewingHa
 
         try {
             $getShipments = $this->repository->findByOrderId($orderId);
+
             return $getShipments;
-        } catch (\Throwable $e) {
-           throw new ShipmentNotFoundException(sprintf('Could not find shipment for order with id "%s"', $orderId), 0, $e);
+        } catch (Throwable $e) {
+            throw new ShipmentNotFoundException(sprintf('Could not find shipment for order with id "%s"', $orderId), 0, $e);
         }
 
         return $shipments;

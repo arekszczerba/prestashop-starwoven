@@ -42,7 +42,8 @@ class AddShipmentCommand
         private readonly ?DateTime $shippedAt = null,
         private readonly ?DateTime $deliveredAt = null,
         private readonly ?DateTime $cancelledAt = null
-    ) {}
+    ) {
+    }
 
     public function getOrderId(): int
     {
