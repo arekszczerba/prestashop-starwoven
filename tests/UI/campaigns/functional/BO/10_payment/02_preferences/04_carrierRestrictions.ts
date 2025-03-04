@@ -16,7 +16,6 @@ import {
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
 
-
 const baseContext: string = 'functional_BO_payment_preferences_carrierRestrictions';
 
 describe('BO - Payment - Preferences : Configure carrier restrictions and check FO', async () => {

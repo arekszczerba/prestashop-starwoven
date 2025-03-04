@@ -14,7 +14,6 @@ import {
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
 
-
 const baseContext: string = 'functional_BO_shopParameters_orderSettings_statuses_statuses_bulkActions';
 
 /*

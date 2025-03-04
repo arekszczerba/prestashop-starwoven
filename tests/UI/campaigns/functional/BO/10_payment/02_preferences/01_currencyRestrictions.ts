@@ -15,7 +15,6 @@ import {
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
 
-
 const baseContext: string = 'functional_BO_payment_preferences_currencyRestrictions';
 
 describe('BO - Payment - Preferences : Configure currency restrictions', async () => {

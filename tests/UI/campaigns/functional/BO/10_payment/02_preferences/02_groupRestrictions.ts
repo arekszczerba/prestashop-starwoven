@@ -19,7 +19,6 @@ import {
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
 
-
 const baseContext: string = 'functional_BO_payment_preferences_groupRestrictions';
 
 describe('BO - Payment - Preferences : Configure group restrictions', async () => {

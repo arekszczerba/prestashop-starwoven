@@ -15,7 +15,6 @@ import {
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
 
-
 const baseContext: string = 'functional_BO_payment_preferences_countryRestrictions';
 
 describe('BO - Payment - Preferences : Configure country restrictions', async () => {
