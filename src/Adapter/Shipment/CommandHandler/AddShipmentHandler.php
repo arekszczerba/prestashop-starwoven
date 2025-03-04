@@ -32,13 +32,15 @@ use PrestaShop\PrestaShop\Core\Domain\Shipment\CommandHandler\AddShipmentHandler
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\CannotAddShipmentException;
 use PrestaShopBundle\Entity\Repository\ShipmentRepository;
 use PrestaShopBundle\Entity\Shipment;
+use Throwable;
 
 #[AsCommandHandler]
 class AddShipmentHandler implements AddShipmentHandlerInterface
 {
     public function __construct(
         private readonly ShipmentRepository $repository
-    ) {}
+    ) {
+    }
 
     public function handle(AddShipmentCommand $command): int
     {
@@ -46,7 +48,7 @@ class AddShipmentHandler implements AddShipmentHandlerInterface
         $shipment->setOrderId($command->getOrderId());
         $shipment->setCarrierId($command->getCarrierId());
         $shipment->setTrakingNumber($command->getTrackingNumber());
-        $shipment->setDeliveryAddressId($command->getDeliveryAddressId());
+        $shipment->setAddressId($command->getAddressId());
         $shipment->setShippingCostTaxExcluded(
             $command->getShippingCostTaxExcluded()
         );
@@ -54,7 +56,7 @@ class AddShipmentHandler implements AddShipmentHandlerInterface
             $command->getShippingCostTaxIncluded()
         );
         foreach ($command->getProducts() as $product) {
-            $shipment->setProducts($product);
+            $shipment->addShipmentProduct($product);
         }
 
         if ($command->getPackedAt() !== null) {
@@ -71,9 +73,9 @@ class AddShipmentHandler implements AddShipmentHandlerInterface
 
         try {
             return $this->repository->save($shipment);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             throw new CannotAddShipmentException(
-                "An error occured while creating shipment",
+                'An error occured while creating shipment',
                 0,
                 $e
             );

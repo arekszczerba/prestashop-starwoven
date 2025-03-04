@@ -17,7 +17,8 @@ Feature: Retrieving shipment for orders
     And a carrier "default_carrier" with name "My carrier" exists
     And I create an empty cart "dummy_cart" for customer "testCustomer"
     And I select "US" address as delivery and invoice address for customer "testCustomer" in cart "dummy_cart"
-    And I add 2 products "Mug The best is yet to come" to the cart "dummy_cart"
+    And I add 1 products "Mug The best is yet to come" to the cart "dummy_cart"
+    And I add 1 products "Mug Today is a good day" to the cart "dummy_cart"
     And I add order "bo_order1" with the following details:
       | cart                | dummy_cart                 |
       | message             | test                       |
@@ -26,3 +27,4 @@ Feature: Retrieving shipment for orders
 
   Scenario: Retrieve shipmets for existing order
     Given I add new shipment "shipment1" for "bo_order1"
+    Then I should see "1" shipments in order "bo_order1"

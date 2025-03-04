@@ -33,14 +33,15 @@ class AddShipmentCommand
     public function __construct(
         private readonly int $orderId,
         private readonly int $carrierId,
-        private readonly int $deliveryAddressId,
+        private readonly int $addressId,
         private readonly float $shippingCostTaxExcluded,
         private readonly float $shippingCostTaxIncluded,
         private readonly array $products,
         private readonly ?string $trakingNumber,
         private readonly ?DateTime $packedAt = null,
         private readonly ?DateTime $shippedAt = null,
-        private readonly ?DateTime $deliveredAt = null
+        private readonly ?DateTime $deliveredAt = null,
+        private readonly ?DateTime $cancelledAt = null
     ) {}
 
     public function getOrderId(): int
@@ -53,9 +54,9 @@ class AddShipmentCommand
         return $this->carrierId;
     }
 
-    public function getDeliveryAddressId(): int
+    public function getAddressId(): int
     {
-        return $this->deliveryAddressId;
+        return $this->addressId;
     }
 
     public function getShippingCostTaxExcluded(): float
@@ -81,6 +82,11 @@ class AddShipmentCommand
     public function getDeliveredAt(): ?DateTime
     {
         return $this->deliveredAt;
+    }
+
+    public function getCancelledAt(): ?DateTime
+    {
+        return $this->cancelledAt;
     }
 
     public function getTrackingNumber(): ?string
