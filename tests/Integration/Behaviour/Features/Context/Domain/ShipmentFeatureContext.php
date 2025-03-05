@@ -29,7 +29,6 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Behaviour\Features\Context\Domain;
 
-use Behat\Gherkin\Node\TableNode;
 use DateTime;
 use Order;
 use PHPUnit\Framework\Assert;
