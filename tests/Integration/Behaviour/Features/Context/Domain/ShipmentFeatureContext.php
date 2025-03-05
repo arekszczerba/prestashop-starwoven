@@ -46,7 +46,8 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
     /**
      * @Given I add new shipment :shipmentReference for :orderReference
      *
-     * @param TableNode $table
+     * @param string $shipmentReference
+     * @param string $orderReference
      */
     public function createShipmentUsingCommand(string $shipmentReference, string $orderReference)
     {
@@ -74,7 +75,7 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
                     '',
                     null,
                     null,
-                    strtotime($order->delivery_date) === 'strtotime' ? null : new DateTime('now')
+                    $order->delivery_date == '0000-00-00 00:00:00' ? null : new DateTime('now')
                 )
             );
             SharedStorage::getStorage()->set($shipmentReference, (int) $shipmentId);
@@ -86,7 +87,8 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
     /**
      * @Then I should see :shipmentNumber shipments in order :orderReference
      *
-     * @param string $shipmentReference
+     * @param string $shipmentNumber
+     * @param string $orderReference
      *
      * @throws RuntimeException
      */
