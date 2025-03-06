@@ -35,6 +35,7 @@ use PrestaShop\PrestaShop\Core\Domain\CartRule\Exception\CartRuleValidityExcepti
 use PrestaShop\PrestaShop\Core\Domain\Currency\ValueObject\CurrencyId;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Command\AddCartLevelDiscountCommand;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Command\AddDiscountCommand;
+use PrestaShop\PrestaShop\Core\Domain\Discount\Command\AddFreeGiftDiscountCommand;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Command\AddFreeShippingDiscountCommand;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Command\AddProductLevelDiscountCommand;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Exception\DiscountConstraintException;
@@ -156,6 +157,27 @@ class DiscountFeatureContext extends AbstractDomainFeatureContext
         try {
             $command = new AddFreeShippingDiscountCommand();
             $this->createDiscount($discountReference, [], $command);
+        } catch (DiscountConstraintException $e) {
+            $this->setLastException($e);
+        }
+    }
+
+    /**
+     * @When I create a free gift discount :discountReference with following properties:
+     *
+     * @param string $discountReference
+     * @param TableNode $node
+     *
+     * @return void
+     *
+     * @throws Exception
+     */
+    public function createFreeGiftDiscountIfNotExists(string $discountReference, TableNode $node): void
+    {
+        $data = $this->localizeByRows($node);
+        try {
+            $command = new AddFreeGiftDiscountCommand();
+            $this->createDiscount($discountReference, $data, $command);
         } catch (DiscountConstraintException $e) {
             $this->setLastException($e);
         }

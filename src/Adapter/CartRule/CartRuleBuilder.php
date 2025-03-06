@@ -30,6 +30,7 @@ use CartRule;
 use DateTimeImmutable;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Command\AddCartLevelDiscountCommand;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Command\AddDiscountCommand;
+use PrestaShop\PrestaShop\Core\Domain\Discount\Command\AddFreeGiftDiscountCommand;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Command\AddFreeShippingDiscountCommand;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Command\AddProductLevelDiscountCommand;
 use PrestaShop\PrestaShop\Core\Util\DateTime\DateTime as DateTimeUtil;
@@ -69,6 +70,13 @@ class CartRuleBuilder
                 $cartRule->reduction_currency = $command->getAmountDiscount()->getCurrencyId()->getValue();
                 $cartRule->reduction_tax = $command->getAmountDiscount()->isTaxIncluded();
             }
+        } elseif ($command instanceof AddFreeGiftDiscountCommand) {
+            $cartRule->reduction_percent = 100;
+            $cartRule->reduction_amount = 0;
+            $cartRule->reduction_currency = 0;
+            $cartRule->reduction_tax = false;
+            $cartRule->gift_product = 1;
+            $cartRule->gift_product_attribute = 2;
         }
 
         if ($command instanceof AddProductLevelDiscountCommand) {
