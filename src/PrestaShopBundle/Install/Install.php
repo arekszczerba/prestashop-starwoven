@@ -988,12 +988,8 @@ class Install extends AbstractInstall
 
         ModuleEntity::updateTranslationsAfterInstall(false);
 
-        $tmp = array_filter($modules, function ($module) {
-            return $module !== 'chronopost' && $module !== 'sendcloudv2';
-        });
-
         $result = $this->executeAction(
-            $tmp,
+            $modules,
             'install',
             $this->translator->trans(
                 'Cannot install module "%module%"',
@@ -1006,7 +1002,7 @@ class Install extends AbstractInstall
         }
 
         ModuleEntity::updateTranslationsAfterInstall(true);
-        EntityLanguage::updateModulesTranslations($tmp);
+        EntityLanguage::updateModulesTranslations($modules);
 
         return true;
     }
