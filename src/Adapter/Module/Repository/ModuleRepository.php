@@ -140,18 +140,9 @@ class ModuleRepository extends AbstractObjectModelRepository
      */
     public function getPresentModules(): array
     {
-        if (!defined('_DB_PREFIX_')) {
-            return []; // getActiveModules() can be called during install BEFORE the database configuration has been defined
-        }
-
         $presentModules = [];
-        try {
-            foreach ($this->getModulesFromFolder() as $moduleName => $modulePath) {
-                $presentModules[] = $moduleName;
-            }
-        } catch (Exception) {
-            // DO nothing. getPresentModules() can be called during install BEFORE the database configuration has been defined
-            return [];
+        foreach ($this->getModulesFromFolder() as $moduleName => $modulePath) {
+            $presentModules[] = $moduleName;
         }
 
         return $presentModules;
