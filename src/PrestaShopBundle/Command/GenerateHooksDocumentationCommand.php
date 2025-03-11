@@ -74,7 +74,7 @@ final class GenerateHooksDocumentationCommand extends Command
             GridDefinitionHookByServiceIdsProvider::GRID_PRESENTER_SUFFIX,
         ];
 
-        $hooks = $this->hookExtractor->findHooks(_PS_ROOT_DIR_);
+        $hooks = $this->hookExtractor->findHooks();
         $formatedHooks = [];
         $formatedHooksKeys = [];
         foreach ($hooks as $hook) {
