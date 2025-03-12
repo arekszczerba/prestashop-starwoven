@@ -22,7 +22,7 @@ services:
 
   PrestaShop\PrestaShop\Adapter\Shipment\OrderShipmentCreator:
     arguments:
-    - '@PrestaShopBundle\Entity\Repository\ShipmentRepository'
+      - '@PrestaShopBundle\Entity\Repository\ShipmentRepository'
 
   prestashop.adapter.legacy.context:
     alias: PrestaShop\PrestaShop\Adapter\LegacyContext

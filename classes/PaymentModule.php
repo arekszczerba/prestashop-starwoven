@@ -575,6 +575,8 @@ abstract class PaymentModuleCore extends Module
                 'orderStatus' => $order_status,
             ]);
 
+            $this->addShipmentToOrder($order);
+
             if ($order_status->logable) {
                 foreach ($this->context->cart->getProducts() as $product) {
                     ProductSale::addProductSale((int) $product['id_product'], (int) $product['cart_quantity']);
@@ -760,8 +762,6 @@ abstract class PaymentModuleCore extends Module
         if (self::DEBUG_MODE) {
             PrestaShopLogger::addLog('PaymentModule::validateOrder - End of validateOrder', 1, null, 'Cart', (int) $id_cart, true);
         }
-
-        $this->addShipmentToOrder($order);
 
         Hook::exec(
             'actionValidateOrderAfter',
@@ -1280,6 +1280,10 @@ abstract class PaymentModuleCore extends Module
         $featureFlagManager = $this->get(FeatureFlagStateCheckerInterface::class);
 
         if (!$featureFlagManager->isEnabled(FeatureFlagSettings::FEATURE_FLAG_IMPROVED_SHIPMENT)) {
+            return;
+        }
+
+        if (empty($order)) {
             return;
         }
 

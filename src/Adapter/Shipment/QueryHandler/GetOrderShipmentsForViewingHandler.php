@@ -50,9 +50,10 @@ class GetOrderShipmentsForViewingHandler implements GetOrderShipmentForViewingHa
     public function handle(GetOrderShipments $query)
     {
         $shipments = [];
+        $orderId = $query->getOrderId()->getValue();
 
         try {
-            $result = $this->repository->findByOrderId($query->getOrderId()->getValue());
+            $result = $this->repository->findByOrderId($orderId);
         } catch (Throwable $e) {
             throw new ShipmentNotFoundException(sprintf('Could not find shipment for order with id "%s"', $orderId), 0, $e);
         }
