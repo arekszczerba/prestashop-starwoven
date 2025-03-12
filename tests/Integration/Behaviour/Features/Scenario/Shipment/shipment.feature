@@ -6,8 +6,7 @@ Feature: Retrieving shipment for orders
   In order to be able to track the shipment of this order
 
   Background:
-    Given I register a disabled feature flag "improved_shipment"
-    When I enable feature flag "improved_shipment"
+    Given I register a enabled feature flag "improved_shipment"
     And the current currency is "USD"
     And country "US" is enabled
     And the module "dummy_payment" is installed
@@ -15,16 +14,25 @@ Feature: Retrieving shipment for orders
     And there is customer "testCustomer" with email "pub@prestashop.com"
     And customer "testCustomer" has address in "US" country
     And a carrier "default_carrier" with name "My carrier" exists
-    And I create an empty cart "dummy_cart" for customer "testCustomer"
+
+  Scenario: Retrieve shipmets for existing order
+    Given I create an empty cart "dummy_cart" for customer "testCustomer"
     And I select "US" address as delivery and invoice address for customer "testCustomer" in cart "dummy_cart"
     And I add 1 products "Mug The best is yet to come" to the cart "dummy_cart"
-    And I add 1 products "Mug Today is a good day" to the cart "dummy_cart"
+    And I add 2 products "Mug Today is a good day" to the cart "dummy_cart"
     And I add order "bo_order1" with the following details:
       | cart                | dummy_cart                 |
       | message             | test                       |
       | payment module name | dummy_payment              |
       | status              | Awaiting bank wire payment |
-
-  Scenario: Retrieve shipmets for existing order
-    Given I add new shipment "shipment1" for "bo_order1"
-    Then I should see "1" shipments in order "bo_order1"
+    And the order "bo_order1" should have the following shipments:
+      | shipment | shipment1 |
+      | id_carrier | default_carrier |
+      | tracking_number |  |
+      | id_address | dummy_cart |
+      | shipping_cost_tax_excl | 7.0 |
+      | shipping_cost_tax_incl | 7.42 |
+    Then the shipment "shipment1" should have the following products:
+      | order_detail | quantity |
+      | 8 | 1 |
+      | 9 | 2 |

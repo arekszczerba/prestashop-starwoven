@@ -29,71 +29,30 @@ declare(strict_types=1);
 
 namespace Tests\Integration\Behaviour\Features\Context\Domain;
 
-use DateTime;
-use Order;
+use Behat\Gherkin\Node\TableNode;
+use Cart;
 use PHPUnit\Framework\Assert;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\AddShipmentCommand;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentException;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
-use PrestaShopBundle\Entity\Shipment;
-use PrestaShopBundle\Entity\ShipmentProduct;
 use RuntimeException;
 use Tests\Integration\Behaviour\Features\Context\SharedStorage;
 
 class ShipmentFeatureContext extends AbstractDomainFeatureContext
 {
     /**
-     * @Given I add new shipment :shipmentReference for :orderReference
-     *
-     * @param string $shipmentReference
-     * @param string $orderReference
-     */
-    public function createShipmentUsingCommand(string $shipmentReference, string $orderReference)
-    {
-        $orderId = SharedStorage::getStorage()->get($orderReference);
-        $order = new Order($orderId);
-        $orderProducts = $order->getProducts();
-        $shipmentProducts = [];
-
-        foreach ($orderProducts as $product) {
-            $shipmentProduct = new ShipmentProduct();
-            $shipmentProduct->setOrderDetailId($product['id_order_detail']);
-            $shipmentProduct->setQuantity($product['product_quantity']);
-            $shipmentProducts[] = $shipmentProduct;
-        }
-
-        try {
-            $shipmentId = $this->getCommandBus()->handle(
-                new AddShipmentCommand(
-                    (int) $order->id,
-                    (int) $order->id_carrier,
-                    (int) $order->id_address_delivery,
-                    (float) $order->total_shipping_tax_excl,
-                    (float) $order->total_shipping_tax_incl,
-                    $shipmentProducts,
-                    '',
-                    null,
-                    null,
-                    $order->delivery_date == '0000-00-00 00:00:00' ? null : new DateTime('now')
-                )
-            );
-            SharedStorage::getStorage()->set($shipmentReference, (int) $shipmentId);
-        } catch (ShipmentException $e) {
-            $this->setLastException($e);
-        }
-    }
-
-    /**
-     * @Then I should see :shipmentNumber shipments in order :orderReference
+     * @Then the order :orderReference should have the following shipments:
      *
      * @param string $shipmentNumber
-     * @param string $orderReference
+     * @param TableNode $table
      *
      * @throws RuntimeException
      */
-    public function orderHasShipment(string $shipmentNumber, string $orderReference)
+    public function verifyOrderShipment(string $orderReference, TableNode $table)
     {
+        $data = $table->getRowsHash();
         $orderId = SharedStorage::getStorage()->get($orderReference);
+        $carrierId = SharedStorage::getStorage()->get($data['id_carrier']);
+        // get address id from cart
+        $addressId = (new Cart(SharedStorage::getStorage()->get($data['id_address'])))->id_address_delivery;
 
         $shipments = $this->getQueryBus()->handle(
             new GetOrderShipments($orderId)
@@ -104,55 +63,36 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
             throw new RuntimeException($msg);
         }
 
-        if (count($shipments) > (int) $shipmentNumber) {
-            throw new RuntimeException('Order [' . $orderId . '] has exactly ' . $shipmentNumber . ' shipments');
-        }
-
         foreach ($shipments as $shipment) {
             if ($shipment->getOrderId() !== $orderId) {
                 throw new RuntimeException('Shipment [' . $shipment->getId() . '] does not belong to order [' . $orderId . ']');
             }
-        }
 
-        $this->verifyProductInShipment($shipments[0]);
-    }
-
-    private function verifyProductInShipment(Shipment $shipment)
-    {
-        Assert::assertCount(2, $shipment->getProducts());
-
-        foreach ($shipment->getProducts() as $shipmentProduct) {
-            Assert::assertInstanceOf(ShipmentProduct::class, $shipmentProduct);
+            Assert::assertEquals($shipment->getTrackingNumber(), $data['tracking_number']);
+            Assert::assertEquals($shipment->getCarrierId(), $carrierId);
+            Assert::assertEquals($shipment->getAddressId(), $addressId);
+            Assert::assertEquals($shipment->getShippingCostTaxExcluded(), $data['shipping_cost_tax_excl']);
+            Assert::assertEquals($shipment->getShippingCostTaxIncluded(), $data['shipping_cost_tax_incl']);
+            SharedStorage::getStorage()->set($data['shipment'], $shipment);
         }
     }
 
     /**
-     * @param string $references
+     * @Then the shipment :shipmentReference should have the following products:
      *
-     * @return int[]
+     * @param string $shipmentReference
+     * @param TableNode $table
      */
-    protected function referencesToIds(string $references): array
+    public function verifyShipmentProducts(string $shipmentReference, TableNode $table)
     {
-        if (empty($references)) {
-            return [];
-        }
+        $data = $table->getColumnsHash();
+        $shipment = SharedStorage::getStorage()->get($shipmentReference);
 
-        $ids = [];
-        foreach (explode(',', $references) as $reference) {
-            $reference = trim($reference);
+        $products = $shipment->getProducts();
 
-            if (!$this->getSharedStorage()->exists($reference)) {
-                throw new RuntimeException(
-                    sprintf(
-                        'Reference %s does not exist in shared storage',
-                        $reference
-                    )
-                );
-            }
-
-            $ids[] = $this->getSharedStorage()->get($reference);
-        }
-
-        return $ids;
+        Assert::assertEquals($products[0]->getQuantity(), (int) $data[0]['quantity']);
+        Assert::assertEquals($products[1]->getQuantity(), (int) $data[1]['quantity']);
+        Assert::assertEquals($products[0]->getOrderDetailId(), (int) $data[0]['order_detail']);
+        Assert::assertEquals($products[1]->getOrderDetailId(), (int) $data[1]['order_detail']);
     }
 }

@@ -30,6 +30,7 @@ use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsQueryHandler;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentNotFoundException;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryHandler\GetOrderShipmentForViewingHandlerInterface;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipment;
 use PrestaShopBundle\Entity\Repository\ShipmentRepository;
 use Throwable;
 
@@ -41,14 +42,36 @@ class GetOrderShipmentsForViewingHandler implements GetOrderShipmentForViewingHa
     ) {
     }
 
-    public function handle(GetOrderShipments $query): array
+    /**
+     * @param GetOrderShipments $query
+     *
+     * @return OrderShipment[]
+     */
+    public function handle(GetOrderShipments $query)
     {
-        $orderId = $query->getOrderId()->getValue();
+        $shipments = [];
 
         try {
-            return $this->repository->findByOrderId($orderId);
+            $result = $this->repository->findByOrderId($query->getOrderId()->getValue());
         } catch (Throwable $e) {
             throw new ShipmentNotFoundException(sprintf('Could not find shipment for order with id "%s"', $orderId), 0, $e);
         }
+
+        foreach ($result as $shipment) {
+            $shipments[] = new OrderShipment(
+                $shipment->getOrderId(),
+                $shipment->getCarrierId(),
+                $shipment->getAddressId(),
+                $shipment->getShippingCostTaxExcluded(),
+                $shipment->getShippingCostTaxIncluded(),
+                $shipment->getProducts()->toArray(),
+                $shipment->getTrakingNumber(),
+                $shipment->getShippedAt(),
+                $shipment->getDeliveredAt(),
+                $shipment->getCancelledAt(),
+            );
+        }
+
+        return $shipments;
     }
 }

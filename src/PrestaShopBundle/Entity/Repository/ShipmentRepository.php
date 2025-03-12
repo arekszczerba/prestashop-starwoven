@@ -33,7 +33,12 @@ use PrestaShopBundle\Entity\Shipment;
 
 class ShipmentRepository extends EntityRepository
 {
-    public function findByOrderId(int $orderId): array
+    /**
+     * @param int $orderId
+     *
+     * @return Shipment[]
+     */
+    public function findByOrderId(int $orderId)
     {
         return $this->findBy(['orderId' => $orderId]);
     }

@@ -24,17 +24,41 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 
-namespace PrestaShop\PrestaShop\Core\Domain\Shipment\CommandHandler;
+namespace PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult;
 
-use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\AddShipmentCommand;
-
-/**
- * Defines contract for AddShipmentHandler.
- */
-interface AddShipmentHandlerInterface
+class OrderShipmentProduct
 {
     /**
-     * @param AddShipmentCommand $command
+     * @var int
      */
-    public function handle(AddShipmentCommand $command): int;
+    private int $orderDetailId;
+
+    /**
+     * @var int
+     */
+    private int $quantity;
+
+    public function __construct(
+        int $orderDetailId,
+        int $quantity
+    ) {
+        $this->orderDetailId = $orderDetailId;
+        $this->quantity = $quantity;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOrderDetailId(): int
+    {
+        return $this->orderDetailId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getQuantity(): int
+    {
+        return $this->quantity;
+    }
 }
