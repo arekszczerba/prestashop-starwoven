@@ -51,7 +51,7 @@ class FeatureFlagFeatureContext extends AbstractPrestaShopFeatureContext
         try {
             $newFeatureFlag = new FeatureFlag($name);
 
-            if ($state === '1') {
+            if ($state === 'enabled') {
                 $newFeatureFlag->enable();
             }
 
