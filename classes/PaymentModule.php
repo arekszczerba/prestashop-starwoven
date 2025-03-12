@@ -1283,10 +1283,6 @@ abstract class PaymentModuleCore extends Module
             return;
         }
 
-        if (empty($order)) {
-            return;
-        }
-
         /** @var OrderShipmentCreator $orderShipmentCreator */
         $orderShipmentCreator = $this->get('PrestaShop\PrestaShop\Adapter\Shipment\OrderShipmentCreator');
 

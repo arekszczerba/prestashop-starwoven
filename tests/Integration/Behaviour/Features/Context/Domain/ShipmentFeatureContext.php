@@ -41,7 +41,7 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
     /**
      * @Then the order :orderReference should have the following shipments:
      *
-     * @param string $shipmentNumber
+     * @param string $orderReference
      * @param TableNode $table
      *
      * @throws RuntimeException
