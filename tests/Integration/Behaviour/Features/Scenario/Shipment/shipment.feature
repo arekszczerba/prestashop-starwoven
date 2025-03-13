@@ -6,7 +6,7 @@ Feature: Retrieving shipment for orders
   In order to be able to track the shipment of this order
 
   Background:
-    When I enable feature flag "improved_shipment"
+    Given I enable feature flag "improved_shipment"
     And the current currency is "USD"
     And country "US" is enabled
     And the module "dummy_payment" is installed
@@ -23,13 +23,14 @@ Feature: Retrieving shipment for orders
       | message             | test                       |
       | payment module name | dummy_payment              |
       | status              | Awaiting bank wire payment |
+    And I reference order "bo_order1" delivery address as "US"
 
   Scenario: Retrieve shipmets for existing order
     Given the order "bo_order1" should have the following shipments:
       | shipment | shipment1 |
       | id_carrier | default_carrier |
       | tracking_number |  |
-      | id_address | dummy_cart |
+      | id_address | US |
       | shipping_cost_tax_excl | 7.0 |
       | shipping_cost_tax_incl | 7.42 |
     Then the shipment "shipment1" should have the following products:

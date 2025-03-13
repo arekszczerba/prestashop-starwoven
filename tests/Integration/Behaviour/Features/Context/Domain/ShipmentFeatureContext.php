@@ -30,9 +30,9 @@ declare(strict_types=1);
 namespace Tests\Integration\Behaviour\Features\Context\Domain;
 
 use Behat\Gherkin\Node\TableNode;
-use Cart;
 use PHPUnit\Framework\Assert;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentDetails;
 use RuntimeException;
 use Tests\Integration\Behaviour\Features\Context\SharedStorage;
 
@@ -49,11 +49,9 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
     public function verifyOrderShipment(string $orderReference, TableNode $table)
     {
         $data = $table->getRowsHash();
-        $orderId = SharedStorage::getStorage()->get($orderReference);
-        $carrierId = SharedStorage::getStorage()->get($data['id_carrier']);
-        // get address id from cart
-        $addressId = (new Cart(SharedStorage::getStorage()->get($data['id_address'])))->id_address_delivery;
-
+        $orderId = $this->referenceToId($orderReference);
+        $carrierId = $this->referenceToId($data['id_carrier']);
+        $addressId = $this->referenceToId($data['id_address']);
         $shipments = $this->getQueryBus()->handle(
             new GetOrderShipments($orderId)
         );
@@ -73,7 +71,7 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
             Assert::assertEquals($shipment->getAddressId(), $addressId);
             Assert::assertEquals($shipment->getShippingCostTaxExcluded(), $data['shipping_cost_tax_excl']);
             Assert::assertEquals($shipment->getShippingCostTaxIncluded(), $data['shipping_cost_tax_incl']);
-            SharedStorage::getStorage()->set($data['shipment'], $shipment);
+            SharedStorage::getStorage()->set($data['shipment'], $shipment->getId());
         }
     }
 
@@ -86,13 +84,17 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
     public function verifyShipmentProducts(string $shipmentReference, TableNode $table)
     {
         $data = $table->getColumnsHash();
-        $shipment = SharedStorage::getStorage()->get($shipmentReference);
+        $shipmentId = SharedStorage::getStorage()->get($shipmentReference);
+
+        $shipment = $this->getQueryBus()->handle(
+            new GetShipmentDetails($shipmentId)
+        );
 
         $products = $shipment->getProducts();
 
-        Assert::assertEquals($products[0]->getQuantity(), (int) $data[0]['quantity']);
-        Assert::assertEquals($products[1]->getQuantity(), (int) $data[1]['quantity']);
-        Assert::assertEquals($products[0]->getOrderDetailId(), (int) $data[0]['order_detail']);
-        Assert::assertEquals($products[1]->getOrderDetailId(), (int) $data[1]['order_detail']);
+        for ($i = 0; $i < count($products); ++$i) {
+            Assert::assertEquals($products[$i]->getQuantity(), (int) $data[$i]['quantity']);
+            Assert::assertEquals($products[$i]->getOrderDetailId(), (int) $data[$i]['order_detail']);
+        }
     }
 }

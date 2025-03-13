@@ -27,9 +27,15 @@
 namespace PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult;
 
 use DateTime;
+use PrestaShop\Decimal\DecimalNumber;
 
 class OrderShipment
 {
+    /**
+     * @var int
+     */
+    private int $id;
+
     /**
      * @var int
      */
@@ -46,14 +52,14 @@ class OrderShipment
     private int $addressId;
 
     /**
-     * @var float
+     * @var DecimalNumber
      */
-    private float $shippingCostTaxExcluded;
+    private DecimalNumber $shippingCostTaxExcluded;
 
     /**
-     * @var float
+     * @var DecimalNumber
      */
-    private float $shippingCostTaxIncluded;
+    private DecimalNumber $shippingCostTaxIncluded;
 
     /**
      * @var string
@@ -81,17 +87,19 @@ class OrderShipment
     private array $products;
 
     public function __construct(
+        int $id,
         int $orderId,
         int $carrierId,
         int $addressId,
-        float $shippingCostTaxExcluded,
-        float $shippingCostTaxIncluded,
+        DecimalNumber $shippingCostTaxExcluded,
+        DecimalNumber $shippingCostTaxIncluded,
         array $products,
         ?string $trackingNumber,
         ?DateTime $shippedAt,
         ?DateTime $deliveredAt,
         ?DateTime $cancelledAt
     ) {
+        $this->id = $id;
         $this->orderId = $orderId;
         $this->carrierId = $carrierId;
         $this->addressId = $addressId;
@@ -102,6 +110,14 @@ class OrderShipment
         $this->shippedAt = $shippedAt;
         $this->deliveredAt = $deliveredAt;
         $this->cancelledAt = $cancelledAt;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
     }
 
     /**
@@ -129,17 +145,17 @@ class OrderShipment
     }
 
     /**
-     * @return float
+     * @return DecimalNumber
      */
-    public function getShippingCostTaxExcluded(): float
+    public function getShippingCostTaxExcluded(): DecimalNumber
     {
         return $this->shippingCostTaxExcluded;
     }
 
     /**
-     * @return float
+     * @return DecimalNumber
      */
-    public function getShippingCostTaxIncluded(): float
+    public function getShippingCostTaxIncluded(): DecimalNumber
     {
         return $this->shippingCostTaxIncluded;
     }
@@ -179,7 +195,7 @@ class OrderShipment
     /**
      * @return OrderShipmentProduct[]
      */
-    public function getProducts()
+    public function getProducts(): array
     {
         return $this->products;
     }

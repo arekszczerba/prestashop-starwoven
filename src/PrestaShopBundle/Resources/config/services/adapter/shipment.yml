@@ -5,3 +5,5 @@ services:
     autoconfigure: true
 
   PrestaShop\PrestaShop\Adapter\Shipment\QueryHandler\GetOrderShipmentsForViewingHandler:
+
+  PrestaShop\PrestaShop\Adapter\Shipment\QueryHandler\GetShipmentDetailsForViewingHandler:

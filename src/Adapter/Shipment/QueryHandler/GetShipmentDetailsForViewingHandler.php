@@ -29,8 +29,8 @@ namespace PrestaShop\PrestaShop\Adapter\Shipment\QueryHandler;
 use PrestaShop\Decimal\DecimalNumber;
 use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsQueryHandler;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentNotFoundException;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryHandler\GetOrderShipmentForViewingHandlerInterface;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentDetails;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryHandler\GetShipmentDetailsForViewingHandlerInterface;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipment;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipmentProduct;
 use PrestaShopBundle\Entity\Repository\ShipmentRepository;
@@ -38,7 +38,7 @@ use PrestaShopBundle\Entity\ShipmentProduct;
 use Throwable;
 
 #[AsQueryHandler]
-class GetOrderShipmentsForViewingHandler implements GetOrderShipmentForViewingHandlerInterface
+class GetShipmentDetailsForViewingHandler implements GetShipmentDetailsForViewingHandlerInterface
 {
     public function __construct(
         private readonly ShipmentRepository $repository,
@@ -46,38 +46,37 @@ class GetOrderShipmentsForViewingHandler implements GetOrderShipmentForViewingHa
     }
 
     /**
-     * @param GetOrderShipments $query
+     * @param GetShipmentDetails $query
      *
-     * @return OrderShipment[]
+     * @return OrderShipment
      */
-    public function handle(GetOrderShipments $query)
+    public function handle(GetShipmentDetails $query): OrderShipment
     {
-        $shipments = [];
-        $orderId = $query->getOrderId()->getValue();
+        $shipment = [];
+        $shipmentId = $query->getShipmentId()->getValue();
 
         try {
-            $result = $this->repository->findByOrderId($orderId);
+            $result = $this->repository->findOneBy(['id' => $shipmentId]);
         } catch (Throwable $e) {
-            throw new ShipmentNotFoundException(sprintf('Could not find shipment for order with id "%s"', $orderId), 0, $e);
+            throw new ShipmentNotFoundException(sprintf('Could not find shipment with id "%s"', $shipmentId), 0, $e);
         }
-
-        foreach ($result as $shipment) {
-            $shipments[] = new OrderShipment(
-                $shipment->getId(),
-                $shipment->getOrderId(),
-                $shipment->getCarrierId(),
-                $shipment->getAddressId(),
-                new DecimalNumber((string) $shipment->getShippingCostTaxExcluded()),
-                new DecimalNumber((string) $shipment->getShippingCostTaxIncluded()),
-                array_map([$this, 'convert'], $shipment->getProducts()->toArray()),
-                $shipment->getTrakingNumber(),
-                $shipment->getShippedAt(),
-                $shipment->getDeliveredAt(),
-                $shipment->getCancelledAt(),
+        if (!empty($result)) {
+            $shipment = new OrderShipment(
+                $result->getId(),
+                $result->getOrderId(),
+                $result->getCarrierId(),
+                $result->getAddressId(),
+                new DecimalNumber((string) $result->getShippingCostTaxExcluded()),
+                new DecimalNumber((string) $result->getShippingCostTaxIncluded()),
+                array_map([$this, 'convert'], $result->getProducts()->toArray()),
+                $result->getTrakingNumber(),
+                $result->getShippedAt(),
+                $result->getDeliveredAt(),
+                $result->getCancelledAt(),
             );
         }
 
-        return $shipments;
+        return $shipment;
     }
 
     private function convert(ShipmentProduct $product)
