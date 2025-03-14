@@ -152,10 +152,25 @@ class DiscountFeatureContext extends AbstractDomainFeatureContext
      *
      * @param string $discountReference
      */
-    public function createFreeShippingDiscountIWithNoParameters(string $discountReference): void
+    public function createFreeShippingDiscountWithNoParameters(string $discountReference): void
     {
         try {
             $command = new AddFreeShippingDiscountCommand();
+            $this->createDiscount($discountReference, [], $command);
+        } catch (DiscountConstraintException $e) {
+            $this->setLastException($e);
+        }
+    }
+
+    /**
+     * @When I create a free gift discount :discountReference
+     *
+     * @param string $discountReference
+     */
+    public function createFreeGiftDiscountWithNoParameters(string $discountReference): void
+    {
+        try {
+            $command = new AddFreeGiftDiscountCommand();
             $this->createDiscount($discountReference, [], $command);
         } catch (DiscountConstraintException $e) {
             $this->setLastException($e);
