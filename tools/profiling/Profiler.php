@@ -162,6 +162,10 @@ class Profiler
             return $var;
         }
 
+        if (is_array($var)) {
+            return $var;
+        }
+
         return (string) $var;
     }
 
