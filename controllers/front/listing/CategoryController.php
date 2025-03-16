@@ -85,7 +85,7 @@ class CategoryControllerCore extends ProductListingFrontController
         // Get proper IDs
         $id_category = (int) Tools::getValue('id_category');
 
-        // Try to load category object 
+        // Try to load category object
         $this->category = new Category($id_category, $this->context->language->id);
 
         // Otherwise immediately show 404
@@ -103,7 +103,6 @@ class CategoryControllerCore extends ProductListingFrontController
         // we treat it as not available. We will either redirect away or show error, depending
         // on settings of the category.
         if (!$this->category->active || !$this->category->existsInShop($this->context->shop->id)) {
-
             // If category should redirect and we don't know where, we take the closest parent
             if (!$this->category->id_type_redirected && in_array($this->category->redirect_type, [RedirectType::TYPE_PERMANENT, RedirectType::TYPE_TEMPORARY])) {
                 $this->category->id_type_redirected = $this->getCategoryToRedirectTo();
