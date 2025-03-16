@@ -154,7 +154,7 @@ class Profiler
      *
      * @param mixed $var
      *
-     * @return string|object
+     * @return string|object|array
      */
     private function getVarData($var)
     {
