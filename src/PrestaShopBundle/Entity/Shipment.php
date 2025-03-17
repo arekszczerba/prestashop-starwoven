@@ -97,7 +97,7 @@ class Shipment
     /**
      * @ORM\Column(name="tracking_number", type="string", nullable=true)
      */
-    private ?string $trakingNumber;
+    private ?string $trackingNumber;
 
     /**
      * @ORM\Column(name="date_add", type="datetime", nullable=false)
@@ -183,7 +183,7 @@ class Shipment
 
     public function getTrackingNumber(): ?string
     {
-        return $this->trakingNumber;
+        return $this->trackingNumber;
     }
 
     public function getProducts(): Collection
@@ -249,9 +249,9 @@ class Shipment
         return $this;
     }
 
-    public function setTrackingNumber(?string $trakingNumber): self
+    public function setTrackingNumber(?string $trackingNumber): self
     {
-        $this->trakingNumber = $trakingNumber;
+        $this->trackingNumber = $trackingNumber;
 
         return $this;
     }
