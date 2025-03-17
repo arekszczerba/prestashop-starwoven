@@ -52,7 +52,7 @@ class OrderShipmentCreator
         $shipment->setOrderId((int) $order->id);
         $shipment->setCarrierId((int) $order->id_carrier);
         $shipment->setAddressId((int) $order->id_address_delivery);
-        $shipment->setTrakingNumber(null);
+        $shipment->setTrackingNumber(null);
         $shipment->setShippingCostTaxExcluded((float) $order->total_shipping_tax_excl);
         $shipment->setShippingCostTaxIncluded((float) $order->total_shipping_tax_incl);
         $shipment->setDeliveredAt(null);

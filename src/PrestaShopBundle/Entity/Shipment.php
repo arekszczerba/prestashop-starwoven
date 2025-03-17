@@ -181,7 +181,7 @@ class Shipment
         return $this->cancelledAt;
     }
 
-    public function getTrakingNumber(): ?string
+    public function getTrackingNumber(): ?string
     {
         return $this->trakingNumber;
     }
@@ -249,7 +249,7 @@ class Shipment
         return $this;
     }
 
-    public function setTrakingNumber(?string $trakingNumber): self
+    public function setTrackingNumber(?string $trakingNumber): self
     {
         $this->trakingNumber = $trakingNumber;
 
