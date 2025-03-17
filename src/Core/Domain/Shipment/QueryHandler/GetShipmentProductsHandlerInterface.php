@@ -32,7 +32,7 @@ use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipmentProduct;
 /**
  * Defines contract for GetShipmentProductsForViewingHandler.
  */
-interface GetShipmentProductsForViewingHandlerInterface
+interface GetShipmentProductsHandlerInterface
 {
     /**
      * @param GetShipmentProducts $query

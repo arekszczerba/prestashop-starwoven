@@ -59,21 +59,22 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
             throw new RuntimeException($msg);
         }
 
-        foreach ($data as $dataRow) {
-            $carrierId = $this->referenceToId($dataRow['carrier']);
-            $addressId = $this->referenceToId($dataRow['address']);
-            foreach ($shipments as $shipment) {
-                if ($shipment->getOrderId() !== $orderId) {
-                    throw new RuntimeException('Shipment [' . $shipment->getId() . '] does not belong to order [' . $orderId . ']');
-                }
+        for ($i = 0; $i < count($data); ++$i) {
+            $shipmentData = $data[$i];
+            $shipment = $shipments[$i];
+            $carrierId = $this->referenceToId($data[$i]['carrier']);
+            $addressId = $this->referenceToId($data[$i]['address']);
 
-                Assert::assertEquals($shipment->getTrackingNumber(), $dataRow['tracking_number']);
-                Assert::assertEquals($shipment->getCarrierId(), $carrierId);
-                Assert::assertEquals($shipment->getAddressId(), $addressId);
-                Assert::assertEquals($shipment->getShippingCostTaxExcluded(), $dataRow['shipping_cost_tax_excl']);
-                Assert::assertEquals($shipment->getShippingCostTaxIncluded(), $dataRow['shipping_cost_tax_incl']);
-                SharedStorage::getStorage()->set($dataRow['shipment'], $shipment->getId());
+            if ($shipment->getOrderId() !== $orderId) {
+                throw new RuntimeException('Shipment [' . $shipment->getId() . '] does not belong to order [' . $orderId . ']');
             }
+
+            Assert::assertEquals($shipment->getTrackingNumber(), $shipmentData['tracking_number']);
+            Assert::assertEquals($shipment->getCarrierId(), $carrierId);
+            Assert::assertEquals($shipment->getAddressId(), $addressId);
+            Assert::assertEquals($shipment->getShippingCostTaxExcluded(), $shipmentData['shipping_cost_tax_excl']);
+            Assert::assertEquals($shipment->getShippingCostTaxIncluded(), $shipmentData['shipping_cost_tax_incl']);
+            SharedStorage::getStorage()->set($shipmentData['shipment'], $shipment->getId());
         }
     }
 

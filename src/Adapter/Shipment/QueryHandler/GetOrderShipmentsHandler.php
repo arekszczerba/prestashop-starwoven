@@ -26,17 +26,17 @@
 
 namespace PrestaShop\PrestaShop\Adapter\Shipment\QueryHandler;
 
-use OrderDetail;
+use PrestaShop\Decimal\DecimalNumber;
 use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsQueryHandler;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentNotFoundException;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentProducts;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryHandler\GetShipmentProductsForViewingHandlerInterface;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipmentProduct;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryHandler\GetOrderShipmentsHandlerInterface;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipment;
 use PrestaShopBundle\Entity\Repository\ShipmentRepository;
 use Throwable;
 
 #[AsQueryHandler]
-class GetShipmentProductsForViewingHandler implements GetShipmentProductsForViewingHandlerInterface
+class GetOrderShipmentsHandler implements GetOrderShipmentsHandlerInterface
 {
     public function __construct(
         private readonly ShipmentRepository $repository,
@@ -44,31 +44,37 @@ class GetShipmentProductsForViewingHandler implements GetShipmentProductsForView
     }
 
     /**
-     * @param GetShipmentProducts $query
+     * @param GetOrderShipments $query
      *
-     * @return OrderShipmentProduct[]
+     * @return OrderShipment[]
      */
-    public function handle(GetShipmentProducts $query)
+    public function handle(GetOrderShipments $query)
     {
-        $shipmentProducts = [];
-        $shipmentId = $query->getShipmentId()->getValue();
+        $shipments = [];
+        $orderId = $query->getOrderId()->getValue();
 
         try {
-            $result = $this->repository->findOneBy(['id' => $shipmentId]);
+            $result = $this->repository->findByOrderId($orderId);
         } catch (Throwable $e) {
-            throw new ShipmentNotFoundException(sprintf('Could not find shipment with id "%s"', $shipmentId), 0, $e);
-        }
-        if (!empty($result)) {
-            foreach ($result->getProducts() as $product) {
-                $orderDetail = new OrderDetail($product->getOrderDetailId());
-                $shipmentProducts[] = new OrderShipmentProduct(
-                    $product->getOrderDetailId(),
-                    $product->getQuantity(),
-                    $orderDetail->product_name,
-                );
-            }
+            throw new ShipmentNotFoundException(sprintf('Could not find shipment for order with id "%s"', $orderId), 0, $e);
         }
 
-        return $shipmentProducts;
+        foreach ($result as $shipment) {
+            $shipments[] = new OrderShipment(
+                $shipment->getId(),
+                $shipment->getOrderId(),
+                $shipment->getCarrierId(),
+                $shipment->getAddressId(),
+                new DecimalNumber((string) $shipment->getShippingCostTaxExcluded()),
+                new DecimalNumber((string) $shipment->getShippingCostTaxIncluded()),
+                $shipment->getProducts()->count(),
+                $shipment->getTrackingNumber(),
+                $shipment->getShippedAt(),
+                $shipment->getDeliveredAt(),
+                $shipment->getCancelledAt(),
+            );
+        }
+
+        return $shipments;
     }
 }

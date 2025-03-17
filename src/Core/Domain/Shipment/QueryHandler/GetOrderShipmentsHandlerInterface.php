@@ -32,7 +32,7 @@ use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipment;
 /**
  * Defines contract for GetOrderShipmentsHandler.
  */
-interface GetOrderShipmentForViewingHandlerInterface
+interface GetOrderShipmentsHandlerInterface
 {
     /**
      * @param GetOrderShipments $query

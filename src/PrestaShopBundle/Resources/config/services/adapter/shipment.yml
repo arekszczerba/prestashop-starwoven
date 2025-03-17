@@ -4,6 +4,6 @@ services:
     autowire: true
     autoconfigure: true
 
-  PrestaShop\PrestaShop\Adapter\Shipment\QueryHandler\GetOrderShipmentsForViewingHandler:
+  PrestaShop\PrestaShop\Adapter\Shipment\QueryHandler\GetOrderShipmentsHandler:
 
-  PrestaShop\PrestaShop\Adapter\Shipment\QueryHandler\GetShipmentProductsForViewingHandler:
+  PrestaShop\PrestaShop\Adapter\Shipment\QueryHandler\GetShipmentProductsHandler:

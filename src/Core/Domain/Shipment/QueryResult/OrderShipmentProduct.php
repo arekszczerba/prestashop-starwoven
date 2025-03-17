@@ -31,7 +31,7 @@ class OrderShipmentProduct
     public function __construct(
         private int $orderDetailId,
         private int $quantity,
-        private ?string $productName
+        private string $productName
     ) {
     }
 
@@ -48,7 +48,7 @@ class OrderShipmentProduct
      */
     public function getProductName(): string
     {
-        return $this->productName ?? '';
+        return $this->productName;
     }
 
     /**
