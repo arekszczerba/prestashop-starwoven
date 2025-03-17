@@ -28,7 +28,7 @@ use PrestaShop\PrestaShop\Core\Domain\Shipment\ValueObject\ShipmentId;
 /**
  * Get shipment.
  */
-class GetShipmentDetails
+class GetShipmentProducts
 {
     /**
      * @var ShipmentId

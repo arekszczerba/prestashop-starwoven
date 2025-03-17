@@ -28,29 +28,11 @@ namespace PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult;
 
 class OrderShipmentProduct
 {
-    /**
-     * @var int
-     */
-    private int $orderDetailId;
-
-    /**
-     * @var int
-     */
-    private int $quantity;
-
-    /**
-     * @var string
-     */
-    private ?string $productName;
-
     public function __construct(
-        int $orderDetailId,
-        int $quantity,
-        ?string $productName
+        private int $orderDetailId,
+        private int $quantity,
+        private ?string $productName
     ) {
-        $this->orderDetailId = $orderDetailId;
-        $this->quantity = $quantity;
-        $this->productName = $productName;
     }
 
     /**

@@ -32,7 +32,7 @@ namespace Tests\Integration\Behaviour\Features\Context\Domain;
 use Behat\Gherkin\Node\TableNode;
 use PHPUnit\Framework\Assert;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentDetails;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentProducts;
 use RuntimeException;
 use Tests\Integration\Behaviour\Features\Context\SharedStorage;
 
@@ -48,10 +48,8 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
      */
     public function verifyOrderShipment(string $orderReference, TableNode $table)
     {
-        $data = $table->getRowsHash();
+        $data = $table->getColumnsHash();
         $orderId = $this->referenceToId($orderReference);
-        $carrierId = $this->referenceToId($data['id_carrier']);
-        $addressId = $this->referenceToId($data['id_address']);
         $shipments = $this->getQueryBus()->handle(
             new GetOrderShipments($orderId)
         );
@@ -61,17 +59,21 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
             throw new RuntimeException($msg);
         }
 
-        foreach ($shipments as $shipment) {
-            if ($shipment->getOrderId() !== $orderId) {
-                throw new RuntimeException('Shipment [' . $shipment->getId() . '] does not belong to order [' . $orderId . ']');
-            }
+        foreach ($data as $dataRow) {
+            $carrierId = $this->referenceToId($dataRow['carrier']);
+            $addressId = $this->referenceToId($dataRow['address']);
+            foreach ($shipments as $shipment) {
+                if ($shipment->getOrderId() !== $orderId) {
+                    throw new RuntimeException('Shipment [' . $shipment->getId() . '] does not belong to order [' . $orderId . ']');
+                }
 
-            Assert::assertEquals($shipment->getTrackingNumber(), $data['tracking_number']);
-            Assert::assertEquals($shipment->getCarrierId(), $carrierId);
-            Assert::assertEquals($shipment->getAddressId(), $addressId);
-            Assert::assertEquals($shipment->getShippingCostTaxExcluded(), $data['shipping_cost_tax_excl']);
-            Assert::assertEquals($shipment->getShippingCostTaxIncluded(), $data['shipping_cost_tax_incl']);
-            SharedStorage::getStorage()->set($data['shipment'], $shipment->getId());
+                Assert::assertEquals($shipment->getTrackingNumber(), $dataRow['tracking_number']);
+                Assert::assertEquals($shipment->getCarrierId(), $carrierId);
+                Assert::assertEquals($shipment->getAddressId(), $addressId);
+                Assert::assertEquals($shipment->getShippingCostTaxExcluded(), $dataRow['shipping_cost_tax_excl']);
+                Assert::assertEquals($shipment->getShippingCostTaxIncluded(), $dataRow['shipping_cost_tax_incl']);
+                SharedStorage::getStorage()->set($dataRow['shipment'], $shipment->getId());
+            }
         }
     }
 
@@ -87,7 +89,7 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
         $shipmentId = SharedStorage::getStorage()->get($shipmentReference);
 
         $shipmentProducts = $this->getQueryBus()->handle(
-            new GetShipmentDetails($shipmentId)
+            new GetShipmentProducts($shipmentId)
         );
 
         for ($i = 0; $i < count($shipmentProducts); ++$i) {

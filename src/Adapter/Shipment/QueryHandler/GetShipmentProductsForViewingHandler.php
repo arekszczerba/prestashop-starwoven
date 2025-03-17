@@ -29,14 +29,14 @@ namespace PrestaShop\PrestaShop\Adapter\Shipment\QueryHandler;
 use OrderDetail;
 use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsQueryHandler;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentNotFoundException;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentDetails;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryHandler\GetShipmentDetailsForViewingHandlerInterface;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentProducts;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryHandler\GetShipmentProductsForViewingHandlerInterface;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipmentProduct;
 use PrestaShopBundle\Entity\Repository\ShipmentRepository;
 use Throwable;
 
 #[AsQueryHandler]
-class GetShipmentDetailsForViewingHandler implements GetShipmentDetailsForViewingHandlerInterface
+class GetShipmentProductsForViewingHandler implements GetShipmentProductsForViewingHandlerInterface
 {
     public function __construct(
         private readonly ShipmentRepository $repository,
@@ -44,11 +44,11 @@ class GetShipmentDetailsForViewingHandler implements GetShipmentDetailsForViewin
     }
 
     /**
-     * @param GetShipmentDetails $query
+     * @param GetShipmentProducts $query
      *
      * @return OrderShipmentProduct[]
      */
-    public function handle(GetShipmentDetails $query)
+    public function handle(GetShipmentProducts $query)
     {
         $shipmentProducts = [];
         $shipmentId = $query->getShipmentId()->getValue();

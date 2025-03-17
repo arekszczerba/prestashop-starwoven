@@ -27,13 +27,9 @@ Feature: Retrieving shipment for orders
 
   Scenario: Retrieve shipmets for existing order
     Given the order "bo_order1" should have the following shipments:
-      | shipment | shipment1 |
-      | id_carrier | default_carrier |
-      | tracking_number |  |
-      | id_address | US |
-      | shipping_cost_tax_excl | 7.0 |
-      | shipping_cost_tax_incl | 7.42 |
+      | shipment  | carrier         | tracking_number | address | shipping_cost_tax_excl | shipping_cost_tax_incl |
+      | shipment1 | default_carrier |                 | US      |                    7.0 |                   7.42 |
     Then the shipment "shipment1" should have the following products:
-      | product_name | quantity |
-      | Mug The best is yet to come | 1 |
-      | Mug Today is a good day | 2 |
+      | product_name                | quantity |
+      | Mug The best is yet to come |        1 |
+      | Mug Today is a good day     |        2 |

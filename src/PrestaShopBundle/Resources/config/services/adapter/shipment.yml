@@ -6,4 +6,4 @@ services:
 
   PrestaShop\PrestaShop\Adapter\Shipment\QueryHandler\GetOrderShipmentsForViewingHandler:
 
-  PrestaShop\PrestaShop\Adapter\Shipment\QueryHandler\GetShipmentDetailsForViewingHandler:
+  PrestaShop\PrestaShop\Adapter\Shipment\QueryHandler\GetShipmentProductsForViewingHandler:

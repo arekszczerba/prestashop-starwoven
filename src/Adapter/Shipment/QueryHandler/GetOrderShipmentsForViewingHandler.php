@@ -67,7 +67,7 @@ class GetOrderShipmentsForViewingHandler implements GetOrderShipmentForViewingHa
                 $shipment->getAddressId(),
                 new DecimalNumber((string) $shipment->getShippingCostTaxExcluded()),
                 new DecimalNumber((string) $shipment->getShippingCostTaxIncluded()),
-                count($shipment->getProducts()),
+                $shipment->getProducts()->count(),
                 $shipment->getTrakingNumber(),
                 $shipment->getShippedAt(),
                 $shipment->getDeliveredAt(),
