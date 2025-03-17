@@ -26,15 +26,13 @@
 
 namespace PrestaShop\PrestaShop\Adapter\Shipment\QueryHandler;
 
-use PrestaShop\Decimal\DecimalNumber;
+use OrderDetail;
 use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsQueryHandler;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentNotFoundException;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentDetails;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryHandler\GetShipmentDetailsForViewingHandlerInterface;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipment;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipmentProduct;
 use PrestaShopBundle\Entity\Repository\ShipmentRepository;
-use PrestaShopBundle\Entity\ShipmentProduct;
 use Throwable;
 
 #[AsQueryHandler]
@@ -48,11 +46,11 @@ class GetShipmentDetailsForViewingHandler implements GetShipmentDetailsForViewin
     /**
      * @param GetShipmentDetails $query
      *
-     * @return OrderShipment
+     * @return OrderShipmentProduct[]
      */
-    public function handle(GetShipmentDetails $query): OrderShipment
+    public function handle(GetShipmentDetails $query)
     {
-        $shipment = [];
+        $shipmentProducts = [];
         $shipmentId = $query->getShipmentId()->getValue();
 
         try {
@@ -61,29 +59,16 @@ class GetShipmentDetailsForViewingHandler implements GetShipmentDetailsForViewin
             throw new ShipmentNotFoundException(sprintf('Could not find shipment with id "%s"', $shipmentId), 0, $e);
         }
         if (!empty($result)) {
-            $shipment = new OrderShipment(
-                $result->getId(),
-                $result->getOrderId(),
-                $result->getCarrierId(),
-                $result->getAddressId(),
-                new DecimalNumber((string) $result->getShippingCostTaxExcluded()),
-                new DecimalNumber((string) $result->getShippingCostTaxIncluded()),
-                array_map([$this, 'convert'], $result->getProducts()->toArray()),
-                $result->getTrakingNumber(),
-                $result->getShippedAt(),
-                $result->getDeliveredAt(),
-                $result->getCancelledAt(),
-            );
+            foreach ($result->getProducts() as $product) {
+                $orderDetail = new OrderDetail($product->getOrderDetailId());
+                $shipmentProducts[] = new OrderShipmentProduct(
+                    $product->getOrderDetailId(),
+                    $product->getQuantity(),
+                    $orderDetail->product_name,
+                );
+            }
         }
 
-        return $shipment;
-    }
-
-    private function convert(ShipmentProduct $product)
-    {
-        return new OrderShipmentProduct(
-            $product->getOrderDetailId(),
-            $product->getQuantity(),
-        );
+        return $shipmentProducts;
     }
 }

@@ -82,9 +82,9 @@ class OrderShipment
     private ?DateTime $cancelledAt;
 
     /**
-     * @var OrderShipmentProduct[]
+     * @var int
      */
-    private array $products;
+    private int $productsCount;
 
     public function __construct(
         int $id,
@@ -93,7 +93,7 @@ class OrderShipment
         int $addressId,
         DecimalNumber $shippingCostTaxExcluded,
         DecimalNumber $shippingCostTaxIncluded,
-        array $products,
+        int $productsCount,
         ?string $trackingNumber,
         ?DateTime $shippedAt,
         ?DateTime $deliveredAt,
@@ -105,7 +105,7 @@ class OrderShipment
         $this->addressId = $addressId;
         $this->shippingCostTaxExcluded = $shippingCostTaxExcluded;
         $this->shippingCostTaxIncluded = $shippingCostTaxIncluded;
-        $this->products = $products;
+        $this->productsCount = $productsCount;
         $this->trackingNumber = $trackingNumber;
         $this->shippedAt = $shippedAt;
         $this->deliveredAt = $deliveredAt;
@@ -193,10 +193,10 @@ class OrderShipment
     }
 
     /**
-     * @return OrderShipmentProduct[]
+     * @return int
      */
-    public function getProducts(): array
+    public function getProductsCount(): int
     {
-        return $this->products;
+        return $this->productsCount;
     }
 }

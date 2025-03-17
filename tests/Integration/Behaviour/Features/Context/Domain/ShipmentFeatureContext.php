@@ -86,15 +86,13 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
         $data = $table->getColumnsHash();
         $shipmentId = SharedStorage::getStorage()->get($shipmentReference);
 
-        $shipment = $this->getQueryBus()->handle(
+        $shipmentProducts = $this->getQueryBus()->handle(
             new GetShipmentDetails($shipmentId)
         );
 
-        $products = $shipment->getProducts();
-
-        for ($i = 0; $i < count($products); ++$i) {
-            Assert::assertEquals($products[$i]->getQuantity(), (int) $data[$i]['quantity']);
-            Assert::assertEquals($products[$i]->getOrderDetailId(), (int) $data[$i]['order_detail']);
+        for ($i = 0; $i < count($shipmentProducts); ++$i) {
+            Assert::assertEquals($shipmentProducts[$i]->getQuantity(), (int) $data[$i]['quantity']);
+            Assert::assertEquals($shipmentProducts[$i]->getProductName(), $data[$i]['product_name']);
         }
     }
 }

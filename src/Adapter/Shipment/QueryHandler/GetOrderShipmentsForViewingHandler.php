@@ -32,9 +32,7 @@ use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentNotFoundExcepti
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryHandler\GetOrderShipmentForViewingHandlerInterface;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipment;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipmentProduct;
 use PrestaShopBundle\Entity\Repository\ShipmentRepository;
-use PrestaShopBundle\Entity\ShipmentProduct;
 use Throwable;
 
 #[AsQueryHandler]
@@ -69,7 +67,7 @@ class GetOrderShipmentsForViewingHandler implements GetOrderShipmentForViewingHa
                 $shipment->getAddressId(),
                 new DecimalNumber((string) $shipment->getShippingCostTaxExcluded()),
                 new DecimalNumber((string) $shipment->getShippingCostTaxIncluded()),
-                array_map([$this, 'convert'], $shipment->getProducts()->toArray()),
+                count($shipment->getProducts()),
                 $shipment->getTrakingNumber(),
                 $shipment->getShippedAt(),
                 $shipment->getDeliveredAt(),
@@ -78,13 +76,5 @@ class GetOrderShipmentsForViewingHandler implements GetOrderShipmentForViewingHa
         }
 
         return $shipments;
-    }
-
-    private function convert(ShipmentProduct $product)
-    {
-        return new OrderShipmentProduct(
-            $product->getOrderDetailId(),
-            $product->getQuantity(),
-        );
     }
 }

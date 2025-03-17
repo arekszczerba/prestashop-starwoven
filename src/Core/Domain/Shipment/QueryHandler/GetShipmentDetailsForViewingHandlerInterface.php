@@ -27,7 +27,7 @@
 namespace PrestaShop\PrestaShop\Core\Domain\Shipment\QueryHandler;
 
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentDetails;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipment;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipmentProduct;
 
 /**
  * Defines contract for GetShipmentForViewingHandler.
@@ -37,7 +37,7 @@ interface GetShipmentDetailsForViewingHandlerInterface
     /**
      * @param GetShipmentDetails $query
      *
-     * @return OrderShipment
+     * @return OrderShipmentProduct[]
      */
-    public function handle(GetShipmentDetails $query): OrderShipment;
+    public function handle(GetShipmentDetails $query);
 }

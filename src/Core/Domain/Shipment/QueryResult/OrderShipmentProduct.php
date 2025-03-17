@@ -38,12 +38,19 @@ class OrderShipmentProduct
      */
     private int $quantity;
 
+    /**
+     * @var string
+     */
+    private ?string $productName;
+
     public function __construct(
         int $orderDetailId,
-        int $quantity
+        int $quantity,
+        ?string $productName
     ) {
         $this->orderDetailId = $orderDetailId;
         $this->quantity = $quantity;
+        $this->productName = $productName;
     }
 
     /**
@@ -52,6 +59,14 @@ class OrderShipmentProduct
     public function getOrderDetailId(): int
     {
         return $this->orderDetailId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProductName(): string
+    {
+        return $this->productName;
     }
 
     /**
