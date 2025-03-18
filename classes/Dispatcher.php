@@ -814,7 +814,7 @@ class DispatcherCore
     /**
      * Sets the controller
      *
-     * @return null
+     * @return $this
      */
     public function setController(string $controller): self
     {
@@ -830,7 +830,7 @@ class DispatcherCore
     /**
      * Sets the front controller
      *
-     * @return null
+     * @return $this
      */
     public function setFrontController(int $front_controller): self
     {
