@@ -71,10 +71,6 @@ class CartRuleBuilder
                 $cartRule->reduction_tax = $command->getAmountDiscount()->isTaxIncluded();
             }
         } elseif ($command instanceof AddFreeGiftDiscountCommand) {
-            $cartRule->reduction_percent = 100;
-            $cartRule->reduction_amount = 0;
-            $cartRule->reduction_currency = 0;
-            $cartRule->reduction_tax = false;
             $cartRule->gift_product = 1;
             $cartRule->gift_product_attribute = 2;
         }

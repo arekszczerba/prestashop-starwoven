@@ -27,11 +27,62 @@
 namespace PrestaShop\PrestaShop\Core\Domain\Discount\Command;
 
 use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountType;
+use PrestaShop\PrestaShop\Core\Domain\Product\Combination\ValueObject\CombinationId;
+use PrestaShop\PrestaShop\Core\Domain\Product\Combination\ValueObject\CombinationIdInterface;
+use PrestaShop\PrestaShop\Core\Domain\Product\Combination\ValueObject\NoCombinationId;
+use PrestaShop\PrestaShop\Core\Domain\Product\ValueObject\ProductId;
 
 class AddFreeGiftDiscountCommand extends AddDiscountCommand
 {
+    private ?ProductId $productId;
+    private ?CombinationIdInterface $combinationId;
+
     public function __construct()
     {
         parent::__construct(DiscountType::FREE_GIFT);
+    }
+
+    /**
+     * @return ProductId
+     */
+    public function getProductId(): ProductId
+    {
+        return $this->productId;
+    }
+
+    /**
+     * @param int $productId
+     *
+     * @return $this
+     */
+    public function setProductId(int $productId): self
+    {
+        $this->productId = new ProductId($productId);;
+
+        return $this;
+    }
+
+    /**
+     * @return CombinationIdInterface
+     */
+    public function getCombinationId(): CombinationIdInterface
+    {
+        return $this->combinationId;
+    }
+
+    /**
+     * @param int $combinationId
+     *
+     * @return $this
+     */
+    public function setCombinationId(int $combinationId): self
+    {
+        if (NoCombinationId::NO_COMBINATION_ID === $combinationId) {
+            $this->combinationId = new NoCombinationId();
+        } else {
+            $this->combinationId = new CombinationId($combinationId);
+        }
+
+        return $this;
     }
 }

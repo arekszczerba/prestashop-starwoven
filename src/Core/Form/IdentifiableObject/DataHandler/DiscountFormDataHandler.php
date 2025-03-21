@@ -42,6 +42,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DiscountFormDataHandler implements FormDataHandlerInterface
 {
+    public const PRODUCT_ID = 1;
+    public const COMBINATION_ID = 2;
+
     public function __construct(
         protected readonly CommandBusInterface $commandBus,
         #[Autowire(service: 'prestashop.default.language.context')]
@@ -69,7 +72,9 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
                 break;
             case DiscountType::FREE_GIFT:
                 $command = new AddFreeGiftDiscountCommand();
-                $name = $this->translator->trans('On cart amount', [], 'Admin.Catalog.Feature');
+                $command->setProductId(self::PRODUCT_ID);
+                $command->setCombinationId(self::COMBINATION_ID);
+                $name = $this->translator->trans('On free gift', [], 'Admin.Catalog.Feature');
                 break;
             default:
                 throw new RuntimeException('Unknown discount type ' . $discountType);
