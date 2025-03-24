@@ -18,23 +18,27 @@ Feature: Add discount
   Scenario: Create a simple discount with free gift
     When I create a free gift discount "basic_free_gift_discount"
     Then discount "basic_free_gift_discount" should have the following properties:
-      | active        | false |
+      | active           | false |
 
   Scenario: Create a complete discount with free gift
     When I create a free gift discount "complete_free_gift_discount" with following properties:
-      | name[en-US]       | Promotion              |
-      | name[fr-FR]       | Promotion fr           |
-      | active            | true                   |
-      | valid_from        | 2019-01-01 11:05:00    |
-      | valid_to          | 2019-12-01 00:00:00    |
-      | code              | FREE_GIFT_2019         |
+      | name[en-US]      | Promotion              |
+      | name[fr-FR]      | Promotion fr           |
+      | active           | true                   |
+      | valid_from       | 2019-01-01 11:05:00    |
+      | valid_to         | 2019-12-01 00:00:00    |
+      | code             | FREE_GIFT_2019         |
+      | gift_product     | 1                      |
+      | gift_combination | 2                      |
     Then discount "complete_free_gift_discount" should have the following properties:
-      | name[en-US]       | Promotion              |
-      | name[fr-FR]       | Promotion fr           |
-      | active            | true                   |
-      | valid_from        | 2019-01-01 11:05:00    |
-      | valid_to          | 2019-12-01 00:00:00    |
-      | code              | FREE_GIFT_2019         |
+      | name[en-US]      | Promotion              |
+      | name[fr-FR]      | Promotion fr           |
+      | active           | true                   |
+      | valid_from       | 2019-01-01 11:05:00    |
+      | valid_to         | 2019-12-01 00:00:00    |
+      | code             | FREE_GIFT_2019         |
+      | gift_product     | 1                      |
+      | gift_combination | 2                      |
 
   Scenario: Create a discount with free gift online but without names should be forbidden
     When I create a free gift discount "invalid_free_gift_discount" with following properties:
@@ -42,10 +46,10 @@ Feature: Add discount
     Then I should get error that discount field name is invalid
     # Discount online with name only in default language is valid though
     When I create a free gift discount "default_language_free_gift_discount" with following properties:
-      | active      | true      |
-      | name[en-US] | Promotion |
-      | name[fr-FR] |           |
+      | active           | true      |
+      | name[en-US]      | Promotion |
+      | name[fr-FR]      |           |
     Then discount "default_language_free_gift_discount" should have the following properties:
-      | active      | true      |
-      | name[en-US] | Promotion |
-      | name[fr-FR] |           |
+      | active           | true      |
+      | name[en-US]      | Promotion |
+      | name[fr-FR]      |           |

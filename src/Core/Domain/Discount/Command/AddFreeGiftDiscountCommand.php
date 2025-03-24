@@ -34,8 +34,8 @@ use PrestaShop\PrestaShop\Core\Domain\Product\ValueObject\ProductId;
 
 class AddFreeGiftDiscountCommand extends AddDiscountCommand
 {
-    private ?ProductId $productId;
-    private ?CombinationIdInterface $combinationId;
+    private ?ProductId $productId = null;
+    private ?CombinationIdInterface $combinationId = null;
 
     public function __construct()
     {
@@ -45,7 +45,7 @@ class AddFreeGiftDiscountCommand extends AddDiscountCommand
     /**
      * @return ProductId
      */
-    public function getProductId(): ProductId
+    public function getProductId(): ?ProductId
     {
         return $this->productId;
     }
@@ -57,7 +57,7 @@ class AddFreeGiftDiscountCommand extends AddDiscountCommand
      */
     public function setProductId(int $productId): self
     {
-        $this->productId = new ProductId($productId);;
+        $this->productId = new ProductId($productId);
 
         return $this;
     }
@@ -65,7 +65,7 @@ class AddFreeGiftDiscountCommand extends AddDiscountCommand
     /**
      * @return CombinationIdInterface
      */
-    public function getCombinationId(): CombinationIdInterface
+    public function getCombinationId(): ?CombinationIdInterface
     {
         return $this->combinationId;
     }

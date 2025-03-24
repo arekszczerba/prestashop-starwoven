@@ -71,8 +71,8 @@ class CartRuleBuilder
                 $cartRule->reduction_tax = $command->getAmountDiscount()->isTaxIncluded();
             }
         } elseif ($command instanceof AddFreeGiftDiscountCommand) {
-            $cartRule->gift_product = 1;
-            $cartRule->gift_product_attribute = 2;
+            $cartRule->gift_product = $command->getProductId()?->getValue() ?? 0;
+            $cartRule->gift_product_attribute = $command->getCombinationId()?->getValue() ?? 0;
         }
 
         if ($command instanceof AddProductLevelDiscountCommand) {

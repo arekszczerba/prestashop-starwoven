@@ -305,6 +305,16 @@ class DiscountFeatureContext extends AbstractDomainFeatureContext
             }
         }
 
+        if ($command instanceof AddFreeGiftDiscountCommand) {
+            if (!empty($data['gift_product'])) {
+                $command->setProductId((int) $data['gift_product']);
+            }
+
+            if (!empty($data['gift_combination'])) {
+                $command->setCombinationId((int) $data['gift_combination']);
+            }
+        }
+
         /** @var DiscountId $discountId */
         $discountId = $this->getCommandBus()->handle($command);
         $this->getSharedStorage()->set($cartRuleReference, $discountId->getValue());
