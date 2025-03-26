@@ -1,14 +1,12 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-// Import pages
-import addTitlePage from '@pages/BO/shopParameters/customerSettings/titles/add';
-
 import {
   boCustomerSettingsPage,
   boDashboardPage,
   boLoginPage,
   boTitlesPage,
+  boTitlesCreatePage,
   type BrowserContext,
   FakerTitle,
   type Page,
@@ -90,14 +88,14 @@ describe('BO - Shop Parameters - Customer Settings : Bulk actions', async () => 
 
         await boTitlesPage.goToAddNewTitle(page);
 
-        const pageTitle = await addTitlePage.getPageTitle(page);
-        expect(pageTitle).to.contains(addTitlePage.pageTitleCreate);
+        const pageTitle = await boTitlesCreatePage.getPageTitle(page);
+        expect(pageTitle).to.contains(boTitlesCreatePage.pageTitleCreate);
       });
 
       it('should create title and check result', async function () {
         await testContext.addContextItem(this, 'testIdentifier', `CreateTitle${index + 1}`, baseContext);
 
-        const textResult = await addTitlePage.createEditTitle(page, titleToCreate);
+        const textResult = await boTitlesCreatePage.createEditTitle(page, titleToCreate);
         expect(textResult).to.contains(boTitlesPage.successfulCreationMessage);
 
         const numberOfTitlesAfterCreation = await boTitlesPage.getNumberOfElementInGrid(page);

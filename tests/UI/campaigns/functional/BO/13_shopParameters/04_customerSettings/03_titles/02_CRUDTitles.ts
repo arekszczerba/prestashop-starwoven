@@ -1,14 +1,12 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-// Import pages
-import addTitlePage from '@pages/BO/shopParameters/customerSettings/titles/add';
-
 import {
   boCustomerSettingsPage,
   boDashboardPage,
   boLoginPage,
   boTitlesPage,
+  boTitlesCreatePage,
   type BrowserContext,
   FakerTitle,
   type Page,
@@ -93,14 +91,14 @@ describe('BO - Shop Parameters - Customer Settings : Create, update and delete t
 
       await boTitlesPage.goToAddNewTitle(page);
 
-      const pageTitle = await addTitlePage.getPageTitle(page);
-      expect(pageTitle).to.eq(addTitlePage.pageTitleCreate);
+      const pageTitle = await boTitlesCreatePage.getPageTitle(page);
+      expect(pageTitle).to.eq(boTitlesCreatePage.pageTitleCreate);
     });
 
     it('should create title and check result', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'createTitle', baseContext);
 
-      const textResult = await addTitlePage.createEditTitle(page, createTitleData);
+      const textResult = await boTitlesCreatePage.createEditTitle(page, createTitleData);
       expect(textResult).to.contains(boTitlesPage.successfulCreationMessage);
 
       const numberOfTitlesAfterCreation = await boTitlesPage.getNumberOfElementInGrid(page);
@@ -124,14 +122,14 @@ describe('BO - Shop Parameters - Customer Settings : Create, update and delete t
 
       await boTitlesPage.gotoEditTitlePage(page, 1);
 
-      const pageTitle = await addTitlePage.getPageTitle(page);
-      expect(pageTitle).to.contains(addTitlePage.pageTitleEdit(createTitleData.name));
+      const pageTitle = await boTitlesCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contains(boTitlesCreatePage.pageTitleEdit(createTitleData.name));
     });
 
     it('should update title', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'updateTitle', baseContext);
 
-      const textResult = await addTitlePage.createEditTitle(page, editTitleData);
+      const textResult = await boTitlesCreatePage.createEditTitle(page, editTitleData);
       expect(textResult).to.contains(boTitlesPage.successfulUpdateMessage);
 
       const numberOfTitlesAfterUpdate = await boTitlesPage.resetAndGetNumberOfLines(page);

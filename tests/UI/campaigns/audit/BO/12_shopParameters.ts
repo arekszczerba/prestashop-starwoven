@@ -2,7 +2,6 @@ import {expect} from 'chai';
 import testContext from '@utils/testContext';
 
 // Import pages
-import addTitlePage from '@pages/BO/shopParameters/customerSettings/titles/add';
 import addContactPage from '@pages/BO/shopParameters/contact/add';
 import seoAndUrlsPage from '@pages/BO/shopParameters/trafficAndSeo/seoAndUrls';
 import addSeoAndUrlPage from '@pages/BO/shopParameters/trafficAndSeo/seoAndUrls/add';
@@ -31,6 +30,7 @@ import {
   boStoresPage,
   boStoresCreatePage,
   boTitlesPage,
+  boTitlesCreatePage,
   type BrowserContext,
   type Page,
   utilsPlaywright,
@@ -266,8 +266,8 @@ describe('BO - Shop Parameters', async () => {
 
     await boTitlesPage.goToAddNewTitle(page);
 
-    const pageTitle = await addTitlePage.getPageTitle(page);
-    expect(pageTitle).to.eq(addTitlePage.pageTitleCreate);
+    const pageTitle = await boTitlesCreatePage.getPageTitle(page);
+    expect(pageTitle).to.eq(boTitlesCreatePage.pageTitleCreate);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
