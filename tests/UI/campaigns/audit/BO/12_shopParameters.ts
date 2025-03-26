@@ -2,7 +2,6 @@ import {expect} from 'chai';
 import testContext from '@utils/testContext';
 
 // Import pages
-import titlesPage from '@pages/BO/shopParameters/customerSettings/titles';
 import addTitlePage from '@pages/BO/shopParameters/customerSettings/titles/add';
 import addContactPage from '@pages/BO/shopParameters/contact/add';
 import seoAndUrlsPage from '@pages/BO/shopParameters/trafficAndSeo/seoAndUrls';
@@ -31,6 +30,7 @@ import {
   boSearchAliasCreatePage,
   boStoresPage,
   boStoresCreatePage,
+  boTitlesPage,
   type BrowserContext,
   type Page,
   utilsPlaywright,
@@ -254,8 +254,8 @@ describe('BO - Shop Parameters', async () => {
 
     await boCustomerSettingsPage.goToTitlesPage(page);
 
-    const pageTitle = await titlesPage.getPageTitle(page);
-    expect(pageTitle).to.contains(titlesPage.pageTitle);
+    const pageTitle = await boTitlesPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boTitlesPage.pageTitle);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
@@ -264,7 +264,7 @@ describe('BO - Shop Parameters', async () => {
   it('should go to \'Shop parameters > Customer Settings > Titles > New Title\' page', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToAddNewTitle', baseContext);
 
-    await titlesPage.goToAddNewTitle(page);
+    await boTitlesPage.goToAddNewTitle(page);
 
     const pageTitle = await addTitlePage.getPageTitle(page);
     expect(pageTitle).to.eq(addTitlePage.pageTitleCreate);
@@ -277,7 +277,7 @@ describe('BO - Shop Parameters', async () => {
     await testContext.addContextItem(this, 'testIdentifier', 'goToEditTitlePage', baseContext);
 
     await boCustomerSettingsPage.goToTitlesPage(page);
-    await titlesPage.gotoEditTitlePage(page, 1);
+    await boTitlesPage.gotoEditTitlePage(page, 1);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
