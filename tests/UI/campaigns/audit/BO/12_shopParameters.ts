@@ -2,7 +2,6 @@ import {expect} from 'chai';
 import testContext from '@utils/testContext';
 
 // Import pages
-import addContactPage from '@pages/BO/shopParameters/contact/add';
 import seoAndUrlsPage from '@pages/BO/shopParameters/trafficAndSeo/seoAndUrls';
 import addSeoAndUrlPage from '@pages/BO/shopParameters/trafficAndSeo/seoAndUrls/add';
 import searchEnginesPage from '@pages/BO/shopParameters/trafficAndSeo/searchEngines';
@@ -12,6 +11,7 @@ import addTagPage from '@pages/BO/shopParameters/search/tags/add';
 
 import {
   boContactsPage,
+  boContactsCreatePage,
   boCustomerSettingsPage,
   boCustomerGroupsPage,
   boCustomerGroupsCreatePage,
@@ -305,8 +305,8 @@ describe('BO - Shop Parameters', async () => {
 
     await boContactsPage.goToAddNewContactPage(page);
 
-    const pageTitle = await addContactPage.getPageTitle(page);
-    expect(pageTitle).to.contains(addContactPage.pageTitleCreate);
+    const pageTitle = await boContactsCreatePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boContactsCreatePage.pageTitleCreate);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
@@ -323,8 +323,8 @@ describe('BO - Shop Parameters', async () => {
 
     await boContactsPage.goToEditContactPage(page, 1);
 
-    const pageTitle = await addContactPage.getPageTitle(page);
-    expect(pageTitle).to.contains(addContactPage.pageTitleEdit);
+    const pageTitle = await boContactsCreatePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boContactsCreatePage.pageTitleEdit);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
