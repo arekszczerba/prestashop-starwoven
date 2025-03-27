@@ -1,14 +1,13 @@
-// Import utils
 import testContext from '@utils/testContext';
+import {expect} from 'chai';
 
 // Import pages
-import seoAndUrlsPage from '@pages/BO/shopParameters/trafficAndSeo/seoAndUrls';
 import searchEnginesPage from '@pages/BO/shopParameters/trafficAndSeo/searchEngines';
 
-import {expect} from 'chai';
 import {
   boDashboardPage,
   boLoginPage,
+  boSeoUrlsPage,
   type BrowserContext,
   dataSearchEngines,
   type Page,
@@ -57,14 +56,14 @@ describe('BO - Shop Parameters - Traffic & SEO : Filter, sort and pagination sea
       boDashboardPage.trafficAndSeoLink,
     );
 
-    const pageTitle = await seoAndUrlsPage.getPageTitle(page);
-    expect(pageTitle).to.contains(seoAndUrlsPage.pageTitle);
+    const pageTitle = await boSeoUrlsPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boSeoUrlsPage.pageTitle);
   });
 
   it('should go to \'Search Engines\' pge', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToSearchEnginesPage', baseContext);
 
-    await seoAndUrlsPage.goToSearchEnginesPage(page);
+    await boSeoUrlsPage.goToSearchEnginesPage(page);
 
     const pageTitle = await searchEnginesPage.getPageTitle(page);
     expect(pageTitle).to.contains(searchEnginesPage.pageTitle);

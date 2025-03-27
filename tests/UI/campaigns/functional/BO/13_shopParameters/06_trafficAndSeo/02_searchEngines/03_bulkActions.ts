@@ -1,15 +1,14 @@
-// Import utils
 import testContext from '@utils/testContext';
+import {expect} from 'chai';
 
-// Import pages
-import seoAndUrlsPage from '@pages/BO/shopParameters/trafficAndSeo/seoAndUrls';
+// Import pages=
 import searchEnginesPage from '@pages/BO/shopParameters/trafficAndSeo/searchEngines';
 import addSearchEnginePage from '@pages/BO/shopParameters/trafficAndSeo/searchEngines/add';
 
-import {expect} from 'chai';
 import {
   boDashboardPage,
   boLoginPage,
+  boSeoUrlsPage,
   type BrowserContext,
   FakerSearchEngine,
   type Page,
@@ -56,16 +55,16 @@ describe('BO - Shop Parameters - Traffic & SEO : Bulk delete search engine', asy
       boDashboardPage.trafficAndSeoLink,
     );
 
-    await seoAndUrlsPage.closeSfToolBar(page);
+    await boSeoUrlsPage.closeSfToolBar(page);
 
-    const pageTitle = await seoAndUrlsPage.getPageTitle(page);
-    expect(pageTitle).to.contain(seoAndUrlsPage.pageTitle);
+    const pageTitle = await boSeoUrlsPage.getPageTitle(page);
+    expect(pageTitle).to.contain(boSeoUrlsPage.pageTitle);
   });
 
   it('should go to \'Search Engines\' pge', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToSearchEnginesPage', baseContext);
 
-    await seoAndUrlsPage.goToSearchEnginesPage(page);
+    await boSeoUrlsPage.goToSearchEnginesPage(page);
 
     const pageTitle = await searchEnginesPage.getPageTitle(page);
     expect(pageTitle).to.contain(searchEnginesPage.pageTitle);
