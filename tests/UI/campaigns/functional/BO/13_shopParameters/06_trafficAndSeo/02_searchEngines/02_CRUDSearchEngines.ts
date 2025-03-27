@@ -1,13 +1,11 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-// Import pages
-import addSearchEnginePage from '@pages/BO/shopParameters/trafficAndSeo/searchEngines/add';
-
 import {
   boDashboardPage,
   boLoginPage,
   boSearchEnginesPage,
+  boSearchEnginesCreatePage,
   boSeoUrlsPage,
   type BrowserContext,
   FakerSearchEngine,
@@ -87,14 +85,14 @@ describe('BO - Shop Parameters - Traffic & SEO : Create, update and delete searc
 
       await boSearchEnginesPage.goToNewSearchEnginePage(page);
 
-      const pageTitle = await addSearchEnginePage.getPageTitle(page);
-      expect(pageTitle).to.contain(addSearchEnginePage.pageTitleCreate);
+      const pageTitle = await boSearchEnginesCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contain(boSearchEnginesCreatePage.pageTitleCreate);
     });
 
     it('should create search engine', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'createSearchEngine', baseContext);
 
-      const result = await addSearchEnginePage.createEditSearchEngine(page, createSearchEngineData);
+      const result = await boSearchEnginesCreatePage.createEditSearchEngine(page, createSearchEngineData);
       expect(result).to.contain(boSearchEnginesPage.successfulCreationMessage);
 
       const numberOfSearchEnginesAfterCreation = await boSearchEnginesPage.getNumberOfElementInGrid(page);
@@ -120,14 +118,14 @@ describe('BO - Shop Parameters - Traffic & SEO : Create, update and delete searc
 
       await boSearchEnginesPage.goToEditSearchEnginePage(page, 1);
 
-      const pageTitle = await addSearchEnginePage.getPageTitle(page);
-      expect(pageTitle).to.contain(addSearchEnginePage.pageTitleEdit);
+      const pageTitle = await boSearchEnginesCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contain(boSearchEnginesCreatePage.pageTitleEdit);
     });
 
     it('should edit search engine', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'editSearchEngine', baseContext);
 
-      const result = await addSearchEnginePage.createEditSearchEngine(page, editSearchEngineData);
+      const result = await boSearchEnginesCreatePage.createEditSearchEngine(page, editSearchEngineData);
       expect(result).to.contain(boSearchEnginesPage.successfulUpdateMessage);
     });
 

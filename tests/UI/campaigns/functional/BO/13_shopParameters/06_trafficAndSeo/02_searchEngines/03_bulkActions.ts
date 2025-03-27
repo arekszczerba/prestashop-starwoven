@@ -1,13 +1,11 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-// Import pages
-import addSearchEnginePage from '@pages/BO/shopParameters/trafficAndSeo/searchEngines/add';
-
 import {
   boDashboardPage,
   boLoginPage,
   boSearchEnginesPage,
+  boSearchEnginesCreatePage,
   boSeoUrlsPage,
   type BrowserContext,
   FakerSearchEngine,
@@ -87,14 +85,14 @@ describe('BO - Shop Parameters - Traffic & SEO : Bulk delete search engine', asy
 
         await boSearchEnginesPage.goToNewSearchEnginePage(page);
 
-        const pageTitle = await addSearchEnginePage.getPageTitle(page);
-        expect(pageTitle).to.contain(addSearchEnginePage.pageTitleCreate);
+        const pageTitle = await boSearchEnginesCreatePage.getPageTitle(page);
+        expect(pageTitle).to.contain(boSearchEnginesCreatePage.pageTitleCreate);
       });
 
       it('should create search engine', async function () {
         await testContext.addContextItem(this, 'testIdentifier', `createSearchEngine${index}`, baseContext);
 
-        const result = await addSearchEnginePage.createEditSearchEngine(page, searchEngineData);
+        const result = await boSearchEnginesCreatePage.createEditSearchEngine(page, searchEngineData);
         expect(result).to.contain(boSearchEnginesPage.successfulCreationMessage);
 
         const numberOfSearchEnginesAfterCreation = await boSearchEnginesPage.getNumberOfElementInGrid(page);
