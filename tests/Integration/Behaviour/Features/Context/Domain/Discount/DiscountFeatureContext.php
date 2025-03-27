@@ -307,7 +307,9 @@ class DiscountFeatureContext extends AbstractDomainFeatureContext
 
         if ($command instanceof AddFreeGiftDiscountCommand) {
             if (!empty($data['gift_product'])) {
-                $command->setProductId((int) $data['gift_product']);
+                $reference = $data['gift_product'];
+                $productId = $this->getProductIdByReference($reference);
+                $command->setProductId((int) $productId);
             }
 
             if (!empty($data['gift_combination'])) {
@@ -403,6 +405,16 @@ class DiscountFeatureContext extends AbstractDomainFeatureContext
                 Assert::assertSame($this->getSharedStorage()->get($expectedData['reduction_product']), $discountForEditing->getReductionProduct());
             }
         }
+    }
+
+    /**
+     * @param string $productReference
+     *
+     * @return int
+     */
+    private function getProductIdByReference(string $productReference): int
+    {
+        return $this->getSharedStorage()->get($productReference);
     }
 
     protected function getDiscountForEditing(string $discountReference): DiscountForEditing

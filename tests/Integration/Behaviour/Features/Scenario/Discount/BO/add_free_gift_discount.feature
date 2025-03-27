@@ -21,6 +21,8 @@ Feature: Add discount
       | active           | false |
 
   Scenario: Create a complete discount with free gift
+    Given there is a product in the catalog named "Free Product" with a price of 20.0 and 1000 items in stock
+    Given there is a product "hummingbird-tshirt" with name "Hummingbird printed t-shirt"
     When I create a free gift discount "complete_free_gift_discount" with following properties:
       | name[en-US]      | Promotion              |
       | name[fr-FR]      | Promotion fr           |
@@ -28,8 +30,7 @@ Feature: Add discount
       | valid_from       | 2019-01-01 11:05:00    |
       | valid_to         | 2019-12-01 00:00:00    |
       | code             | FREE_GIFT_2019         |
-      | gift_product     | 1                      |
-      | gift_combination | 2                      |
+      | gift_product     | hummingbird-tshirt     |
     Then discount "complete_free_gift_discount" should have the following properties:
       | name[en-US]      | Promotion              |
       | name[fr-FR]      | Promotion fr           |
@@ -37,8 +38,7 @@ Feature: Add discount
       | valid_from       | 2019-01-01 11:05:00    |
       | valid_to         | 2019-12-01 00:00:00    |
       | code             | FREE_GIFT_2019         |
-      | gift_product     | 1                      |
-      | gift_combination | 2                      |
+      | gift_product     | hummingbird-tshirt            |
 
   Scenario: Create a discount with free gift online but without names should be forbidden
     When I create a free gift discount "invalid_free_gift_discount" with following properties:
