@@ -1,13 +1,13 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-// Import pages=
-import searchEnginesPage from '@pages/BO/shopParameters/trafficAndSeo/searchEngines';
+// Import pages
 import addSearchEnginePage from '@pages/BO/shopParameters/trafficAndSeo/searchEngines/add';
 
 import {
   boDashboardPage,
   boLoginPage,
+  boSearchEnginesPage,
   boSeoUrlsPage,
   type BrowserContext,
   FakerSearchEngine,
@@ -66,14 +66,14 @@ describe('BO - Shop Parameters - Traffic & SEO : Bulk delete search engine', asy
 
     await boSeoUrlsPage.goToSearchEnginesPage(page);
 
-    const pageTitle = await searchEnginesPage.getPageTitle(page);
-    expect(pageTitle).to.contain(searchEnginesPage.pageTitle);
+    const pageTitle = await boSearchEnginesPage.getPageTitle(page);
+    expect(pageTitle).to.contain(boSearchEnginesPage.pageTitle);
   });
 
   it('should reset all filters and get number of search engines in BO', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'resetFilterFirst', baseContext);
 
-    numberOfSearchEngines = await searchEnginesPage.resetAndGetNumberOfLines(page);
+    numberOfSearchEngines = await boSearchEnginesPage.resetAndGetNumberOfLines(page);
     expect(numberOfSearchEngines).to.be.above(0);
   });
 
@@ -85,7 +85,7 @@ describe('BO - Shop Parameters - Traffic & SEO : Bulk delete search engine', asy
       it('should go to new search engine', async function () {
         await testContext.addContextItem(this, 'testIdentifier', `goToNewSearchEnginePage${index}`, baseContext);
 
-        await searchEnginesPage.goToNewSearchEnginePage(page);
+        await boSearchEnginesPage.goToNewSearchEnginePage(page);
 
         const pageTitle = await addSearchEnginePage.getPageTitle(page);
         expect(pageTitle).to.contain(addSearchEnginePage.pageTitleCreate);
@@ -95,9 +95,9 @@ describe('BO - Shop Parameters - Traffic & SEO : Bulk delete search engine', asy
         await testContext.addContextItem(this, 'testIdentifier', `createSearchEngine${index}`, baseContext);
 
         const result = await addSearchEnginePage.createEditSearchEngine(page, searchEngineData);
-        expect(result).to.contain(searchEnginesPage.successfulCreationMessage);
+        expect(result).to.contain(boSearchEnginesPage.successfulCreationMessage);
 
-        const numberOfSearchEnginesAfterCreation = await searchEnginesPage.getNumberOfElementInGrid(page);
+        const numberOfSearchEnginesAfterCreation = await boSearchEnginesPage.getNumberOfElementInGrid(page);
         expect(numberOfSearchEnginesAfterCreation).to.equal(numberOfSearchEngines + 1 + index);
       });
     });
@@ -107,12 +107,12 @@ describe('BO - Shop Parameters - Traffic & SEO : Bulk delete search engine', asy
     it('should filter by server', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'filterToBulkDelete', baseContext);
 
-      await searchEnginesPage.filterTable(page, 'server', 'toDelete');
+      await boSearchEnginesPage.filterTable(page, 'server', 'toDelete');
 
-      const numberOfSearchEnginesAfterFilter = await searchEnginesPage.getNumberOfElementInGrid(page);
+      const numberOfSearchEnginesAfterFilter = await boSearchEnginesPage.getNumberOfElementInGrid(page);
       expect(numberOfSearchEnginesAfterFilter).to.be.at.least(2);
 
-      const textColumn = await searchEnginesPage.getTextColumn(page, 1, 'server');
+      const textColumn = await boSearchEnginesPage.getTextColumn(page, 1, 'server');
       expect(textColumn).to.contain('todelete');
     });
 
@@ -120,14 +120,14 @@ describe('BO - Shop Parameters - Traffic & SEO : Bulk delete search engine', asy
       await testContext.addContextItem(this, 'testIdentifier', 'deleteSearchEngine', baseContext);
 
       // delete search engine in first row
-      const result = await searchEnginesPage.bulkDeleteSearchEngine(page);
-      expect(result).to.be.contain(searchEnginesPage.successfulMultiDeleteMessage);
+      const result = await boSearchEnginesPage.bulkDeleteSearchEngine(page);
+      expect(result).to.be.contain(boSearchEnginesPage.successfulMultiDeleteMessage);
     });
 
     it('should reset filter and check number of searchEngine', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'resetAfterDelete', baseContext);
 
-      const numberOfSearchEnginesAfterDelete = await searchEnginesPage.resetAndGetNumberOfLines(page);
+      const numberOfSearchEnginesAfterDelete = await boSearchEnginesPage.resetAndGetNumberOfLines(page);
       expect(numberOfSearchEnginesAfterDelete).to.equal(numberOfSearchEngines);
     });
   });

@@ -2,7 +2,6 @@ import {expect} from 'chai';
 import testContext from '@utils/testContext';
 
 // Import pages
-import searchEnginesPage from '@pages/BO/shopParameters/trafficAndSeo/searchEngines';
 import addSearchEnginePage from '@pages/BO/shopParameters/trafficAndSeo/searchEngines/add';
 import tagsPage from '@pages/BO/shopParameters/search/tags';
 import addTagPage from '@pages/BO/shopParameters/search/tags/add';
@@ -25,6 +24,7 @@ import {
   boSearchPage,
   boSearchAliasPage,
   boSearchAliasCreatePage,
+  boSearchEnginesPage,
   boSeoUrlsPage,
   boSeoUrlsCreatePage,
   boStoresPage,
@@ -420,8 +420,8 @@ describe('BO - Shop Parameters', async () => {
 
     await boSeoUrlsPage.goToSearchEnginesPage(page);
 
-    const pageTitle = await searchEnginesPage.getPageTitle(page);
-    expect(pageTitle).to.contain(searchEnginesPage.pageTitle);
+    const pageTitle = await boSearchEnginesPage.getPageTitle(page);
+    expect(pageTitle).to.contain(boSearchEnginesPage.pageTitle);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
@@ -430,7 +430,7 @@ describe('BO - Shop Parameters', async () => {
   it('should go to \'Shop Parameters > Traffic & SEO > Search Engines > New Search engine\' page', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToNewSearchEnginePage', baseContext);
 
-    await searchEnginesPage.goToNewSearchEnginePage(page);
+    await boSearchEnginesPage.goToNewSearchEnginePage(page);
 
     const pageTitle = await addSearchEnginePage.getPageTitle(page);
     expect(pageTitle).to.contain(addSearchEnginePage.pageTitleCreate);
@@ -443,7 +443,7 @@ describe('BO - Shop Parameters', async () => {
     await testContext.addContextItem(this, 'testIdentifier', 'goToEditSearchEngine', baseContext);
 
     await boSeoUrlsPage.goToSearchEnginesPage(page);
-    await searchEnginesPage.goToEditSearchEnginePage(page, 1);
+    await boSearchEnginesPage.goToEditSearchEnginePage(page, 1);
 
     const pageTitle = await addSearchEnginePage.getPageTitle(page);
     expect(pageTitle).to.contain(addSearchEnginePage.pageTitleEdit);
