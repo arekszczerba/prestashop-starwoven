@@ -1,15 +1,14 @@
-// Import utils
 import testContext from '@utils/testContext';
+import {expect} from 'chai';
 
 // Import pages
-import tagsPage from '@pages/BO/shopParameters/search/tags';
 import addTagPage from '@pages/BO/shopParameters/search/tags/add';
 
-import {expect} from 'chai';
 import {
   boDashboardPage,
   boLoginPage,
   boSearchPage,
+  boTagsPage,
   type BrowserContext,
   dataLanguages,
   FakerSearchTag,
@@ -69,10 +68,10 @@ describe('BO - Shop Parameters - Search : Create, update and delete tag in BO', 
     await testContext.addContextItem(this, 'testIdentifier', 'goToTagsPage', baseContext);
 
     await boSearchPage.goToTagsPage(page);
-    numberOfTags = await tagsPage.getNumberOfElementInGrid(page);
+    numberOfTags = await boTagsPage.getNumberOfElementInGrid(page);
 
-    const pageTitle = await tagsPage.getPageTitle(page);
-    expect(pageTitle).to.contains(tagsPage.pageTitle);
+    const pageTitle = await boTagsPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boTagsPage.pageTitle);
   });
 
   // 1 - Create tag
@@ -80,7 +79,7 @@ describe('BO - Shop Parameters - Search : Create, update and delete tag in BO', 
     it('should go to add new tag page', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'goToAddTagPage', baseContext);
 
-      await tagsPage.goToAddNewTagPage(page);
+      await boTagsPage.goToAddNewTagPage(page);
 
       const pageTitle = await addTagPage.getPageTitle(page);
       expect(pageTitle).to.contains(addTagPage.pageTitleCreate);
@@ -90,9 +89,9 @@ describe('BO - Shop Parameters - Search : Create, update and delete tag in BO', 
       await testContext.addContextItem(this, 'testIdentifier', 'createTag', baseContext);
 
       const textResult = await addTagPage.setTag(page, createTagData);
-      expect(textResult).to.contains(tagsPage.successfulCreationMessage);
+      expect(textResult).to.contains(boTagsPage.successfulCreationMessage);
 
-      const numberOfElementAfterCreation = await tagsPage.getNumberOfElementInGrid(page);
+      const numberOfElementAfterCreation = await boTagsPage.getNumberOfElementInGrid(page);
       expect(numberOfElementAfterCreation).to.be.equal(numberOfTags + 1);
     });
   });
@@ -102,7 +101,7 @@ describe('BO - Shop Parameters - Search : Create, update and delete tag in BO', 
     it('should go to edit tag page', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'goToEditTagPage', baseContext);
 
-      await tagsPage.gotoEditTagPage(page, 1);
+      await boTagsPage.gotoEditTagPage(page, 1);
 
       const pageTitle = await addTagPage.getPageTitle(page);
       expect(pageTitle).to.contains(addTagPage.pageTitleEdit);
@@ -112,9 +111,9 @@ describe('BO - Shop Parameters - Search : Create, update and delete tag in BO', 
       await testContext.addContextItem(this, 'testIdentifier', 'updateTag', baseContext);
 
       const textResult = await addTagPage.setTag(page, editTagData);
-      expect(textResult).to.contains(tagsPage.successfulUpdateMessage);
+      expect(textResult).to.contains(boTagsPage.successfulUpdateMessage);
 
-      const numberOfTagsAfterUpdate = await tagsPage.getNumberOfElementInGrid(page);
+      const numberOfTagsAfterUpdate = await boTagsPage.getNumberOfElementInGrid(page);
       expect(numberOfTagsAfterUpdate).to.be.equal(numberOfTags + 1);
     });
   });
@@ -124,10 +123,10 @@ describe('BO - Shop Parameters - Search : Create, update and delete tag in BO', 
     it('should delete tag', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'deleteTag', baseContext);
 
-      const textResult = await tagsPage.deleteTag(page, 1);
-      expect(textResult).to.contains(tagsPage.successfulDeleteMessage);
+      const textResult = await boTagsPage.deleteTag(page, 1);
+      expect(textResult).to.contains(boTagsPage.successfulDeleteMessage);
 
-      const numberOfTagsAfterDelete = await tagsPage.getNumberOfElementInGrid(page);
+      const numberOfTagsAfterDelete = await boTagsPage.getNumberOfElementInGrid(page);
       expect(numberOfTagsAfterDelete).to.be.equal(numberOfTags);
     });
   });

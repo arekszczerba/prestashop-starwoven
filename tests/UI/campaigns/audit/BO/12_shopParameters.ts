@@ -2,7 +2,6 @@ import {expect} from 'chai';
 import testContext from '@utils/testContext';
 
 // Import pages
-import tagsPage from '@pages/BO/shopParameters/search/tags';
 import addTagPage from '@pages/BO/shopParameters/search/tags/add';
 
 import {
@@ -29,6 +28,7 @@ import {
   boSeoUrlsCreatePage,
   boStoresPage,
   boStoresCreatePage,
+  boTagsPage,
   boTitlesPage,
   boTitlesCreatePage,
   type BrowserContext,
@@ -507,8 +507,8 @@ describe('BO - Shop Parameters', async () => {
 
     await boSearchPage.goToTagsPage(page);
 
-    const pageTitle = await tagsPage.getPageTitle(page);
-    expect(pageTitle).to.contains(tagsPage.pageTitle);
+    const pageTitle = await boTagsPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boTagsPage.pageTitle);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
@@ -517,7 +517,7 @@ describe('BO - Shop Parameters', async () => {
   it('should go to \'Shop Parameters > Search > Tags > New Tag\' page', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToAddTagPage', baseContext);
 
-    await tagsPage.goToAddNewTagPage(page);
+    await boTagsPage.goToAddNewTagPage(page);
 
     const pageTitle = await addTagPage.getPageTitle(page);
     expect(pageTitle).to.contains(addTagPage.pageTitleCreate);
