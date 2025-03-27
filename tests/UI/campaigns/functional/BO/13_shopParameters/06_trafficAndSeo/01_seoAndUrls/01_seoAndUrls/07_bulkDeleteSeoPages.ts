@@ -1,13 +1,11 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-// Import pages
-import addSeoAndUrlPage from '@pages/BO/shopParameters/trafficAndSeo/seoAndUrls/add';
-
 import {
   boDashboardPage,
   boLoginPage,
   boSeoUrlsPage,
+  boSeoUrlsCreatePage,
   type BrowserContext,
   dataSeoPages,
   FakerSeoPage,
@@ -75,14 +73,14 @@ describe('BO - Shop Parameters - Traffic & SEO : Bulk delete seo pages', async (
 
         await boSeoUrlsPage.goToNewSeoUrlPage(page);
 
-        const pageTitle = await addSeoAndUrlPage.getPageTitle(page);
-        expect(pageTitle).to.contains(addSeoAndUrlPage.pageTitle);
+        const pageTitle = await boSeoUrlsCreatePage.getPageTitle(page);
+        expect(pageTitle).to.contains(boSeoUrlsCreatePage.pageTitle);
       });
 
       it('should create seo page', async function () {
         await testContext.addContextItem(this, 'testIdentifier', `createSeoPage${index + 1}`, baseContext);
 
-        const result = await addSeoAndUrlPage.createEditSeoPage(page, seoPageData);
+        const result = await boSeoUrlsCreatePage.createEditSeoPage(page, seoPageData);
         expect(result).to.equal(boSeoUrlsPage.successfulCreationMessage);
 
         const numberOfSeoPagesAfterCreation = await boSeoUrlsPage.getNumberOfElementInGrid(page);

@@ -2,7 +2,6 @@ import {expect} from 'chai';
 import testContext from '@utils/testContext';
 
 // Import pages
-import addSeoAndUrlPage from '@pages/BO/shopParameters/trafficAndSeo/seoAndUrls/add';
 import searchEnginesPage from '@pages/BO/shopParameters/trafficAndSeo/searchEngines';
 import addSearchEnginePage from '@pages/BO/shopParameters/trafficAndSeo/searchEngines/add';
 import tagsPage from '@pages/BO/shopParameters/search/tags';
@@ -27,6 +26,7 @@ import {
   boSearchAliasPage,
   boSearchAliasCreatePage,
   boSeoUrlsPage,
+  boSeoUrlsCreatePage,
   boStoresPage,
   boStoresCreatePage,
   boTitlesPage,
@@ -389,8 +389,8 @@ describe('BO - Shop Parameters', async () => {
 
     await boSeoUrlsPage.goToNewSeoUrlPage(page);
 
-    const pageTitle = await addSeoAndUrlPage.getPageTitle(page);
-    expect(pageTitle).to.contains(addSeoAndUrlPage.pageTitle);
+    const pageTitle = await boSeoUrlsCreatePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boSeoUrlsCreatePage.pageTitle);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
@@ -408,8 +408,8 @@ describe('BO - Shop Parameters', async () => {
 
     await boSeoUrlsPage.goToEditSeoUrlPage(page, 1);
 
-    const pageTitle = await addSeoAndUrlPage.getPageTitle(page);
-    expect(pageTitle).to.contains(addSeoAndUrlPage.editPageTitle);
+    const pageTitle = await boSeoUrlsCreatePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boSeoUrlsCreatePage.editPageTitle);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);

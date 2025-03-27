@@ -1,14 +1,11 @@
-// Import utils
 import testContext from '@utils/testContext';
-
-// Import pages
-import addSeoAndUrlPage from '@pages/BO/shopParameters/trafficAndSeo/seoAndUrls/add';
-
 import {expect} from 'chai';
+
 import {
   boDashboardPage,
   boLoginPage,
   boSeoUrlsPage,
+  boSeoUrlsCreatePage,
   type BrowserContext,
   dataSeoPages,
   FakerSeoPage,
@@ -73,14 +70,14 @@ describe('BO - Shop Parameters - Traffic & SEO : Create, update and delete seo p
 
       await boSeoUrlsPage.goToNewSeoUrlPage(page);
 
-      const pageTitle = await addSeoAndUrlPage.getPageTitle(page);
-      expect(pageTitle).to.contains(addSeoAndUrlPage.pageTitle);
+      const pageTitle = await boSeoUrlsCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contains(boSeoUrlsCreatePage.pageTitle);
     });
 
     it('should create seo page', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'createSeoPage', baseContext);
 
-      const result = await addSeoAndUrlPage.createEditSeoPage(page, createSeoPageData);
+      const result = await boSeoUrlsCreatePage.createEditSeoPage(page, createSeoPageData);
       expect(result).to.equal(boSeoUrlsPage.successfulCreationMessage);
 
       const numberOfSeoPagesAfterCreation = await boSeoUrlsPage.getNumberOfElementInGrid(page);
@@ -106,14 +103,14 @@ describe('BO - Shop Parameters - Traffic & SEO : Create, update and delete seo p
 
       await boSeoUrlsPage.goToEditSeoUrlPage(page, 1);
 
-      const pageTitle = await addSeoAndUrlPage.getPageTitle(page);
-      expect(pageTitle).to.contains(addSeoAndUrlPage.editPageTitle);
+      const pageTitle = await boSeoUrlsCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contains(boSeoUrlsCreatePage.editPageTitle);
     });
 
     it('should edit seo page', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'editSeoPage', baseContext);
 
-      const result = await addSeoAndUrlPage.createEditSeoPage(page, editSeoPageData);
+      const result = await boSeoUrlsCreatePage.createEditSeoPage(page, editSeoPageData);
       expect(result).to.equal(boSeoUrlsPage.successfulUpdateMessage);
     });
 
