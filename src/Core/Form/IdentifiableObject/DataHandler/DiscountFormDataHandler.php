@@ -72,7 +72,6 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
                 break;
             case DiscountType::FREE_GIFT:
                 $command = new AddFreeGiftDiscountCommand();
-                $command->setActive(true);
                 $command->setProductId(self::PRODUCT_ID);
                 $command->setCombinationId(self::COMBINATION_ID);
                 $name = $this->translator->trans('On free gift', [], 'Admin.Catalog.Feature');
