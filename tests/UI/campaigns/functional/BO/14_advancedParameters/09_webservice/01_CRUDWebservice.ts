@@ -1,14 +1,11 @@
-// Import utils
 import {expect} from 'chai';
 import testContext from '@utils/testContext';
-
-// Import pages
-import addWebservicePage from '@pages/BO/advancedParameters/webservice/add';
 
 import {
   boDashboardPage,
   boLoginPage,
   boWebservicesPage,
+  boWebservicesCreatePage,
   type BrowserContext,
   FakerWebservice,
   type Page,
@@ -75,15 +72,15 @@ describe('BO - Advanced Parameters - Webservice : Create, Read, Update and Delet
 
       await boWebservicesPage.goToAddNewWebserviceKeyPage(page);
 
-      const pageTitle = await addWebservicePage.getPageTitle(page);
-      expect(pageTitle).to.contains(addWebservicePage.pageTitleCreate);
+      const pageTitle = await boWebservicesCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contains(boWebservicesCreatePage.pageTitleCreate);
     });
 
     it('should create webservice key and check result', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'createWebserviceKey', baseContext);
 
-      const textResult = await addWebservicePage.createEditWebservice(page, createWebserviceData);
-      expect(textResult).to.equal(addWebservicePage.successfulCreationMessage);
+      const textResult = await boWebservicesCreatePage.createEditWebservice(page, createWebserviceData);
+      expect(textResult).to.equal(boWebservicesCreatePage.successfulCreationMessage);
 
       const numberOfWebserviceKeysAfterCreation = await boWebservicesPage.getNumberOfElementInGrid(page);
       expect(numberOfWebserviceKeysAfterCreation).to.be.equal(numberOfWebserviceKeys + 1);
@@ -111,15 +108,15 @@ describe('BO - Advanced Parameters - Webservice : Create, Read, Update and Delet
 
       await boWebservicesPage.goToEditWebservicePage(page, 1);
 
-      const pageTitle = await addWebservicePage.getPageTitle(page);
-      expect(pageTitle).to.contains(addWebservicePage.pageTitleEdit);
+      const pageTitle = await boWebservicesCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contains(boWebservicesCreatePage.pageTitleEdit);
     });
 
     it('should update the webservice key and check result', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'updateWebserviceKey', baseContext);
 
-      const textResult = await addWebservicePage.createEditWebservice(page, editWebserviceData);
-      expect(textResult).to.equal(addWebservicePage.successfulUpdateMessage);
+      const textResult = await boWebservicesCreatePage.createEditWebservice(page, editWebserviceData);
+      expect(textResult).to.equal(boWebservicesCreatePage.successfulUpdateMessage);
     });
 
     it('should reset filter and check the number of webservice keys', async function () {

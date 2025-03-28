@@ -2,7 +2,6 @@ import {expect} from 'chai';
 import testContext from '@utils/testContext';
 
 // Import pages
-import addWebservicePage from '@pages/BO/advancedParameters/webservice/add';
 import addShopGroupPage from '@pages/BO/advancedParameters/multistore/add';
 import shopUrlPage from '@pages/BO/advancedParameters/multistore/url';
 
@@ -29,6 +28,7 @@ import {
   boRolesCreatePage,
   boSecurityPage,
   boWebservicesPage,
+  boWebservicesCreatePage,
   type BrowserContext,
   type Page,
   utilsPlaywright,
@@ -319,8 +319,8 @@ describe('BO - Advanced Parameters', async () => {
 
     await boWebservicesPage.goToAddNewWebserviceKeyPage(page);
 
-    const pageTitle = await addWebservicePage.getPageTitle(page);
-    expect(pageTitle).to.contains(addWebservicePage.pageTitleCreate);
+    const pageTitle = await boWebservicesCreatePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boWebservicesCreatePage.pageTitleCreate);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);

@@ -1,12 +1,11 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-import addWebservicePage from '@pages/BO/advancedParameters/webservice/add';
-
 import {
   boDashboardPage,
   boLoginPage,
   boWebservicesPage,
+  boWebservicesCreatePage,
   type BrowserContext,
   FakerWebservice,
   type Page,
@@ -126,15 +125,15 @@ function addWebserviceKey(
 
       await boWebservicesPage.goToAddNewWebserviceKeyPage(page);
 
-      const pageTitle = await addWebservicePage.getPageTitle(page);
-      expect(pageTitle).to.contains(addWebservicePage.pageTitleCreate);
+      const pageTitle = await boWebservicesCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contains(boWebservicesCreatePage.pageTitleCreate);
     });
 
     it('should create webservice key and check result', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'createWebserviceKey', baseContext);
 
-      const textResult = await addWebservicePage.createEditWebservice(page, webserviceData);
-      expect(textResult).to.equal(addWebservicePage.successfulCreationMessage);
+      const textResult = await boWebservicesCreatePage.createEditWebservice(page, webserviceData);
+      expect(textResult).to.equal(boWebservicesCreatePage.successfulCreationMessage);
 
       const numberOfWebserviceKeysAfterCreation = await boWebservicesPage.getNumberOfElementInGrid(page);
       expect(numberOfWebserviceKeysAfterCreation).to.be.eq(1);
