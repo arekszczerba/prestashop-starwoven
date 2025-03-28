@@ -2,7 +2,6 @@ import {expect} from 'chai';
 import testContext from '@utils/testContext';
 
 // Import pages
-import addShopGroupPage from '@pages/BO/advancedParameters/multistore/add';
 import shopUrlPage from '@pages/BO/advancedParameters/multistore/url';
 
 import {
@@ -16,6 +15,7 @@ import {
   boEmployeesPage,
   boEmployeesCreatePage,
   boLogsPage,
+  boMultistoreGroupCreatePage,
   boSqlManagerPage,
   boSqlManagerCreatePage,
   boDbBackupPage,
@@ -371,8 +371,8 @@ describe('BO - Advanced Parameters', async () => {
 
     await boMultistorePage.goToNewShopGroupPage(page);
 
-    const pageTitle = await addShopGroupPage.getPageTitle(page);
-    expect(pageTitle).to.contains(addShopGroupPage.pageTitleCreate);
+    const pageTitle = await boMultistoreGroupCreatePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boMultistoreGroupCreatePage.pageTitleCreate);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
