@@ -1,14 +1,12 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-// Import pages
-import addRolePage from '@pages/BO/advancedParameters/team/roles/add';
-
 import {
   boDashboardPage,
   boEmployeesPage,
   boLoginPage,
   boRolesPage,
+  boRolesCreatePage,
   type BrowserContext,
   FakerEmployeeRole,
   type Page,
@@ -84,14 +82,14 @@ describe('BO - Advanced Parameters - Team : Create, Read, Update and Delete role
 
       await boRolesPage.goToAddNewRolePage(page);
 
-      const pageTitle = await addRolePage.getPageTitle(page);
-      expect(pageTitle).to.contains(addRolePage.pageTitleCreate);
+      const pageTitle = await boRolesCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contains(boRolesCreatePage.pageTitleCreate);
     });
 
     it('should create role and check result', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'createRole', baseContext);
 
-      const textResult = await addRolePage.createEditRole(page, createRoleData);
+      const textResult = await boRolesCreatePage.createEditRole(page, createRoleData);
       expect(textResult).to.equal(boRolesPage.successfulCreationMessage);
 
       const numberOfRolesAfterCreation = await boRolesPage.getNumberOfElementInGrid(page);
@@ -115,15 +113,15 @@ describe('BO - Advanced Parameters - Team : Create, Read, Update and Delete role
 
       await boRolesPage.goToEditRolePage(page, 1);
 
-      const pageTitle = await addRolePage.getPageTitle(page);
-      expect(pageTitle).to.contains(addRolePage.pageTitleEdit(createRoleData.name));
+      const pageTitle = await boRolesCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contains(boRolesCreatePage.pageTitleEdit(createRoleData.name));
     });
 
     it('should update the role', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'updateRole', baseContext);
 
-      const textResult = await addRolePage.createEditRole(page, editRoleData);
-      expect(textResult).to.equal(addRolePage.successfulUpdateMessage);
+      const textResult = await boRolesCreatePage.createEditRole(page, editRoleData);
+      expect(textResult).to.equal(boRolesCreatePage.successfulUpdateMessage);
     });
   });
 

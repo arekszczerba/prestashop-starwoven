@@ -1,15 +1,12 @@
-// Import utils
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
-
-// Import pages
-import addProfilePage from '@pages/BO/advancedParameters/team/roles/add';
 
 import {
   boDashboardPage,
   boEmployeesPage,
   boLoginPage,
   boRolesPage,
+  boRolesCreatePage,
   type BrowserContext,
   FakerEmployeeRole,
   type Page,
@@ -84,14 +81,14 @@ describe('BO - Advanced Parameters - Team : Pagination and delete roles by bulk 
 
         await boRolesPage.goToAddNewRolePage(page);
 
-        const pageTitle = await addProfilePage.getPageTitle(page);
-        expect(pageTitle).to.contains(addProfilePage.pageTitleCreate);
+        const pageTitle = await boRolesCreatePage.getPageTitle(page);
+        expect(pageTitle).to.contains(boRolesCreatePage.pageTitleCreate);
       });
 
       it(`should create profile n°${index + 1}`, async function () {
         await testContext.addContextItem(this, 'testIdentifier', `CreateRole${index}`, baseContext);
 
-        const textResult = await addProfilePage.createEditRole(page, createRoleData);
+        const textResult = await boRolesCreatePage.createEditRole(page, createRoleData);
         expect(textResult).to.equal(boRolesPage.successfulCreationMessage);
       });
 
