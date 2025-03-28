@@ -2,7 +2,6 @@ import {expect} from 'chai';
 import testContext from '@utils/testContext';
 
 // Import pages
-import webservicePage from '@pages/BO/advancedParameters/webservice';
 import addWebservicePage from '@pages/BO/advancedParameters/webservice/add';
 import addShopGroupPage from '@pages/BO/advancedParameters/multistore/add';
 import shopUrlPage from '@pages/BO/advancedParameters/multistore/url';
@@ -29,6 +28,7 @@ import {
   boRolesPage,
   boRolesCreatePage,
   boSecurityPage,
+  boWebservicesPage,
   type BrowserContext,
   type Page,
   utilsPlaywright,
@@ -305,10 +305,10 @@ describe('BO - Advanced Parameters', async () => {
       boDashboardPage.advancedParametersLink,
       boDashboardPage.webserviceLink,
     );
-    await webservicePage.closeSfToolBar(page);
+    await boWebservicesPage.closeSfToolBar(page);
 
-    const pageTitle = await webservicePage.getPageTitle(page);
-    expect(pageTitle).to.contains(webservicePage.pageTitle);
+    const pageTitle = await boWebservicesPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boWebservicesPage.pageTitle);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
@@ -317,7 +317,7 @@ describe('BO - Advanced Parameters', async () => {
   it('should go to \'Advanced Parameters > Webservice > Add new webservice key\' page', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'goToAddNewWebserviceKeyPage', baseContext);
 
-    await webservicePage.goToAddNewWebserviceKeyPage(page);
+    await boWebservicesPage.goToAddNewWebserviceKeyPage(page);
 
     const pageTitle = await addWebservicePage.getPageTitle(page);
     expect(pageTitle).to.contains(addWebservicePage.pageTitleCreate);

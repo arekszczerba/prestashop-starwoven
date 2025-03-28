@@ -1,14 +1,13 @@
-// Import utils
 import testContext from '@utils/testContext';
+import {expect} from 'chai';
 
 // Import pages
-import webservicePage from '@pages/BO/advancedParameters/webservice';
 import addWebservicePage from '@pages/BO/advancedParameters/webservice/add';
 
-import {expect} from 'chai';
 import {
   boDashboardPage,
   boLoginPage,
+  boWebservicesPage,
   type BrowserContext,
   FakerWebservice,
   type Page,
@@ -54,16 +53,16 @@ describe('BO - Advanced Parameters - Webservice : Bulk actions', async () => {
       boDashboardPage.advancedParametersLink,
       boDashboardPage.webserviceLink,
     );
-    await webservicePage.closeSfToolBar(page);
+    await boWebservicesPage.closeSfToolBar(page);
 
-    const pageTitle = await webservicePage.getPageTitle(page);
-    expect(pageTitle).to.contains(webservicePage.pageTitle);
+    const pageTitle = await boWebservicesPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boWebservicesPage.pageTitle);
   });
 
   it('should reset all filters and get number of webservices', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'firstReset', baseContext);
 
-    numberOfWebserviceKeys = await webservicePage.resetAndGetNumberOfLines(page);
+    numberOfWebserviceKeys = await boWebservicesPage.resetAndGetNumberOfLines(page);
     if (numberOfWebserviceKeys !== 0) expect(numberOfWebserviceKeys).to.be.above(0);
   });
 
@@ -76,7 +75,7 @@ describe('BO - Advanced Parameters - Webservice : Bulk actions', async () => {
     it('should go to add new webservice key page', async function () {
       await testContext.addContextItem(this, 'testIdentifier', `goToAddNewWebserviceKeyPage_${index}`, baseContext);
 
-      await webservicePage.goToAddNewWebserviceKeyPage(page);
+      await boWebservicesPage.goToAddNewWebserviceKeyPage(page);
 
       const pageTitle = await addWebservicePage.getPageTitle(page);
       expect(pageTitle).to.contains(addWebservicePage.pageTitleCreate);
@@ -92,7 +91,7 @@ describe('BO - Advanced Parameters - Webservice : Bulk actions', async () => {
       );
       expect(textResult).to.equal(addWebservicePage.successfulCreationMessage);
 
-      const numberOfWebserviceKeysAfterCreation = await webservicePage.getNumberOfElementInGrid(page);
+      const numberOfWebserviceKeysAfterCreation = await boWebservicesPage.getNumberOfElementInGrid(page);
       expect(numberOfWebserviceKeysAfterCreation).to.be.equal(numberOfWebserviceKeys + 1 + index);
     });
   });
@@ -101,9 +100,9 @@ describe('BO - Advanced Parameters - Webservice : Bulk actions', async () => {
     it('should filter list by key description', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'filterAfterSort', baseContext);
 
-      await webservicePage.filterWebserviceTable(page, 'input', 'description', 'todelete');
+      await boWebservicesPage.filterWebserviceTable(page, 'input', 'description', 'todelete');
 
-      const key = await webservicePage.getTextColumnFromTable(page, 1, 'description');
+      const key = await boWebservicesPage.getTextColumnFromTable(page, 1, 'description');
       expect(key).to.contains('todelete');
     });
 
@@ -116,13 +115,13 @@ describe('BO - Advanced Parameters - Webservice : Bulk actions', async () => {
       it(`should ${test.args.action} with bulk actions and check result`, async function () {
         await testContext.addContextItem(this, 'testIdentifier', `${test.args.action}WebserviceKey`, baseContext);
 
-        const textResult = await webservicePage.bulkSetStatus(page, test.args.enabledValue);
-        expect(textResult).to.be.equal(webservicePage.successfulUpdateStatusMessage);
+        const textResult = await boWebservicesPage.bulkSetStatus(page, test.args.enabledValue);
+        expect(textResult).to.be.equal(boWebservicesPage.successfulUpdateStatusMessage);
 
-        const numberOfWebserviceKeys = await webservicePage.getNumberOfElementInGrid(page);
+        const numberOfWebserviceKeys = await boWebservicesPage.getNumberOfElementInGrid(page);
 
         for (let i = 1; i <= numberOfWebserviceKeys; i++) {
-          const webserviceStatus = await webservicePage.getStatus(page, i);
+          const webserviceStatus = await boWebservicesPage.getStatus(page, i);
           expect(webserviceStatus).to.equal(test.args.enabledValue);
         }
       });
@@ -133,21 +132,21 @@ describe('BO - Advanced Parameters - Webservice : Bulk actions', async () => {
     it('should reset filter and check the number of webservice keys', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'resetFilterBeforeDelete', baseContext);
 
-      const numberOfElement = await webservicePage.resetAndGetNumberOfLines(page);
+      const numberOfElement = await boWebservicesPage.resetAndGetNumberOfLines(page);
       expect(numberOfElement).to.be.equal(numberOfWebserviceKeys + 2);
     });
 
     it('should delete webservice keys created', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'deleteWebserviceKey', baseContext);
 
-      const textResult = await webservicePage.deleteWithBulkActions(page);
-      expect(textResult).to.equal(webservicePage.successfulMultiDeleteMessage);
+      const textResult = await boWebservicesPage.deleteWithBulkActions(page);
+      expect(textResult).to.equal(boWebservicesPage.successfulMultiDeleteMessage);
     });
 
     it('should reset filter and check the number of webservice keys', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'resetFilterAfterDelete', baseContext);
 
-      const numberOfElement = await webservicePage.resetAndGetNumberOfLines(page);
+      const numberOfElement = await boWebservicesPage.resetAndGetNumberOfLines(page);
       expect(numberOfElement).to.be.equal(numberOfWebserviceKeys);
     });
   });
