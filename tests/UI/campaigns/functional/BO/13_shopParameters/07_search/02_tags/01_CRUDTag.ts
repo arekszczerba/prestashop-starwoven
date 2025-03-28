@@ -1,14 +1,12 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-// Import pages
-import addTagPage from '@pages/BO/shopParameters/search/tags/add';
-
 import {
   boDashboardPage,
   boLoginPage,
   boSearchPage,
   boTagsPage,
+  boTagsCreatePage,
   type BrowserContext,
   dataLanguages,
   FakerSearchTag,
@@ -81,14 +79,14 @@ describe('BO - Shop Parameters - Search : Create, update and delete tag in BO', 
 
       await boTagsPage.goToAddNewTagPage(page);
 
-      const pageTitle = await addTagPage.getPageTitle(page);
-      expect(pageTitle).to.contains(addTagPage.pageTitleCreate);
+      const pageTitle = await boTagsCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contains(boTagsCreatePage.pageTitleCreate);
     });
 
     it('should create tag and check result', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'createTag', baseContext);
 
-      const textResult = await addTagPage.setTag(page, createTagData);
+      const textResult = await boTagsCreatePage.setTag(page, createTagData);
       expect(textResult).to.contains(boTagsPage.successfulCreationMessage);
 
       const numberOfElementAfterCreation = await boTagsPage.getNumberOfElementInGrid(page);
@@ -103,14 +101,14 @@ describe('BO - Shop Parameters - Search : Create, update and delete tag in BO', 
 
       await boTagsPage.gotoEditTagPage(page, 1);
 
-      const pageTitle = await addTagPage.getPageTitle(page);
-      expect(pageTitle).to.contains(addTagPage.pageTitleEdit);
+      const pageTitle = await boTagsCreatePage.getPageTitle(page);
+      expect(pageTitle).to.contains(boTagsCreatePage.pageTitleEdit);
     });
 
     it('should update tag', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'updateTag', baseContext);
 
-      const textResult = await addTagPage.setTag(page, editTagData);
+      const textResult = await boTagsCreatePage.setTag(page, editTagData);
       expect(textResult).to.contains(boTagsPage.successfulUpdateMessage);
 
       const numberOfTagsAfterUpdate = await boTagsPage.getNumberOfElementInGrid(page);

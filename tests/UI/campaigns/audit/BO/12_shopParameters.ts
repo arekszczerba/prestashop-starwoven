@@ -1,9 +1,6 @@
 import {expect} from 'chai';
 import testContext from '@utils/testContext';
 
-// Import pages
-import addTagPage from '@pages/BO/shopParameters/search/tags/add';
-
 import {
   boContactsPage,
   boContactsCreatePage,
@@ -29,6 +26,7 @@ import {
   boStoresPage,
   boStoresCreatePage,
   boTagsPage,
+  boTagsCreatePage,
   boTitlesPage,
   boTitlesCreatePage,
   type BrowserContext,
@@ -519,8 +517,8 @@ describe('BO - Shop Parameters', async () => {
 
     await boTagsPage.goToAddNewTagPage(page);
 
-    const pageTitle = await addTagPage.getPageTitle(page);
-    expect(pageTitle).to.contains(addTagPage.pageTitleCreate);
+    const pageTitle = await boTagsCreatePage.getPageTitle(page);
+    expect(pageTitle).to.contains(boTagsCreatePage.pageTitleCreate);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);

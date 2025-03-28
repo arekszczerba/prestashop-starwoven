@@ -1,14 +1,12 @@
 import testContext from '@utils/testContext';
 import {expect} from 'chai';
 
-// Import pages
-import addTagPage from '@pages/BO/shopParameters/search/tags/add';
-
 import {
   boDashboardPage,
   boLoginPage,
   boSearchPage,
   boTagsPage,
+  boTagsCreatePage,
   type BrowserContext,
   dataLanguages,
   dataProducts,
@@ -91,14 +89,14 @@ describe('BO - Shop Parameters - Search : Filter, sort and pagination tag in BO'
 
         await boTagsPage.goToAddNewTagPage(page);
 
-        const pageTitle = await addTagPage.getPageTitle(page);
-        expect(pageTitle).to.contains(addTagPage.pageTitleCreate);
+        const pageTitle = await boTagsCreatePage.getPageTitle(page);
+        expect(pageTitle).to.contains(boTagsCreatePage.pageTitleCreate);
       });
 
       it(`should create tag n° ${index + 1} and check result`, async function () {
         await testContext.addContextItem(this, 'testIdentifier', `createTag${index}`, baseContext);
 
-        const textResult = await addTagPage.setTag(page, tagData);
+        const textResult = await boTagsCreatePage.setTag(page, tagData);
         expect(textResult).to.contains(boTagsPage.successfulCreationMessage);
 
         const numberOfElementAfterCreation = await boTagsPage.getNumberOfElementInGrid(page);
