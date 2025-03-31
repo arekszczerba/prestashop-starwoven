@@ -214,14 +214,14 @@ class HelperUploaderCore extends Uploader
                 . DIRECTORY_SEPARATOR . $controller_name . DIRECTORY_SEPARATOR . $this->getTemplateDirectory() . $template)) {
             return $this->normalizeDirectory($this->getContext()->smarty->getTemplateDir(0)) . 'controllers'
                 . DIRECTORY_SEPARATOR . $controller_name . DIRECTORY_SEPARATOR . $this->getTemplateDirectory() . $template;
-        } elseif (file_exists($this->normalizeDirectory($this->getContext()->smarty->getTemplateDir(0))
-                . $this->getTemplateDirectory() . $template)) {
-            return $this->normalizeDirectory($this->getContext()->smarty->getTemplateDir(0))
-                . $this->getTemplateDirectory() . $template;
         } elseif (file_exists($this->normalizeDirectory($this->getContext()->smarty->getTemplateDir(1))
                 . $this->getTemplateDirectory() . $template)) {
             return $this->normalizeDirectory($this->getContext()->smarty->getTemplateDir(1))
                     . $this->getTemplateDirectory() . $template;
+        } elseif (file_exists($this->normalizeDirectory($this->getContext()->smarty->getTemplateDir(0))
+                . $this->getTemplateDirectory() . $template)) {
+            return $this->normalizeDirectory($this->getContext()->smarty->getTemplateDir(0))
+                . $this->getTemplateDirectory() . $template;
         } else {
             return $this->getTemplateDirectory() . $template;
         }
