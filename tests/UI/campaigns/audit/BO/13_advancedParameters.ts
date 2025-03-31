@@ -1,9 +1,6 @@
 import {expect} from 'chai';
 import testContext from '@utils/testContext';
 
-// Import pages
-import shopUrlPage from '@pages/BO/advancedParameters/multistore/url';
-
 import {
   boDashboardPage,
   boLoginPage,
@@ -23,6 +20,7 @@ import {
   boApiClientsPage,
   boMultistorePage,
   boMultistoreShopCreatePage,
+  boMultistoreShopUrlPage,
   boMultistoreShopUrlCreatePage,
   boRolesPage,
   boRolesCreatePage,
@@ -406,7 +404,7 @@ describe('BO - Advanced Parameters', async () => {
     );
 
     await boMultistorePage.goToShopURLPage(page, 1);
-    await shopUrlPage.goToEditShopURLPage(page, 1);
+    await boMultistoreShopUrlPage.goToEditShopURLPage(page, 1);
 
     const pageTitle = await boMultistoreShopUrlCreatePage.getPageTitle(page);
     expect(pageTitle).to.contains(boMultistoreShopUrlCreatePage.pageTitleEdit);
