@@ -38,7 +38,7 @@ Feature: Add discount
       | valid_from       | 2019-01-01 11:05:00    |
       | valid_to         | 2019-12-01 00:00:00    |
       | code             | FREE_GIFT_2019         |
-      | gift_product     | hummingbird-tshirt            |
+      | gift_product     | hummingbird-tshirt     |
 
   Scenario: Create a discount with free gift online but without names should be forbidden
     When I create a free gift discount "invalid_free_gift_discount" with following properties:

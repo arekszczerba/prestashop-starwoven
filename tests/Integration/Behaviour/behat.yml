@@ -309,6 +309,12 @@ default:
         - Tests\Integration\Behaviour\Features\Context\ContextFeatureContext
         - Tests\Integration\Behaviour\Features\Context\FeatureFlagFeatureContext
         - Tests\Integration\Behaviour\Features\Context\Domain\ProductFeatureContext
+        - Tests\Integration\Behaviour\Features\Context\AttributeGroupFeatureContext
+        - Tests\Integration\Behaviour\Features\Context\AttributeFeatureContext
+        - Tests\Integration\Behaviour\Features\Context\Domain\Product\CommonProductFeatureContext
+        - Tests\Integration\Behaviour\Features\Context\Domain\Product\Combination\GenerateCombinationFeatureContext
+        - Tests\Integration\Behaviour\Features\Context\Domain\Product\Combination\GetCombinationIdsFeatureContext
+        - Tests\Integration\Behaviour\Features\Context\Domain\Product\Combination\CombinationListingFeatureContext
 
     catalog_price_rule:
       paths:
