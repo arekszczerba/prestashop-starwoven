@@ -69,6 +69,7 @@ class CQRSOpenApiFactoryTest extends KernelTestCase
                     'active' => new ArrayObject([
                         'type' => 'boolean',
                     ]),
+                    // Localized fields are documented vie the LocalizedValue attribute
                     'names' => new ArrayObject([
                         'type' => 'object',
                         'example' => [
@@ -82,6 +83,205 @@ class CQRSOpenApiFactoryTest extends KernelTestCase
                             'en-US' => 'value',
                             'fr-FR' => 'valeur',
                         ],
+                    ]),
+
+                    'shortDescriptions' => new ArrayObject([
+                        'type' => 'object',
+                        'example' => [
+                            'en-US' => 'value',
+                            'fr-FR' => 'valeur',
+                        ],
+                    ]),
+                    'tags' => new ArrayObject([
+                        'type' => 'object',
+                        'example' => [
+                            'en-US' => 'value',
+                            'fr-FR' => 'valeur',
+                        ],
+                    ]),
+                    'priceTaxExcluded' => new ArrayObject([
+                        'type' => 'number',
+                    ]),
+                    'priceTaxIncluded' => new ArrayObject([
+                        'type' => 'number',
+                    ]),
+                    'ecotaxTaxExcluded' => new ArrayObject([
+                        'type' => 'number',
+                    ]),
+                    'ecotaxTaxIncluded' => new ArrayObject([
+                        'type' => 'number',
+                    ]),
+                    'taxRulesGroupId' => new ArrayObject([
+                        'type' => 'integer',
+                    ]),
+                    'onSale' => new ArrayObject([
+                        'type' => 'boolean',
+                    ]),
+                    'wholesalePrice' => new ArrayObject([
+                        'type' => 'number',
+                    ]),
+                    'unitPriceTaxExcluded' => new ArrayObject([
+                        'type' => 'number',
+                    ]),
+                    'unitPriceTaxIncluded' => new ArrayObject([
+                        'type' => 'number',
+                    ]),
+                    'unity' => new ArrayObject([
+                        'type' => 'string',
+                    ]),
+                    'unitPriceRatio' => new ArrayObject([
+                        'type' => 'number',
+                    ]),
+                    'visibility' => new ArrayObject([
+                        'type' => 'string',
+                    ]),
+                    'availableForOrder' => new ArrayObject([
+                        'type' => 'boolean',
+                    ]),
+                    'onlineOnly' => new ArrayObject([
+                        'type' => 'boolean',
+                    ]),
+                    'showPrice' => new ArrayObject([
+                        'type' => 'boolean',
+                    ]),
+                    'condition' => new ArrayObject([
+                        'type' => 'string',
+                    ]),
+                    'showCondition' => new ArrayObject([
+                        'type' => 'boolean',
+                    ]),
+                    'manufacturerId' => new ArrayObject([
+                        'type' => 'integer',
+                    ]),
+                    'isbn' => new ArrayObject([
+                        'type' => 'string',
+                    ]),
+                    'upc' => new ArrayObject([
+                        'type' => 'string',
+                    ]),
+                    'gtin' => new ArrayObject([
+                        'type' => 'string',
+                    ]),
+                    'mpn' => new ArrayObject([
+                        'type' => 'string',
+                    ]),
+                    'reference' => new ArrayObject([
+                        'type' => 'string',
+                    ]),
+                    'width' => new ArrayObject([
+                        'type' => 'number',
+                    ]),
+                    'height' => new ArrayObject([
+                        'type' => 'number',
+                    ]),
+                    'depth' => new ArrayObject([
+                        'type' => 'number',
+                    ]),
+                    'weight' => new ArrayObject([
+                        'type' => 'number',
+                    ]),
+                    'additionalShippingCost' => new ArrayObject([
+                        'type' => 'number',
+                    ]),
+                    // This field is nullable
+                    'redirectTargetId' => new ArrayObject([
+                        'type' => [
+                            'integer',
+                            'null',
+                        ],
+                    ]),
+                    // Carrier reference IDs are documented via an ApiProperty attribute
+                    'carrierReferenceIds' => new ArrayObject([
+                        'type' => 'array',
+                        'items' => ['type' => 'integer'],
+                        'example' => [1, 3],
+                    ]),
+                    'deliveryTimeNoteType' => new ArrayObject([
+                        'type' => 'integer',
+                    ]),
+                    'deliveryTimeInStockNotes' => new ArrayObject([
+                        'type' => 'object',
+                        'example' => [
+                            'en-US' => 'value',
+                            'fr-FR' => 'valeur',
+                        ],
+                    ]),
+                    'deliveryTimeOutOfStockNotes' => new ArrayObject([
+                        'type' => 'object',
+                        'example' => [
+                            'en-US' => 'value',
+                            'fr-FR' => 'valeur',
+                        ],
+                    ]),
+                    'metaTitles' => new ArrayObject([
+                        'type' => 'object',
+                        'example' => [
+                            'en-US' => 'value',
+                            'fr-FR' => 'valeur',
+                        ],
+                    ]),
+                    'metaDescriptions' => new ArrayObject([
+                        'type' => 'object',
+                        'example' => [
+                            'en-US' => 'value',
+                            'fr-FR' => 'valeur',
+                        ],
+                    ]),
+                    'linkRewrites' => new ArrayObject([
+                        'type' => 'object',
+                        'example' => [
+                            'en-US' => 'value',
+                            'fr-FR' => 'valeur',
+                        ],
+                    ]),
+                    'redirectType' => new ArrayObject([
+                        'type' => 'string',
+                    ]),
+                    'packStockType' => new ArrayObject([
+                        'type' => 'integer',
+                    ]),
+                    'outOfStockType' => new ArrayObject([
+                        'type' => 'integer',
+                    ]),
+                    'quantity' => new ArrayObject([
+                        'type' => 'integer',
+                    ]),
+                    'minimalQuantity' => new ArrayObject([
+                        'type' => 'integer',
+                    ]),
+                    'lowStockThreshold' => new ArrayObject([
+                        'type' => 'integer',
+                    ]),
+                    'lowStockAlertEnabled' => new ArrayObject([
+                        'type' => 'boolean',
+                    ]),
+                    'availableNowLabels' => new ArrayObject([
+                        'type' => 'object',
+                        'example' => [
+                            'en-US' => 'value',
+                            'fr-FR' => 'valeur',
+                        ],
+                    ]),
+                    'location' => new ArrayObject([
+                        'type' => 'string',
+                    ]),
+                    'availableLaterLabels' => new ArrayObject([
+                        'type' => 'object',
+                        'example' => [
+                            'en-US' => 'value',
+                            'fr-FR' => 'valeur',
+                        ],
+                    ]),
+                    // Nullable DateTime
+                    'availableDate' => new ArrayObject([
+                        'format' => 'date-time',
+                        'type' => [
+                            'string',
+                            'null',
+                        ],
+                    ]),
+                    'coverThumbnailUrl' => new ArrayObject([
+                        'type' => 'string',
                     ]),
                     // Shop IDs are documented via an ApiProperty attribute
                     'shopIds' => new ArrayObject([
