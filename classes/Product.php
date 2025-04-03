@@ -4599,6 +4599,8 @@ class ProductCore extends ObjectModel
 
         Hook::exec('actionProductGetAttributesGroupsAfter', [
             'product' => $this,
+            'id_lang' => $id_lang,
+            'id_product_attribute' => $id_product_attribute,
             'attributes_groups' => &$result,
         ]);
 
