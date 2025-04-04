@@ -317,7 +317,9 @@ default:
         - Tests\Integration\Behaviour\Features\Context\Domain\Product\Combination\CombinationListingFeatureContext
         - Tests\Integration\Behaviour\Features\Context\Domain\Product\Combination\UpdateCombinationFeatureContext
         - Tests\Integration\Behaviour\Features\Context\Domain\Product\UpdateStatusFeatureContext
-
+        - Tests\Integration\Behaviour\Features\Context\Domain\Product\Combination\UpdateCombinationFeatureContext
+        - Tests\Integration\Behaviour\Features\Context\Domain\Product\Combination\CombinationAssertionFeatureContext
+        - Tests\Integration\Behaviour\Features\Context\Domain\Product\Combination\UpdateCombinationStockFeatureContext
 
     catalog_price_rule:
       paths:
