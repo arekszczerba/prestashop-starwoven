@@ -315,6 +315,9 @@ default:
         - Tests\Integration\Behaviour\Features\Context\Domain\Product\Combination\GenerateCombinationFeatureContext
         - Tests\Integration\Behaviour\Features\Context\Domain\Product\Combination\GetCombinationIdsFeatureContext
         - Tests\Integration\Behaviour\Features\Context\Domain\Product\Combination\CombinationListingFeatureContext
+        - Tests\Integration\Behaviour\Features\Context\Domain\Product\Combination\UpdateCombinationFeatureContext
+        - Tests\Integration\Behaviour\Features\Context\Domain\Product\UpdateStatusFeatureContext
+
 
     catalog_price_rule:
       paths:
