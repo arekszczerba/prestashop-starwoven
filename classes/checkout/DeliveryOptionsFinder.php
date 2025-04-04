@@ -138,7 +138,6 @@ class DeliveryOptionsFinderCore implements DeliveryOptionsInterface
             }
         }
 
-        dump($carriers_available);
         return $carriers_available;
     }
 }
