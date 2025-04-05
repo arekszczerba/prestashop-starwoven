@@ -4590,6 +4590,13 @@ class ProductCore extends ObjectModel
         $query->groupBy('id_attribute_group, id_product_attribute');
         $query->orderBy('ag.position ASC, a.position ASC, agl.name ASC');
 
+        Hook::exec('actionProductGetAttributesGroupsBefore', [
+            'product' => $this,
+            'id_lang' => $id_lang,
+            'id_product_attribute' => $id_product_attribute,
+            'query' => $query,
+        ]);
+
         $result = Db::getInstance()->executeS($query);
 
         Hook::exec('actionProductGetAttributesGroupsAfter', [
