@@ -50,8 +50,11 @@ use PrestaShop\PrestaShop\Core\Domain\Product\Command\UpdateProductCommand;
 use PrestaShop\PrestaShop\Core\Domain\Product\Query\GetProductForEditing;
 use PrestaShop\PrestaShop\Core\Domain\Product\ValueObject\ProductId;
 use PrestaShop\PrestaShop\Core\Domain\Product\ValueObject\ProductType;
+use PrestaShop\PrestaShop\Core\Domain\Product\ValueObject\RedirectType;
+use PrestaShop\PrestaShop\Core\Domain\Product\VirtualProductFile\QueryResult\VirtualProductFileForEditing;
 use PrestaShop\PrestaShop\Core\Domain\Shop\ValueObject\ShopCollection;
 use PrestaShop\PrestaShop\Core\Domain\Shop\ValueObject\ShopConstraint;
+use PrestaShop\PrestaShop\Core\Util\DateTime\DateTime as DateTimeUtil;
 use PrestaShopBundle\ApiPlatform\Metadata\LocalizedValue;
 use PrestaShopBundle\ApiPlatform\NormalizationMapper;
 use PrestaShopBundle\ApiPlatform\Serializer\CQRSApiSerializer;
@@ -151,16 +154,24 @@ class CQRSApiSerializerTest extends KernelTestCase
         $updateProductCommand = new UpdateProductCommand(42, ShopConstraint::shop(1));
         $updateProductCommand->setWholesalePrice('12.34');
         $updateProductCommand->setWeight('2.67');
+        $updateProductCommand->setRedirectOption(
+            RedirectType::TYPE_CATEGORY_PERMANENT,
+            1
+        );
 
-        yield 'denormalize command with shop constraint and decimal number' => [
+        yield 'denormalize command with shop constraint, decimal number and multi param setter' => [
             [
                 'productId' => 42,
                 'wholeSalePrice' => 12.34,
                 'weight' => 2.67,
+                'redirectType' => RedirectType::TYPE_CATEGORY_PERMANENT,
+                'redirectTargetId' => 1,
             ],
             $updateProductCommand,
             [
                 '[_context][shopConstraint]' => '[shopConstraint]',
+                '[redirectType]' => '[redirectOption][redirectType]',
+                '[redirectTargetId]' => '[redirectOption][redirectTarget]',
             ],
         ];
 
@@ -473,6 +484,26 @@ class CQRSApiSerializerTest extends KernelTestCase
 
     public static function getNormalizationData(): iterable
     {
+        $virtualProduct = new VirtualProductFileForEditing(
+            42,
+            'virtual file',
+            'pretty virtual file',
+            23,
+            1,
+            DateTimeImmutable::createFromFormat(DateTimeUtil::DEFAULT_DATETIME_FORMAT, '1969-07-11 00:00:00'),
+        );
+        yield 'object with datetime' => [
+            $virtualProduct,
+            [
+                'id' => 42,
+                'fileName' => 'virtual file',
+                'displayName' => 'pretty virtual file',
+                'accessDays' => 23,
+                'downloadTimesLimit' => 1,
+                'expirationDate' => '1969-07-11 00:00:00',
+            ],
+        ];
+
         $createdApiClient = new CreatedApiClient(42, 'my_secret');
         yield 'test' => [
             $createdApiClient,
