@@ -46,6 +46,7 @@ use PrestaShop\PrestaShop\Core\Domain\Customer\Group\QueryResult\EditableCustome
 use PrestaShop\PrestaShop\Core\Domain\Customer\Group\ValueObject\GroupId;
 use PrestaShop\PrestaShop\Core\Domain\Module\Command\UploadModuleCommand;
 use PrestaShop\PrestaShop\Core\Domain\Product\Command\AddProductCommand;
+use PrestaShop\PrestaShop\Core\Domain\Product\Command\UpdateProductCommand;
 use PrestaShop\PrestaShop\Core\Domain\Product\Query\GetProductForEditing;
 use PrestaShop\PrestaShop\Core\Domain\Product\ValueObject\ProductId;
 use PrestaShop\PrestaShop\Core\Domain\Product\ValueObject\ProductType;
@@ -147,6 +148,22 @@ class CQRSApiSerializerTest extends KernelTestCase
 
     public function getExpectedDenormalizedData(): iterable
     {
+        $updateProductCommand = new UpdateProductCommand(42, ShopConstraint::shop(1));
+        $updateProductCommand->setWholesalePrice('12.34');
+        $updateProductCommand->setWeight('2.67');
+
+        yield 'denormalize command with shop constraint and decimal number' => [
+            [
+                'productId' => 42,
+                'wholeSalePrice' => 12.34,
+                'weight' => 2.67,
+            ],
+            $updateProductCommand,
+            [
+                '[_context][shopConstraint]' => '[shopConstraint]',
+            ],
+        ];
+
         $localizedResource = new LocalizedResource([
             'en-US' => 'english link',
             'fr-FR' => 'lien français',
