@@ -175,7 +175,7 @@ class ValidateCore
      */
     public static function isCarrierName($name)
     {
-        return empty($name) || preg_match('/^[^<>;=#{}]*$/u', $name);
+        return empty($name) || preg_match('/^[^<>{}]*$/u', $name);
     }
 
     /**
@@ -242,7 +242,7 @@ class ValidateCore
      */
     public static function isMailName($mail_name)
     {
-        return is_string($mail_name) && preg_match('/^[^<>;=#{}]*$/u', $mail_name);
+        return is_string($mail_name) && preg_match('/^[^<>{}]*$/u', $mail_name);
     }
 
     /**
@@ -377,7 +377,7 @@ class ValidateCore
      */
     public static function isCatalogName($name)
     {
-        return preg_match('/^[^<>;=#{}]*$/u', $name);
+        return preg_match('/^[^<>{}]*$/u', $name);
     }
 
     /**
@@ -469,7 +469,7 @@ class ValidateCore
      */
     public static function isValidSearch($search)
     {
-        return preg_match('/^[^<>;=#{}]{0,64}$/u', $search);
+        return preg_match('/^[^<>{}]{0,64}$/u', $search);
     }
 
     /**
@@ -481,7 +481,7 @@ class ValidateCore
      */
     public static function isGenericName($name)
     {
-        return empty($name) || preg_match('/^[^<>={}]*$/u', $name);
+        return empty($name) || preg_match('/^[^<>{}]*$/u', $name);
     }
 
     /**
