@@ -1,6 +1,5 @@
 import {expect} from 'chai';
 import {accountIdentityPage as foClassicAccountIdentityPage} from '@pages/FO/classic/myAccount/identity';
-import {creditSlipPage as foClassicCreditSlipsPage} from '@pages/FO/classic/myAccount/creditSlips';
 import {gdprPersonalDataPage as foClassicGdprPersonalDataPage} from '@pages/FO/classic/myAccount/gdprPersonalData';
 import testContext from '@utils/testContext';
 
@@ -12,6 +11,7 @@ import {
   foClassicMyAccountPage,
   foClassicMyAddressesPage,
   foClassicMyAddressesCreatePage,
+  foClassicMyCreditSlipsPage,
   foClassicMyOrderDetailsPage,
   foClassicMyOrderHistoryPage,
   foClassicMyWishlistsPage,
@@ -157,8 +157,8 @@ describe('Check FO connected pages', async () => {
     await foClassicAccountIdentityPage.goToMyAccountPage(page);
     await foClassicMyAccountPage.goToCreditSlipsPage(page);
 
-    const pageTitle = await foClassicCreditSlipsPage.getPageTitle(page);
-    expect(pageTitle).to.equal(foClassicCreditSlipsPage.pageTitle);
+    const pageTitle = await foClassicMyCreditSlipsPage.getPageTitle(page);
+    expect(pageTitle).to.equal(foClassicMyCreditSlipsPage.pageTitle);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);

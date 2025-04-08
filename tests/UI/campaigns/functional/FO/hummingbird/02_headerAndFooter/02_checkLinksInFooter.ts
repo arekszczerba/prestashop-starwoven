@@ -8,7 +8,6 @@ import {enableHummingbird, disableHummingbird} from '@commonTests/BO/design/humm
 
 // Import pages
 // Import FO pages
-import creditSlipsPage from '@pages/FO/hummingbird/myAccount/creditSlips';
 import personalInfoPage from '@pages/FO/hummingbird/myAccount/identity';
 import guestOrderTrackingPage from '@pages/FO/hummingbird/orderTracking/guestOrderTracking';
 import newProductsPage from '@pages/FO/hummingbird/newProducts';
@@ -30,6 +29,7 @@ import {
   foHummingbirdLoginPage,
   foHummingbirdMyAddressesPage,
   foHummingbirdMyAddressesCreatePage,
+  foHummingbirdMyCreditSlipsPage,
   foHummingbirdMyOrderHistoryPage,
   foHummingbirdMyWishlistsPage,
   foHummingbirdSitemapPage,
@@ -170,7 +170,7 @@ describe('FO - Header and Footer : Check links in footer page', async () => {
       {linkSelector: 'Information', pageTitle: personalInfoPage.pageTitle},
       {linkSelector: 'Addresses', pageTitle: foHummingbirdMyAddressesPage.pageTitle},
       {linkSelector: 'Orders', pageTitle: foHummingbirdMyOrderHistoryPage.pageTitle},
-      {linkSelector: 'Credit slips', pageTitle: creditSlipsPage.pageTitle},
+      {linkSelector: 'Credit slips', pageTitle: foHummingbirdMyCreditSlipsPage.pageTitle},
       {linkSelector: 'Wishlist', pageTitle: foHummingbirdMyWishlistsPage.pageTitle},
       {linkSelector: 'Sign out', pageTitle: foHummingbirdLoginPage.pageTitle},
     ].forEach((args, index: number) => {
@@ -208,7 +208,7 @@ describe('FO - Header and Footer : Check links in footer page', async () => {
       {linkSelector: 'Information', pageTitle: personalInfoPage.pageTitle},
       {linkSelector: 'Add first address', pageTitle: foHummingbirdMyAddressesCreatePage.pageTitle},
       {linkSelector: 'Orders', pageTitle: foHummingbirdMyOrderHistoryPage.pageTitle},
-      {linkSelector: 'Credit slips', pageTitle: creditSlipsPage.pageTitle},
+      {linkSelector: 'Credit slips', pageTitle: foHummingbirdMyCreditSlipsPage.pageTitle},
       {linkSelector: 'Wishlist', pageTitle: foHummingbirdMyWishlistsPage.pageTitle},
       {linkSelector: 'Sign out', pageTitle: foHummingbirdLoginPage.pageTitle},
     ].forEach((args, index: number) => {

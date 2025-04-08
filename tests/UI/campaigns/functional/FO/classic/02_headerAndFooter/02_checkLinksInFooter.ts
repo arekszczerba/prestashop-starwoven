@@ -8,7 +8,6 @@ import {createAccountTest} from '@commonTests/FO/classic/account';
 
 // Import pages
 // Import FO pages
-import {creditSlipPage} from '@pages/FO/classic/myAccount/creditSlips';
 import {accountIdentityPage} from '@pages/FO/classic/myAccount/identity';
 import {guestOrderTrackingPage} from '@pages/FO/classic/orderTracking/guestOrderTracking';
 import {newProductsPage} from '@pages/FO/classic/newProducts';
@@ -30,6 +29,7 @@ import {
   foClassicLoginPage,
   foClassicMyAddressesPage,
   foClassicMyAddressesCreatePage,
+  foClassicMyCreditSlipsPage,
   foClassicMyOrderHistoryPage,
   foClassicMyWishlistsPage,
   foClassicSitemapPage,
@@ -167,7 +167,7 @@ describe('FO - Header and Footer : Check links in footer page', async () => {
       {linkSelector: 'Information', pageTitle: accountIdentityPage.pageTitle},
       {linkSelector: 'Addresses', pageTitle: foClassicMyAddressesPage.pageTitle},
       {linkSelector: 'Orders', pageTitle: foClassicMyOrderHistoryPage.pageTitle},
-      {linkSelector: 'Credit slips', pageTitle: creditSlipPage.pageTitle},
+      {linkSelector: 'Credit slips', pageTitle: foClassicMyCreditSlipsPage.pageTitle},
       {linkSelector: 'Wishlist', pageTitle: foClassicMyWishlistsPage.pageTitle},
       {linkSelector: 'Sign out', pageTitle: foClassicLoginPage.pageTitle},
     ].forEach((args, index: number) => {
@@ -205,7 +205,7 @@ describe('FO - Header and Footer : Check links in footer page', async () => {
       {linkSelector: 'Information', pageTitle: accountIdentityPage.pageTitle},
       {linkSelector: 'Add first address', pageTitle: foClassicMyAddressesCreatePage.pageTitle},
       {linkSelector: 'Orders', pageTitle: foClassicMyOrderHistoryPage.pageTitle},
-      {linkSelector: 'Credit slips', pageTitle: creditSlipPage.pageTitle},
+      {linkSelector: 'Credit slips', pageTitle: foClassicMyCreditSlipsPage.pageTitle},
       {linkSelector: 'Wishlist', pageTitle: foClassicMyWishlistsPage.pageTitle},
       {linkSelector: 'Sign out', pageTitle: foClassicLoginPage.pageTitle},
     ].forEach((args, index: number) => {

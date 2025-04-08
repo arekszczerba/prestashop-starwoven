@@ -1,7 +1,6 @@
 import {expect} from 'chai';
 import {disableHummingbird, enableHummingbird} from '@commonTests/BO/design/hummingbird';
 import foHummingbirdAccountIdentityPage from '@pages/FO/hummingbird/myAccount/identity';
-import foHummingbirdCreditSlipsPage from '@pages/FO/hummingbird/myAccount/creditSlips';
 import foHummingbirdGdprPersonalDataPage from '@pages/FO/hummingbird/myAccount/gdprPersonalData';
 import testContext from '@utils/testContext';
 
@@ -13,6 +12,7 @@ import {
   foHummingbirdMyAccountPage,
   foHummingbirdMyAddressesPage,
   foHummingbirdMyAddressesCreatePage,
+  foHummingbirdMyCreditSlipsPage,
   foHummingbirdMyOrderDetailsPage,
   foHummingbirdMyOrderHistoryPage,
   foHummingbirdMyWishlistsPage,
@@ -162,8 +162,8 @@ describe('Check FO connected pages', async () => {
       await foHummingbirdAccountIdentityPage.goToMyAccountPage(page);
       await foHummingbirdMyAccountPage.goToCreditSlipsPage(page);
 
-      const pageTitle = await foHummingbirdCreditSlipsPage.getPageTitle(page);
-      expect(pageTitle).to.equal(foHummingbirdCreditSlipsPage.pageTitle);
+      const pageTitle = await foHummingbirdMyCreditSlipsPage.getPageTitle(page);
+      expect(pageTitle).to.equal(foHummingbirdMyCreditSlipsPage.pageTitle);
 
       const jsErrors = utilsPlaywright.getJsErrors();
       expect(jsErrors.length).to.equals(0);
