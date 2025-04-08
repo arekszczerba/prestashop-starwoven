@@ -171,6 +171,11 @@
       <title>Product deletion</title>
       <description>This hook is called when a product is deleted</description>
     </hook>
+    <hook id="actionObjectDuplicateAfter">
+      <name>actionObjectDuplicateAfter</name>
+      <title>After duplicating an object</title>
+      <description>This hook is called after duplicating an object by the core.</description>
+    </hook>
     <hook id="actionObjectProductInCartDeleteBefore">
       <name>actionObjectProductInCartDeleteBefore</name>
       <title>Cart product removal</title>
