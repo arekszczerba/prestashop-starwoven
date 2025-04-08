@@ -4499,7 +4499,7 @@ class CartCore extends ObjectModel
 
         $cart->save();
 
-        if (!$cart || !Validate::isLoadedObject($cart)) {
+        if (!Validate::isLoadedObject($cart)) {
             return false;
         }
 
