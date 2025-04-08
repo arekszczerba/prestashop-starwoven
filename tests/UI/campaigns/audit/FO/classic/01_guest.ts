@@ -1,7 +1,6 @@
 import {expect} from 'chai';
 import {pricesDropPage} from '@pages/FO/classic/pricesDrop';
 import {newProductsPage} from '@pages/FO/classic/newProducts';
-import {legalNoticePage} from '@pages/FO/classic/legalNotice';
 import {guestOrderTrackingPage} from '@pages/FO/classic/orderTracking/guestOrderTracking';
 import {termsAndConditionsOfUsePage} from '@pages/FO/classic/termsAndConditionsOfUse';
 import {securePaymentPage} from '@pages/FO/classic/securePayment';
@@ -18,6 +17,7 @@ import {
   foClassicCreateAccountPage,
   foClassicDeliveryPage,
   foClassicHomePage,
+  foClassicLegalNoticePage,
   foClassicLoginPage,
   foClassicProductPage,
   foClassicSearchResultsPage,
@@ -131,7 +131,7 @@ describe('Check FO public pages', async () => {
   describe('Check \'Our Company\' footer links', async () => {
     [
       {linkSelector: 'Delivery', pageTitle: foClassicDeliveryPage.pageTitle},
-      {linkSelector: 'Legal Notice', pageTitle: legalNoticePage.pageTitle},
+      {linkSelector: 'Legal Notice', pageTitle: foClassicLegalNoticePage.pageTitle},
       {linkSelector: 'Terms and conditions of use', pageTitle: termsAndConditionsOfUsePage.pageTitle},
       {linkSelector: 'About us', pageTitle: foClassicAboutUsPage.pageTitle},
       {linkSelector: 'Secure payment', pageTitle: securePaymentPage.pageTitle},
