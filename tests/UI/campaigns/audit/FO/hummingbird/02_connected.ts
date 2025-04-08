@@ -1,6 +1,5 @@
 import {expect} from 'chai';
 import {disableHummingbird, enableHummingbird} from '@commonTests/BO/design/hummingbird';
-import foHummingbirdAccountIdentityPage from '@pages/FO/hummingbird/myAccount/identity';
 import foHummingbirdGdprPersonalDataPage from '@pages/FO/hummingbird/myAccount/gdprPersonalData';
 import testContext from '@utils/testContext';
 
@@ -13,6 +12,7 @@ import {
   foHummingbirdMyAddressesPage,
   foHummingbirdMyAddressesCreatePage,
   foHummingbirdMyCreditSlipsPage,
+  foHummingbirdMyInformationsPage,
   foHummingbirdMyOrderDetailsPage,
   foHummingbirdMyOrderHistoryPage,
   foHummingbirdMyWishlistsPage,
@@ -99,8 +99,8 @@ describe('Check FO connected pages', async () => {
 
       await foHummingbirdMyAccountPage.goToInformationPage(page);
 
-      const pageTitle = await foHummingbirdAccountIdentityPage.getPageTitle(page);
-      expect(pageTitle).to.equal(foHummingbirdAccountIdentityPage.pageTitle);
+      const pageTitle = await foHummingbirdMyInformationsPage.getPageTitle(page);
+      expect(pageTitle).to.equal(foHummingbirdMyInformationsPage.pageTitle);
 
       const jsErrors = utilsPlaywright.getJsErrors();
       expect(jsErrors.length).to.equals(0);
@@ -109,7 +109,7 @@ describe('Check FO connected pages', async () => {
     it('should go to the "Your addresses" page', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'goToAddressesPage', baseContext);
 
-      await foHummingbirdAccountIdentityPage.goToMyAccountPage(page);
+      await foHummingbirdMyInformationsPage.goToMyAccountPage(page);
       await foHummingbirdMyAccountPage.goToAddressesPage(page);
 
       const pageHeaderTitle = await foHummingbirdMyAddressesPage.getPageTitle(page);
@@ -134,7 +134,7 @@ describe('Check FO connected pages', async () => {
     it('should go to the "Order history" page', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'goToHistoryAndDetailsPage', baseContext);
 
-      await foHummingbirdAccountIdentityPage.goToMyAccountPage(page);
+      await foHummingbirdMyInformationsPage.goToMyAccountPage(page);
       await foHummingbirdMyAccountPage.goToHistoryAndDetailsPage(page);
 
       const pageTitle = await foHummingbirdMyOrderHistoryPage.getPageTitle(page);
@@ -159,7 +159,7 @@ describe('Check FO connected pages', async () => {
     it('should go to the "Credit slips" page', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'goToCreditSlipsPage', baseContext);
 
-      await foHummingbirdAccountIdentityPage.goToMyAccountPage(page);
+      await foHummingbirdMyInformationsPage.goToMyAccountPage(page);
       await foHummingbirdMyAccountPage.goToCreditSlipsPage(page);
 
       const pageTitle = await foHummingbirdMyCreditSlipsPage.getPageTitle(page);
@@ -172,7 +172,7 @@ describe('Check FO connected pages', async () => {
     it('should go to the "My wishlists" page', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'goToMyWishlistsPage', baseContext);
 
-      await foHummingbirdAccountIdentityPage.goToMyAccountPage(page);
+      await foHummingbirdMyInformationsPage.goToMyAccountPage(page);
       await foHummingbirdMyAccountPage.goToMyWishlistsPage(page);
 
       const pageTitle = await foHummingbirdMyWishlistsPage.getPageTitle(page);
@@ -197,7 +197,7 @@ describe('Check FO connected pages', async () => {
     it('should go to the "GDPR - Personal data" page', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'goToMyGDPRPersonalDataPage', baseContext);
 
-      await foHummingbirdAccountIdentityPage.goToMyAccountPage(page);
+      await foHummingbirdMyInformationsPage.goToMyAccountPage(page);
       await foHummingbirdMyAccountPage.goToMyGDPRPersonalDataPage(page);
 
       const pageTitle = await foHummingbirdGdprPersonalDataPage.getPageTitle(page);

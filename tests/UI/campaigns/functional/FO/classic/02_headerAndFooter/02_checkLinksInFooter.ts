@@ -8,7 +8,6 @@ import {createAccountTest} from '@commonTests/FO/classic/account';
 
 // Import pages
 // Import FO pages
-import {accountIdentityPage} from '@pages/FO/classic/myAccount/identity';
 import {guestOrderTrackingPage} from '@pages/FO/classic/orderTracking/guestOrderTracking';
 import {newProductsPage} from '@pages/FO/classic/newProducts';
 import {pricesDropPage} from '@pages/FO/classic/pricesDrop';
@@ -30,6 +29,7 @@ import {
   foClassicMyAddressesPage,
   foClassicMyAddressesCreatePage,
   foClassicMyCreditSlipsPage,
+  foClassicMyInformationsPage,
   foClassicMyOrderHistoryPage,
   foClassicMyWishlistsPage,
   foClassicSitemapPage,
@@ -164,7 +164,7 @@ describe('FO - Header and Footer : Check links in footer page', async () => {
     });
 
     [
-      {linkSelector: 'Information', pageTitle: accountIdentityPage.pageTitle},
+      {linkSelector: 'Information', pageTitle: foClassicMyInformationsPage.pageTitle},
       {linkSelector: 'Addresses', pageTitle: foClassicMyAddressesPage.pageTitle},
       {linkSelector: 'Orders', pageTitle: foClassicMyOrderHistoryPage.pageTitle},
       {linkSelector: 'Credit slips', pageTitle: foClassicMyCreditSlipsPage.pageTitle},
@@ -202,7 +202,7 @@ describe('FO - Header and Footer : Check links in footer page', async () => {
     });
 
     [
-      {linkSelector: 'Information', pageTitle: accountIdentityPage.pageTitle},
+      {linkSelector: 'Information', pageTitle: foClassicMyInformationsPage.pageTitle},
       {linkSelector: 'Add first address', pageTitle: foClassicMyAddressesCreatePage.pageTitle},
       {linkSelector: 'Orders', pageTitle: foClassicMyOrderHistoryPage.pageTitle},
       {linkSelector: 'Credit slips', pageTitle: foClassicMyCreditSlipsPage.pageTitle},

@@ -8,7 +8,6 @@ import {enableHummingbird, disableHummingbird} from '@commonTests/BO/design/humm
 
 // Import pages
 // Import FO pages
-import personalInfoPage from '@pages/FO/hummingbird/myAccount/identity';
 import guestOrderTrackingPage from '@pages/FO/hummingbird/orderTracking/guestOrderTracking';
 import newProductsPage from '@pages/FO/hummingbird/newProducts';
 import pricesDropPage from '@pages/FO/hummingbird/pricesDrop';
@@ -30,6 +29,7 @@ import {
   foHummingbirdMyAddressesPage,
   foHummingbirdMyAddressesCreatePage,
   foHummingbirdMyCreditSlipsPage,
+  foHummingbirdMyInformationsPage,
   foHummingbirdMyOrderHistoryPage,
   foHummingbirdMyWishlistsPage,
   foHummingbirdSitemapPage,
@@ -167,7 +167,7 @@ describe('FO - Header and Footer : Check links in footer page', async () => {
     });
 
     [
-      {linkSelector: 'Information', pageTitle: personalInfoPage.pageTitle},
+      {linkSelector: 'Information', pageTitle: foHummingbirdMyInformationsPage.pageTitle},
       {linkSelector: 'Addresses', pageTitle: foHummingbirdMyAddressesPage.pageTitle},
       {linkSelector: 'Orders', pageTitle: foHummingbirdMyOrderHistoryPage.pageTitle},
       {linkSelector: 'Credit slips', pageTitle: foHummingbirdMyCreditSlipsPage.pageTitle},
@@ -205,7 +205,7 @@ describe('FO - Header and Footer : Check links in footer page', async () => {
     });
 
     [
-      {linkSelector: 'Information', pageTitle: personalInfoPage.pageTitle},
+      {linkSelector: 'Information', pageTitle: foHummingbirdMyInformationsPage.pageTitle},
       {linkSelector: 'Add first address', pageTitle: foHummingbirdMyAddressesCreatePage.pageTitle},
       {linkSelector: 'Orders', pageTitle: foHummingbirdMyOrderHistoryPage.pageTitle},
       {linkSelector: 'Credit slips', pageTitle: foHummingbirdMyCreditSlipsPage.pageTitle},
