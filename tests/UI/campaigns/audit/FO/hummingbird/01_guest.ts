@@ -2,7 +2,6 @@ import {expect} from 'chai';
 import {disableHummingbird, enableHummingbird} from '@commonTests/BO/design/hummingbird';
 import pricesDropPage from '@pages/FO/hummingbird/pricesDrop';
 import newProductsPage from '@pages/FO/hummingbird/newProducts';
-import deliveryPage from '@pages/FO/hummingbird/delivery';
 import legalNoticePage from '@pages/FO/hummingbird/legalNotice';
 import guestOrderTrackingPage from '@pages/FO/hummingbird/orderTracking/guestOrderTracking';
 import termsAndConditionsOfUsePage from '@pages/FO/hummingbird/termsAndConditionsOfUse';
@@ -18,6 +17,7 @@ import {
   foHummingbirdCategoryPage,
   foHummingbirdContactUsPage,
   foHummingbirdCreateAccountPage,
+  foHummingbirdDeliveryPage,
   foHummingbirdHomePage,
   foHummingbirdLoginPage,
   foHummingbirdProductPage,
@@ -135,7 +135,7 @@ describe('Check FO public pages', async () => {
 
     describe('Check \'Our Company\' footer links', async () => {
       [
-        {linkSelector: 'Delivery', pageTitle: deliveryPage.pageTitle},
+        {linkSelector: 'Delivery', pageTitle: foHummingbirdDeliveryPage.pageTitle},
         {linkSelector: 'Legal Notice', pageTitle: legalNoticePage.pageTitle},
         {linkSelector: 'Terms and conditions of use', pageTitle: termsAndConditionsOfUsePage.pageTitle},
         {linkSelector: 'About us', pageTitle: foHummingbirdAboutUsPage.pageTitle},

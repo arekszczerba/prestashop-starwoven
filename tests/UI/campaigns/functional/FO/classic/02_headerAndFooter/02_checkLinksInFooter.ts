@@ -8,7 +8,6 @@ import {createAccountTest} from '@commonTests/FO/classic/account';
 
 // Import pages
 // Import FO pages
-import {deliveryPage} from '@pages/FO/classic/delivery';
 import {legalNoticePage} from '@pages/FO/classic/legalNotice';
 import {creditSlipPage} from '@pages/FO/classic/myAccount/creditSlips';
 import {accountIdentityPage} from '@pages/FO/classic/myAccount/identity';
@@ -26,6 +25,7 @@ import {
   foClassicBestSalesPage,
   foClassicContactUsPage,
   foClassicCreateAccountPage,
+  foClassicDeliveryPage,
   foClassicHomePage,
   foClassicLoginPage,
   foClassicMyAddressesPage,
@@ -109,7 +109,7 @@ describe('FO - Header and Footer : Check links in footer page', async () => {
 
   describe('Check \'Our Company\' footer links', async () => {
     [
-      {linkSelector: 'Delivery', pageTitle: deliveryPage.pageTitle},
+      {linkSelector: 'Delivery', pageTitle: foClassicDeliveryPage.pageTitle},
       {linkSelector: 'Legal Notice', pageTitle: legalNoticePage.pageTitle},
       {linkSelector: 'Terms and conditions of use', pageTitle: termsAndConditionsOfUsePage.pageTitle},
       {linkSelector: 'About us', pageTitle: foClassicAboutUsPage.pageTitle},
