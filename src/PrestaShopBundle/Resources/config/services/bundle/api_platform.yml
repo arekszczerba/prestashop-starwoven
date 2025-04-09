@@ -35,6 +35,12 @@ services:
   PrestaShopBundle\ApiPlatform\NormalizationMapper:
     autowire: true
 
+  PrestaShopBundle\ApiPlatform\DomainObjectDetector:
+    autowire: true
+    arguments:
+      $domainNamespaces:
+        - 'PrestaShop\PrestaShop\Core\Domain'
+
   # This is a custom serializer that handles localized values and normalization mapping
   PrestaShopBundle\ApiPlatform\Serializer\CQRSApiSerializer:
     autowire: true
