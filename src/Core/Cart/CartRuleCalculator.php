@@ -28,7 +28,12 @@ namespace PrestaShop\PrestaShop\Core\Cart;
 
 use Cart;
 use CartRule;
+use Context;
 use Currency;
+use PrestaShop\PrestaShop\Adapter\ContainerFinder;
+use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountType;
+use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagSettings;
+use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagStateCheckerInterface;
 use PrestaShopDatabaseException;
 
 class CartRuleCalculator
@@ -98,6 +103,25 @@ class CartRuleCalculator
 
         if (!CartRule::isFeatureActive()) {
             return;
+        }
+
+        if ($cartRule->type === DiscountType::ORDER_DISCOUNT && (float) $cartRule->reduction_percent > 0  && $cartRule->reduction_product == 0) {
+            $containerFinder = new ContainerFinder(Context::getContext());
+            $container = $containerFinder->getContainer();
+            $featureFlagManager = $container->get(FeatureFlagStateCheckerInterface::class);
+
+            if ($featureFlagManager !== null && $featureFlagManager->isEnabled(FeatureFlagSettings::FEATURE_FLAG_DISCOUNT)) {
+                $initialShippingFees = $this->calculator->getFees()->getInitialShippingFees();
+                $productsTotal = $this->calculator->getRowTotal();
+                $orderTotal = $productsTotal->add($initialShippingFees);
+                $orderDiscountAmount = new AmountImmutable(
+                    $orderTotal->getTaxExcluded() * $cartRule->reduction_percent / 100,
+                    $orderTotal->getTaxIncluded() * $cartRule->reduction_percent / 100
+                );
+                $cartRuleData->addDiscountApplied($orderDiscountAmount);
+
+                return;
+            }
         }
 
         // Free shipping on selected carriers
