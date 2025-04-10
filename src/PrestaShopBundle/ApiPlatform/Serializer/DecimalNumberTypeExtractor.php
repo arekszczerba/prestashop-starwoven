@@ -71,7 +71,16 @@ class DecimalNumberTypeExtractor implements PropertyTypeExtractorInterface
                 return null;
             }
 
-            if ($this->methodBasedOnDecimalNumber($reflectionClass->getMethod($getterMethodName))) {
+            // We are dealing with a property that is returned as a DecimalNumber
+            if ($this->methodReturnBasedOnDecimalNumber($reflectionClass->getMethod($getterMethodName))) {
+                // If setter requires a DecimalNumber then it is the only possible type
+                if ($this->methodParameterBasedOnDecimalNumber($reflectionClass->getMethod($setterMethodName))) {
+                    return [
+                        new Type(Type::BUILTIN_TYPE_OBJECT, false, DecimalNumber::class),
+                    ];
+                }
+
+                // Other types should be string or float but both are acceptable since they can be cast
                 return [
                     new Type(Type::BUILTIN_TYPE_FLOAT),
                     new Type(Type::BUILTIN_TYPE_STRING),
@@ -82,7 +91,7 @@ class DecimalNumberTypeExtractor implements PropertyTypeExtractorInterface
         return null;
     }
 
-    private function methodBasedOnDecimalNumber(ReflectionMethod $reflectionMethod): bool
+    private function methodReturnBasedOnDecimalNumber(ReflectionMethod $reflectionMethod): bool
     {
         if (!$reflectionMethod->hasReturnType() || !$reflectionMethod->getReturnType() instanceof ReflectionNamedType || $reflectionMethod->getReturnType()->isBuiltin()) {
             return false;
@@ -105,6 +114,17 @@ class DecimalNumberTypeExtractor implements PropertyTypeExtractorInterface
                 if ($this->isTypeBasedOnDecimalNumber($returnReflectionType)) {
                     return true;
                 }
+            }
+        }
+
+        return false;
+    }
+
+    private function methodParameterBasedOnDecimalNumber(ReflectionMethod $reflectionMethod): bool
+    {
+        foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
+            if ($reflectionParameter->getType() instanceof ReflectionNamedType && $this->isTypeBasedOnDecimalNumber($reflectionParameter->getType())) {
+                return true;
             }
         }
 

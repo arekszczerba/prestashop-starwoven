@@ -41,6 +41,7 @@ use PrestaShop\PrestaShop\Core\Domain\ApiClient\ValueObject\CreatedApiClient;
 use PrestaShop\PrestaShop\Core\Domain\CartRule\Command\EditCartRuleCommand;
 use PrestaShop\PrestaShop\Core\Domain\CartRule\ValueObject\CartRuleAction;
 use PrestaShop\PrestaShop\Core\Domain\Customer\Group\Command\AddCustomerGroupCommand;
+use PrestaShop\PrestaShop\Core\Domain\Customer\Group\Command\EditCustomerGroupCommand;
 use PrestaShop\PrestaShop\Core\Domain\Customer\Group\Query\GetCustomerGroupForEditing;
 use PrestaShop\PrestaShop\Core\Domain\Customer\Group\QueryResult\EditableCustomerGroup;
 use PrestaShop\PrestaShop\Core\Domain\Customer\Group\ValueObject\GroupId;
@@ -151,6 +152,52 @@ class CQRSApiSerializerTest extends KernelTestCase
 
     public function getExpectedDenormalizedData(): iterable
     {
+        $addCustomerGroupCommand = new AddCustomerGroupCommand(
+            [
+                self::EN_LANG_ID => 'english name',
+                self::getFrenchId() => 'nom français',
+            ],
+            new DecimalNumber('12.87'),
+            false,
+            true,
+            [1, 3],
+        );
+
+        yield 'denormalize command with DecimalNumber in the constructor, and denormalized localized value' => [
+            [
+                'localizedNames' => [
+                    'en-US' => 'english name',
+                    'fr-FR' => 'nom français',
+                ],
+                'reductionPercent' => 12.87,
+                'displayPriceTaxExcluded' => false,
+                'showPrice' => true,
+                'shopIds' => [1, 3],
+            ],
+            $addCustomerGroupCommand,
+            [],
+            null,
+            // Extra context to handle localized values
+            [
+                LocalizedValue::LOCALIZED_VALUE_PARAMETERS => [
+                    'localizedNames' => [
+                        LocalizedValue::DENORMALIZED_KEY => LocalizedValue::ID_KEY,
+                    ],
+                ],
+            ],
+        ];
+
+        $editCustomerGroupCommand = new EditCustomerGroupCommand(42);
+        $editCustomerGroupCommand->setReductionPercent(new DecimalNumber('12.87'));
+
+        yield 'denormalize command with setter based on DecimalNumber' => [
+            [
+                'customerGroupId' => 42,
+                'reductionPercent' => 12.87,
+            ],
+            $editCustomerGroupCommand,
+        ];
+
         $updateProductCommand = new UpdateProductCommand(42, ShopConstraint::shop(1));
         $updateProductCommand->setWholesalePrice('12.34');
         $updateProductCommand->setWeight('2.67');
