@@ -104,7 +104,7 @@ class CartRuleCalculator
         if (!CartRule::isFeatureActive()) {
             return;
         }
-
+        $featureFlagManager = null;
         if ($cartRule->type === DiscountType::ORDER_DISCOUNT && (float) $cartRule->reduction_percent > 0  && $cartRule->reduction_product == 0) {
             $containerFinder = new ContainerFinder(Context::getContext());
             $container = $containerFinder->getContainer();
@@ -264,6 +264,12 @@ class CartRuleCalculator
             foreach ($concernedRows as $concernedRow) {
                 $totalTaxIncl += $concernedRow->getFinalTotalPrice()->getTaxIncluded();
                 $totalTaxExcl += $concernedRow->getFinalTotalPrice()->getTaxExcluded();
+            }
+
+            if ($featureFlagManager !== null && $featureFlagManager->isEnabled(FeatureFlagSettings::FEATURE_FLAG_DISCOUNT) && $cartRule->type === DiscountType::ORDER_DISCOUNT) {
+                $ShippingFees = $this->calculator->getFees()->getInitialShippingFees();
+                $totalTaxExcl += $ShippingFees->getTaxExcluded();
+                $totalTaxIncl += $ShippingFees->getTaxExcluded();
             }
 
             // The reduction cannot exceed the products total, except when we do not want it to be limited (for the partial use calculation)
