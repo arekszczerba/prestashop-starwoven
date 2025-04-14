@@ -349,33 +349,68 @@ abstract class PaymentModuleCore extends Module
             $id_order_state = Configuration::get('PS_OS_ERROR');
         }
 
+        $productsHandleByCarrier = [];
+        $idAddress = null;
+        $carrierId = null;
+
         foreach ($package_list as $id_address => $packageByAddress) {
+            $idAddress = $id_address;
             foreach ($packageByAddress as $id_package => $package) {
-                $orderData = $this->createOrderFromCart(
-                    $this->context->cart,
-                    $this->context->currency,
-                    $package['product_list'],
-                    $id_address,
-                    $this->context,
-                    $reference,
-                    $secure_key,
-                    $payment_method,
-                    $this->name,
-                    $dont_touch_amount,
-                    $amount_paid,
-                    0,
-                    $cart_total_paid,
-                    self::DEBUG_MODE,
-                    $order_status,
-                    $id_order_state,
-                    isset($package['id_carrier']) ? $package['id_carrier'] : null
-                );
-                $order = $orderData['order'];
-                $order_list[] = $order;
-                $order_detail_list[] = $orderData['orderDetail'];
+                $carrierId = $package['id_carrier'];
+                if ($this->isFeatureFlagIsEnabledForMultiShipment()) {
+                    $productsHandleByCarrier[$package['id_carrier']] = $package['product_list'];
+                } else {
+                    $orderData = $this->createOrderFromCart(
+                        $this->context->cart,
+                        $this->context->currency,
+                        $package['product_list'],
+                        $id_address,
+                        $this->context,
+                        $reference,
+                        $secure_key,
+                        $payment_method,
+                        $this->name,
+                        $dont_touch_amount,
+                        $amount_paid,
+                        0,
+                        $cart_total_paid,
+                        self::DEBUG_MODE,
+                        $order_status,
+                        $id_order_state,
+                        isset($package['id_carrier']) ? $package['id_carrier'] : null
+                    );
+                    $order = $orderData['order'];
+                    $order_list[] = $order;
+                    $order_detail_list[] = $orderData['orderDetail'];
+                }
             }
         }
 
+        if ($this->isFeatureFlagIsEnabledForMultiShipment()) {
+            $orderData = $this->createOrderFromCart(
+                $this->context->cart,
+                $this->context->currency,
+                $productsHandleByCarrier,
+                $idAddress,
+                $this->context,
+                $reference,
+                $secure_key,
+                $payment_method,
+                $this->name,
+                $dont_touch_amount,
+                $amount_paid,
+                0,
+                $cart_total_paid,
+                self::DEBUG_MODE,
+                $order_status,
+                $id_order_state,
+                $carrierId,
+                true
+            );
+            $order = $orderData['order'];
+            $order_list[] = $order;
+            $order_detail_list[] = $orderData['orderDetail'];
+        }
         // The country can only change if the address used for the calculation is the delivery address, and if multi-shipping is activated
         if (Configuration::get('PS_TAX_ADDRESS_TYPE') == 'id_address_delivery' && isset($context_country)) {
             $this->context->country = $context_country;
@@ -574,8 +609,6 @@ abstract class PaymentModuleCore extends Module
                 'currency' => $this->context->currency,
                 'orderStatus' => $order_status,
             ]);
-
-            $this->addShipmentToOrder($order);
 
             if ($order_status->logable) {
                 foreach ($this->context->cart->getProducts() as $product) {
@@ -970,10 +1003,19 @@ abstract class PaymentModuleCore extends Module
         $debug,
         $order_status,
         $id_order_state,
-        $carrierId = null
+        $carrierId = null,
+        $isFeatureFlagIsEnabledForMultiShipment = false,
     ) {
         $order = new Order();
-        $order->product_list = $productList;
+        if (!$isFeatureFlagIsEnabledForMultiShipment) {
+            $order->product_list = $productList;
+        } else {
+            foreach($productList as $products) {
+                foreach ($products as $product) {
+                    $order->product_list[] = $product;
+                }
+            }
+        }
 
         $computingPrecision = Context::getContext()->getComputingPrecision();
 
@@ -1125,6 +1167,8 @@ abstract class PaymentModuleCore extends Module
             $order_carrier->add();
         }
 
+        $this->addShipmentToOrder($order, $productList);
+
         return ['order' => $order, 'orderDetail' => $order_detail];
     }
 
@@ -1274,18 +1318,23 @@ abstract class PaymentModuleCore extends Module
         return $cart_rules_list;
     }
 
-    private function addShipmentToOrder(Order $order)
+    private function addShipmentToOrder(Order $order, array $productList)
     {
-        /** @var FeatureFlagStateCheckerInterface $featureFlagManager */
-        $featureFlagManager = $this->get(FeatureFlagStateCheckerInterface::class);
-
-        if (!$featureFlagManager->isEnabled(FeatureFlagSettings::FEATURE_FLAG_IMPROVED_SHIPMENT)) {
+        if (!$this->isFeatureFlagIsEnabledForMultiShipment()) {
             return;
         }
 
         /** @var OrderShipmentCreator $orderShipmentCreator */
         $orderShipmentCreator = $this->get('PrestaShop\PrestaShop\Adapter\Shipment\OrderShipmentCreator');
 
-        $orderShipmentCreator->addShipmentOrder($order);
+        $orderShipmentCreator->addShipmentOrder($order, $productList);
+    }
+
+    private function isFeatureFlagIsEnabledForMultiShipment()
+    {
+        /** @var FeatureFlagStateCheckerInterface $featureFlagManager */
+        $featureFlagManager = $this->get(FeatureFlagStateCheckerInterface::class);
+
+        return $featureFlagManager->isEnabled(FeatureFlagSettings::FEATURE_FLAG_IMPROVED_SHIPMENT);
     }
 }

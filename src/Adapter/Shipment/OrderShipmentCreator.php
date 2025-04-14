@@ -46,27 +46,34 @@ class OrderShipmentCreator
         $this->shipmentRepository = $shipmentRepository;
     }
 
-    public function addShipmentOrder(Order $order): void
+    public function addShipmentOrder(Order $order, array $productsHandledByCarrier): void
     {
-        $shipment = new Shipment();
-        $shipment->setOrderId((int) $order->id);
-        $shipment->setCarrierId((int) $order->id_carrier);
-        $shipment->setAddressId((int) $order->id_address_delivery);
-        $shipment->setTrackingNumber(null);
-        $shipment->setShippingCostTaxExcluded((float) $order->total_shipping_tax_excl);
-        $shipment->setShippingCostTaxIncluded((float) $order->total_shipping_tax_incl);
-        $shipment->setDeliveredAt(null);
-        $shipment->setShippedAt(null);
-        $shipment->setCancelledAt(null);
+        foreach ($productsHandledByCarrier as $carrierId => $products) {
+            $shipment = new Shipment();
+            $shipment->setOrderId((int) $order->id);
+            $shipment->setCarrierId((int) $carrierId);
+            $shipment->setAddressId((int) $order->id_address_delivery);
+            $shipment->setTrackingNumber(null);
+            $shipment->setShippingCostTaxExcluded((float) $order->total_shipping_tax_excl);
+            $shipment->setShippingCostTaxIncluded((float) $order->total_shipping_tax_incl);
+            $shipment->setDeliveredAt(null);
+            $shipment->setShippedAt(null);
+            $shipment->setCancelledAt(null);
 
-        foreach (OrderDetail::getList($order->id) as $product) {
-            $shipmentProduct = new ShipmentProduct();
-            $shipmentProduct->setShipment($shipment);
-            $shipmentProduct->setOrderDetailId((int) $product['id_order_detail']);
-            $shipmentProduct->setQuantity($product['product_quantity']);
-            $shipment->addShipmentProduct($shipmentProduct);
+            // match products with order details to get quantities & orderDetailId
+            foreach (OrderDetail::getList($order->id) as $orderDetailProduct) {
+                foreach ($products as $product) {
+                    if ($product['id_product'] === $orderDetailProduct['product_id']) {
+                        $shipmentProduct = new ShipmentProduct();
+                        $shipmentProduct->setShipment($shipment);
+                        $shipmentProduct->setOrderDetailId($orderDetailProduct['id_order_detail']);
+                        $shipmentProduct->setQuantity($orderDetailProduct['product_quantity']);
+                        $shipment->addShipmentProduct($shipmentProduct);
+                    }
+                }
+            }
+
+            $this->shipmentRepository->save($shipment);
         }
-
-        $this->shipmentRepository->save($shipment);
     }
 }
