@@ -5413,5 +5413,10 @@
       <title>Triggers after getting product attributes groups</title>
       <description>Allows to modify product attributes groups after they are retrieved from the database.</description>
     </hook>
+	<hook id="actionGetPdfRenderer">
+      <name>actionGetPdfRenderer</name>
+      <title>Provide a PDF renderer</title>
+      <description>This hook allows to provide a custom PDF renderer to generate PDF files</description>
+    </hook>
   </entities>
 </entity_hook>
