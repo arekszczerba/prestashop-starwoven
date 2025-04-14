@@ -28,15 +28,14 @@ declare(strict_types=1);
 
 namespace PrestaShop\PrestaShop\Adapter\Shipment;
 
-use PrestaShop\PrestaShop\Adapter\Presenter\Object\ObjectPresenter;
-use PrestaShop\PrestaShop\Adapter\Product\PriceFormatter;
-use PrestaShop\PrestaShop\Adapter\Shipment\DeliveryOptionsInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
-use Context;
-use Product;
 use Configuration;
+use Context;
 use Hook;
 use Module;
+use PrestaShop\PrestaShop\Adapter\Presenter\Object\ObjectPresenter;
+use PrestaShop\PrestaShop\Adapter\Product\PriceFormatter;
+use Product;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DeliveryOptionsProvider implements DeliveryOptionsInterface
 {
