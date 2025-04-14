@@ -351,12 +351,10 @@ abstract class PaymentModuleCore extends Module
 
         $productsHandleByCarrier = [];
         $idAddress = null;
-        $carrierId = null;
 
         foreach ($package_list as $id_address => $packageByAddress) {
             $idAddress = $id_address;
             foreach ($packageByAddress as $id_package => $package) {
-                $carrierId = $package['id_carrier'];
                 if ($this->isFeatureFlagIsEnabledForMultiShipment()) {
                     $productsHandleByCarrier[$package['id_carrier']] = $package['product_list'];
                 } else {
@@ -404,7 +402,7 @@ abstract class PaymentModuleCore extends Module
                 self::DEBUG_MODE,
                 $order_status,
                 $id_order_state,
-                $carrierId,
+                null,
                 true
             );
             $order = $orderData['order'];
