@@ -68,7 +68,6 @@ class DeliveryOptionsProvider implements DeliveryOptionsInterface
         foreach ($cart->getCartRules() as $rule) {
             if ($rule['free_shipping'] && !$rule['carrier_restriction']) {
                 return true;
-                break;
             }
         }
 
