@@ -1010,7 +1010,7 @@ abstract class PaymentModuleCore extends Module
         if (!$isFeatureFlagIsEnabledForMultiShipment) {
             $order->product_list = $productList;
         } else {
-            foreach($productList as $products) {
+            foreach ($productList as $products) {
                 foreach ($products as $product) {
                     $order->product_list[] = $product;
                 }
