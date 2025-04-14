@@ -28,9 +28,7 @@ namespace PrestaShop\PrestaShop\Core\Cart;
 
 use Cart;
 use CartRule;
-use Context;
 use Currency;
-use PrestaShop\PrestaShop\Adapter\ContainerFinder;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountType;
 use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagSettings;
 use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagStateCheckerInterface;
@@ -57,6 +55,10 @@ class CartRuleCalculator
      * @var Fees
      */
     protected $fees;
+
+    public function __construct(private readonly ?FeatureFlagStateCheckerInterface $featureFlagManager = null)
+    {
+    }
 
     /**
      * process cartrules calculation
@@ -104,13 +106,8 @@ class CartRuleCalculator
         if (!CartRule::isFeatureActive()) {
             return;
         }
-        $featureFlagManager = null;
-        if ($cartRule->type === DiscountType::ORDER_DISCOUNT && (float) $cartRule->reduction_percent > 0  && $cartRule->reduction_product == 0) {
-            $containerFinder = new ContainerFinder(Context::getContext());
-            $container = $containerFinder->getContainer();
-            $featureFlagManager = $container->get(FeatureFlagStateCheckerInterface::class);
-
-            if ($featureFlagManager !== null && $featureFlagManager->isEnabled(FeatureFlagSettings::FEATURE_FLAG_DISCOUNT)) {
+        if ($cartRule->type === DiscountType::ORDER_DISCOUNT && (float) $cartRule->reduction_percent > 0 && $cartRule->reduction_product == 0) {
+            if ($this->featureFlagManager !== null && $this->featureFlagManager->isEnabled(FeatureFlagSettings::FEATURE_FLAG_DISCOUNT)) {
                 $initialShippingFees = $this->calculator->getFees()->getInitialShippingFees();
                 $productsTotal = $this->calculator->getRowTotal();
                 $orderTotal = $productsTotal->add($initialShippingFees);
@@ -253,7 +250,7 @@ class CartRuleCalculator
              */
 
             // currency conversion
-            $discountConverted = $this->convertAmountBetweenCurrencies(
+            $totalDiscountConverted = $discountConverted = $this->convertAmountBetweenCurrencies(
                 $cartRule->reduction_amount,
                 new Currency($cartRule->reduction_currency),
                 new Currency($cart->id_currency)
@@ -266,17 +263,12 @@ class CartRuleCalculator
                 $totalTaxExcl += $concernedRow->getFinalTotalPrice()->getTaxExcluded();
             }
 
-            if ($featureFlagManager !== null && $featureFlagManager->isEnabled(FeatureFlagSettings::FEATURE_FLAG_DISCOUNT) && $cartRule->type === DiscountType::ORDER_DISCOUNT) {
-                $ShippingFees = $this->calculator->getFees()->getInitialShippingFees();
-                $totalTaxExcl += $ShippingFees->getTaxExcluded();
-                $totalTaxIncl += $ShippingFees->getTaxExcluded();
-            }
-
             // The reduction cannot exceed the products total, except when we do not want it to be limited (for the partial use calculation)
             $discountConverted = min($discountConverted, $cartRule->reduction_tax ? $totalTaxIncl : $totalTaxExcl);
 
             // apply weighted discount:
             // on each line we apply a part of the discount corresponding to discount*rowWeight/total
+            $taxRate = 0;
             foreach ($concernedRows as $concernedRow) {
                 // Get current line tax rate
                 $taxRate = $this->getTaxRateFromRow($concernedRow);
@@ -305,6 +297,32 @@ class CartRuleCalculator
 
                 // Apply the discount amount
                 $cartRuleData->addDiscountApplied($amount);
+            }
+
+            if ($this->featureFlagManager !== null && $this->featureFlagManager->isEnabled(FeatureFlagSettings::FEATURE_FLAG_DISCOUNT) && $cartRule->type === DiscountType::ORDER_DISCOUNT) {
+                $totalProducts = $cartRule->reduction_tax ? $totalTaxIncl : $totalTaxExcl;
+                // The total discount is superior to the products amount, so we apply the remaining part of the discount globally
+                if ($totalDiscountConverted > $totalProducts) {
+                    $remainingDiscount = $totalDiscountConverted - $totalProducts;
+
+                    $initialShippingFees = $this->calculator->getFees()->getInitialShippingFees();
+                    $shippingAmount = $cartRule->reduction_tax ? $initialShippingFees->getTaxIncluded() : $initialShippingFees->getTaxExcluded();
+                    $shippingDiscount = min($remainingDiscount, $shippingAmount);
+
+                    if ($shippingDiscount > 0) {
+                        if ($cartRule->reduction_tax) {
+                            $shippingDiscountTaxIncluded = $shippingDiscount;
+                            $shippingDiscountTaxExcluded = $shippingDiscount / (1 + $taxRate);
+                        } else {
+                            $shippingDiscountTaxIncluded = $shippingDiscount * (1 + $taxRate);
+                            $shippingDiscountTaxExcluded = $shippingDiscount;
+                        }
+                        $shippingDiscountAmount = new AmountImmutable($shippingDiscountTaxIncluded, $shippingDiscountTaxExcluded);
+
+                        $this->calculator->getFees()->subDiscountValueShipping($shippingDiscountAmount);
+                        $cartRuleData->addDiscountApplied($shippingDiscountAmount);
+                    }
+                }
             }
         }
     }

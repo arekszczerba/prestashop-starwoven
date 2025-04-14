@@ -32,5 +32,4 @@ use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountId;
 interface AddOrderLevelDiscountHandlerInterface
 {
     public function handle(AddOrderLevelDiscountCommand $command): DiscountId;
-
 }

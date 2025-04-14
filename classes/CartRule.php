@@ -1536,11 +1536,12 @@ class CartRuleCore extends ObjectModel
                         // The reduction cannot exceed the products total, except when we do not want it to be limited (for the partial use calculation)
                         if ($filter != CartRule::FILTER_ACTION_ALL_NOCAP) {
                             if ($featureFlagManager !== null && $featureFlagManager->isEnabled(FeatureFlagSettings::FEATURE_FLAG_DISCOUNT) && $this->type === DiscountType::ORDER_DISCOUNT) {
+                                $max_reduction_amount = $this->reduction_tax
+                                    ? $cart_amount_ti + $context->cart->getOrderTotal(true, Cart::ONLY_SHIPPING, $package_products)
+                                    : $cart_amount_te + $context->cart->getOrderTotal(false, Cart::ONLY_SHIPPING, $package_products);
                                 $reduction_amount = min(
                                     $reduction_amount,
-                                    $this->reduction_tax
-                                        ? $cart_amount_ti + $context->cart->getOrderTotal(true, Cart::ONLY_SHIPPING, $package_products)
-                                        : $cart_amount_te + $context->cart->getOrderTotal(false, Cart::ONLY_SHIPPING, $package_products)
+                                    $max_reduction_amount,
                                 );
                             } else {
                                 $reduction_amount = min($reduction_amount, $this->reduction_tax ? $cart_amount_ti : $cart_amount_te);
@@ -1588,6 +1589,12 @@ class CartRuleCore extends ObjectModel
                         }
 
                         $current_cart_amount = max($current_cart_amount - (float) $previous_reduction_amount, 0);
+                    }
+
+                    if ($featureFlagManager !== null && $featureFlagManager->isEnabled(FeatureFlagSettings::FEATURE_FLAG_DISCOUNT) && $this->type === DiscountType::ORDER_DISCOUNT) {
+                        $current_cart_amount += $this->reduction_tax
+                            ? $context->cart->getOrderTotal(true, Cart::ONLY_SHIPPING, $package_products)
+                            : $context->cart->getOrderTotal(false, Cart::ONLY_SHIPPING, $package_products);
                     }
 
                     $reduction_value = min($reduction_value, $current_cart_amount);
