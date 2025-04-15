@@ -349,15 +349,9 @@ abstract class PaymentModuleCore extends Module
             $id_order_state = Configuration::get('PS_OS_ERROR');
         }
 
-        $productsHandleByCarrier = [];
-        $idAddress = null;
-
-        foreach ($package_list as $id_address => $packageByAddress) {
-            $idAddress = $id_address;
-            foreach ($packageByAddress as $id_package => $package) {
-                if ($this->isFeatureFlagIsEnabledForMultiShipment()) {
-                    $productsHandleByCarrier[$package['id_carrier']] = $package['product_list'];
-                } else {
+        if (!$this->isFeatureFlagIsEnabledForMultiShipment()) {
+            foreach ($package_list as $id_address => $packageByAddress) {
+                foreach ($packageByAddress as $id_package => $package) {
                     $orderData = $this->createOrderFromCart(
                         $this->context->cart,
                         $this->context->currency,
@@ -382,13 +376,21 @@ abstract class PaymentModuleCore extends Module
                     $order_detail_list[] = $orderData['orderDetail'];
                 }
             }
-        }
+        } else {
+            $productsByCarriers = [];
+            $idAddress = null;
 
-        if ($this->isFeatureFlagIsEnabledForMultiShipment()) {
+            foreach ($package_list as $id_address => $packageByAddress) {
+                $idAddress = $id_address;
+                foreach ($packageByAddress as $id_package => $package) {
+                    $productsByCarriers[$package['id_carrier']] = $package['product_list'];
+                }
+            }
+            // We create a single order that contains all the products
             $orderData = $this->createOrderFromCart(
                 $this->context->cart,
                 $this->context->currency,
-                $productsHandleByCarrier,
+                $productsByCarriers,
                 $idAddress,
                 $this->context,
                 $reference,
@@ -402,12 +404,14 @@ abstract class PaymentModuleCore extends Module
                 self::DEBUG_MODE,
                 $order_status,
                 $id_order_state,
-                null,
-                true
+                // Carrier ID is null because it's defined on the shipment
+                null
             );
             $order = $orderData['order'];
             $order_list[] = $order;
             $order_detail_list[] = $orderData['orderDetail'];
+            // Now we create the multiple shipments
+            $this->addShipmentToOrder($order, $productsByCarriers);
         }
         // The country can only change if the address used for the calculation is the delivery address, and if multi-shipping is activated
         if (Configuration::get('PS_TAX_ADDRESS_TYPE') == 'id_address_delivery' && isset($context_country)) {
@@ -1002,12 +1006,12 @@ abstract class PaymentModuleCore extends Module
         $order_status,
         $id_order_state,
         $carrierId = null,
-        $isFeatureFlagIsEnabledForMultiShipment = false,
     ) {
         $order = new Order();
-        if (!$isFeatureFlagIsEnabledForMultiShipment) {
+        if (!$this->isFeatureFlagIsEnabledForMultiShipment()) {
             $order->product_list = $productList;
         } else {
+            // Here we check if feature flag is enabled and we format the product list to merge the products in the same order
             foreach ($productList as $products) {
                 foreach ($products as $product) {
                     $order->product_list[] = $product;
@@ -1165,8 +1169,6 @@ abstract class PaymentModuleCore extends Module
             $order_carrier->add();
         }
 
-        $this->addShipmentToOrder($order, $productList);
-
         return ['order' => $order, 'orderDetail' => $order_detail];
     }
 
@@ -1316,7 +1318,7 @@ abstract class PaymentModuleCore extends Module
         return $cart_rules_list;
     }
 
-    private function addShipmentToOrder(Order $order, array $productList)
+    private function addShipmentToOrder(Order $order, array $productsByCarrier)
     {
         if (!$this->isFeatureFlagIsEnabledForMultiShipment()) {
             return;
@@ -1325,7 +1327,7 @@ abstract class PaymentModuleCore extends Module
         /** @var OrderShipmentCreator $orderShipmentCreator */
         $orderShipmentCreator = $this->get('PrestaShop\PrestaShop\Adapter\Shipment\OrderShipmentCreator');
 
-        $orderShipmentCreator->addShipmentOrder($order, $productList);
+        $orderShipmentCreator->addShipmentOrder($order, $productsByCarrier);
     }
 
     private function isFeatureFlagIsEnabledForMultiShipment()
