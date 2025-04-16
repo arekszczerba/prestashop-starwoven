@@ -123,9 +123,13 @@ class DeliveryOptionsProvider implements DeliveryOptionsInterface
         $delays = [];
         $extraContent = '';
 
+        // If carrier related to a module, check for additionnal data to display
         foreach ($carriers as $carrier) {
             $names[] = $carrier['instance']->name;
             $delays[] = $carrier['instance']->delay[$this->context->language->id];
+
+            // if more than on carrier are in the same delivery options then concatenate
+            // all extracontent
             $extraContent .= Hook::exec('displayCarrierExtraContent', ['carrier' => $carrier['instance']], Module::getModuleIdByName($carrier['instance']->id));
         }
 
@@ -147,14 +151,14 @@ class DeliveryOptionsProvider implements DeliveryOptionsInterface
             );
         }
 
-        if ($this->isTaxesIsIncluded()) {
+        if ($this->isPriceDisplayedWithTax()) {
             $price = $this->priceFormatter->format($deliveryOption['total_price_with_tax']);
-            if ($this->isTaxesLabelIsDisplayed()) {
+            if ($this->areTaxesLabelIsDisplayed()) {
                 $label = '%price% tax incl.';
             }
         } else {
             $price = $this->priceFormatter->format($deliveryOption['total_price_without_tax']);
-            if ($this->isTaxesLabelIsDisplayed()) {
+            if ($this->areTaxesLabelIsDisplayed()) {
                 $label = '%price% tax excl.';
             }
         }
@@ -166,13 +170,13 @@ class DeliveryOptionsProvider implements DeliveryOptionsInterface
         );
     }
 
-    private function isTaxesIsIncluded()
+    private function isPriceDisplayedWithTax()
     {
         return !Product::getTaxCalculationMethod((int) $this->context->cart->id_customer)
             && (int) Configuration::get('PS_TAX');
     }
 
-    private function isTaxesLabelIsDisplayed()
+    private function areTaxesLabelIsDisplayed()
     {
         return Configuration::get('PS_TAX')
             && $this->context->country->display_tax_label
