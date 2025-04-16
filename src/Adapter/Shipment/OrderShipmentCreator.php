@@ -54,15 +54,15 @@ class OrderShipmentCreator
             $shipment->setCarrierId((int) $carrierId);
             $shipment->setAddressId((int) $order->id_address_delivery);
             $shipment->setTrackingNumber(null);
-            $shipment->setShippingCostTaxExcluded((float) $order->total_shipping_tax_excl);
-            $shipment->setShippingCostTaxIncluded((float) $order->total_shipping_tax_incl);
+            $shipment->setShippingCostTaxExcluded((float) $products['total_shipping_tax_excl']);
+            $shipment->setShippingCostTaxIncluded((float) $products['total_shipping_tax_incl']);
             $shipment->setDeliveredAt(null);
             $shipment->setShippedAt(null);
             $shipment->setCancelledAt(null);
 
             // match products with order details to get quantities & orderDetailId
             foreach (OrderDetail::getList($order->id) as $orderDetailProduct) {
-                foreach ($products as $product) {
+                foreach ($products['product_list'] as $product) {
                     if ($product['id_product'] === $orderDetailProduct['product_id']) {
                         $shipmentProduct = new ShipmentProduct();
                         $shipmentProduct->setShipment($shipment);
