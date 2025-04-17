@@ -5,12 +5,12 @@
       <trans-unit id="758d266d26e272d172c4684835dfc92e">
         <source>Go international and display a language selector in the header of your store so that customers can shop in their own language.</source>
         <target>Go international and display a language selector in the header of your store so that customers can shop in their own language.</target>
-        <note>File: /home/runner/work/TranslationTool/TranslationTool/prestashop/modules/ps_languageselector/ps_languageselector.php [Line: 52]</note>
+        <note>File: modules/ps_languageselector/ps_languageselector.php [Line: 52]</note>
       </trans-unit>
       <trans-unit id="d33f69bfa67e20063a8905c923d9cf59">
         <source>Language selector block</source>
         <target>Language selector block</target>
-        <note>File: /home/runner/work/TranslationTool/TranslationTool/prestashop/modules/ps_languageselector/ps_languageselector.php [Line: 51]</note>
+        <note>File: modules/ps_languageselector/ps_languageselector.php [Line: 51]</note>
       </trans-unit>
     </body>
   </file>

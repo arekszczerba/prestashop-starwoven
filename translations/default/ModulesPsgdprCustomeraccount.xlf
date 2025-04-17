@@ -5,7 +5,7 @@
       <trans-unit id="5868129c4526891dddb05b8e59c33572">
         <source>GDPR - Personal data</source>
         <target>GDPR - Personal data</target>
-        <note>File: /home/runner/work/TranslationTool/TranslationTool/prestashop/modules/psgdpr/controllers/front/gdpr.php [Line: 73]</note>
+        <note>File: modules/psgdpr/controllers/front/gdpr.php [Line: 73]</note>
       </trans-unit>
     </body>
   </file>

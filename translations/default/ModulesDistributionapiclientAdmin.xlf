@@ -5,12 +5,12 @@
       <trans-unit id="86d96c9ee244b0beb3ca402d777a7be3">
         <source>Distribution API Client</source>
         <target>Distribution API Client</target>
-        <note>File: /home/runner/work/TranslationTool/TranslationTool/prestashop/modules/ps_distributionapiclient/ps_distributionapiclient.php [Line: 38]</note>
+        <note>File: modules/ps_distributionapiclient/ps_distributionapiclient.php [Line: 38]</note>
       </trans-unit>
       <trans-unit id="23d70cf6de7b47482c81740a7635bcc8">
         <source>Download and upgrade PrestaShop's native modules.</source>
         <target>Download and upgrade PrestaShop's native modules.</target>
-        <note>File: /home/runner/work/TranslationTool/TranslationTool/prestashop/modules/ps_distributionapiclient/ps_distributionapiclient.php [Line: 39]</note>
+        <note>File: modules/ps_distributionapiclient/ps_distributionapiclient.php [Line: 39]</note>
       </trans-unit>
     </body>
   </file>

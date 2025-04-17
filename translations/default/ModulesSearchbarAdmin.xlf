@@ -5,12 +5,12 @@
       <trans-unit id="12b97f0b9792cd7046a2512f0d5438f1">
         <source>Help your visitors find what they are looking for, add a quick search field to your store.</source>
         <target>Help your visitors find what they are looking for, add a quick search field to your store.</target>
-        <note>File: /home/runner/work/TranslationTool/TranslationTool/prestashop/modules/ps_searchbar/ps_searchbar.php [Line: 57]</note>
+        <note>File: modules/ps_searchbar/ps_searchbar.php [Line: 57]</note>
       </trans-unit>
       <trans-unit id="eacd852cc1f621763dccbda3f3c15081">
         <source>Search bar</source>
         <target>Search bar</target>
-        <note>File: /home/runner/work/TranslationTool/TranslationTool/prestashop/modules/ps_searchbar/ps_searchbar.php [Line: 56]</note>
+        <note>File: modules/ps_searchbar/ps_searchbar.php [Line: 56]</note>
       </trans-unit>
     </body>
   </file>
