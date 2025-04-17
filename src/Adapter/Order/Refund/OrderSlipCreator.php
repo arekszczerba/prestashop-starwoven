@@ -166,7 +166,7 @@ class OrderSlipCreator
      * @param bool $add_tax
      * @param int $precision
      *
-     * @return bool
+     * @return bool|OrderSlip
      *
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
@@ -334,7 +334,7 @@ class OrderSlipCreator
             $res &= $this->addProductOrderSlip((int) $orderSlip->id, $product);
         }
 
-        return (bool) $res;
+        return (!(bool)$res) ?? $orderSlip;
     }
 
     /**
