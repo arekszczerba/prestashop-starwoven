@@ -5,12 +5,12 @@
       <trans-unit id="ebdaa50b843565605176eb40816e77fe">
         <source>Our company</source>
         <target>Our company</target>
-        <note>File: /home/runner/work/TranslationTool/TranslationTool/prestashop/modules/ps_linklist/src/Repository/LinkBlockRepository.php [Line: 304]</note>
+        <note>File: modules/ps_linklist/src/Repository/LinkBlockRepository.php [Line: 304]</note>
       </trans-unit>
       <trans-unit id="068f80c7519d0528fb08e82137a72131">
         <source>Products</source>
         <target>Products</target>
-        <note>File: /home/runner/work/TranslationTool/TranslationTool/prestashop/modules/ps_linklist/src/Repository/LinkBlockRepository.php [Line: 303]</note>
+        <note>File: modules/ps_linklist/src/Repository/LinkBlockRepository.php [Line: 303]</note>
       </trans-unit>
     </body>
   </file>

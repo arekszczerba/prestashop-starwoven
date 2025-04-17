@@ -5,12 +5,12 @@
       <trans-unit id="60efcc704ef1456678f77eb9ee20847b">
         <source>All new products</source>
         <target>All new products</target>
-        <note>File: /home/runner/work/TranslationTool/TranslationTool/prestashop/modules/ps_newproducts/views/templates/hook/ps_newproducts.tpl [Line: 33]</note>
+        <note>File: modules/ps_newproducts/views/templates/hook/ps_newproducts.tpl [Line: 33]</note>
       </trans-unit>
       <trans-unit id="9ff0635f5737513b1a6f559ac2bff745">
         <source>New products</source>
         <target>New products</target>
-        <note>File: /home/runner/work/TranslationTool/TranslationTool/prestashop/modules/ps_newproducts/views/templates/hook/ps_newproducts.tpl [Line: 27]</note>
+        <note>File: modules/ps_newproducts/views/templates/hook/ps_newproducts.tpl [Line: 27]</note>
       </trans-unit>
     </body>
   </file>

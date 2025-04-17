@@ -5,7 +5,7 @@
       <trans-unit id="0118514e865ea573cdfb66091d29381b">
         <source>Customer data privacy[1][2]%message%[/2]</source>
         <target>Customer data privacy[1][2]%message%[/2]</target>
-        <note>File: /home/runner/work/TranslationTool/TranslationTool/prestashop/modules/ps_dataprivacy/ps_dataprivacy.php [Line: 127]</note>
+        <note>File: modules/ps_dataprivacy/ps_dataprivacy.php [Line: 127]</note>
       </trans-unit>
     </body>
   </file>

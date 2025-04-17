@@ -5,7 +5,7 @@
       <trans-unit id="43560641f91e63dc83682bc598892fa1">
         <source>Viewed products</source>
         <target>Viewed products</target>
-        <note>File: /home/runner/work/TranslationTool/TranslationTool/prestashop/modules/ps_viewedproduct/views/templates/hook/ps_viewedproduct.tpl [Line: 27]</note>
+        <note>File: modules/ps_viewedproduct/views/templates/hook/ps_viewedproduct.tpl [Line: 27]</note>
       </trans-unit>
     </body>
   </file>

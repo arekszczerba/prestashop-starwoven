@@ -5,7 +5,7 @@
       <trans-unit id="f73cc399b5ce12735a57f03414f09ef9">
         <source>Subcategories</source>
         <target>Subcategories</target>
-        <note>File: /home/runner/work/TranslationTool/TranslationTool/prestashop/themes/classic/templates/catalog/_partials/subcategories.tpl [Line: 28]</note>
+        <note>File: themes/classic/templates/catalog/_partials/subcategories.tpl [Line: 28]</note>
       </trans-unit>
     </body>
   </file>
