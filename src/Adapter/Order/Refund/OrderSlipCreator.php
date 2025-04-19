@@ -46,6 +46,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use TaxCalculator;
 use TaxManagerFactory;
 use Tools;
+use OrderSlip;
 
 /**
  * Class OrderSlipCreator is responsible of creating an OrderSlip for a refund
@@ -61,6 +62,12 @@ class OrderSlipCreator
      * @var TranslatorInterface
      */
     private $translator;
+
+    /** @var OrderSlip
+     * 
+     */
+    private $orderSlipCreated;
+
 
     /**
      * @param ConfigurationInterface $configuration
@@ -109,7 +116,7 @@ class OrderSlipCreator
                 'order' => $order,
                 'productList' => $orderRefundSummary->getProductRefunds(),
                 'qtyList' => $fullQuantityList,
-                'orderSlipCreated' => $orderSlipCreated,
+                'orderSlipCreated' => $this->orderSlipCreated,
             ], null, false, true, false, $order->id_shop);
 
             $customer = new Customer((int) $order->id_customer);
@@ -166,7 +173,7 @@ class OrderSlipCreator
      * @param bool $add_tax
      * @param int $precision
      *
-     * @return bool|OrderSlip
+     * @return bool
      *
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
@@ -330,11 +337,13 @@ class OrderSlipCreator
 
         $res = true;
 
+        $this->orderSlipCreated = $orderSlip;
+
         foreach ($product_list as $product) {
             $res &= $this->addProductOrderSlip((int) $orderSlip->id, $product);
         }
 
-        return (!(bool)$res) ?? $orderSlip;
+        return (bool) $res;
     }
 
     /**
