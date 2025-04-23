@@ -29,6 +29,7 @@ declare(strict_types=1);
 namespace PrestaShop\PrestaShop\Adapter\Shipment;
 
 use Order;
+use OrderCarrier;
 use OrderDetail;
 use PrestaShopBundle\Entity\Repository\ShipmentRepository;
 use PrestaShopBundle\Entity\Shipment;
@@ -59,6 +60,19 @@ class OrderShipmentCreator
             $shipment->setDeliveredAt(null);
             $shipment->setShippedAt(null);
             $shipment->setCancelledAt(null);
+
+            $productWeight = array_map(function ($product) {
+                return $product['weight'] * $product['quantity'];
+            }, $products['product_list']);
+
+            // add OrderCarrier here for keep the compatibility for legacy
+            $orderCarrier = new OrderCarrier();
+            $orderCarrier->id_order = (int) $order->id;
+            $orderCarrier->id_carrier = $carrierId;
+            $orderCarrier->weight = (float) $productWeight[0];
+            $orderCarrier->shipping_cost_tax_excl = (float) $products['total_shipping_tax_excl'];
+            $orderCarrier->shipping_cost_tax_incl = (float) $products['total_shipping_tax_incl'];
+            $orderCarrier->add();
 
             // match products with order details to get quantities & orderDetailId
             foreach (OrderDetail::getList($order->id) as $orderDetailProduct) {
