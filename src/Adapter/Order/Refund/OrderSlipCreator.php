@@ -46,7 +46,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use TaxCalculator;
 use TaxManagerFactory;
 use Tools;
-use OrderSlip;
 
 /**
  * Class OrderSlipCreator is responsible of creating an OrderSlip for a refund
