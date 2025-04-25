@@ -4499,6 +4499,12 @@ class CartCore extends ObjectModel
 
         $cart->save();
 
+        // clear checkout session data so that the customer can start a new checkout
+        Db::getInstance()->execute(
+            'UPDATE ' . _DB_PREFIX_ . 'cart SET checkout_session_data = NULL
+                WHERE id_cart = ' . (int) $cart->id
+        );
+
         if (!Validate::isLoadedObject($cart)) {
             return false;
         }
