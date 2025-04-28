@@ -1,4 +1,4 @@
-{# **
+/**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
  *
@@ -21,18 +21,12 @@
  * @author    PrestaShop SA and Contributors <contact@prestashop.com>
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
- * #}
+ */
 
-{% use '@PrestaShop/Admin/TwigTemplateForm/prestashop_ui_kit_base.html.twig' %}
-
-{% block checkbox_radio_label -%}
-  <label class="form-check-label">
-    {% set discountType = form.parent.vars.choices[form.vars.value].data %}
-    {{- widget|raw -}}
-    <div class="discount-label">
-      {{- label is not same as(false) ? (translation_domain is same as(false) ? label|raw : label|raw) -}}
-      <small class="form-text discount-help">{{ discountType.help }}</small>
-    </div>
-    <i class="material-icons discount-type-icon">{{ discountType.icon }}</i>
-  </label>
-{% endblock %}
+$(() => {
+  window.prestashop.component.initComponents(
+    [
+      'TranslatableInput',
+    ],
+  );
+});

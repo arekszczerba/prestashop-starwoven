@@ -57,45 +57,30 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
     public function create(array $data)
     {
         // For the moment the names are not sent by the form so we continue to generate it as we did later in the method.
-        $command = new AddDiscountCommand($data['type']->type, $data['names']->value ?? []);
-        switch ($data['type']->type) {
+        $command = new AddDiscountCommand($data['discount_type'], $data['names'] ?? []);
+        switch ($data['discount_type']) {
             case DiscountType::FREE_SHIPPING:
-                $name = $this->translator->trans('On free shipping', [], 'Admin.Catalog.Feature');
                 break;
             case DiscountType::CART_LEVEL:
-                $name = $this->translator->trans('On cart amount', [], 'Admin.Catalog.Feature');
+            case DiscountType::ORDER_LEVEL:
                 $command->setPercentDiscount(new DecimalNumber('50'));
                 break;
             case DiscountType::PRODUCT_LEVEL:
-                $name = $this->translator->trans('On products amount', [], 'Admin.Catalog.Feature');
                 $command->setPercentDiscount(new DecimalNumber('50'));
                 $command->setReductionProduct(1);
                 break;
             case DiscountType::FREE_GIFT:
-                $name = $this->translator->trans('On free gift', [], 'Admin.Catalog.Feature');
                 $command->setProductId(self::PRODUCT_ID);
                 $command->setCombinationId(self::COMBINATION_ID);
                 break;
-            case DiscountType::ORDER_LEVEL:
-                $name = $this->translator->trans('On order amount', [], 'Admin.Catalog.Feature');
-                $command->setPercentDiscount(new DecimalNumber('50'));
-                break;
             default:
-                throw new RuntimeException('Unknown discount type ' . $data['type']->type);
+                throw new RuntimeException('Unknown discount type ' . $data['discount_type']);
         }
 
         $command->setActive(true);
 
-        // This part adds automatic values for the initial POC, this is only temporary and
-        // should be removed before releasing this new page
-
         // Random code based on discount type
-        $command->setCode(strtoupper(uniqid($data['type']->type . '_')));
-        $now = new DateTime();
-        // Default name in the default language only containing the creation date
-        $command->setLocalizedNames([
-            $this->defaultLanguageContext->getId() => $name . ' ' . $now->format($this->defaultLanguageContext->getDateTimeFormat()),
-        ]);
+        $command->setCode(strtoupper(uniqid($data['discount_type'] . '_')));
         $command->setTotalQuantity(100);
 
         /** @var DiscountId $discountId */
