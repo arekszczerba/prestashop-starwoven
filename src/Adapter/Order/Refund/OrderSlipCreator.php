@@ -62,7 +62,7 @@ class OrderSlipCreator
      */
     private $translator;
 
-    /** @var OrderSlip
+    /**
      * @var OrderSlip
      */
     private $orderSlipCreated;
