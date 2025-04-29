@@ -67,7 +67,6 @@ class OrderSlipCreator
      */
     private $orderSlipCreated;
 
-
     /**
      * @param ConfigurationInterface $configuration
      * @param TranslatorInterface $translator
