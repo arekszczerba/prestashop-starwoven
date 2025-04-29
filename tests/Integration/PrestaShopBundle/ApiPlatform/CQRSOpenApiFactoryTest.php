@@ -28,12 +28,47 @@ namespace Tests\Integration\PrestaShopBundle\ApiPlatform;
 
 use ApiPlatform\OpenApi\Factory\OpenApiFactoryInterface;
 use ApiPlatform\OpenApi\Model\Operation;
+use ApiPlatform\OpenApi\Model\SecurityScheme;
 use ApiPlatform\OpenApi\OpenApi;
 use ArrayObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class CQRSOpenApiFactoryTest extends KernelTestCase
 {
+    public function testSecuritySchemes(): void
+    {
+        /** @var OpenApiFactoryInterface $openApiFactory */
+        $openApiFactory = $this->getContainer()->get(OpenApiFactoryInterface::class);
+        /** @var OpenApi $openApi */
+        $openApi = $openApiFactory->__invoke();
+        $security = $openApi->getSecurity();
+        $this->assertEquals([['oauth' => []]], $security);
+
+        $securitySchemes = $openApi->getComponents()->getSecuritySchemes();
+        $oauthSecurityScheme = $securitySchemes['oauth'];
+        $this->assertInstanceOf(SecurityScheme::class, $oauthSecurityScheme);
+        $this->assertEquals('oauth2', $oauthSecurityScheme->getType());
+        $this->assertEquals('OAuth 2.0 client credentials Grant', $oauthSecurityScheme->getDescription());
+        $this->assertNotNull($oauthSecurityScheme->getFlows());
+        $this->assertNotNull($oauthSecurityScheme->getFlows()->getClientCredentials());
+        $clientCredentialsFlow = $oauthSecurityScheme->getFlows()->getClientCredentials();
+        $this->assertEmpty($clientCredentialsFlow->getAuthorizationUrl());
+        $this->assertEquals('/admin-api/access_token', $clientCredentialsFlow->getTokenUrl());
+        $this->assertGreaterThan(0, $clientCredentialsFlow->getScopes()->count());
+
+        // We don't test all the scopes as they are gonna evolve with time, but we can test a minimum of them
+        $expectedScopes = [
+            'api_client_read' => 'api_client_read',
+            'api_client_write' => 'api_client_write',
+            'product_read' => 'product_read',
+            'product_write' => 'product_write',
+        ];
+        foreach ($expectedScopes as $scope => $scopeDefinition) {
+            $this->assertNotEmpty($clientCredentialsFlow->getScopes()[$scope]);
+            $this->assertEquals($scopeDefinition, $clientCredentialsFlow->getScopes()[$scope]);
+        }
+    }
+
     /**
      * @dataProvider provideJsonSchemaFactoryCases
      */

@@ -28,3 +28,8 @@ api_platform:
       JWT:
         name: Authorization
         type: header
+  oauth:
+    enabled: true
+    type: 'oauth2'
+    flow: 'clientCredentials'
+    tokenUrl: '/admin-api/access_token'
