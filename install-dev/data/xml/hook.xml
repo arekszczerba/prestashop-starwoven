@@ -5418,5 +5418,10 @@
       <title>Provide a PDF renderer</title>
       <description>This hook allows to provide a custom PDF renderer to generate PDF files</description>
     </hook>
+    <hook id="displayAdminStoreInformation">
+      <name>displayAdminStoreInformation</name>
+      <title>Display extra store information</title>
+      <description>This hook displays content in the Information page to add store information</description>
+    </hook>
   </entities>
 </entity_hook>
