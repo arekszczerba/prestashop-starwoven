@@ -27,11 +27,14 @@
 namespace PrestaShopBundle\Controller\Admin\Sell\Catalog;
 
 use Exception;
+use PrestaShop\PrestaShop\Adapter\Discount\Repository\DiscountRepository;
 use PrestaShop\PrestaShop\Core\Domain\CartRule\Command\DeleteCartRuleCommand;
 use PrestaShop\PrestaShop\Core\Domain\CartRule\Command\ToggleCartRuleStatusCommand;
 use PrestaShop\PrestaShop\Core\Domain\CartRule\Exception\CartRuleException;
+use PrestaShop\PrestaShop\Core\Domain\Discount\Exception\DiscountNotFoundException;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Query\GetDiscountForEditing;
 use PrestaShop\PrestaShop\Core\Domain\Discount\QueryResult\DiscountForEditing;
+use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountId;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountType;
 use PrestaShop\PrestaShop\Core\Form\IdentifiableObject\Builder\FormBuilderInterface;
 use PrestaShop\PrestaShop\Core\Form\IdentifiableObject\Handler\FormHandlerInterface;
@@ -132,6 +135,70 @@ class DiscountController extends PrestaShopAdminController
 
             if ($result->isSubmitted() && $result->isValid()) {
                 return $this->redirectToRoute('admin_discounts_index');
+            }
+        } catch (Exception $e) {
+            $this->addFlash('error', $this->getErrorMessageForException($e, $this->getErrorMessages($e)));
+        }
+
+        return $this->render('@PrestaShop/Admin/Sell/Catalog/Discount/create.html.twig', [
+            'form' => $form->createView(),
+            'enableSidebar' => true,
+            'help_link' => $this->generateSidebarLink($request->attributes->get('_legacy_controller')),
+            'layoutTitle' => $this->trans('Discounts', [], 'Admin.Navigation.Menu'),
+            'lightDisplay' => false,
+        ]);
+    }
+
+    #[DemoRestricted(redirectRoute: 'admin_discounts_index')]
+    #[AdminSecurity("is_granted('create', request.get('_legacy_controller'))", redirectRoute: 'admin_discounts_index')]
+    public function editAction(
+        Request $request,
+        #[Autowire(service: 'prestashop.core.form.identifiable_object.builder.discount_form_builder')]
+        FormBuilderInterface $formBuilder,
+        #[Autowire(service: 'prestashop.core.form.identifiable_object.handler.discount_form_handler')]
+        FormHandlerInterface $formHandler,
+        DiscountRepository $discountRepository,
+        int $discountId,
+    ) {
+        try {
+            $discount = $discountRepository->get(new DiscountId($discountId));
+        } catch (DiscountNotFoundException $e) {
+            $this->addFlash('error', $this->getErrorMessageForException($e, $this->getErrorMessages($e)));
+
+            return $this->redirectToRoute('admin_discounts_index');
+        }
+
+        try {
+            $form = $formBuilder->getFormFor($discountId, [], [
+                'discount_id' => $discountId,
+                'discount_type' => $discount->type,
+                'method' => Request::METHOD_POST,
+            ]);
+        } catch (DiscountNotFoundException $e) {
+            $this->addFlash('error', $this->getErrorMessageForException($e, $this->getErrorMessages($e)));
+
+            return $this->redirectToRoute('admin_discounts_index');
+        }
+
+        try {
+            $form->handleRequest($request);
+            $result = $formHandler->handleFor($discountId, $form);
+
+            if ($result->isSubmitted()) {
+                if ($result->isValid()) {
+                    $this->addFlash('success', $this->trans('Successful update', [], 'Admin.Notifications.Success'));
+
+                    return $this->redirectToRoute('admin_discount_edit', ['discountId' => $discountId]);
+                } else {
+                    // Display root level errors with flash messages
+                    foreach ($form->getErrors() as $error) {
+                        $this->addFlash('error', sprintf(
+                            '%s: %s',
+                            $error->getOrigin()->getName(),
+                            $error->getMessage()
+                        ));
+                    }
+                }
             }
         } catch (Exception $e) {
             $this->addFlash('error', $this->getErrorMessageForException($e, $this->getErrorMessages($e)));

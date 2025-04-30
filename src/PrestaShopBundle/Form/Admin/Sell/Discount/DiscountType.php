@@ -92,6 +92,8 @@ class DiscountType extends TranslatorAwareType
         $resolver->setRequired([
             'discount_type',
         ]);
+        $resolver->define('discount_id');
         $resolver->setAllowedTypes('discount_type', ['string']);
+        $resolver->setAllowedTypes('discount_id', ['int']);
     }
 }

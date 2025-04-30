@@ -26,11 +26,11 @@
 
 namespace PrestaShop\PrestaShop\Core\Form\IdentifiableObject\DataHandler;
 
-use DateTime;
 use PrestaShop\Decimal\DecimalNumber;
 use PrestaShop\PrestaShop\Core\CommandBus\CommandBusInterface;
 use PrestaShop\PrestaShop\Core\Context\LanguageContext;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Command\AddDiscountCommand;
+use PrestaShop\PrestaShop\Core\Domain\Discount\Command\UpdateDiscountCommand;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Exception\DiscountConstraintException;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountId;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountType;
@@ -91,6 +91,22 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
 
     public function update($id, array $data)
     {
-        // TODO: Implement update() method.
+        $command = new UpdateDiscountCommand($id);
+        switch ($data['discount_type']) {
+            case DiscountType::FREE_SHIPPING:
+                $command->setFreeShipping($data['free_shipping']);
+                break;
+            case DiscountType::CART_LEVEL:
+            case DiscountType::ORDER_LEVEL:
+            case DiscountType::PRODUCT_LEVEL:
+            case DiscountType::FREE_GIFT:
+                break;
+            default:
+                throw new RuntimeException('Unknown discount type ' . $data['discount_type']);
+        }
+
+        $discountId = $this->commandBus->handle($command);
+
+        return $discountId->getValue();
     }
 }
