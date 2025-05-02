@@ -59,7 +59,7 @@
         "prestashop/blockreassurance": "^5",
         "prestashop/blockwishlist": "^3.0",
         "prestashop/circuit-breaker": "^4.0",
-        "prestashop/classic": "dev-fix-deprecations",
+        "prestashop/classic": "^3",
         "prestashop/contactform": "^4",
         "prestashop/dashactivity": "^2",
         "prestashop/dashgoals": "^2",
@@ -72,7 +72,7 @@
         "prestashop/hummingbird": "^1.0.0",
         "prestashop/pagesnotfound": "^2",
         "prestashop/productcomments": "^7.0",
-        "prestashop/ps_apiresources": "dev-product-api",
+        "prestashop/ps_apiresources": "dev-dev",
         "prestashop/ps_banner": "^2",
         "prestashop/ps_bestsellers": "^1.0",
         "prestashop/ps_brandlist": "^1.0",
@@ -206,17 +206,9 @@
         "vincentlanglet/twig-cs-fixer": "^3.1"
     },
     "repositories": {
-        "classic": {
-            "type": "vcs",
-            "url": "https://github.com/jolelievre/classic-theme.git"
-        },
         "php-sql-parser": {
             "type": "vcs",
             "url": "https://github.com/PrestaShop/PHP-SQL-Parser"
-        },
-        "ps_apiresources": {
-            "type": "vcs",
-            "url": "https://github.com/jolelievre/ps_apiresources.git"
         }
     },
     "minimum-stability": "dev",
