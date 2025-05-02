@@ -29,6 +29,7 @@ namespace Tests\Integration\PrestaShopBundle\ApiPlatform;
 use ApiPlatform\OpenApi\Factory\OpenApiFactoryInterface;
 use ApiPlatform\OpenApi\Model\Operation;
 use ApiPlatform\OpenApi\Model\SecurityScheme;
+use ApiPlatform\OpenApi\Model\Server;
 use ApiPlatform\OpenApi\OpenApi;
 use ArrayObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -41,6 +42,9 @@ class CQRSOpenApiFactoryTest extends KernelTestCase
         $openApiFactory = $this->getContainer()->get(OpenApiFactoryInterface::class);
         /** @var OpenApi $openApi */
         $openApi = $openApiFactory->__invoke();
+
+        $this->assertEquals([new Server('/admin-api')], $openApi->getServers());
+
         $security = $openApi->getSecurity();
         $this->assertEquals([['oauth' => []]], $security);
 
@@ -67,6 +71,74 @@ class CQRSOpenApiFactoryTest extends KernelTestCase
             $this->assertNotEmpty($clientCredentialsFlow->getScopes()[$scope]);
             $this->assertEquals($scopeDefinition, $clientCredentialsFlow->getScopes()[$scope]);
         }
+    }
+
+    /**
+     * @dataProvider provideEndpointScopes
+     */
+    public function testEndpointScopes(string $uriPath, array $expectedScopes): void
+    {
+        /** @var OpenApiFactoryInterface $openApiFactory */
+        $openApiFactory = $this->getContainer()->get(OpenApiFactoryInterface::class);
+        /** @var OpenApi $openApi */
+        $openApi = $openApiFactory->__invoke();
+        $openApiPath = $openApi->getPaths()->getPath($uriPath);
+        $this->assertNotNull($openApiPath);
+        foreach ($expectedScopes as $httpMethod => $methodScopes) {
+            $getterMethod = 'get' . ucfirst(strtolower($httpMethod));
+            $methodOperation = $openApiPath->$getterMethod($methodScopes);
+            $this->assertInstanceOf(Operation::class, $methodOperation, 'Wrong operation for uri ' . $uriPath . ' method ' . $httpMethod);
+            $this->assertEquals([['oauth' => $methodScopes]], $methodOperation->getSecurity());
+        }
+    }
+
+    public function provideEndpointScopes(): iterable
+    {
+        yield 'API client entity' => [
+            '/api-client/{apiClientId}',
+            [
+                'get' => ['api_client_read'],
+                'patch' => ['api_client_write'],
+                'delete' => ['api_client_write'],
+            ],
+        ];
+
+        yield 'API client creation' => [
+            '/api-client',
+            [
+                'post' => ['api_client_write'],
+            ],
+        ];
+
+        yield 'API client list' => [
+            '/api-clients',
+            [
+                'get' => ['api_client_read'],
+            ],
+        ];
+
+        yield 'Product entity' => [
+            '/product/{productId}',
+            [
+                'get' => ['product_read'],
+                'patch' => ['product_write'],
+                'delete' => ['product_write'],
+            ],
+        ];
+
+        yield 'Product creation' => [
+            '/product',
+            [
+                'post' => ['product_write'],
+            ],
+        ];
+
+        yield 'Product list' => [
+            '/products',
+            [
+                'get' => ['product_read'],
+            ],
+        ];
     }
 
     /**
