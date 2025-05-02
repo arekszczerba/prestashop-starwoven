@@ -115,8 +115,8 @@ class OrderSlipCreator
             $customer = new Customer((int) $order->id_customer);
 
             if (!empty($customer->email)) {
-                    // @todo: use private method to send mail
-                    $params = [
+                // @todo: use private method to send mail
+                $params = [
                     '{lastname}' => $customer->lastname,
                     '{firstname}' => $customer->firstname,
                     '{id_order}' => $order->id,
