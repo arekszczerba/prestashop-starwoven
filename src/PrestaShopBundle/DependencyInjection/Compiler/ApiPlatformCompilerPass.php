@@ -26,12 +26,21 @@
 
 namespace PrestaShopBundle\DependencyInjection\Compiler;
 
+use Doctrine\Inflector\Inflector;
+use PrestaShop\PrestaShop\Core\Util\Inflector as InflectorUtil;
 use PrestaShopBundle\ApiPlatform\Scopes\ApiResourceScopesExtractorFactory;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class ApiPlatformCompilerPass implements CompilerPassInterface
 {
+    private Inflector $inflector;
+
+    public function __construct()
+    {
+        $this->inflector = InflectorUtil::getInflector();
+    }
+
     public function process(ContainerBuilder $container): void
     {
         $scopes = [];
@@ -49,10 +58,28 @@ class ApiPlatformCompilerPass implements CompilerPassInterface
         );
         foreach ($apiResourceScopesExtractor->getEnabledApiResourceScopes() as $apiResourceScope) {
             foreach ($apiResourceScope->getScopes() as $scope) {
-                $scopes[$scope] = $scope;
+                $scopes[$scope] = $this->humanizeScope($scope);
             }
         }
 
         $container->setParameter('api_platform.oauth.scopes', $scopes);
+    }
+
+    private function humanizeScope(string $scope): string
+    {
+        $matches = [];
+        if (preg_match('/(.*)_read/', $scope, $matches)) {
+            if (!empty($matches[1])) {
+                return 'Read ' . $this->inflector->capitalize($this->inflector->camelize($matches[1]));
+            }
+        }
+
+        if (preg_match('/(.*)_write/', $scope, $matches)) {
+            if (!empty($matches[1])) {
+                return 'Write ' . $this->inflector->capitalize($this->inflector->camelize($matches[1]));
+            }
+        }
+
+        return $scope;
     }
 }

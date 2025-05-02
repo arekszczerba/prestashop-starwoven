@@ -62,10 +62,10 @@ class CQRSOpenApiFactoryTest extends KernelTestCase
 
         // We don't test all the scopes as they are gonna evolve with time, but we can test a minimum of them
         $expectedScopes = [
-            'api_client_read' => 'api_client_read',
-            'api_client_write' => 'api_client_write',
-            'product_read' => 'product_read',
-            'product_write' => 'product_write',
+            'api_client_read' => 'Read ApiClient',
+            'api_client_write' => 'Write ApiClient',
+            'product_read' => 'Read Product',
+            'product_write' => 'Write Product',
         ];
         foreach ($expectedScopes as $scope => $scopeDefinition) {
             $this->assertNotEmpty($clientCredentialsFlow->getScopes()[$scope]);
