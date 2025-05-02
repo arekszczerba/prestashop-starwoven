@@ -94,7 +94,9 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
         $command = new UpdateDiscountCommand($id);
         switch ($data['discount_type']) {
             case DiscountType::FREE_SHIPPING:
-                $command->setFreeShipping($data['free_shipping']);
+                $command
+                    ->setLocalizedNames($data['names'])
+                ;
                 break;
             case DiscountType::CART_LEVEL:
             case DiscountType::ORDER_LEVEL:

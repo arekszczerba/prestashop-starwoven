@@ -62,7 +62,6 @@ class UpdateDiscountCommand
     private ?CombinationIdInterface $combinationId = null;
     private ?int $reductionProduct = null;
     private DiscountId $discountId;
-    private ?bool $freeShipping = null;
 
     public function __construct(int $discountId)
     {
@@ -353,18 +352,6 @@ class UpdateDiscountCommand
     public function getDiscountId(): DiscountId
     {
         return $this->discountId;
-    }
-
-    public function isFreeShipping(): ?bool
-    {
-        return $this->freeShipping;
-    }
-
-    public function setFreeShipping(?bool $freeShipping): self
-    {
-        $this->freeShipping = $freeShipping;
-
-        return $this;
     }
 
     /**

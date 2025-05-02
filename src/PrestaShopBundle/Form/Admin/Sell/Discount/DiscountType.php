@@ -53,16 +53,12 @@ class DiscountType extends TranslatorAwareType
             ])
             ->add('names', TranslatableType::class, [
                 'label' => $this->trans('Discount Name', 'Admin.Catalog.Feature'),
-                'label_help_box' => $this->trans('The Label help box content is yet to be defined placeholder', 'Admin.Catalog.Help'),
+                'label_help_box' => $this->trans('This will be displayed in the cart summary, as well as on the invoice.', 'Admin.Catalog.Help'),
                 'required' => true,
                 'type' => TextType::class,
                 'constraints' => [
                     new DefaultLanguage(),
                 ],
-                'help' => $this->trans(
-                    'The Label help box content is yet to be defined',
-                    'Admin.Catalog.Help'
-                ),
                 'options' => [
                     'constraints' => [
                         new TypedRegex([
@@ -78,7 +74,6 @@ class DiscountType extends TranslatorAwareType
                         ]),
                     ],
                 ],
-                'modify_all_shops' => true,
             ])
         ;
     }
@@ -92,8 +87,6 @@ class DiscountType extends TranslatorAwareType
         $resolver->setRequired([
             'discount_type',
         ]);
-        $resolver->define('discount_id');
         $resolver->setAllowedTypes('discount_type', ['string']);
-        $resolver->setAllowedTypes('discount_id', ['int']);
     }
 }

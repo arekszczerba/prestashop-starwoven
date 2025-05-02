@@ -26,10 +26,8 @@
 
 namespace PrestaShop\PrestaShop\Core\Form\IdentifiableObject\OptionProvider;
 
-
 class DiscountFormOptionsProvider implements FormOptionsProviderInterface
 {
-
     public function getOptions(int $id, array $data): array
     {
         return [

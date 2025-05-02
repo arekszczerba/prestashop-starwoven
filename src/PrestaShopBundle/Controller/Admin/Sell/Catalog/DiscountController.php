@@ -34,7 +34,6 @@ use PrestaShop\PrestaShop\Core\Domain\CartRule\Exception\CartRuleException;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Exception\DiscountNotFoundException;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Query\GetDiscountForEditing;
 use PrestaShop\PrestaShop\Core\Domain\Discount\QueryResult\DiscountForEditing;
-use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountId;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountType;
 use PrestaShop\PrestaShop\Core\Form\IdentifiableObject\Builder\FormBuilderInterface;
 use PrestaShop\PrestaShop\Core\Form\IdentifiableObject\Handler\FormHandlerInterface;
@@ -161,19 +160,7 @@ class DiscountController extends PrestaShopAdminController
         int $discountId,
     ) {
         try {
-            $discount = $discountRepository->get(new DiscountId($discountId));
-        } catch (DiscountNotFoundException $e) {
-            $this->addFlash('error', $this->getErrorMessageForException($e, $this->getErrorMessages($e)));
-
-            return $this->redirectToRoute('admin_discounts_index');
-        }
-
-        try {
-            $form = $formBuilder->getFormFor($discountId, [], [
-                'discount_id' => $discountId,
-                'discount_type' => $discount->type,
-                'method' => Request::METHOD_POST,
-            ]);
+            $form = $formBuilder->getFormFor($discountId);
         } catch (DiscountNotFoundException $e) {
             $this->addFlash('error', $this->getErrorMessageForException($e, $this->getErrorMessages($e)));
 
@@ -204,7 +191,7 @@ class DiscountController extends PrestaShopAdminController
             $this->addFlash('error', $this->getErrorMessageForException($e, $this->getErrorMessages($e)));
         }
 
-        return $this->render('@PrestaShop/Admin/Sell/Catalog/Discount/create.html.twig', [
+        return $this->render('@PrestaShop/Admin/Sell/Catalog/Discount/edit.html.twig', [
             'form' => $form->createView(),
             'enableSidebar' => true,
             'help_link' => $this->generateSidebarLink($request->attributes->get('_legacy_controller')),

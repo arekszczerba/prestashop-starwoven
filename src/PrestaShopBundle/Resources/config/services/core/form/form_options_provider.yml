@@ -15,4 +15,3 @@ services:
 
   prestashop.core.form.identifiable_object.option_provider.discount_form_options_provider:
     class: 'PrestaShop\PrestaShop\Core\Form\IdentifiableObject\OptionProvider\DiscountFormOptionsProvider'
-

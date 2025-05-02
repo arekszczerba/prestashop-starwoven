@@ -236,9 +236,8 @@ class DiscountFeatureContext extends AbstractDomainFeatureContext
         }
 
         try {
-            /** @var DiscountId $discountId */
-            $discountId = $this->getCommandBus()->handle($command);
-            $this->getSharedStorage()->set($discountReference, $discountId->getValue());
+            /* @var DiscountId $discountId */
+            $this->getCommandBus()->handle($command);
         } catch (DiscountConstraintException $e) {
             $this->setLastException($e);
         }
@@ -326,6 +325,9 @@ class DiscountFeatureContext extends AbstractDomainFeatureContext
             } else {
                 Assert::assertSame($this->getSharedStorage()->get($expectedData['reduction_product']), $discountForEditing->getReductionProduct());
             }
+        }
+        if (isset($expectedData['name'])) {
+            Assert::assertSame($expectedData['name'], $discountForEditing->getLocalisedNames());
         }
     }
 

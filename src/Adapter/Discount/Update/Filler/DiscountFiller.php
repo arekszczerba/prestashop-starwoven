@@ -27,11 +27,15 @@
 namespace PrestaShop\PrestaShop\Adapter\Discount\Update\Filler;
 
 use CartRule;
+use CartRuleCore;
+use PrestaShop\PrestaShop\Adapter\Domain\LocalizedObjectModelTrait;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Command\UpdateDiscountCommand;
 use PrestaShop\PrestaShop\Core\Util\DateTime\DateTime as DateTimeUtil;
 
 class DiscountFiller
 {
+    use LocalizedObjectModelTrait;
+
     public function fillUpdatableProperties(CartRule $cartRule, UpdateDiscountCommand $command): array
     {
         $updatableProperties = [];
@@ -44,8 +48,9 @@ class DiscountFiller
             $updatableProperties[] = 'date_to';
         }
         if (null !== $command->getLocalizedNames()) {
-            $cartRule->names = $command->getLocalizedNames();
-            $updatableProperties[] = 'names';
+            $cartRule->name = $command->getLocalizedNames();
+            /* @var CartRuleCore $cartRule */
+            $this->fillLocalizedValues($cartRule, 'name', $command->getLocalizedNames(), $updatableProperties);
         }
         if (null !== $command->getDescription()) {
             $cartRule->description = $command->getDescription();
@@ -78,11 +83,6 @@ class DiscountFiller
         if (null !== $command->getQuantityPerUser()) {
             $cartRule->quantity_per_user = $command->getQuantityPerUser();
             $updatableProperties[] = 'quantity_per_user';
-        }
-
-        if (null !== $command->isFreeShipping()) {
-            $cartRule->free_shipping = $command->isFreeShipping();
-            $updatableProperties[] = 'free_shipping';
         }
 
         return $updatableProperties;

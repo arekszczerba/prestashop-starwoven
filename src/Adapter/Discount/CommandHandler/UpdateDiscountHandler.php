@@ -32,7 +32,6 @@ use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsCommandHandler;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Command\UpdateDiscountCommand;
 use PrestaShop\PrestaShop\Core\Domain\Discount\CommandHandler\UpdateDiscountCommandHandlerInterface;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Exception\CannotUpdateDiscountException;
-use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountId;
 
 #[AsCommandHandler]
 class UpdateDiscountHandler implements UpdateDiscountCommandHandlerInterface
@@ -43,18 +42,16 @@ class UpdateDiscountHandler implements UpdateDiscountCommandHandlerInterface
     ) {
     }
 
-    public function handle(UpdateDiscountCommand $command): DiscountId
+    public function handle(UpdateDiscountCommand $command): void
     {
-        $discount = $this->discountRepository->get($command->getDiscountId());
+        $cartRule = $this->discountRepository->get($command->getDiscountId());
 
-        $updatableProperties = $this->discountFiller->fillUpdatableProperties($discount, $command);
+        $updatableProperties = $this->discountFiller->fillUpdatableProperties($cartRule, $command);
 
         $this->discountRepository->partialUpdate(
-            $discount,
+            $cartRule,
             $updatableProperties,
             CannotUpdateDiscountException::FAILED_UPDATE_DISCOUNT
         );
-
-        return $command->getDiscountId();
     }
 }

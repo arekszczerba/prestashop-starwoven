@@ -277,10 +277,6 @@ services:
     autowire: true
     public: false
 
-  PrestaShop\PrestaShop\Core\Form\IdentifiableObject\DataHandler\DiscountFreeShippingFormDataHandler:
-    autowire: true
-    public: false
-
   PrestaShop\PrestaShop\Core\Form\IdentifiableObject\DataHandler\TitleFormDataHandler:
     autowire: true
 
