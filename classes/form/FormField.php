@@ -34,6 +34,7 @@ class FormFieldCore
     private $maxLength = null;
     private $errors = [];
     private $constraints = [];
+    private $attr = [];
     /**
      * @var string
      */
@@ -46,7 +47,7 @@ class FormFieldCore
 
     public function toArray()
     {
-        return [
+        $formField = [
             'name' => $this->getName(),
             'type' => $this->getType(),
             'required' => $this->isRequired(),
@@ -56,7 +57,12 @@ class FormFieldCore
             'maxLength' => $this->getMaxLength(),
             'errors' => $this->getErrors(),
             'autocomplete' => $this->getAutocompleteAttribute(),
+            'attr' => $this->getAttr(),
         ];
+
+        Hook::exec('additionalHtmlAttributesFormFields', ['formFieldArray' => &$formField]);
+
+        return $formField;
     }
 
     public function setName($name)
@@ -210,5 +216,17 @@ class FormFieldCore
     public function getAutocompleteAttribute(): string
     {
         return $this->autocomplete;
+    }
+
+    public function setAttr(array $atts): FormFieldCore
+    {
+        $this->attr = $attr;
+
+        return $this;
+    }
+
+    public function getAttr()
+    {
+        return $this->attr;
     }
 }
