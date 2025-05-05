@@ -221,10 +221,7 @@ class FormFieldCore
         return $this->autocomplete;
     }
 
-    public function setAttr(array $atts): FormFieldCore
-    {
-        $this->attr = $attr;
-
+        $this->attr = $atts;
         return $this;
     }
 
