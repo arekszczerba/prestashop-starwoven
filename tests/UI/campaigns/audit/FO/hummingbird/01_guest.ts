@@ -2,7 +2,6 @@ import {expect} from 'chai';
 import {disableHummingbird, enableHummingbird} from '@commonTests/BO/design/hummingbird';
 import pricesDropPage from '@pages/FO/hummingbird/pricesDrop';
 import newProductsPage from '@pages/FO/hummingbird/newProducts';
-import guestOrderTrackingPage from '@pages/FO/hummingbird/orderTracking/guestOrderTracking';
 import termsAndConditionsOfUsePage from '@pages/FO/hummingbird/termsAndConditionsOfUse';
 import securePaymentPage from '@pages/FO/hummingbird/securePayment';
 import testContext from '@utils/testContext';
@@ -17,6 +16,7 @@ import {
   foHummingbirdContactUsPage,
   foHummingbirdCreateAccountPage,
   foHummingbirdDeliveryPage,
+  foHummingbirdGuestOrderTrackingPage,
   foHummingbirdHomePage,
   foHummingbirdLegalNoticePage,
   foHummingbirdLoginPage,
@@ -160,7 +160,7 @@ describe('Check FO public pages', async () => {
 
     describe('Check \'Your Account\' footer links', async () => {
       [
-        {linkSelector: 'Order tracking', pageTitle: guestOrderTrackingPage.pageTitle},
+        {linkSelector: 'Order tracking', pageTitle: foHummingbirdGuestOrderTrackingPage.pageTitle},
         {linkSelector: 'Sign in', pageTitle: foHummingbirdLoginPage.pageTitle},
         {linkSelector: 'Create account', pageTitle: foHummingbirdCreateAccountPage.formTitle},
       ].forEach((args, index: number) => {

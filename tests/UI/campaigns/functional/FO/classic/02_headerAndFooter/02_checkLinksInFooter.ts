@@ -8,7 +8,6 @@ import {createAccountTest} from '@commonTests/FO/classic/account';
 
 // Import pages
 // Import FO pages
-import {guestOrderTrackingPage} from '@pages/FO/classic/orderTracking/guestOrderTracking';
 import {newProductsPage} from '@pages/FO/classic/newProducts';
 import {pricesDropPage} from '@pages/FO/classic/pricesDrop';
 import {securePaymentPage} from '@pages/FO/classic/securePayment';
@@ -23,6 +22,7 @@ import {
   foClassicContactUsPage,
   foClassicCreateAccountPage,
   foClassicDeliveryPage,
+  foClassicGuestOrderTrackingPage,
   foClassicHomePage,
   foClassicLegalNoticePage,
   foClassicLoginPage,
@@ -132,7 +132,7 @@ describe('FO - Header and Footer : Check links in footer page', async () => {
 
   describe('Check \'Your Account\' footer links before login', async () => {
     [
-      {linkSelector: 'Order tracking', pageTitle: guestOrderTrackingPage.pageTitle},
+      {linkSelector: 'Order tracking', pageTitle: foClassicGuestOrderTrackingPage.pageTitle},
       {linkSelector: 'Sign in', pageTitle: foClassicLoginPage.pageTitle},
       {linkSelector: 'Create account', pageTitle: foClassicCreateAccountPage.formTitle},
     ].forEach((args, index: number) => {

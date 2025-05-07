@@ -8,7 +8,6 @@ import {enableHummingbird, disableHummingbird} from '@commonTests/BO/design/humm
 
 // Import pages
 // Import FO pages
-import guestOrderTrackingPage from '@pages/FO/hummingbird/orderTracking/guestOrderTracking';
 import newProductsPage from '@pages/FO/hummingbird/newProducts';
 import pricesDropPage from '@pages/FO/hummingbird/pricesDrop';
 import securePaymentPage from '@pages/FO/hummingbird/securePayment';
@@ -23,6 +22,7 @@ import {
   foHummingbirdContactUsPage,
   foHummingbirdCreateAccountPage,
   foHummingbirdDeliveryPage,
+  foHummingbirdGuestOrderTrackingPage,
   foHummingbirdHomePage,
   foHummingbirdLegalNoticePage,
   foHummingbirdLoginPage,
@@ -135,7 +135,7 @@ describe('FO - Header and Footer : Check links in footer page', async () => {
 
   describe('Check \'Your Account\' footer links before login', async () => {
     [
-      {linkSelector: 'Order tracking', pageTitle: guestOrderTrackingPage.pageTitle},
+      {linkSelector: 'Order tracking', pageTitle: foHummingbirdGuestOrderTrackingPage.pageTitle},
       {linkSelector: 'Sign in', pageTitle: foHummingbirdLoginPage.pageTitle},
       {linkSelector: 'Create account', pageTitle: foHummingbirdCreateAccountPage.formTitle},
     ].forEach((args, index: number) => {
