@@ -8,7 +8,6 @@ import {enableHummingbird, disableHummingbird} from '@commonTests/BO/design/humm
 
 // Import pages
 // Import FO pages
-import newProductsPage from '@pages/FO/hummingbird/newProducts';
 import pricesDropPage from '@pages/FO/hummingbird/pricesDrop';
 import securePaymentPage from '@pages/FO/hummingbird/securePayment';
 import termsAndConditionsOfUsePage from '@pages/FO/hummingbird/termsAndConditionsOfUse';
@@ -32,6 +31,7 @@ import {
   foHummingbirdMyInformationsPage,
   foHummingbirdMyOrderHistoryPage,
   foHummingbirdMyWishlistsPage,
+  foHummingbirdNewProductsPage,
   foHummingbirdSitemapPage,
   foHummingbirdStoresPage,
   type Page,
@@ -95,7 +95,7 @@ describe('FO - Header and Footer : Check links in footer page', async () => {
   describe('Check \'Products\' footer links', async () => {
     [
       {linkSelector: 'Prices drop', pageTitle: pricesDropPage.pageTitle},
-      {linkSelector: 'New products', pageTitle: newProductsPage.pageTitle},
+      {linkSelector: 'New products', pageTitle: foHummingbirdNewProductsPage.pageTitle},
       {linkSelector: 'Best sellers', pageTitle: foHummingbirdBestSalesPage.pageTitle},
     ].forEach((args, index: number) => {
       it(`should check '${args.linkSelector}' footer links`, async function () {

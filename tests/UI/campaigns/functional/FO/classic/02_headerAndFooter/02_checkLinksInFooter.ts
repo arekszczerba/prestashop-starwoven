@@ -8,7 +8,6 @@ import {createAccountTest} from '@commonTests/FO/classic/account';
 
 // Import pages
 // Import FO pages
-import {newProductsPage} from '@pages/FO/classic/newProducts';
 import {pricesDropPage} from '@pages/FO/classic/pricesDrop';
 import {securePaymentPage} from '@pages/FO/classic/securePayment';
 import {termsAndConditionsOfUsePage} from '@pages/FO/classic/termsAndConditionsOfUse';
@@ -32,6 +31,7 @@ import {
   foClassicMyInformationsPage,
   foClassicMyOrderHistoryPage,
   foClassicMyWishlistsPage,
+  foClassicNewProductsPage,
   foClassicSitemapPage,
   foClassicStoresPage,
   type Page,
@@ -92,7 +92,7 @@ describe('FO - Header and Footer : Check links in footer page', async () => {
   describe('Check \'Products\' footer links', async () => {
     [
       {linkSelector: 'Prices drop', pageTitle: pricesDropPage.pageTitle},
-      {linkSelector: 'New products', pageTitle: newProductsPage.pageTitle},
+      {linkSelector: 'New products', pageTitle: foClassicNewProductsPage.pageTitle},
       {linkSelector: 'Best sellers', pageTitle: foClassicBestSalesPage.pageTitle},
     ].forEach((args, index: number) => {
       it(`should check '${args.linkSelector}' footer links`, async function () {
