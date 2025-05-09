@@ -111,7 +111,10 @@ describe('FO - Newsletter : Subscribe to Newsletter', async () => {
     it('should unsubscribe from newsletter', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'unsubscribeFromNewsLetter', baseContext);
 
-      const unsubscribeAlertText = await foHummingbirdMyInformationsPage.unsubscribeNewsletter(page, dataCustomers.johnDoe.password);
+      const unsubscribeAlertText = await foHummingbirdMyInformationsPage.unsubscribeNewsletter(
+        page,
+        dataCustomers.johnDoe.password,
+      );
       expect(unsubscribeAlertText).to.contains(foHummingbirdMyInformationsPage.successfulUpdateMessage);
     });
   });

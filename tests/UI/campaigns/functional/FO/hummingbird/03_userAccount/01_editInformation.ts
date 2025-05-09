@@ -126,7 +126,11 @@ describe('FO - Account : Edit information', async () => {
       async function () {
         await testContext.addContextItem(this, 'testIdentifier', 'editAccount1', baseContext);
 
-        const textResult = await foHummingbirdMyInformationsPage.editAccount(page, createCustomerData.password, editCustomerData1);
+        const textResult = await foHummingbirdMyInformationsPage.editAccount(
+          page,
+          createCustomerData.password,
+          editCustomerData1,
+        );
         expect(textResult).to.be.equal(foHummingbirdMyInformationsPage.successfulUpdateMessage);
       });
 
@@ -161,7 +165,11 @@ describe('FO - Account : Edit information', async () => {
       async function () {
         await testContext.addContextItem(this, 'testIdentifier', 'editAccount3', baseContext);
 
-        const textResult = await foHummingbirdMyInformationsPage.editAccount(page, createCustomerData.password, editCustomerData2);
+        const textResult = await foHummingbirdMyInformationsPage.editAccount(
+          page,
+          createCustomerData.password,
+          editCustomerData2,
+        );
         expect(textResult).to.be.equal(foHummingbirdMyInformationsPage.errorUpdateMessage);
       });
 
@@ -178,7 +186,11 @@ describe('FO - Account : Edit information', async () => {
       async function () {
         await testContext.addContextItem(this, 'testIdentifier', 'editAccount4', baseContext);
 
-        const textResult = await foHummingbirdMyInformationsPage.editAccount(page, createCustomerData.password, editCustomerData3);
+        const textResult = await foHummingbirdMyInformationsPage.editAccount(
+          page,
+          createCustomerData.password,
+          editCustomerData3,
+        );
         expect(textResult).to.be.equal(foHummingbirdMyInformationsPage.errorUpdateMessage);
       });
 
@@ -198,7 +210,11 @@ describe('FO - Account : Edit information', async () => {
       async function () {
         await testContext.addContextItem(this, 'testIdentifier', 'editAccount5', baseContext);
 
-        const textResult = await foHummingbirdMyInformationsPage.editAccount(page, createCustomerData.password, editCustomerData4);
+        const textResult = await foHummingbirdMyInformationsPage.editAccount(
+          page,
+          createCustomerData.password,
+          editCustomerData4,
+        );
         expect(textResult).to.be.equal(foHummingbirdMyInformationsPage.errorUpdateMessage);
       });
 
@@ -214,7 +230,11 @@ describe('FO - Account : Edit information', async () => {
       async function () {
         await testContext.addContextItem(this, 'testIdentifier', 'editAccount6', baseContext);
 
-        const textResult = await foHummingbirdMyInformationsPage.editAccount(page, createCustomerData.password, editCustomerData5);
+        const textResult = await foHummingbirdMyInformationsPage.editAccount(
+          page,
+          createCustomerData.password,
+          editCustomerData5,
+        );
         expect(textResult).to.be.equal(foHummingbirdMyInformationsPage.errorUpdateMessage);
       });
 
@@ -229,7 +249,11 @@ describe('FO - Account : Edit information', async () => {
     it('Case 7 - should edit the account information ** update password with common password', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'editAccount7', baseContext);
 
-      const textResult = await foHummingbirdMyInformationsPage.editAccount(page, createCustomerData.password, editCustomerData6);
+      const textResult = await foHummingbirdMyInformationsPage.editAccount(
+        page,
+        createCustomerData.password,
+        editCustomerData6,
+      );
       expect(textResult).to.be.equal(foHummingbirdMyInformationsPage.errorUpdateMessage);
     });
 
@@ -245,7 +269,11 @@ describe('FO - Account : Edit information', async () => {
       async function () {
         await testContext.addContextItem(this, 'testIdentifier', 'editAccount8', baseContext);
 
-        const textResult = await foHummingbirdMyInformationsPage.editAccount(page, createCustomerData.password, editCustomerData7);
+        const textResult = await foHummingbirdMyInformationsPage.editAccount(
+          page,
+          createCustomerData.password,
+          editCustomerData7,
+        );
         expect(textResult).to.be.equal(foHummingbirdMyInformationsPage.errorUpdateMessage);
       });
 
@@ -261,7 +289,11 @@ describe('FO - Account : Edit information', async () => {
       async function () {
         await testContext.addContextItem(this, 'testIdentifier', 'editAccount9', baseContext);
 
-        const textResult = await foHummingbirdMyInformationsPage.editAccount(page, createCustomerData.password, editCustomerData8);
+        const textResult = await foHummingbirdMyInformationsPage.editAccount(
+          page,
+          createCustomerData.password,
+          editCustomerData8,
+        );
         expect(textResult).to.be.equal(foHummingbirdMyInformationsPage.errorUpdateMessage);
       });
 
@@ -278,7 +310,11 @@ describe('FO - Account : Edit information', async () => {
       async function () {
         await testContext.addContextItem(this, 'testIdentifier', 'editAccount10', baseContext);
 
-        const textResult = await foHummingbirdMyInformationsPage.editAccount(page, createCustomerData.password, editCustomerData9);
+        const textResult = await foHummingbirdMyInformationsPage.editAccount(
+          page,
+          createCustomerData.password,
+          editCustomerData9,
+        );
         expect(textResult).to.be.equal(foHummingbirdMyInformationsPage.successfulUpdateMessage);
       });
   });
