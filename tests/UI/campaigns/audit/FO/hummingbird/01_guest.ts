@@ -1,7 +1,6 @@
 import {expect} from 'chai';
 import {disableHummingbird, enableHummingbird} from '@commonTests/BO/design/hummingbird';
 import termsAndConditionsOfUsePage from '@pages/FO/hummingbird/termsAndConditionsOfUse';
-import securePaymentPage from '@pages/FO/hummingbird/securePayment';
 import testContext from '@utils/testContext';
 
 import {
@@ -22,6 +21,7 @@ import {
   foHummingbirdPricesDropPage,
   foHummingbirdProductPage,
   foHummingbirdSearchResultsPage,
+  foHummingbirdSecurePaymentPage,
   foHummingbirdSitemapPage,
   foHummingbirdStoresPage,
   type Page,
@@ -139,7 +139,7 @@ describe('Check FO public pages', async () => {
         {linkSelector: 'Legal Notice', pageTitle: foHummingbirdLegalNoticePage.pageTitle},
         {linkSelector: 'Terms and conditions of use', pageTitle: termsAndConditionsOfUsePage.pageTitle},
         {linkSelector: 'About us', pageTitle: foHummingbirdAboutUsPage.pageTitle},
-        {linkSelector: 'Secure payment', pageTitle: securePaymentPage.pageTitle},
+        {linkSelector: 'Secure payment', pageTitle: foHummingbirdSecurePaymentPage.pageTitle},
         {linkSelector: 'Contact us', pageTitle: foHummingbirdContactUsPage.pageTitle},
         {linkSelector: 'Sitemap', pageTitle: foHummingbirdSitemapPage.pageTitle},
         {linkSelector: 'Stores', pageTitle: foHummingbirdStoresPage.pageTitle},

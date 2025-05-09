@@ -1,6 +1,5 @@
 import {expect} from 'chai';
 import {termsAndConditionsOfUsePage} from '@pages/FO/classic/termsAndConditionsOfUse';
-import {securePaymentPage} from '@pages/FO/classic/securePayment';
 import testContext from '@utils/testContext';
 
 import {
@@ -21,6 +20,7 @@ import {
   foClassicPricesDropPage,
   foClassicProductPage,
   foClassicSearchResultsPage,
+  foClassicSecurePaymentPage,
   foClassicSitemapPage,
   foClassicStoresPage,
   type Page,
@@ -134,7 +134,7 @@ describe('Check FO public pages', async () => {
       {linkSelector: 'Legal Notice', pageTitle: foClassicLegalNoticePage.pageTitle},
       {linkSelector: 'Terms and conditions of use', pageTitle: termsAndConditionsOfUsePage.pageTitle},
       {linkSelector: 'About us', pageTitle: foClassicAboutUsPage.pageTitle},
-      {linkSelector: 'Secure payment', pageTitle: securePaymentPage.pageTitle},
+      {linkSelector: 'Secure payment', pageTitle: foClassicSecurePaymentPage.pageTitle},
       {linkSelector: 'Contact us', pageTitle: foClassicContactUsPage.pageTitle},
       {linkSelector: 'Sitemap', pageTitle: foClassicSitemapPage.pageTitle},
       {linkSelector: 'Stores', pageTitle: foClassicStoresPage.pageTitle},

@@ -8,7 +8,6 @@ import {enableHummingbird, disableHummingbird} from '@commonTests/BO/design/humm
 
 // Import pages
 // Import FO pages
-import securePaymentPage from '@pages/FO/hummingbird/securePayment';
 import termsAndConditionsOfUsePage from '@pages/FO/hummingbird/termsAndConditionsOfUse';
 
 import {
@@ -32,6 +31,7 @@ import {
   foHummingbirdMyWishlistsPage,
   foHummingbirdNewProductsPage,
   foHummingbirdPricesDropPage,
+  foHummingbirdSecurePaymentPage,
   foHummingbirdSitemapPage,
   foHummingbirdStoresPage,
   type Page,
@@ -116,7 +116,7 @@ describe('FO - Header and Footer : Check links in footer page', async () => {
       {linkSelector: 'Legal Notice', pageTitle: foHummingbirdLegalNoticePage.pageTitle},
       {linkSelector: 'Terms and conditions of use', pageTitle: termsAndConditionsOfUsePage.pageTitle},
       {linkSelector: 'About us', pageTitle: foHummingbirdAboutUsPage.pageTitle},
-      {linkSelector: 'Secure payment', pageTitle: securePaymentPage.pageTitle},
+      {linkSelector: 'Secure payment', pageTitle: foHummingbirdSecurePaymentPage.pageTitle},
       {linkSelector: 'Contact us', pageTitle: foHummingbirdContactUsPage.pageTitle},
       {linkSelector: 'Sitemap', pageTitle: foHummingbirdSitemapPage.pageTitle},
       {linkSelector: 'Stores', pageTitle: foHummingbirdStoresPage.pageTitle},
