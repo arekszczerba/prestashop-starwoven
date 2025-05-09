@@ -34,10 +34,12 @@ class FormFieldCore
     private $maxLength = null;
     private $errors = [];
     private $constraints = [];
-    /**
-     * @var array
-     */
+
+    /**  
+     * @var array  
+     */  
     private $attr = [];
+
     /**
      * @var string
      */
@@ -221,11 +223,22 @@ class FormFieldCore
         return $this->autocomplete;
     }
 
-        $this->attr = $atts;
+    /**
+     * @param array $attr
+     *
+     * @return FormFieldCore
+     */
+    public function setAttr(array $attr): FormFieldCore
+    {
+        $this->attr = $attr;
+
         return $this;
     }
 
-    public function getAttr()
+    /**
+     * @return array
+     */
+    public function getAttr(): array
     {
         return $this->attr;
     }
