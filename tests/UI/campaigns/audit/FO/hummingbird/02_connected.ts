@@ -1,6 +1,5 @@
 import {expect} from 'chai';
 import {disableHummingbird, enableHummingbird} from '@commonTests/BO/design/hummingbird';
-import foHummingbirdGdprPersonalDataPage from '@pages/FO/hummingbird/myAccount/gdprPersonalData';
 import testContext from '@utils/testContext';
 
 import {
@@ -12,6 +11,7 @@ import {
   foHummingbirdMyAddressesPage,
   foHummingbirdMyAddressesCreatePage,
   foHummingbirdMyCreditSlipsPage,
+  foHummingbirdMyGDPRPersonalDataPage,
   foHummingbirdMyInformationsPage,
   foHummingbirdMyOrderDetailsPage,
   foHummingbirdMyOrderHistoryPage,
@@ -200,8 +200,8 @@ describe('Check FO connected pages', async () => {
       await foHummingbirdMyInformationsPage.goToMyAccountPage(page);
       await foHummingbirdMyAccountPage.goToMyGDPRPersonalDataPage(page);
 
-      const pageTitle = await foHummingbirdGdprPersonalDataPage.getPageTitle(page);
-      expect(pageTitle).to.equal(foHummingbirdGdprPersonalDataPage.pageTitle);
+      const pageTitle = await foHummingbirdMyGDPRPersonalDataPage.getPageTitle(page);
+      expect(pageTitle).to.equal(foHummingbirdMyGDPRPersonalDataPage.pageTitle);
 
       const jsErrors = utilsPlaywright.getJsErrors();
       expect(jsErrors.length).to.equals(0);
@@ -210,7 +210,7 @@ describe('Check FO connected pages', async () => {
     it('should logout', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'logout', baseContext);
 
-      await foHummingbirdGdprPersonalDataPage.logout(page);
+      await foHummingbirdMyGDPRPersonalDataPage.logout(page);
 
       const result = await foHummingbirdHomePage.isHomePage(page);
       expect(result).to.eq(true);

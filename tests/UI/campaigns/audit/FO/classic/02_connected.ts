@@ -1,5 +1,4 @@
 import {expect} from 'chai';
-import {gdprPersonalDataPage as foClassicGdprPersonalDataPage} from '@pages/FO/classic/myAccount/gdprPersonalData';
 import testContext from '@utils/testContext';
 
 import {
@@ -11,6 +10,7 @@ import {
   foClassicMyAddressesPage,
   foClassicMyAddressesCreatePage,
   foClassicMyCreditSlipsPage,
+  foClassicMyGDPRPersonalDataPage,
   foClassicMyInformationsPage,
   foClassicMyOrderDetailsPage,
   foClassicMyOrderHistoryPage,
@@ -195,8 +195,8 @@ describe('Check FO connected pages', async () => {
     await foClassicMyInformationsPage.goToMyAccountPage(page);
     await foClassicMyAccountPage.goToMyGDPRPersonalDataPage(page);
 
-    const pageTitle = await foClassicGdprPersonalDataPage.getPageTitle(page);
-    expect(pageTitle).to.equal(foClassicGdprPersonalDataPage.pageTitle);
+    const pageTitle = await foClassicMyGDPRPersonalDataPage.getPageTitle(page);
+    expect(pageTitle).to.equal(foClassicMyGDPRPersonalDataPage.pageTitle);
 
     const jsErrors = utilsPlaywright.getJsErrors();
     expect(jsErrors.length).to.equals(0);
@@ -205,7 +205,7 @@ describe('Check FO connected pages', async () => {
   it('should logout', async function () {
     await testContext.addContextItem(this, 'testIdentifier', 'logout', baseContext);
 
-    await foClassicGdprPersonalDataPage.logout(page);
+    await foClassicMyGDPRPersonalDataPage.logout(page);
 
     const result = await foClassicHomePage.isHomePage(page);
     expect(result).to.eq(true);
