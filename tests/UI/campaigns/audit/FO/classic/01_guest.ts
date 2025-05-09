@@ -1,5 +1,4 @@
 import {expect} from 'chai';
-import {termsAndConditionsOfUsePage} from '@pages/FO/classic/termsAndConditionsOfUse';
 import testContext from '@utils/testContext';
 
 import {
@@ -23,6 +22,7 @@ import {
   foClassicSecurePaymentPage,
   foClassicSitemapPage,
   foClassicStoresPage,
+  foClassicTermsAndConditionsOfUsePage,
   type Page,
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
@@ -132,7 +132,7 @@ describe('Check FO public pages', async () => {
     [
       {linkSelector: 'Delivery', pageTitle: foClassicDeliveryPage.pageTitle},
       {linkSelector: 'Legal Notice', pageTitle: foClassicLegalNoticePage.pageTitle},
-      {linkSelector: 'Terms and conditions of use', pageTitle: termsAndConditionsOfUsePage.pageTitle},
+      {linkSelector: 'Terms and conditions of use', pageTitle: foClassicTermsAndConditionsOfUsePage.pageTitle},
       {linkSelector: 'About us', pageTitle: foClassicAboutUsPage.pageTitle},
       {linkSelector: 'Secure payment', pageTitle: foClassicSecurePaymentPage.pageTitle},
       {linkSelector: 'Contact us', pageTitle: foClassicContactUsPage.pageTitle},

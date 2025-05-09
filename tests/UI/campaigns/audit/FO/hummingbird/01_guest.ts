@@ -1,6 +1,5 @@
 import {expect} from 'chai';
 import {disableHummingbird, enableHummingbird} from '@commonTests/BO/design/hummingbird';
-import termsAndConditionsOfUsePage from '@pages/FO/hummingbird/termsAndConditionsOfUse';
 import testContext from '@utils/testContext';
 
 import {
@@ -24,6 +23,7 @@ import {
   foHummingbirdSecurePaymentPage,
   foHummingbirdSitemapPage,
   foHummingbirdStoresPage,
+  foHummingbirdTermsAndConditionsOfUsePage,
   type Page,
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
@@ -137,7 +137,7 @@ describe('Check FO public pages', async () => {
       [
         {linkSelector: 'Delivery', pageTitle: foHummingbirdDeliveryPage.pageTitle},
         {linkSelector: 'Legal Notice', pageTitle: foHummingbirdLegalNoticePage.pageTitle},
-        {linkSelector: 'Terms and conditions of use', pageTitle: termsAndConditionsOfUsePage.pageTitle},
+        {linkSelector: 'Terms and conditions of use', pageTitle: foHummingbirdTermsAndConditionsOfUsePage.pageTitle},
         {linkSelector: 'About us', pageTitle: foHummingbirdAboutUsPage.pageTitle},
         {linkSelector: 'Secure payment', pageTitle: foHummingbirdSecurePaymentPage.pageTitle},
         {linkSelector: 'Contact us', pageTitle: foHummingbirdContactUsPage.pageTitle},

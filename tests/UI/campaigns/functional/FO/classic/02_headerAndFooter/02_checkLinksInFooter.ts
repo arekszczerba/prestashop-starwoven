@@ -6,10 +6,6 @@ import deleteCacheTest from '@commonTests/BO/advancedParameters/cache';
 import {deleteCustomerTest} from '@commonTests/BO/customers/customer';
 import {createAccountTest} from '@commonTests/FO/classic/account';
 
-// Import pages
-// Import FO pages
-import {termsAndConditionsOfUsePage} from '@pages/FO/classic/termsAndConditionsOfUse';
-
 import {
   type BrowserContext,
   dataCustomers,
@@ -34,6 +30,7 @@ import {
   foClassicSecurePaymentPage,
   foClassicSitemapPage,
   foClassicStoresPage,
+  foClassicTermsAndConditionsOfUsePage,
   type Page,
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
@@ -111,7 +108,7 @@ describe('FO - Header and Footer : Check links in footer page', async () => {
     [
       {linkSelector: 'Delivery', pageTitle: foClassicDeliveryPage.pageTitle},
       {linkSelector: 'Legal Notice', pageTitle: foClassicLegalNoticePage.pageTitle},
-      {linkSelector: 'Terms and conditions of use', pageTitle: termsAndConditionsOfUsePage.pageTitle},
+      {linkSelector: 'Terms and conditions of use', pageTitle: foClassicTermsAndConditionsOfUsePage.pageTitle},
       {linkSelector: 'About us', pageTitle: foClassicAboutUsPage.pageTitle},
       {linkSelector: 'Secure payment', pageTitle: foClassicSecurePaymentPage.pageTitle},
       {linkSelector: 'Contact us', pageTitle: foClassicContactUsPage.pageTitle},
