@@ -1,5 +1,4 @@
 import {expect} from 'chai';
-import {pricesDropPage} from '@pages/FO/classic/pricesDrop';
 import {termsAndConditionsOfUsePage} from '@pages/FO/classic/termsAndConditionsOfUse';
 import {securePaymentPage} from '@pages/FO/classic/securePayment';
 import testContext from '@utils/testContext';
@@ -19,6 +18,7 @@ import {
   foClassicLegalNoticePage,
   foClassicLoginPage,
   foClassicNewProductsPage,
+  foClassicPricesDropPage,
   foClassicProductPage,
   foClassicSearchResultsPage,
   foClassicSitemapPage,
@@ -110,7 +110,7 @@ describe('Check FO public pages', async () => {
 
   describe('Check \'Products\' footer links', async () => {
     [
-      {linkSelector: 'Prices drop', pageTitle: pricesDropPage.pageTitle},
+      {linkSelector: 'Prices drop', pageTitle: foClassicPricesDropPage.pageTitle},
       {linkSelector: 'New products', pageTitle: foClassicNewProductsPage.pageTitle},
       {linkSelector: 'Best sellers', pageTitle: foClassicBestSalesPage.pageTitle},
     ].forEach((args, index: number) => {

@@ -1,6 +1,5 @@
 import {expect} from 'chai';
 import {disableHummingbird, enableHummingbird} from '@commonTests/BO/design/hummingbird';
-import pricesDropPage from '@pages/FO/hummingbird/pricesDrop';
 import termsAndConditionsOfUsePage from '@pages/FO/hummingbird/termsAndConditionsOfUse';
 import securePaymentPage from '@pages/FO/hummingbird/securePayment';
 import testContext from '@utils/testContext';
@@ -20,6 +19,7 @@ import {
   foHummingbirdLegalNoticePage,
   foHummingbirdLoginPage,
   foHummingbirdNewProductsPage,
+  foHummingbirdPricesDropPage,
   foHummingbirdProductPage,
   foHummingbirdSearchResultsPage,
   foHummingbirdSitemapPage,
@@ -115,7 +115,7 @@ describe('Check FO public pages', async () => {
 
     describe('Check \'Products\' footer links', async () => {
       [
-        {linkSelector: 'Prices drop', pageTitle: pricesDropPage.pageTitle},
+        {linkSelector: 'Prices drop', pageTitle: foHummingbirdPricesDropPage.pageTitle},
         {linkSelector: 'New products', pageTitle: foHummingbirdNewProductsPage.pageTitle},
         {linkSelector: 'Best sellers', pageTitle: foHummingbirdBestSalesPage.pageTitle},
       ].forEach((args, index: number) => {
