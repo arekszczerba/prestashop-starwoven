@@ -2,12 +2,12 @@
 import testContext from '@utils/testContext';
 
 // Import pages
-import errorPage from '@pages/BO/error';
 import moduleCatalogPage from '@pages/BO/modules/moduleCatalog';
 
 import {expect} from 'chai';
 import {
   boDashboardPage,
+  boErrorPage,
   boLoginPage,
   type BrowserContext,
   type Page,
@@ -68,7 +68,7 @@ describe('Regression : Access to Module catalog is denied with neither left menu
 
     await boDashboardPage.navigateToPageWithInvalidToken(page, pageSymfonyUrl);
 
-    const pageTitle = await errorPage.getPageTitle(page);
-    expect(pageTitle).to.contains(errorPage.notFoundTitle);
+    const pageTitle = await boErrorPage.getPageTitle(page);
+    expect(pageTitle).to.contains(boErrorPage.notFoundTitle);
   });
 });
