@@ -1,10 +1,6 @@
-// Import utils
 import testContext from '@utils/testContext';
-
-// Import pages
-import moduleCatalogPage from '@pages/BO/modules/moduleCatalog';
-
 import {expect} from 'chai';
+
 import {
   boDashboardPage,
   boErrorPage,
@@ -59,8 +55,8 @@ describe('Regression : Access to Module catalog is denied with neither left menu
 
     await boDashboardPage.navigateToPageWithInvalidToken(page, pageLegacyUrl);
 
-    const alertText = await moduleCatalogPage.getAlertDangerBlockParagraphContent(page);
-    expect(alertText).to.contain(moduleCatalogPage.pageNotFoundMessage);
+    const alertText = await boErrorPage.getAlertDangerBlockParagraphContent(page);
+    expect(alertText).to.contain(boErrorPage.pageNotFoundMessage);
   });
 
   it('should redirect to dashboard when accessing by symfony url', async function () {
