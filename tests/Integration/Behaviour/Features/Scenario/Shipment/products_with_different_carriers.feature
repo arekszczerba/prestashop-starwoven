@@ -22,6 +22,7 @@ Feature: Product associated with different carriers
       | active         | true          |
       | shippingMethod | price         |
       | zones          | north_america |
+      | shippingHandling          | false |
     Then I set ranges for carrier "beer_carrier" with specified properties for all shops:
       | id_zone       | range_from | range_to | range_price |
       | north_america | 0          | 1000     | 5           |
@@ -34,6 +35,7 @@ Feature: Product associated with different carriers
       | active         | true              |
       | shippingMethod | price             |
       | zones          | north_america     |
+      | shippingHandling          | false     |
     Then I set ranges for carrier "saucisson_carrier" with specified properties for all shops:
       | id_zone       | range_from | range_to | range_price |
       | north_america | 0          | 1000     | 10          |
@@ -84,8 +86,8 @@ Feature: Product associated with different carriers
     And I reference order "bo_order1" delivery address as "US"
     Given the order "bo_order1" should have the following shipments:
       | shipment  | carrier           | tracking_number | address | shipping_cost_tax_excl | shipping_cost_tax_incl |
-      | shipment1 | beer_carrier      |                 | US      | 7.0                    | 7.42                   |
-      | shipment2 | saucisson_carrier |                 | US      | 12.0                   | 12.72                  |
+      | shipment1 | beer_carrier      |                 | US      | 5.0                    | 5.3                   |
+      | shipment2 | saucisson_carrier |                 | US      | 10.0                   | 10.60                  |
     Then the shipment "shipment1" should have the following products:
       | product_name   | quantity |
       | bottle of beer | 1        |
