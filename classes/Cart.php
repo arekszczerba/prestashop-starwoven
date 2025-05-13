@@ -3228,7 +3228,6 @@ class CartCore extends ObjectModel
             'without_tax' => 0,
         ];
         $delivery_option_list = $this->getDeliveryOptionList($default_country);
-
         foreach ($delivery_option as $id_address => $key) {
             if (!isset($delivery_option_list[$id_address]) || !isset($delivery_option_list[$id_address][$key])) {
                 continue;
