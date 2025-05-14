@@ -30,20 +30,7 @@ Feature: Product associated with different carriers
     Then carrier "beer_carrier" should have the following properties:
       | name         | Beer carrier    |
       | taxRuleGroup | US-FL Rate (6%) |
-    When I create carrier "saucisson_carrier" with specified properties:
-      | name           | Saucisson carrier |
-      | active         | true              |
-      | shippingMethod | price             |
-      | zones          | north_america     |
-      | shippingHandling          | false     |
-    Then I set ranges for carrier "saucisson_carrier" with specified properties for all shops:
-      | id_zone       | range_from | range_to | range_price |
-      | north_america | 0          | 1000     | 10          |
-    When I set tax rule "us-fl-tax-rate" for carrier "saucisson_carrier"
-    Then carrier "saucisson_carrier" should have the following properties:
-      | name         | Saucisson carrier |
-      | taxRuleGroup | US-FL Rate (6%)   |
-    # Create two products associated with different carriers
+    And a carrier "default_carrier" with name "My carrier" exists
     When I add product "bottle_of_beer" with following information:
       | name[en-US] | bottle of beer |
       | type        | standard       |
@@ -68,9 +55,9 @@ Feature: Product associated with different carriers
       | quantity | 42  |
       | location | dtc |
     And I assign product saucisson with following carriers:
-      | saucisson_carrier |
+      | default_carrier |
     Then product saucisson should have following shipping information:
-      | carriers | [saucisson_carrier] |
+      | carriers | [default_carrier] |
     And I enable product "saucisson"
 
   Scenario: Retrieve shipments for existing order
@@ -87,7 +74,7 @@ Feature: Product associated with different carriers
     Given the order "bo_order1" should have the following shipments:
       | shipment  | carrier           | tracking_number | address | shipping_cost_tax_excl | shipping_cost_tax_incl |
       | shipment1 | beer_carrier      |                 | US      | 5.0                    | 5.3                   |
-      | shipment2 | saucisson_carrier |                 | US      | 10.0                   | 10.60                  |
+      | shipment2 | default_carrier |                 | US      | 7.0                   | 7.42                  |
     Then the shipment "shipment1" should have the following products:
       | product_name   | quantity |
       | bottle of beer | 1        |
