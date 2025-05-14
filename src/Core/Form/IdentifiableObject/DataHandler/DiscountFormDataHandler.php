@@ -94,10 +94,6 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
         $command = new UpdateDiscountCommand($id);
         switch ($data['discount_type']) {
             case DiscountType::FREE_SHIPPING:
-                $command
-                    ->setLocalizedNames($data['names'])
-                ;
-                break;
             case DiscountType::CART_LEVEL:
             case DiscountType::ORDER_LEVEL:
             case DiscountType::PRODUCT_LEVEL:
@@ -106,6 +102,9 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
             default:
                 throw new RuntimeException('Unknown discount type ' . $data['discount_type']);
         }
+        $command
+            ->setLocalizedNames($data['names'])
+        ;
 
         $discountId = $this->commandBus->handle($command);
 

@@ -214,13 +214,10 @@ class DiscountFeatureContext extends AbstractDomainFeatureContext
             $command->setActive(PrimitiveUtils::castStringBooleanIntoBoolean($data['active']));
         }
         if (isset($data['valid_from'])) {
-            if (empty($data['valid_to'])) {
-                throw new RuntimeException('When setting cart rule range "valid_from" and "valid_to" must be provided');
-            }
-            $command->setValidityDateRange(
-                new DateTimeImmutable($data['valid_from']),
-                new DateTimeImmutable($data['valid_to']),
-            );
+            $command->setValidFrom(new DateTimeImmutable($data['valid_from']));
+        }
+        if (isset($data['valid_to'])) {
+            $command->setValidTo(new DateTimeImmutable($data['valid_to']));
         }
         if (isset($data['total_quantity'])) {
             $command->setTotalQuantity((int) $data['total_quantity']);

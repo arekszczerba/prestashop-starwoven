@@ -27,7 +27,6 @@
 namespace PrestaShop\PrestaShop\Adapter\Discount\Update\Filler;
 
 use CartRule;
-use CartRuleCore;
 use PrestaShop\PrestaShop\Adapter\Domain\LocalizedObjectModelTrait;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Command\UpdateDiscountCommand;
 use PrestaShop\PrestaShop\Core\Util\DateTime\DateTime as DateTimeUtil;
@@ -49,7 +48,6 @@ class DiscountFiller
         }
         if (null !== $command->getLocalizedNames()) {
             $cartRule->name = $command->getLocalizedNames();
-            /* @var CartRuleCore $cartRule */
             $this->fillLocalizedValues($cartRule, 'name', $command->getLocalizedNames(), $updatableProperties);
         }
         if (null !== $command->getDescription()) {

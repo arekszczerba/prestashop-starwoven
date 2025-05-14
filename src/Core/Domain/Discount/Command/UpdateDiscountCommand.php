@@ -28,12 +28,12 @@ namespace PrestaShop\PrestaShop\Core\Domain\Discount\Command;
 
 use DateTimeImmutable;
 use PrestaShop\Decimal\DecimalNumber;
+use PrestaShop\PrestaShop\Core\Domain\Currency\Exception\CurrencyException;
 use PrestaShop\PrestaShop\Core\Domain\Currency\ValueObject\CurrencyId;
 use PrestaShop\PrestaShop\Core\Domain\Customer\ValueObject\CustomerId;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Exception\DiscountConstraintException;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountId;
 use PrestaShop\PrestaShop\Core\Domain\Exception\DomainConstraintException;
-use PrestaShop\PrestaShop\Core\Domain\Language\ValueObject\LanguageId;
 use PrestaShop\PrestaShop\Core\Domain\Product\Combination\Exception\CombinationConstraintException;
 use PrestaShop\PrestaShop\Core\Domain\Product\Combination\ValueObject\CombinationId;
 use PrestaShop\PrestaShop\Core\Domain\Product\Combination\ValueObject\CombinationIdInterface;
@@ -71,14 +71,9 @@ class UpdateDiscountCommand
     /**
      * @param array<int, string> $localizedNames
      */
-    public function setLocalizedNames(?array $localizedNames): self
+    public function setLocalizedNames(array $localizedNames): self
     {
-        if (null === $localizedNames) {
-            $this->localizedNames = null;
-        }
-        foreach ($localizedNames as $languageId => $name) {
-            $this->localizedNames[(new LanguageId($languageId))->getValue()] = $name;
-        }
+        $this->localizedNames = $localizedNames;
 
         return $this;
     }
@@ -96,7 +91,7 @@ class UpdateDiscountCommand
         return $this->active;
     }
 
-    public function setActive(?bool $active): self
+    public function setActive(bool $active): self
     {
         $this->active = $active;
 
@@ -113,17 +108,16 @@ class UpdateDiscountCommand
         return $this->validTo;
     }
 
-    /**
-     * @throws DiscountConstraintException
-     */
-    public function setValidityDateRange(?DateTimeImmutable $from, ?DateTimeImmutable $to): self
+    public function setValidFrom(DateTimeImmutable $validFrom): self
     {
-        if (null === $from || null === $to) {
-            throw new DiscountConstraintException('Cannot validate range if one of properties is null', DiscountConstraintException::INVALID_DATE_FROM_OR_DATE_TO);
-        }
-        $this->assertDateRangeIsValid($from, $to);
-        $this->validFrom = $from;
-        $this->validTo = $to;
+        $this->validFrom = $validFrom;
+
+        return $this;
+    }
+
+    public function setValidTo(DateTimeImmutable $validTo): self
+    {
+        $this->validTo = $validTo;
 
         return $this;
     }
@@ -136,9 +130,9 @@ class UpdateDiscountCommand
     /**
      * @throws DiscountConstraintException
      */
-    public function setPriority(?int $priority): self
+    public function setPriority(int $priority): self
     {
-        if (null === $priority || 0 >= $priority) {
+        if (0 >= $priority) {
             throw new DiscountConstraintException(
                 sprintf('Invalid discount priority "%s". Must be a positive integer.', $priority),
                 DiscountConstraintException::INVALID_PRIORITY
@@ -160,7 +154,7 @@ class UpdateDiscountCommand
         return $this->highlightInCart;
     }
 
-    public function setHighlightInCart(?bool $highlightInCart): void
+    public function setHighlightInCart(bool $highlightInCart): void
     {
         $this->highlightInCart = $highlightInCart;
     }
@@ -168,9 +162,9 @@ class UpdateDiscountCommand
     /**
      * @throws DiscountConstraintException
      */
-    public function setTotalQuantity(?int $quantity): self
+    public function setTotalQuantity(int $quantity): self
     {
-        if (null === $quantity || 0 > $quantity) {
+        if (0 > $quantity) {
             throw new DiscountConstraintException(sprintf('Quantity cannot be lower than zero, %d given', $quantity), DiscountConstraintException::INVALID_QUANTITY);
         }
 
@@ -187,13 +181,13 @@ class UpdateDiscountCommand
     /**
      * @throws DiscountConstraintException
      */
-    public function setQuantityPerUser(?int $quantity): self
+    public function setQuantityPerUser(int $quantityPerUser): self
     {
-        if (null === $quantity || 0 > $quantity) {
-            throw new DiscountConstraintException(sprintf('Quantity per user cannot be lower than zero, %d given', $quantity), DiscountConstraintException::INVALID_QUANTITY_PER_USER);
+        if (0 > $quantityPerUser) {
+            throw new DiscountConstraintException(sprintf('Quantity per user cannot be lower than zero, %d given', $quantityPerUser), DiscountConstraintException::INVALID_QUANTITY_PER_USER);
         }
 
-        $this->quantityPerUser = $quantity;
+        $this->quantityPerUser = $quantityPerUser;
 
         return $this;
     }
@@ -203,7 +197,7 @@ class UpdateDiscountCommand
         return $this->description;
     }
 
-    public function setDescription(?string $description): self
+    public function setDescription(string $description): self
     {
         $this->description = $description;
 
@@ -215,7 +209,7 @@ class UpdateDiscountCommand
         return $this->code;
     }
 
-    public function setCode(?string $code): self
+    public function setCode(string $code): self
     {
         $this->code = $code;
 
@@ -227,7 +221,7 @@ class UpdateDiscountCommand
         return $this->allowPartialUse;
     }
 
-    public function setAllowPartialUse(?bool $allow): self
+    public function setAllowPartialUse(bool $allow): self
     {
         $this->allowPartialUse = $allow;
 
@@ -239,11 +233,8 @@ class UpdateDiscountCommand
         return $this->customerId;
     }
 
-    public function setCustomerId(?int $customerId): self
+    public function setCustomerId(int $customerId): self
     {
-        if (null === $customerId) {
-            return $this;
-        }
         $this->customerId = new CustomerId($customerId);
 
         return $this;
@@ -254,11 +245,8 @@ class UpdateDiscountCommand
         return $this->percentDiscount;
     }
 
-    public function setPercentDiscount(?DecimalNumber $percentDiscount): self
+    public function setPercentDiscount(DecimalNumber $percentDiscount): self
     {
-        if (null === $percentDiscount) {
-            return $this;
-        }
         $this->percentDiscount = $percentDiscount;
 
         return $this;
@@ -271,17 +259,15 @@ class UpdateDiscountCommand
 
     /**
      * @throws DomainConstraintException|DiscountConstraintException
+     * @throws CurrencyException
      */
-    public function setAmountDiscount(?DecimalNumber $amountDiscount, ?CurrencyId $currencyId, ?bool $taxIncluded): self
+    public function setAmountDiscount(DecimalNumber $amountDiscount, int $currencyId, bool $taxIncluded): self
     {
-        if (null === $amountDiscount || null === $taxIncluded || null === $currencyId) {
-            return $this;
-        }
         if ($amountDiscount->isLowerThanZero()) {
             throw new DiscountConstraintException(sprintf('Money amount cannot be lower than zero, %s given', $amountDiscount), DiscountConstraintException::INVALID_DISCOUNT_VALUE_CANNOT_BE_NEGATIVE);
         }
 
-        $this->amountDiscount = new Money($amountDiscount, $currencyId, $taxIncluded);
+        $this->amountDiscount = new Money($amountDiscount, new CurrencyId($currencyId), $taxIncluded);
 
         return $this;
     }
@@ -294,11 +280,8 @@ class UpdateDiscountCommand
     /**
      * @throws ProductConstraintException
      */
-    public function setProductId(?int $productId): self
+    public function setProductId(int $productId): self
     {
-        if (null === $productId) {
-            return $this;
-        }
         $this->productId = new ProductId($productId);
 
         return $this;
@@ -312,11 +295,8 @@ class UpdateDiscountCommand
     /**
      * @throws CombinationConstraintException
      */
-    public function setCombinationId(?int $combinationId): self
+    public function setCombinationId(int $combinationId): self
     {
-        if (null === $combinationId) {
-            return $this;
-        }
         if (NoCombinationId::NO_COMBINATION_ID === $combinationId) {
             $this->combinationId = new NoCombinationId();
         } else {
@@ -342,7 +322,7 @@ class UpdateDiscountCommand
      * -2 => The discount is applied on a selection of product // this case is not yet handled.
      * >0 => The productId of the discounted product
      */
-    public function setReductionProduct(?int $reductionProduct): self
+    public function setReductionProduct(int $reductionProduct): self
     {
         $this->reductionProduct = $reductionProduct;
 
@@ -352,15 +332,5 @@ class UpdateDiscountCommand
     public function getDiscountId(): DiscountId
     {
         return $this->discountId;
-    }
-
-    /**
-     * @throws DiscountConstraintException
-     */
-    private function assertDateRangeIsValid(DateTimeImmutable $dateFrom, DateTimeImmutable $dateTo): void
-    {
-        if ($dateFrom > $dateTo) {
-            throw new DiscountConstraintException('Date from cannot be greater than date to.', DiscountConstraintException::DATE_FROM_GREATER_THAN_DATE_TO);
-        }
     }
 }
