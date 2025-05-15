@@ -38,14 +38,14 @@ describe('BO - Catalog - Monitoring : Sort and pagination list of products witho
   const productsFile: string = 'products.csv';
 
   // Pre-condition: Import list of products
-  importFileTest(productsFile, ImportProductsWithoutQuantities.entity, `${baseContext}_preTest_1`);
+  importFileTest(productsFile, dataImportProductsWithoutQuantities.entity, `${baseContext}_preTest_1`);
 
   // before and after functions
   before(async function () {
     browserContext = await utilsPlaywright.createBrowserContext(this.browser);
     page = await utilsPlaywright.newTab(browserContext);
     // Create csv file with all products data
-    await utilsFile.createCSVFile('.', productsFile, ImportProductsWithoutQuantities);
+    await utilsFile.createCSVFile('.', productsFile, dataImportProductsWithoutQuantities);
   });
 
   after(async () => {
