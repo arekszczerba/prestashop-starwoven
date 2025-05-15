@@ -1,4 +1,3 @@
-<?php
 /**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
@@ -24,33 +23,10 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 
-namespace PrestaShop\PrestaShop\Core\Form\IdentifiableObject\DataProvider;
-
-use PrestaShop\PrestaShop\Core\CommandBus\CommandBusInterface;
-use PrestaShop\PrestaShop\Core\Domain\Discount\Query\GetDiscountForEditing;
-use PrestaShop\PrestaShop\Core\Domain\Discount\QueryResult\DiscountForEditing;
-
-class DiscountFormDataProvider implements FormDataProviderInterface
-{
-    public function __construct(
-        private CommandBusInterface $queryBus,
-    ) {
-    }
-
-    public function getDefaultData()
-    {
-        return [];
-    }
-
-    public function getData($id)
-    {
-        /** @var DiscountForEditing $discountForEditing */
-        $discountForEditing = $this->queryBus->handle(new GetDiscountForEditing($id));
-
-        return [
-            'id' => $id,
-            'discount_type' => $discountForEditing->getType()->getValue(),
-            'names' => $discountForEditing->getLocalisedNames(),
-        ];
-    }
-}
+$(() => {
+  window.prestashop.component.initComponents(
+    [
+      'TranslatableInput',
+    ],
+  );
+});

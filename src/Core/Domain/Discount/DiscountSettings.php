@@ -24,33 +24,9 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 
-namespace PrestaShop\PrestaShop\Core\Form\IdentifiableObject\DataProvider;
+namespace PrestaShop\PrestaShop\Core\Domain\Discount;
 
-use PrestaShop\PrestaShop\Core\CommandBus\CommandBusInterface;
-use PrestaShop\PrestaShop\Core\Domain\Discount\Query\GetDiscountForEditing;
-use PrestaShop\PrestaShop\Core\Domain\Discount\QueryResult\DiscountForEditing;
-
-class DiscountFormDataProvider implements FormDataProviderInterface
+class DiscountSettings
 {
-    public function __construct(
-        private CommandBusInterface $queryBus,
-    ) {
-    }
-
-    public function getDefaultData()
-    {
-        return [];
-    }
-
-    public function getData($id)
-    {
-        /** @var DiscountForEditing $discountForEditing */
-        $discountForEditing = $this->queryBus->handle(new GetDiscountForEditing($id));
-
-        return [
-            'id' => $id,
-            'discount_type' => $discountForEditing->getType()->getValue(),
-            'names' => $discountForEditing->getLocalisedNames(),
-        ];
-    }
+    public const MAX_NAME_LENGTH = 255;
 }
