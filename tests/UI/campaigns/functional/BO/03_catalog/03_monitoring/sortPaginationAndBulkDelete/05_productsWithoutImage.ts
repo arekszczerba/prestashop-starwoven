@@ -1,8 +1,8 @@
 import testContext from '@utils/testContext';
+import {expect} from 'chai';
+
 import importFileTest from '@commonTests/BO/advancedParameters/importFile';
 import bulkDeleteProductsTest from '@commonTests/BO/catalog/monitoring';
-import ImportProductsWithoutQuantities from '@data/import/productsWithoutQuantities';
-import {expect} from 'chai';
 
 import {
   boDashboardPage,
@@ -10,6 +10,7 @@ import {
   boMonitoringPage,
   boProductsCreatePage,
   type BrowserContext,
+  dataImportProductsWithoutQuantities,
   type Page,
   utilsCore,
   utilsFile,
