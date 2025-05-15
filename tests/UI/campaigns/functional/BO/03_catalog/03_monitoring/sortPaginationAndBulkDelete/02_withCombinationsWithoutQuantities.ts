@@ -1,7 +1,6 @@
 import testContext from '@utils/testContext';
 import importFileTest from '@commonTests/BO/advancedParameters/importFile';
 import bulkDeleteProductsTest from '@commonTests/BO/catalog/monitoring';
-import ImportDisabledProducts from '@data/import/disabledProducts';
 import {expect} from 'chai';
 
 import {
@@ -11,6 +10,7 @@ import {
   boProductsCreatePage,
   type BrowserContext,
   dataImportCombinations,
+  dataImportProductsDisabled,
   type Page,
   utilsCore,
   utilsFile,
@@ -42,7 +42,7 @@ describe('BO - Catalog - Monitoring : Sort and pagination list of products with 
   const combinationsFileName: string = 'combinations.csv';
 
   // Pre-condition: Import list of products
-  importFileTest(productFileName, ImportDisabledProducts.entity, `${baseContext}_preTest_1`);
+  importFileTest(productFileName, dataImportProductsDisabled.entity, `${baseContext}_preTest_1`);
 
   // Pre-condition: Import list of combinations
   importFileTest(combinationsFileName, dataImportCombinations.entity, `${baseContext}_preTest_2`);
@@ -52,7 +52,7 @@ describe('BO - Catalog - Monitoring : Sort and pagination list of products with 
     browserContext = await utilsPlaywright.createBrowserContext(this.browser);
     page = await utilsPlaywright.newTab(browserContext);
     // Create csv file with all products data
-    await utilsFile.createCSVFile('.', productFileName, ImportDisabledProducts);
+    await utilsFile.createCSVFile('.', productFileName, dataImportProductsDisabled);
     // Create csv file with all combinations data
     await utilsFile.createCSVFile('.', combinationsFileName, dataImportCombinations);
   });
