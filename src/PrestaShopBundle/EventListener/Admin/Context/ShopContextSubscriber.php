@@ -148,7 +148,7 @@ class ShopContextSubscriber implements EventSubscriberInterface
             $this->addFlashErrorMessage($shopConstraint, $event);
             if ($event->getRequest()->hasSession() && $event->getRequest()->getSession() instanceof FlashBagAwareSessionInterface) {
                 $event->getRequest()->getSession()->getFlashBag()->add('info', $this->translator->trans(
-                    'You have been automatically switched to your default shop',
+                    'You have been automatically switched to your default store.',
                     [],
                     'Admin.Notifications.Info',
                 ));
@@ -277,25 +277,25 @@ class ShopContextSubscriber implements EventSubscriberInterface
         if ($requestEvent->getRequest()->hasSession() && $requestEvent->getRequest()->getSession() instanceof FlashBagAwareSessionInterface) {
             if ($invalidShopConstraint->forAllShops()) {
                 $errorMessage = $this->translator->trans(
-                    'Authorization not allowed for all shops.',
+                    'Authorization not allowed for all stores.',
                     [],
                     'Admin.Notifications.Error',
                 );
             } elseif ($invalidShopConstraint->getShopId()) {
                 $errorMessage = $this->translator->trans(
-                    'Authorization not allowed for this shop.',
+                    'Authorization not allowed for this store.',
                     [],
                     'Admin.Notifications.Error',
                 );
             } elseif ($invalidShopConstraint->getShopGroupId()) {
                 $errorMessage = $this->translator->trans(
-                    'Authorization not allowed for this shop group.',
+                    'Authorization not allowed for this group of stores.',
                     [],
                     'Admin.Notifications.Error',
                 );
             } else {
                 $errorMessage = $this->translator->trans(
-                    'Authorization not allowed for this shop constraint.',
+                    'Authorization not allowed for this store context.',
                     [],
                     'Admin.Notifications.Error',
                 );

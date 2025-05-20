@@ -227,7 +227,7 @@ class PrestaShopAdminController extends AbstractController
         if ($e instanceof MultiShopAccessDeniedException && $e->getShopConstraint()) {
             if ($e->getShopConstraint()->forAllShops()) {
                 return $this->trans(
-                    'Authorization not allowed for all shops.',
+                    'Authorization not allowed for all stores.',
                     [],
                     'Admin.Notifications.Error'
                 );
@@ -235,7 +235,7 @@ class PrestaShopAdminController extends AbstractController
 
             if ($e->getShopConstraint()->getShopId()) {
                 return $this->trans(
-                    'Authorization not allowed for this shop.',
+                    'Authorization not allowed for this store.',
                     [],
                     'Admin.Notifications.Error'
                 );
@@ -243,14 +243,14 @@ class PrestaShopAdminController extends AbstractController
 
             if ($e->getShopConstraint()->getShopGroupId()) {
                 return $this->trans(
-                    'Authorization not allowed for this shop group.',
+                    'Authorization not allowed for this group of stores.',
                     [],
                     'Admin.Notifications.Error'
                 );
             }
 
             return $this->trans(
-                'Authorization not allowed for this shop constraint.',
+                'Authorization not allowed for this store context.',
                 [],
                 'Admin.Notifications.Error'
             );
