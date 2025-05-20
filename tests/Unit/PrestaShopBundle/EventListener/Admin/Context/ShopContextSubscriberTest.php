@@ -42,7 +42,9 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\NoConfigurationException;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Core\Event\AuthenticationSuccessEvent;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Tests\Unit\PrestaShopBundle\EventListener\ContextEventListenerTestCase;
@@ -481,6 +483,67 @@ class ShopContextSubscriberTest extends ContextEventListenerTestCase
         ];
     }
 
+    /**
+     * @dataProvider provideLoginShopContext
+     */
+    public function testInitShopContextOnLogin(array $employeeData, ?ShopConstraint $expectedShopConstraint): void
+    {
+        $token = $this->createMock(TokenInterface::class);
+
+        // The test occurs here, the mock validates that the subscriber correctly sets the appropriate attribute on the token
+        if ($expectedShopConstraint) {
+            $token->expects($this->atLeastOnce())->method('setAttribute')->with(TokenAttributes::SHOP_CONSTRAINT, $expectedShopConstraint);
+        } else {
+            $token->expects($this->never())->method('setAttribute');
+        }
+
+        $shopContextBuilder = new ShopContextBuilder(
+            $this->mockShopRepository(self::DEFAULT_SHOP_ID),
+            $this->mockContextStateManager(),
+            $this->mockMultistoreFeature(false),
+        );
+
+        $listener = new ShopContextSubscriber(
+            $shopContextBuilder,
+            $this->mockEmployeeContext($employeeData),
+            $this->mockConfiguration(),
+            $this->mockMultistoreFeature(true),
+            $this->mockRouter(),
+            $this->mockSecurity(),
+            $this->mockLegacyContext(),
+            $this->createMock(TranslatorInterface::class),
+        );
+
+        $event = new AuthenticationSuccessEvent($token);
+        $listener->initShopContextOnLogin($event);
+    }
+
+    public static function provideLoginShopContext(): iterable
+    {
+        yield 'employee has authorization for all shops' => [
+            [
+                'authorizedForAllShops' => true,
+            ],
+            ShopConstraint::allShops(),
+        ];
+
+        yield 'employee not authorize for all shops, but has default shop ID' => [
+            [
+                'authorizedForAllShops' => false,
+                'defaultShopId' => 2,
+            ],
+            ShopConstraint::shop(2),
+        ];
+
+        yield 'employee not authorize for all shops, and no default shop ID' => [
+            [
+                'authorizedForAllShops' => false,
+                'defaultShopId' => 0,
+            ],
+            null,
+        ];
+    }
+
     private function mockRouter(): RouterInterface|MockObject
     {
         $router = $this->createMock(RouterInterface::class);
@@ -539,7 +602,7 @@ class ShopContextSubscriberTest extends ContextEventListenerTestCase
                 ->willReturn(self::EMPLOYEE_DEFAULT_SHOP_ID)
             ;
         } else {
-            if (!empty($employeeData['authorizedShopGroups'])) {
+            if (isset($employeeData['authorizedShopGroups'])) {
                 $employeeContext
                     ->method('hasAuthorizationOnShopGroup')
                     ->will($this->returnCallback(function ($shopGroupId) use ($employeeData) {
@@ -553,7 +616,7 @@ class ShopContextSubscriberTest extends ContextEventListenerTestCase
                 ;
             }
 
-            if (!empty($employeeData['authorizedShops'])) {
+            if (isset($employeeData['authorizedShops'])) {
                 $employeeContext
                     ->method('hasAuthorizationOnShop')
                     ->will($this->returnCallback(function ($shopId) use ($employeeData) {
@@ -579,7 +642,7 @@ class ShopContextSubscriberTest extends ContextEventListenerTestCase
                 ;
             }
 
-            if (!empty($employeeData['defaultShopId'])) {
+            if (isset($employeeData['defaultShopId'])) {
                 $employeeContext
                     ->method('getDefaultShopId')
                     ->willReturn($employeeData['defaultShopId'])
