@@ -31,6 +31,7 @@ namespace Tests\Resources\ApiPlatform\Resources;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use PrestaShop\PrestaShop\Core\Domain\Product\Query\GetProductForEditing;
+use PrestaShopBundle\ApiPlatform\Metadata\CQRSCreate;
 use PrestaShopBundle\ApiPlatform\Metadata\CQRSGet;
 
 #[ApiResource(
@@ -53,6 +54,16 @@ use PrestaShopBundle\ApiPlatform\Metadata\CQRSGet;
             scopes: ['experimental_scope'],
             CQRSQueryMapping: ApiTest::QUERY_MAPPING,
             experimentalOperation: true,
+        ),
+        new CQRSGet(
+            uriTemplate: '/test/cqrs/query/not_found',
+            CQRSQuery: 'PrestaShop\PrestaShop\Core\Domain\Product\Query\NotFoundQuery',
+            scopes: ['filtered_query_scope'],
+        ),
+        new CQRSCreate(
+            uriTemplate: '/test/cqrs/command/not_found',
+            CQRSCommand: 'PrestaShop\PrestaShop\Core\Domain\Product\Query\NotFoundCommand',
+            scopes: ['filtered_command_scope'],
         ),
     ],
 )]

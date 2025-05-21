@@ -152,4 +152,81 @@ class DisabledEndpointsTest extends ApiTestCase
             true,
         ];
     }
+
+    /**
+     * @dataProvider getNotFoundEndpoints
+     */
+    public function testEndpointWithCQRSNotFound(bool $isDebug, string $endpointMethod, string $endpointUrl, string $endpointScope): void
+    {
+        // Boot kernel with appropriate configuration, exceptionally we force the environment, so we have
+        // distinct cache and adapted data/behaviour for each use case
+        $kernelOptions = ['debug' => $isDebug];
+
+        // The purpose in this test is not to check the HTTPS protection so we mimic it (especially for prod environment)
+        $defaultClientOptions = [
+            'headers' => [
+                'X_FORWARDED_PROTO' => 'HTTPS',
+            ],
+        ];
+        static::bootKernel($kernelOptions);
+
+        // In prod the scope should be filtered out so trying to use it would result in a 401
+        // In dev the scope is visible so developers realize if they made a mistake, it is usable when you create a token though
+        $bearerToken = $this->getBearerToken($isDebug ? [$endpointScope] : [], $kernelOptions, $defaultClientOptions);
+
+        static::createClient($kernelOptions, $defaultClientOptions)->request($endpointMethod, $endpointUrl, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $bearerToken,
+            ],
+        ]);
+
+        // In prod the endpoint should be filtered out so trying to access it result in a 404
+        // In dev the endpoint is visible so developers realize if they made a mistake, an invalid 400 http code is returned
+        self::assertResponseStatusCodeSame($isDebug ? 400 : 404);
+
+        /** @var ApiResourceScopesExtractor $scopesExtractor */
+        $scopesExtractor = static::createClient($kernelOptions)->getContainer()->get(ApiResourceScopesExtractor::class);
+        $resourceScopes = $scopesExtractor->getAllApiResourceScopes();
+        $foundScope = false;
+        foreach ($resourceScopes as $resourceScope) {
+            if (in_array($endpointScope, $resourceScope->getScopes())) {
+                $foundScope = true;
+                break;
+            }
+        }
+
+        // If debug is enabled the scope is found, if not it was filtered
+        $this->assertEquals($isDebug, $foundScope);
+    }
+
+    public static function getNotFoundEndpoints(): iterable
+    {
+        yield 'endpoint with CQRS query not found, filtered on prod' => [
+            false,
+            'GET',
+            '/test/cqrs/query/not_found',
+            'filtered_query_scope',
+        ];
+
+        yield 'endpoint with CQRS query not found, still present on dev' => [
+            true,
+            'GET',
+            '/test/cqrs/query/not_found',
+            'filtered_query_scope',
+        ];
+
+        yield 'endpoint with CQRS command not found, filtered on prod' => [
+            false,
+            'POST',
+            '/test/cqrs/command/not_found',
+            'filtered_command_scope',
+        ];
+
+        yield 'endpoint with CQRS command not found, still present on dev' => [
+            true,
+            'POST',
+            '/test/cqrs/command/not_found',
+            'filtered_command_scope',
+        ];
+    }
 }
