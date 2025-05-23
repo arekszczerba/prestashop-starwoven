@@ -211,6 +211,8 @@ class CustomerType extends TranslatorAwareType
                     'data-minscore' => $minScore,
                     'data-minlength' => $minLength,
                     'data-maxlength' => $maxLength,
+                    /* Some browsers (for example Google Chrome) are totally ignoring "off" value, so we use "new-password" - which is working well for this purpose */
+                    'autocomplete' => 'new-password',
                 ],
                 'help' => $this->trans(
                     'Password should be at least %length% characters long.',
