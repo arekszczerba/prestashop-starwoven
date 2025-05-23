@@ -2835,7 +2835,7 @@ CREATE TABLE `PREFIX_image_type` (
   `suppliers`     TINYINT(1) DEFAULT 1 NOT NULL,
   `stores`        TINYINT(1) DEFAULT 1 NOT NULL,
   `theme_name`    VARCHAR(255) DEFAULT NULL,
-  UNIQUE KEY `UNIQ_907C95215E237E06` (`name`, `theme_name`),
+  UNIQUE KEY `UNIQ_907C95215E237E0614E48A3B` (`name`, `theme_name`),
   PRIMARY KEY (`id_image_type`)
 ) ENGINE=ENGINE_TYPE DEFAULT CHARSET=utf8mb4 COLLATION;
 
