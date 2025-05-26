@@ -25,11 +25,11 @@
 const discountContainer = '.discount-container';
 
 export default {
-  currencySelect: '#discount_reduction_currency',
+  currencySelect: '#discount_value_reduction_currency',
   currencySelectContainer: '.price-reduction-currency-selector',
   discountContainer,
-  includeTaxInput: '#discount_reduction_include_tax',
-  reductionTypeSelect: '#discount_reduction_type',
+  includeTaxInput: '#discount_value_reduction_include_tax',
+  reductionTypeSelect: '#discount_value_reduction_type',
   reductionValueSymbol: `${discountContainer} .price-reduction-value .input-group .input-group-append .input-group-text,
    .price-reduction-value .input-group .input-group-prepend .input-group-text`,
 };
