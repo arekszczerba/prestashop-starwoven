@@ -1,4 +1,5 @@
-{# **
+<?php
+/**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
  *
@@ -21,19 +22,34 @@
  * @author    PrestaShop SA and Contributors <contact@prestashop.com>
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
- * #}
+ */
 
-{{ form_start(discountForm) }}
-  {{ form_errors(discountForm) }}
-  {% block discount_form_rest %}
-    {{ form_rest(discountForm) }}
-  {% endblock %}
-  <div class="w-100 btn-group" role="group">
-    <a href="{{ path('admin_catalog_price_rules_index') }}" class="btn btn-outline-secondary">
-      {{ 'Cancel'|trans({}, 'Admin.Actions') }}
-    </a>
-    <button type="submit" class="btn btn-primary float-right">
-      {{ 'Save'|trans({}, 'Admin.Actions') }}
-    </button>
-  </div>
-{{ form_end(discountForm) }}
+namespace PrestaShopBundle\Form\Admin\Sell\Discount;
+
+use PrestaShopBundle\Form\Admin\Type\CardType;
+use PrestaShopBundle\Form\Admin\Type\PriceReductionType;
+use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
+use Symfony\Component\Form\FormBuilderInterface;
+
+class DiscountValueType extends TranslatorAwareType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('reduction', PriceReductionType::class, [
+                'currency_select' => true,
+                'label' => $this->trans('Discount value', 'Admin.Catalog.Feature'),
+                'label_help_box' => $this->trans('You can choose a minimum amount for the cart either with or without the taxes.', 'Admin.Catalog.Help'),
+                'required' => false,
+                'row_attr' => [
+                    'class' => 'discount-container',
+                ],
+            ])
+        ;
+    }
+
+    public function getParent()
+    {
+        return CardType::class;
+    }
+}
