@@ -521,6 +521,7 @@ class OrderCore extends ObjectModel
         $paid = false;
         $shipped = false;
         $email = false;
+        
         if ($filters > 0) {
             if ($filters & OrderState::FLAG_NO_HIDDEN) {
                 $no_hidden = true;
