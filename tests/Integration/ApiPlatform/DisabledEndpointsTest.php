@@ -228,5 +228,19 @@ class DisabledEndpointsTest extends ApiTestCase
             '/test/cqrs/command/not_found',
             'filtered_command_scope',
         ];
+
+        yield 'endpoint with CQRS command AND query not found, filtered on prod' => [
+            false,
+            'PUT',
+            '/test/cqrs/query_and_command/not_found',
+            'filtered_query_command_scope',
+        ];
+
+        yield 'endpoint with CQRS command AND query not found, still present on dev' => [
+            true,
+            'PUT',
+            '/test/cqrs/query_and_command/not_found',
+            'filtered_query_command_scope',
+        ];
     }
 }
