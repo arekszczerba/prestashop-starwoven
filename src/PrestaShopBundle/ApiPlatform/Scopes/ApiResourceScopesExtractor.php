@@ -157,6 +157,10 @@ class ApiResourceScopesExtractor implements ApiResourceScopesExtractorInterface
         $scopes = [];
         /** @var Operation $operation */
         foreach ($resource->getOperations() as $operation) {
+            if ($this->skipCQRSNotFound($operation)) {
+                continue;
+            }
+
             $extraProperties = $operation->getExtraProperties();
             if (array_key_exists('scopes', $extraProperties)) {
                 $operationScopes = $extraProperties['scopes'];
@@ -169,5 +173,31 @@ class ApiResourceScopesExtractor implements ApiResourceScopesExtractorInterface
         }
 
         return $scopes;
+    }
+
+    /**
+     * Similar filter as in CQRSNotFoundMetadataCollectionFactoryDecorator, when operations are based on CQRS
+     * queries or commands that don't exist yet they are skipped.
+     *
+     * @param Operation $operation
+     *
+     * @return bool
+     */
+    private function skipCQRSNotFound(Operation $operation): bool
+    {
+        // In debug environment nothing is filtered, so that developers rely early there is a mistake in their configuration
+        if ($this->environment->isDebug()) {
+            return false;
+        }
+
+        $extraProperties = $operation->getExtraProperties();
+        if (isset($extraProperties['CQRSQuery']) && !class_exists($extraProperties['CQRSQuery'])) {
+            return true;
+        }
+        if (isset($extraProperties['CQRSCommand']) && !class_exists($extraProperties['CQRSCommand'])) {
+            return true;
+        }
+
+        return false;
     }
 }

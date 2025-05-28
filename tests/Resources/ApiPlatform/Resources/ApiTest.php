@@ -33,6 +33,7 @@ use ApiPlatform\Metadata\ApiResource;
 use PrestaShop\PrestaShop\Core\Domain\Product\Query\GetProductForEditing;
 use PrestaShopBundle\ApiPlatform\Metadata\CQRSCreate;
 use PrestaShopBundle\ApiPlatform\Metadata\CQRSGet;
+use PrestaShopBundle\ApiPlatform\Metadata\CQRSUpdate;
 
 #[ApiResource(
     operations: [
@@ -62,8 +63,14 @@ use PrestaShopBundle\ApiPlatform\Metadata\CQRSGet;
         ),
         new CQRSCreate(
             uriTemplate: '/test/cqrs/command/not_found',
-            CQRSCommand: 'PrestaShop\PrestaShop\Core\Domain\Product\Query\NotFoundCommand',
+            CQRSCommand: 'PrestaShop\PrestaShop\Core\Domain\Product\Command\NotFoundCommand',
             scopes: ['filtered_command_scope'],
+        ),
+        new CQRSUpdate(
+            uriTemplate: '/test/cqrs/query_and_command/not_found',
+            CQRSCommand: 'PrestaShop\PrestaShop\Core\Domain\Product\Command\NotFoundCommand',
+            CQRSQuery: 'PrestaShop\PrestaShop\Core\Domain\Product\Query\NotFoundQuery',
+            scopes: ['filtered_query_command_scope'],
         ),
     ],
 )]
