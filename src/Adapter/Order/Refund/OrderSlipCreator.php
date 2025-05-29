@@ -63,6 +63,11 @@ class OrderSlipCreator
     private $translator;
 
     /**
+     * @var OrderSlip
+     */
+    private $orderSlipCreated;
+
+    /**
      * @param ConfigurationInterface $configuration
      * @param TranslatorInterface $translator
      */
@@ -109,6 +114,7 @@ class OrderSlipCreator
                 'order' => $order,
                 'productList' => $orderRefundSummary->getProductRefunds(),
                 'qtyList' => $fullQuantityList,
+                'orderSlipCreated' => $this->orderSlipCreated,
             ], null, false, true, false, $order->id_shop);
 
             $customer = new Customer((int) $order->id_customer);
@@ -328,6 +334,8 @@ class OrderSlipCreator
         }
 
         $res = true;
+
+        $this->orderSlipCreated = $orderSlip;
 
         foreach ($product_list as $product) {
             $res &= $this->addProductOrderSlip((int) $orderSlip->id, $product);
