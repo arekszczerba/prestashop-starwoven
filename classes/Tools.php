@@ -3460,8 +3460,8 @@ exit;
             return false;
         }
         
-            // Use native protection only if we disallow objects
-            return @unserialize($serialized, ['allowed_classes' => false]);
+        // Use native protection only if we disallow objects
+        return @unserialize($serialized, ['allowed_classes' => false]);
         }
 
         // Otherwise allow objects as usual
