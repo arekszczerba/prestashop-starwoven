@@ -3442,7 +3442,7 @@ exit;
     public static function unSerialize($serialized, $object = false)
     {
         if (is_string($serialized) && (strpos($serialized, 'O:') === false || !preg_match('/(^|;|{|})O:[0-9]+:"/', $serialized)) && !$object || $object) {
-            return @unserialize($serialized);
+            return @unserialize($serialized, ['allowed_classes' => false]);
         }
 
         return false;
