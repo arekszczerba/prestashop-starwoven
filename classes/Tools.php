@@ -3442,10 +3442,10 @@ exit;
     /**
      * Safely unserializes input string with protection against object injection.
      *
-     * @param string $serialized     Serialized string to decode
-     * @param bool   $allowObjects   Whether to allow object unserialization
+     * @param string $serialized Serialized string to decode
+     * @param bool $allowObjects Whether to allow object unserialization
      *
-     * @return mixed|null            Unserialized data or false on failure
+     * @return mixed|null Unserialized data or false on failure
      */
     public static function unSerialize($serialized, $allowObjects = false)
     {
