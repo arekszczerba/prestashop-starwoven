@@ -3447,7 +3447,7 @@ exit;
      *
      * @return mixed|null            Unserialized data or false on failure
      */
-    public static function unSerialize(string $serialized, bool $allowObjects = false)
+    public static function unSerialize($serialized, $allowObjects = false)
     {
         // Only allow if it's a string
         if (!is_string($serialized)) {
@@ -3456,12 +3456,12 @@ exit;
 
         // Check for potentially malicious serialized objects
         if (!$allowObjects) {
-        if (strpos($serialized, 'O:') !== false && preg_match('/(^|;|{|})O:[0-9]+:"/', $serialized)) {
-            return false;
-        }
-        
-        // Use native protection only if we disallow objects
-        return @unserialize($serialized, ['allowed_classes' => false]);
+            if (str_contains($serialized, 'O:') && preg_match('/(^|;|{|})O:[0-9]+:"/', $serialized)) {
+                return false;
+            }
+
+            // Use native protection only if we disallow objects
+            return @unserialize($serialized, ['allowed_classes' => false]);
         }
 
         // Otherwise allow objects as usual
