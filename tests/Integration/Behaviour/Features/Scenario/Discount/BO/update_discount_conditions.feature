@@ -22,3 +22,6 @@ Feature: Update discount condition
       | name[en-US]               | Promotion     |
       | type                      | free_shipping |
       | minimum_products_quantity | 23            |
+    Then discount "discount_with_min_products" should have the following product conditions:
+      | quantity | rules_count |
+      | 23       | 0           |

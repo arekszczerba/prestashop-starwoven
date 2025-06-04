@@ -24,13 +24,13 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 
-namespace PrestaShop\PrestaShop\Adapter\Discount\Update;
+namespace PrestaShop\PrestaShop\Core\Domain\Discount;
 
 class ProductRule
 {
     public function __construct(
-        private ProductRuleType $type,
-        private array $itemIds,
+        private readonly ProductRuleType $type,
+        private readonly array $itemIds,
     ) {
     }
 

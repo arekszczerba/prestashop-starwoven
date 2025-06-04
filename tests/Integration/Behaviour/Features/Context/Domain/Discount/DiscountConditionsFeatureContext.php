@@ -27,7 +27,10 @@
 namespace Tests\Integration\Behaviour\Features\Context\Domain\Discount;
 
 use Behat\Gherkin\Node\TableNode;
+use PHPUnit\Framework\Assert;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Command\UpdateDiscountConditionsCommand;
+use PrestaShop\PrestaShop\Core\Domain\Discount\Query\GetDiscountForEditing;
+use PrestaShop\PrestaShop\Core\Domain\Discount\QueryResult\DiscountForEditing;
 use Tests\Integration\Behaviour\Features\Context\Domain\AbstractDomainFeatureContext;
 
 class DiscountConditionsFeatureContext extends AbstractDomainFeatureContext
@@ -50,5 +53,31 @@ class DiscountConditionsFeatureContext extends AbstractDomainFeatureContext
         }
 
         $this->getCommandBus()->handle($command);
+    }
+
+    /**
+     * @Then discount :discountReference should have the following product conditions:
+     *
+     * @param string $discountReference
+     * @param TableNode $tableNode
+     *
+     * @return void
+     */
+    public function assertDiscountConditions(string $discountReference, TableNode $tableNode): void
+    {
+        /** @var DiscountForEditing $discountForEditing */
+        $discountForEditing = $this->getQueryBus()->handle(
+            new GetDiscountForEditing($this->getSharedStorage()->get($discountReference))
+        );
+
+        $conditionsData = $tableNode->getColumnsHash();
+        $productConditions = $discountForEditing->getProductConditions();
+
+        Assert::assertEquals(count($conditionsData), count($productConditions));
+        foreach ($conditionsData as $index => $conditionData) {
+            $productRuleGroup = $productConditions[$index];
+            Assert::assertEquals($conditionData['quantity'], $productRuleGroup->getQuantity());
+            Assert::assertEquals((int) $conditionData['rules_count'], count($productRuleGroup->getRules()));
+        }
     }
 }

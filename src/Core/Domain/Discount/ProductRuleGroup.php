@@ -24,26 +24,26 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 
-namespace PrestaShop\PrestaShop\Adapter\Discount\Update;
+namespace PrestaShop\PrestaShop\Core\Domain\Discount;
 
 class ProductRuleGroup
 {
     public function __construct(
-        private readonly int $productQuantity,
-        private readonly array $productRules,
+        private readonly int $quantity,
+        private readonly array $rules,
     ) {
     }
 
-    public function getProductQuantity(): int
+    public function getQuantity(): int
     {
-        return $this->productQuantity;
+        return $this->quantity;
     }
 
     /**
      * @return ProductRule[]
      */
-    public function getProductRules(): array
+    public function getRules(): array
     {
-        return $this->productRules;
+        return $this->rules;
     }
 }

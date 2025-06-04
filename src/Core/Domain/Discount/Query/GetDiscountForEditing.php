@@ -36,4 +36,9 @@ class GetDiscountForEditing
     {
         $this->discountId = new DiscountId($discountId);
     }
+
+    public function getDiscountId(): DiscountId
+    {
+        return $this->discountId;
+    }
 }

@@ -27,6 +27,7 @@
 namespace PrestaShop\PrestaShop\Adapter\Discount\Update;
 
 use Doctrine\DBAL\Connection;
+use PrestaShop\PrestaShop\Core\Domain\Discount\ProductRuleGroup;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountId;
 
 class DiscountConditionsUpdater
@@ -87,14 +88,14 @@ class DiscountConditionsUpdater
                 ->insert($this->dbPrefix . 'cart_rule_product_rule_group')
                 ->values([
                     'id_cart_rule' => $discountId->getValue(),
-                    'quantity' => $productRuleGroup->getProductQuantity(),
+                    'quantity' => $productRuleGroup->getQuantity(),
                 ])
                 ->executeStatement()
             ;
             $productRuleGroupId = $this->connection->lastInsertId();
 
             // Then create all product rules associated to the group
-            foreach ($productRuleGroup->getProductRules() as $productRule) {
+            foreach ($productRuleGroup->getRules() as $productRule) {
                 $this->connection->createQueryBuilder()
                     ->insert($this->dbPrefix . 'cart_rule_product_rule')
                     ->values([
