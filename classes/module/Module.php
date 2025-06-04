@@ -719,6 +719,10 @@ abstract class ModuleCore implements ModuleInterface
      */
     public static function upgradeModuleVersion($name, $version)
     {
+        if(isset(static::$modules_cache[$name]['upgrade']) && static::$modules_cache[$name]['upgrade']['success'] == true) {
+            Hook::exec('actionModuleUpgradeAfter', ['module_name' => $name, 'old_version' => static::$modules_cache[$name]['upgrade']['upgraded_from'], 'new_version' => $version]);
+        }
+
         return Db::getInstance()->execute('
             UPDATE `' . _DB_PREFIX_ . 'module` m
             SET m.`version` = \'' . pSQL($version) . '\'
@@ -992,6 +996,8 @@ abstract class ModuleCore implements ModuleInterface
      */
     public function enable($force_all = false)
     {
+        Hook::exec('actionModuleEnable', ['module' => $this]);
+
         // Retrieve all shops where the module is enabled
         $list = Shop::getContextListShopID();
         if (!$this->id || !is_array($list)) {
@@ -1152,6 +1158,8 @@ abstract class ModuleCore implements ModuleInterface
      */
     public function disable($force_all = false)
     {
+        Hook::exec('actionModuleDisable', ['module' => $this]);
+
         $result = true;
         if ($this->getOverrides() != null) {
             $result &= $this->uninstallOverrides();
