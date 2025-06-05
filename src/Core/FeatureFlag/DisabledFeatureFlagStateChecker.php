@@ -24,24 +24,21 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 
-namespace PrestaShopBundle\ApiPlatform\Scopes;
+namespace PrestaShop\PrestaShop\Core\FeatureFlag;
 
-use ApiPlatform\Metadata\Resource\Factory\AttributesResourceMetadataCollectionFactory;
-use PrestaShop\PrestaShop\Adapter\Environment;
-use PrestaShop\PrestaShop\Core\FeatureFlag\DisabledFeatureFlagStateChecker;
-
-class ApiResourceScopesExtractorFactory
+/**
+ * This checker is used in conditions when no DB or container is accessible so we
+ * simulate that all the feature flags are disabled.
+ */
+class DisabledFeatureFlagStateChecker implements FeatureFlagStateCheckerInterface
 {
-    public static function build(string $environmentName, string $moduleDir, array $installedModules, array $enabledModules, string $projectDir): ApiResourceScopesExtractor
+    public function isEnabled(string $featureFlagName): bool
     {
-        return new ApiResourceScopesExtractor(
-            new AttributesResourceMetadataCollectionFactory(),
-            new Environment('dev' === $environmentName, $environmentName),
-            new DisabledFeatureFlagStateChecker(),
-            $moduleDir,
-            $installedModules,
-            $enabledModules,
-            $projectDir,
-        );
+        return false;
+    }
+
+    public function isDisabled(string $featureFlagName): bool
+    {
+        return true;
     }
 }

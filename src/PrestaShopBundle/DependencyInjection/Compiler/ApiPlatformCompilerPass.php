@@ -62,6 +62,7 @@ class ApiPlatformCompilerPass implements CompilerPassInterface
             }
         }
 
+        // Update parameter of the APIPlatform framework so these scopes are displayed in the Swagger UI
         $container->setParameter('api_platform.oauth.scopes', $scopes);
     }
 

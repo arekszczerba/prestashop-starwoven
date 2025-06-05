@@ -32,8 +32,8 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
 use ApiPlatform\Metadata\Resource\ResourceMetadataCollection;
-use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagManager;
 use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagSettings;
+use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagStateCheckerInterface;
 use Throwable;
 
 /**
@@ -52,7 +52,7 @@ class ExperimentalOperationsMetadataCollectionFactoryDecorator implements Resour
     public function __construct(
         private readonly ResourceMetadataCollectionFactoryInterface $decorated,
         private readonly bool $isDebug,
-        private readonly FeatureFlagManager $featureFlagManager,
+        private readonly FeatureFlagStateCheckerInterface $featureFlagStateChecker,
     ) {
     }
 
@@ -91,7 +91,7 @@ class ExperimentalOperationsMetadataCollectionFactoryDecorator implements Resour
     private function areExperimentalEndpointsEnabled(): bool
     {
         try {
-            return $this->featureFlagManager->isEnabled(FeatureFlagSettings::FEATURE_FLAG_ADMIN_API_EXPERIMENTAL_ENDPOINTS);
+            return $this->featureFlagStateChecker->isEnabled(FeatureFlagSettings::FEATURE_FLAG_ADMIN_API_EXPERIMENTAL_ENDPOINTS);
         } catch (Throwable) {
             return false;
         }

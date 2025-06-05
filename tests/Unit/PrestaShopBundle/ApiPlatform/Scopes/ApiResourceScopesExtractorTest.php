@@ -31,6 +31,7 @@ namespace Tests\Unit\PrestaShopBundle\ApiPlatform\Scopes;
 use ApiPlatform\Metadata\Resource\Factory\AttributesResourceMetadataCollectionFactory;
 use PHPUnit\Framework\TestCase;
 use PrestaShop\PrestaShop\Core\EnvironmentInterface;
+use PrestaShop\PrestaShop\Core\FeatureFlag\DisabledFeatureFlagStateChecker;
 use PrestaShopBundle\ApiPlatform\Scopes\ApiResourceScopes;
 use PrestaShopBundle\ApiPlatform\Scopes\ApiResourceScopesExtractor;
 
@@ -80,6 +81,7 @@ class ApiResourceScopesExtractorTest extends TestCase
         return new ApiResourceScopesExtractor(
             new AttributesResourceMetadataCollectionFactory(),
             $environment,
+            new DisabledFeatureFlagStateChecker(),
             $this->moduleDir,
             ['fake_module', 'disabled_fake_module'],
             ['fake_module'],
