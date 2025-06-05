@@ -888,6 +888,13 @@ class CartRuleCore extends ObjectModel
             }
         }
 
+        // Check if the minimal product quantity is met (if defined)
+        if ($this->minimum_product_quantity) {
+            if ($cart->nbProducts() < $this->minimum_product_quantity) {
+                return (!$display_error) ? false : $this->trans('You cannot use this voucher with these products', [], 'Shop.Notifications.Error');
+            }
+        }
+
         // Check if the cart rule is only usable by a specific customer, and if the current customer is the right one
         if ($this->id_customer && $cart->id_customer != $this->id_customer) {
             if (!Context::getContext()->customer->isLogged()) {
