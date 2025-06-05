@@ -34,6 +34,7 @@ use PrestaShop\PrestaShop\Core\Domain\Product\Query\GetProductForEditing;
 use PrestaShopBundle\ApiPlatform\Metadata\CQRSCreate;
 use PrestaShopBundle\ApiPlatform\Metadata\CQRSGet;
 use PrestaShopBundle\ApiPlatform\Metadata\CQRSUpdate;
+use PrestaShopBundle\ApiPlatform\Metadata\PaginatedList;
 
 #[ApiResource(
     operations: [
@@ -71,6 +72,11 @@ use PrestaShopBundle\ApiPlatform\Metadata\CQRSUpdate;
             CQRSCommand: 'PrestaShop\PrestaShop\Core\Domain\Product\Command\NotFoundCommand',
             CQRSQuery: 'PrestaShop\PrestaShop\Core\Domain\Product\Query\NotFoundQuery',
             scopes: ['filtered_query_command_scope'],
+        ),
+        new PaginatedList(
+            uriTemplate: '/test/cqrs/grid_factory/not_found',
+            scopes: ['filtered_grid_factory_scope'],
+            gridDataFactory: 'grid_factory_service_not_found',
         ),
     ],
 )]

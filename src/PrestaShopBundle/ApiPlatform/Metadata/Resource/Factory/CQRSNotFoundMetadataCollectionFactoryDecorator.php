@@ -34,6 +34,7 @@ use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInter
 use ApiPlatform\Metadata\Resource\ResourceMetadataCollection;
 use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagSettings;
 use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagStateCheckerInterface;
+use Psr\Container\ContainerInterface;
 use Throwable;
 
 /**
@@ -52,6 +53,7 @@ class CQRSNotFoundMetadataCollectionFactoryDecorator implements ResourceMetadata
     public function __construct(
         private readonly ResourceMetadataCollectionFactoryInterface $decorated,
         private readonly FeatureFlagStateCheckerInterface $featureFlagStateChecker,
+        private readonly ContainerInterface $container,
     ) {
     }
 
@@ -72,10 +74,13 @@ class CQRSNotFoundMetadataCollectionFactoryDecorator implements ResourceMetadata
             foreach ($operations as $key => $operation) {
                 $extraProperties = $operation->getExtraProperties();
 
-                if ($operations->has($key) && isset($extraProperties['CQRSQuery']) && !class_exists($extraProperties['CQRSQuery'])) {
+                if ($operations->has($key) && !empty($extraProperties['CQRSQuery']) && !class_exists($extraProperties['CQRSQuery'])) {
                     $operations->remove($key);
                 }
-                if ($operations->has($key) && isset($extraProperties['CQRSCommand']) && !class_exists($extraProperties['CQRSCommand'])) {
+                if ($operations->has($key) && !empty($extraProperties['CQRSCommand']) && !class_exists($extraProperties['CQRSCommand'])) {
+                    $operations->remove($key);
+                }
+                if ($operations->has($key) && !empty($extraProperties['gridDataFactory']) && !$this->container->has($extraProperties['gridDataFactory'])) {
                     $operations->remove($key);
                 }
             }

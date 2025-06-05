@@ -36,6 +36,7 @@ use ApiPlatform\Metadata\Resource\Factory\ResourceNameCollectionFactoryInterface
 use PrestaShop\PrestaShop\Core\EnvironmentInterface;
 use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagSettings;
 use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagStateCheckerInterface;
+use Psr\Container\ContainerInterface;
 use Throwable;
 
 /**
@@ -54,6 +55,7 @@ class ApiResourceScopesExtractor implements ApiResourceScopesExtractorInterface
         private readonly ResourceMetadataCollectionFactoryInterface $resourceMetadataCollectionFactory,
         private readonly EnvironmentInterface $environment,
         private readonly FeatureFlagStateCheckerInterface $featureFlagStateChecker,
+        private readonly ContainerInterface $container,
         private readonly string $moduleDir,
         private readonly array $installedModules,
         private readonly array $enabledModules,
@@ -195,10 +197,13 @@ class ApiResourceScopesExtractor implements ApiResourceScopesExtractorInterface
         }
 
         $extraProperties = $operation->getExtraProperties();
-        if (isset($extraProperties['CQRSQuery']) && !class_exists($extraProperties['CQRSQuery'])) {
+        if (!empty($extraProperties['CQRSQuery']) && !class_exists($extraProperties['CQRSQuery'])) {
             return true;
         }
-        if (isset($extraProperties['CQRSCommand']) && !class_exists($extraProperties['CQRSCommand'])) {
+        if (!empty($extraProperties['CQRSCommand']) && !class_exists($extraProperties['CQRSCommand'])) {
+            return true;
+        }
+        if (!empty($extraProperties['gridDataFactory']) && !$this->container->has($extraProperties['gridDataFactory'])) {
             return true;
         }
 

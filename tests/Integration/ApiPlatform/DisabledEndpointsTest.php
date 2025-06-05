@@ -257,6 +257,22 @@ class DisabledEndpointsTest extends ApiTestCase
             'filtered_query_command_scope',
         ];
 
+        yield 'endpoint with grid factory not found, experimental feature flag enabled, filtered on prod' => [
+            false,
+            false,
+            'GET',
+            '/test/cqrs/grid_factory/not_found',
+            'filtered_grid_factory_scope',
+        ];
+
+        yield 'endpoint with grid factory not found, experimental feature flag enabled, filtered on dev' => [
+            true,
+            false,
+            'GET',
+            '/test/cqrs/grid_factory/not_found',
+            'filtered_grid_factory_scope',
+        ];
+
         // Now the experimental endpoints are enabled
         yield 'endpoint with CQRS query not found, experimental feature flag enabled, still present on prod' => [
             false,
@@ -304,6 +320,22 @@ class DisabledEndpointsTest extends ApiTestCase
             'PUT',
             '/test/cqrs/query_and_command/not_found',
             'filtered_query_command_scope',
+        ];
+
+        yield 'endpoint with grid factory not found, experimental feature flag enabled, still present on prod' => [
+            false,
+            true,
+            'GET',
+            '/test/cqrs/grid_factory/not_found',
+            'filtered_grid_factory_scope',
+        ];
+
+        yield 'endpoint with grid factory not found, experimental feature flag enabled, still present on dev' => [
+            true,
+            true,
+            'GET',
+            '/test/cqrs/grid_factory/not_found',
+            'filtered_grid_factory_scope',
         ];
     }
 }

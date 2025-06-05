@@ -34,6 +34,7 @@ use PrestaShop\PrestaShop\Core\EnvironmentInterface;
 use PrestaShop\PrestaShop\Core\FeatureFlag\DisabledFeatureFlagStateChecker;
 use PrestaShopBundle\ApiPlatform\Scopes\ApiResourceScopes;
 use PrestaShopBundle\ApiPlatform\Scopes\ApiResourceScopesExtractor;
+use Psr\Container\ContainerInterface;
 
 class ApiResourceScopesExtractorTest extends TestCase
 {
@@ -78,10 +79,14 @@ class ApiResourceScopesExtractorTest extends TestCase
         $environment = $this->createMock(EnvironmentInterface::class);
         $environment->method('getName')->willReturn('test');
 
+        $container = $this->createMock(ContainerInterface::class);
+        $container->method('has')->willReturn(false);
+
         return new ApiResourceScopesExtractor(
             new AttributesResourceMetadataCollectionFactory(),
             $environment,
             new DisabledFeatureFlagStateChecker(),
+            $container,
             $this->moduleDir,
             ['fake_module', 'disabled_fake_module'],
             ['fake_module'],
