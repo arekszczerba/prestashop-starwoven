@@ -48,8 +48,8 @@ class DiscountConditionsFeatureContext extends AbstractDomainFeatureContext
         $command = new UpdateDiscountConditionsCommand($this->referenceToId($discountReference));
 
         $data = $tableNode->getRowsHash();
-        if (isset($data['minimum_products_quantity'])) {
-            $command->setMinimumProductsQuantity($data['minimum_products_quantity']);
+        if (isset($data['minimum_product_quantity'])) {
+            $command->setMinimumProductsQuantity($data['minimum_product_quantity']);
         }
 
         $this->getCommandBus()->handle($command);
@@ -63,7 +63,7 @@ class DiscountConditionsFeatureContext extends AbstractDomainFeatureContext
      *
      * @return void
      */
-    public function assertDiscountConditions(string $discountReference, TableNode $tableNode): void
+    public function assertProductConditions(string $discountReference, TableNode $tableNode): void
     {
         /** @var DiscountForEditing $discountForEditing */
         $discountForEditing = $this->getQueryBus()->handle(
@@ -73,11 +73,28 @@ class DiscountConditionsFeatureContext extends AbstractDomainFeatureContext
         $conditionsData = $tableNode->getColumnsHash();
         $productConditions = $discountForEditing->getProductConditions();
 
-        Assert::assertEquals(count($conditionsData), count($productConditions));
+        Assert::assertEquals(count($conditionsData), count($productConditions), sprintf('Expected %d conditions but got %d instead', count($conditionsData), count($productConditions)));
         foreach ($conditionsData as $index => $conditionData) {
             $productRuleGroup = $productConditions[$index];
-            Assert::assertEquals($conditionData['quantity'], $productRuleGroup->getQuantity());
-            Assert::assertEquals((int) $conditionData['rules_count'], count($productRuleGroup->getRules()));
+            Assert::assertEquals((int) $conditionData['quantity'], $productRuleGroup->getQuantity(), sprintf('Expected quantity %d but got %d instead', (int) $conditionData['quantity'], $productRuleGroup->getQuantity()));
+            Assert::assertEquals((int) $conditionData['rules_count'], count($productRuleGroup->getRules()), sprintf('Expected %d rules but got %d instead', (int) $conditionData['rules_count'], count($productRuleGroup->getRules())));
         }
+    }
+
+    /**
+     * @Then discount :discountReference should have no product conditions
+     *
+     * @param string $discountReference
+     *
+     * @return void
+     */
+    public function assertNoProductConditions(string $discountReference): void
+    {
+        /** @var DiscountForEditing $discountForEditing */
+        $discountForEditing = $this->getQueryBus()->handle(
+            new GetDiscountForEditing($this->getSharedStorage()->get($discountReference))
+        );
+
+        Assert::assertEmpty($discountForEditing->getProductConditions(), 'Product conditions were found when none is expected');
     }
 }

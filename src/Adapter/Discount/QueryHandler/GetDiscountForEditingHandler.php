@@ -73,6 +73,7 @@ class GetDiscountForEditingHandler implements GetDiscountForEditingHandlerInterf
             $cartRule->reduction_product,
             $cartRule->gift_product,
             $cartRule->gift_product_attribute,
+            $cartRule->minimum_product_quantity,
             $discountConditions,
         );
     }

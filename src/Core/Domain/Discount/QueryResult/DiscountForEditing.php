@@ -55,6 +55,7 @@ class DiscountForEditing
         private readonly ?int $reductionProduct,
         private readonly ?int $giftProductId,
         private readonly ?int $giftCombinationId,
+        private readonly int $minimumProductQuantity,
         private readonly array $productConditions,
     ) {
     }
@@ -162,6 +163,11 @@ class DiscountForEditing
     public function getLocalizedNames(): array
     {
         return $this->localizedNames;
+    }
+
+    public function getMinimumProductQuantity(): int
+    {
+        return $this->minimumProductQuantity;
     }
 
     /**

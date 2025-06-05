@@ -352,6 +352,9 @@ class DiscountFeatureContext extends AbstractDomainFeatureContext
         if (isset($expectedData['name'])) {
             Assert::assertSame($expectedData['name'], $discountForEditing->getLocalizedNames());
         }
+        if (isset($expectedData['minimum_product_quantity'])) {
+            Assert::assertEquals($expectedData['minimum_product_quantity'], $discountForEditing->getMinimumProductQuantity());
+        }
     }
 
     protected function getDiscountForEditing(string $discountReference): DiscountForEditing

@@ -17,11 +17,9 @@ Feature: Update discount condition
       | name[en-US] | Promotion     |
       | type        | free_shipping |
     When I update discount "discount_with_min_products" with following conditions:
-      | minimum_products_quantity | 23 |
+      | minimum_product_quantity | 23 |
     Then discount "discount_with_min_products" should have the following properties:
       | name[en-US]               | Promotion     |
       | type                      | free_shipping |
-      | minimum_products_quantity | 23            |
-    Then discount "discount_with_min_products" should have the following product conditions:
-      | quantity | rules_count |
-      | 23       | 0           |
+      | minimum_product_quantity | 23            |
+    And discount "discount_with_min_products" should have no product conditions

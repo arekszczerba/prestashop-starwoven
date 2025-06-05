@@ -26,13 +26,19 @@
 
 namespace PrestaShop\PrestaShop\Adapter\Discount\Update;
 
+use CartRule;
 use Doctrine\DBAL\Connection;
+use PrestaShop\PrestaShop\Adapter\Discount\Repository\DiscountRepository;
+use PrestaShop\PrestaShop\Core\Domain\Discount\Exception\CannotUpdateDiscountException;
+use PrestaShop\PrestaShop\Core\Domain\Discount\ProductRule;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ProductRuleGroup;
+use PrestaShop\PrestaShop\Core\Domain\Discount\ProductRuleType;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountId;
 
 class DiscountConditionsUpdater
 {
     public function __construct(
+        private readonly DiscountRepository $discountRepository,
         private readonly Connection $connection,
         private readonly string $dbPrefix,
     ) {
@@ -44,8 +50,32 @@ class DiscountConditionsUpdater
     ): void {
         // todo: when other conditions are added we check that only one is provided
         // todo: always clean the other conditions so that only one remains after update
+        $discount = $this->discountRepository->get($discountId);
+        $updatableProperties = $this->cleanAllConditions($discount);
         if (null !== $minimumProductsQuantity) {
-            $this->updateMinimalProductQuantity($discountId, $minimumProductsQuantity);
+            $updatableProperties = array_merge($updatableProperties, $this->updateMinimalProductQuantity($discount, $minimumProductsQuantity));
+        }
+
+        // Example to apply product conditions (here condition with 4 products belonging to category #1)
+        $productConditions = [
+            new ProductRuleGroup(
+                4,
+                [
+                    new ProductRule(
+                        ProductRuleType::CATEGORIES,
+                        [1],
+                    ),
+                ],
+            ),
+        ];
+
+        // Disabled for now
+        $productConditions = [];
+        $updatableProperties = array_merge($updatableProperties, $this->applyDiscountProductRules($discount, $productConditions));
+
+        $updatableProperties = array_unique($updatableProperties);
+        if (!empty($updatableProperties)) {
+            $this->discountRepository->partialUpdate($discount, $updatableProperties, CannotUpdateDiscountException::FAILED_UPDATE_CONDITIONS);
         }
     }
 
@@ -54,40 +84,36 @@ class DiscountConditionsUpdater
      * so we trick this condition by adding a product selection based on the root category (that contains
      * all the products).
      *
-     * @param DiscountId $discountId
+     * @param CartRule $discount
      * @param int $minimumProductsQuantity
      *
-     * @return void
+     * @return array
      */
-    private function updateMinimalProductQuantity(DiscountId $discountId, int $minimumProductsQuantity): void
+    private function updateMinimalProductQuantity(CartRule $discount, int $minimumProductsQuantity): array
     {
-        $this->applyDiscountProductRules($discountId, [
-            new ProductRuleGroup(
-                $minimumProductsQuantity,
-                // No rules applied, means any product can match
-                [],
-            ),
-        ]);
+        $discount->minimum_product_quantity = $minimumProductsQuantity;
+
+        return ['minimum_product_quantity'];
     }
 
     /**
-     * @param DiscountId $discountId
+     * @param CartRule $discount
      * @param ProductRuleGroup[] $productRuleGroups
      *
-     * @return void
+     * @return array
      */
     private function applyDiscountProductRules(
-        DiscountId $discountId,
+        CartRule $discount,
         array $productRuleGroups,
-    ) {
-        $this->cleanDiscountProductRules($discountId);
+    ): array {
+        $this->cleanDiscountProductRules($discount);
 
         foreach ($productRuleGroups as $productRuleGroup) {
             // First create group
             $this->connection->createQueryBuilder()
                 ->insert($this->dbPrefix . 'cart_rule_product_rule_group')
                 ->values([
-                    'id_cart_rule' => $discountId->getValue(),
+                    'id_cart_rule' => (int) $discount->id,
                     'quantity' => $productRuleGroup->getQuantity(),
                 ])
                 ->executeStatement()
@@ -128,15 +154,30 @@ class DiscountConditionsUpdater
                 )->executeStatement();
             }
         }
+        $discount->product_restriction = !empty($productRuleGroups);
+
+        return ['product_restriction'];
     }
 
-    private function cleanDiscountProductRules(DiscountId $discountId): void
+    private function cleanAllConditions(CartRule $cartRule): array
     {
+        $cartRule->minimum_product_quantity = 0;
+
+        return $this->cleanDiscountProductRules($cartRule) + [
+            'minimum_product_quantity',
+        ];
+    }
+
+    private function cleanDiscountProductRules(CartRule $discount): array
+    {
+        // Disable product restriction
+        $discount->product_restriction = false;
+
         // First delete all associated product rule groups
         $this->connection->createQueryBuilder()
             ->delete($this->dbPrefix . 'cart_rule_product_rule_group', 'prg')
             ->where('prg.id_cart_rule = :discountId')
-            ->setParameter('discountId', $discountId->getValue())
+            ->setParameter('discountId', (int) $discount->id)
             ->executeStatement()
         ;
 
@@ -152,5 +193,7 @@ class DiscountConditionsUpdater
             LEFT JOIN ' . $this->dbPrefix . 'cart_rule_product_rule AS pr ON prv.id_product_rule = pr.id_product_rule
             WHERE pr.id_product_rule = NULL
         ');
+
+        return ['product_restriction'];
     }
 }
