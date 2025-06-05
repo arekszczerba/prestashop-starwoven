@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8d3b1efe8ba5fd23e4d31d118c4b3d37",
+    "content-hash": "77dc9701482239a7ad03b34cc1134026",
     "packages": [
         {
             "name": "api-platform/core",
@@ -5261,16 +5261,16 @@
         },
         {
             "name": "prestashop/ps_apiresources",
-            "version": "dev-dev",
+            "version": "v0.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PrestaShop/ps_apiresources.git",
-                "reference": "451d58de0bc096af725ba96b62d2f69aaf78d109"
+                "reference": "6aebe14f12e4951285a1946ae9f75a3390aa1803"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PrestaShop/ps_apiresources/zipball/451d58de0bc096af725ba96b62d2f69aaf78d109",
-                "reference": "451d58de0bc096af725ba96b62d2f69aaf78d109",
+                "url": "https://api.github.com/repos/PrestaShop/ps_apiresources/zipball/6aebe14f12e4951285a1946ae9f75a3390aa1803",
+                "reference": "6aebe14f12e4951285a1946ae9f75a3390aa1803",
                 "shasum": ""
             },
             "require": {
@@ -5282,7 +5282,6 @@
                 "phpunit/phpunit": "^10",
                 "prestashop/php-dev-tools": "^4.3"
             },
-            "default-branch": true,
             "type": "prestashop-module",
             "autoload": {
                 "psr-4": {
@@ -5305,9 +5304,9 @@
             "description": "PrestaShop - API Resources",
             "homepage": "https://github.com/PrestaShop/ps_apiresources",
             "support": {
-                "source": "https://github.com/PrestaShop/ps_apiresources/tree/dev"
+                "source": "https://github.com/PrestaShop/ps_apiresources/tree/v0.1.0"
             },
-            "time": "2025-05-23T15:40:20+00:00"
+            "time": "2025-06-05T16:18:02+00:00"
         },
         {
             "name": "prestashop/ps_banner",
@@ -18077,9 +18076,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "prestashop/ps_apiresources": 20
-    },
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
