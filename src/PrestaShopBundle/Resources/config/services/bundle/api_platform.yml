@@ -102,7 +102,6 @@ services:
     autowire: true
     arguments:
       $decorated: '@.inner'
-      $isDebug: '%kernel.debug%'
 
   # This service depends on ResourceMetadataCollectionFactoryInterface (auto wired) and can extract the scopes defined on operations
   PrestaShopBundle\ApiPlatform\Scopes\ApiResourceScopesExtractor:

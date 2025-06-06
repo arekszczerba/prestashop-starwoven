@@ -34,6 +34,10 @@ use ApiPlatform\Metadata\Resource\Factory\AttributesResourceNameCollectionFactor
 use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
 use ApiPlatform\Metadata\Resource\Factory\ResourceNameCollectionFactoryInterface;
 use PrestaShop\PrestaShop\Core\EnvironmentInterface;
+use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagSettings;
+use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagStateCheckerInterface;
+use Psr\Container\ContainerInterface;
+use Throwable;
 
 /**
  * This service manually extracts data from the ApiResource classes to get the scopes associated
@@ -50,10 +54,12 @@ class ApiResourceScopesExtractor implements ApiResourceScopesExtractorInterface
     public function __construct(
         private readonly ResourceMetadataCollectionFactoryInterface $resourceMetadataCollectionFactory,
         private readonly EnvironmentInterface $environment,
+        private readonly FeatureFlagStateCheckerInterface $featureFlagStateChecker,
+        private readonly ContainerInterface $container,
         private readonly string $moduleDir,
         private readonly array $installedModules,
         private readonly array $enabledModules,
-        private readonly string $projectDir
+        private readonly string $projectDir,
     ) {
     }
 
@@ -177,7 +183,7 @@ class ApiResourceScopesExtractor implements ApiResourceScopesExtractorInterface
 
     /**
      * Similar filter as in CQRSNotFoundMetadataCollectionFactoryDecorator, when operations are based on CQRS
-     * queries or commands that don't exist yet they are skipped.
+     * queries or commands that don't exist yet are skipped.
      *
      * @param Operation $operation
      *
@@ -185,19 +191,38 @@ class ApiResourceScopesExtractor implements ApiResourceScopesExtractorInterface
      */
     private function skipCQRSNotFound(Operation $operation): bool
     {
-        // In debug environment nothing is filtered, so that developers rely early there is a mistake in their configuration
-        if ($this->environment->isDebug()) {
+        // If experimental endpoints are enabled we don't filter anything
+        if ($this->areInvalidEndpointsEnabled()) {
             return false;
         }
 
         $extraProperties = $operation->getExtraProperties();
-        if (isset($extraProperties['CQRSQuery']) && !class_exists($extraProperties['CQRSQuery'])) {
+        if (!empty($extraProperties['CQRSQuery']) && !class_exists($extraProperties['CQRSQuery'])) {
             return true;
         }
-        if (isset($extraProperties['CQRSCommand']) && !class_exists($extraProperties['CQRSCommand'])) {
+        if (!empty($extraProperties['CQRSCommand']) && !class_exists($extraProperties['CQRSCommand'])) {
+            return true;
+        }
+        if (!empty($extraProperties['gridDataFactory']) && !$this->container->has($extraProperties['gridDataFactory'])) {
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * This service is implied during cache clearing which would fail when the shop is not installed
+     * because the DB config is not set up yet. So we protected the feature flag fetching in a try/catch
+     * and return false (default value) in case of an error.
+     *
+     * @return bool
+     */
+    private function areInvalidEndpointsEnabled(): bool
+    {
+        try {
+            return $this->featureFlagStateChecker->isEnabled(FeatureFlagSettings::FEATURE_FLAG_ADMIN_API_EXPERIMENTAL_ENDPOINTS);
+        } catch (Throwable) {
+            return false;
+        }
     }
 }
