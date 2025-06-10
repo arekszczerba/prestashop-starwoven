@@ -224,7 +224,7 @@ Changelog for PrestaShop 9
     - #38205: Functional Tests : Stabilisation "functional:BO:catalog:07-08" (by @Progi1984)
 
 ####################################
-#   v9.0.0 Beta 1 - (2024-02-03)
+#   v9.0.0 Beta 1 - (2025-02-03)
 ####################################
 
 - Back Office:
