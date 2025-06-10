@@ -30,9 +30,7 @@ use CartRule;
 use Doctrine\DBAL\Connection;
 use PrestaShop\PrestaShop\Adapter\Discount\Repository\DiscountRepository;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Exception\CannotUpdateDiscountException;
-use PrestaShop\PrestaShop\Core\Domain\Discount\ProductRule;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ProductRuleGroup;
-use PrestaShop\PrestaShop\Core\Domain\Discount\ProductRuleType;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountId;
 
 class DiscountConditionsUpdater
@@ -47,31 +45,19 @@ class DiscountConditionsUpdater
     public function update(
         DiscountId $discountId,
         ?int $minimumProductsQuantity = null,
+        ?array $productConditions = null,
     ): void {
         // todo: when other conditions are added we check that only one is provided
-        // todo: always clean the other conditions so that only one remains after update
         $discount = $this->discountRepository->get($discountId);
         $updatableProperties = $this->cleanAllConditions($discount);
         if (null !== $minimumProductsQuantity) {
             $updatableProperties = array_merge($updatableProperties, $this->updateMinimalProductQuantity($discount, $minimumProductsQuantity));
         }
 
-        // Example to apply product conditions (here condition with 4 products belonging to category #1)
-        $productConditions = [
-            new ProductRuleGroup(
-                4,
-                [
-                    new ProductRule(
-                        ProductRuleType::CATEGORIES,
-                        [1],
-                    ),
-                ],
-            ),
-        ];
-
-        // Disabled for now
-        $productConditions = [];
-        $updatableProperties = array_merge($updatableProperties, $this->applyDiscountProductRules($discount, $productConditions));
+        // Product conditions can define product segments or a list of products (which is equivalent to a segment based on a product criteria)
+        if (null !== $productConditions) {
+            $updatableProperties = array_merge($updatableProperties, $this->applyProductConditions($discount, $productConditions));
+        }
 
         $updatableProperties = array_unique($updatableProperties);
         if (!empty($updatableProperties)) {
@@ -102,7 +88,7 @@ class DiscountConditionsUpdater
      *
      * @return array
      */
-    private function applyDiscountProductRules(
+    private function applyProductConditions(
         CartRule $discount,
         array $productRuleGroups,
     ): array {

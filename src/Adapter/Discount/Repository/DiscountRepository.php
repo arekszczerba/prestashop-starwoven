@@ -123,10 +123,10 @@ class DiscountRepository extends AbstractObjectModelRepository
                         }
                     }
 
-                    $productType = match ((string) $productRuleData['type']) {
-                        ProductRuleType::CATEGORIES->value => ProductRuleType::CATEGORIES,
-                        default => throw new InvalidArgumentException('Unknow product rule type'),
-                    };
+                    $productType = ProductRuleType::tryFrom((string) $productRuleData['type']);
+                    if (empty($productType)) {
+                        throw new InvalidArgumentException(sprintf('Unknow product rule type %s', (string) $productRuleData['type']));
+                    }
 
                     $productRules[] = new ProductRule($productType, $itemIds);
                 }

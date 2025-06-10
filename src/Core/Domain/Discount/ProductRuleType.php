@@ -29,4 +29,5 @@ namespace PrestaShop\PrestaShop\Core\Domain\Discount;
 enum ProductRuleType: string
 {
     case CATEGORIES = 'categories';
+    case PRODUCTS = 'products';
 }

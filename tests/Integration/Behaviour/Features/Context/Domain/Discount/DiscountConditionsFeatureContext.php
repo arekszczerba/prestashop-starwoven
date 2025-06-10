@@ -29,6 +29,9 @@ namespace Tests\Integration\Behaviour\Features\Context\Domain\Discount;
 use Behat\Gherkin\Node\TableNode;
 use PHPUnit\Framework\Assert;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Command\UpdateDiscountConditionsCommand;
+use PrestaShop\PrestaShop\Core\Domain\Discount\ProductRule;
+use PrestaShop\PrestaShop\Core\Domain\Discount\ProductRuleGroup;
+use PrestaShop\PrestaShop\Core\Domain\Discount\ProductRuleType;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Query\GetDiscountForEditing;
 use PrestaShop\PrestaShop\Core\Domain\Discount\QueryResult\DiscountForEditing;
 use Tests\Integration\Behaviour\Features\Context\Domain\AbstractDomainFeatureContext;
@@ -36,34 +39,60 @@ use Tests\Integration\Behaviour\Features\Context\Domain\AbstractDomainFeatureCon
 class DiscountConditionsFeatureContext extends AbstractDomainFeatureContext
 {
     /**
-     * @When I update discount :discountReference with following conditions:
+     * @When I update discount :discountReference with the condition it requires at least :quantity products
      *
      * @param string $discountReference
-     * @param TableNode $tableNode
+     * @param int $quantity
      *
      * @return void
      */
-    public function updateDiscountCondition(string $discountReference, TableNode $tableNode): void
+    public function updateDiscountConditionMinimalProductQuantity(string $discountReference, int $quantity): void
     {
         $command = new UpdateDiscountConditionsCommand($this->referenceToId($discountReference));
-
-        $data = $tableNode->getRowsHash();
-        if (isset($data['minimum_product_quantity'])) {
-            $command->setMinimumProductsQuantity($data['minimum_product_quantity']);
-        }
-
+        $command->setMinimumProductsQuantity($quantity);
         $this->getCommandBus()->handle($command);
     }
 
     /**
-     * @Then discount :discountReference should have the following product conditions:
+     * @When I update discount :discountReference with following conditions matching at least :quantity products:
+     *
+     * @param string $discountReference
+     * @param int $quantity
+     * @param TableNode $tableNode
+     *
+     * @return void
+     */
+    public function updateDiscountProductConditions(string $discountReference, int $quantity, TableNode $tableNode): void
+    {
+        $command = new UpdateDiscountConditionsCommand($this->referenceToId($discountReference));
+
+        $conditions = $tableNode->getColumnsHash();
+        $productRules = [];
+        foreach ($conditions as $condition) {
+            $productRules[] = new ProductRule(
+                ProductRuleType::tryFrom($condition['condition_type']),
+                $this->referencesToIds($condition['items'])
+            );
+        }
+
+        $command->setProductConditions([
+            new ProductRuleGroup(
+                $quantity,
+                $productRules,
+            ),
+        ]);
+        $this->getCommandBus()->handle($command);
+    }
+
+    /**
+     * @Then discount :discountReference should have the following product conditions matching at least :quantity products:
      *
      * @param string $discountReference
      * @param TableNode $tableNode
      *
      * @return void
      */
-    public function assertProductConditions(string $discountReference, TableNode $tableNode): void
+    public function assertProductConditions(string $discountReference, int $quantity, TableNode $tableNode): void
     {
         /** @var DiscountForEditing $discountForEditing */
         $discountForEditing = $this->getQueryBus()->handle(
@@ -72,12 +101,19 @@ class DiscountConditionsFeatureContext extends AbstractDomainFeatureContext
 
         $conditionsData = $tableNode->getColumnsHash();
         $productConditions = $discountForEditing->getProductConditions();
+        Assert::assertEquals(1, count($productConditions), sprintf('We only handle ONE condition group for now, %d groups were found', count($productConditions)));
 
-        Assert::assertEquals(count($conditionsData), count($productConditions), sprintf('Expected %d conditions but got %d instead', count($conditionsData), count($productConditions)));
+        $productRuleGroup = $productConditions[0];
+        Assert::assertEquals($quantity, $productRuleGroup->getQuantity(), sprintf('Expected at least %d product quantity but got %d instead', $quantity, $productRuleGroup->getQuantity()));
+
+        $productRules = $productRuleGroup->getRules();
+        Assert::assertEquals(count($conditionsData), count($productRules), sprintf('Expected %d rules but got %d instead', count($conditionsData), count($productRules)));
+
         foreach ($conditionsData as $index => $conditionData) {
-            $productRuleGroup = $productConditions[$index];
-            Assert::assertEquals((int) $conditionData['quantity'], $productRuleGroup->getQuantity(), sprintf('Expected quantity %d but got %d instead', (int) $conditionData['quantity'], $productRuleGroup->getQuantity()));
-            Assert::assertEquals((int) $conditionData['rules_count'], count($productRuleGroup->getRules()), sprintf('Expected %d rules but got %d instead', (int) $conditionData['rules_count'], count($productRuleGroup->getRules())));
+            $productRule = $productRules[$index];
+            Assert::assertEquals($conditionData['condition_type'], $productRule->getType()->value);
+            $expectedItemIds = $this->referencesToIds($conditionData['items']);
+            Assert::assertEquals($expectedItemIds, $productRule->getItemIds(), 'The expected items do not match');
         }
     }
 

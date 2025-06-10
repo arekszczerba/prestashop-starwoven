@@ -27,6 +27,7 @@
 namespace PrestaShop\PrestaShop\Core\Domain\Discount\Command;
 
 use PrestaShop\PrestaShop\Core\Domain\Discount\Exception\DiscountConstraintException;
+use PrestaShop\PrestaShop\Core\Domain\Discount\ProductRuleGroup;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountId;
 
 class UpdateDiscountConditionsCommand
@@ -34,6 +35,8 @@ class UpdateDiscountConditionsCommand
     private DiscountId $discountId;
 
     private ?int $minimumProductsQuantity = null;
+
+    private ?array $productConditions = null;
 
     public function __construct(int $discountId)
     {
@@ -57,6 +60,31 @@ class UpdateDiscountConditionsCommand
         }
 
         $this->minimumProductsQuantity = $minimumProductsQuantity;
+
+        return $this;
+    }
+
+    public function getProductConditions(): ?array
+    {
+        return $this->productConditions;
+    }
+
+    /**
+     * @param ProductRuleGroup[] $productConditions
+     *
+     * @return self
+     *
+     * @throws DiscountConstraintException
+     */
+    public function setProductConditions(array $productConditions): self
+    {
+        foreach ($productConditions as $productCondition) {
+            if (!$productCondition instanceof ProductRuleGroup) {
+                throw new DiscountConstraintException(sprintf('Product conditions must be an array of %s', ProductRuleGroup::class), DiscountConstraintException::INVALID_PRODUCTS_CONDITIONS);
+            }
+        }
+
+        $this->productConditions = $productConditions;
 
         return $this;
     }

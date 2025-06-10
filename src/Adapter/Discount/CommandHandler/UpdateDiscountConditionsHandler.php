@@ -44,6 +44,7 @@ class UpdateDiscountConditionsHandler implements UpdateDiscountConditionsHandler
         $this->updater->update(
             $command->getDiscountId(),
             $command->getMinimumProductsQuantity(),
+            $command->getProductConditions(),
         );
     }
 }
