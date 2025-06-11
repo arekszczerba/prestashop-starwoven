@@ -75,6 +75,11 @@ class DiscountConditionsFeatureContext extends AbstractDomainFeatureContext
             );
         }
 
+        // This matches the current business rule for the new form, a discount can only have ONE product rule group
+        // (which represent an AND condition), however they can have multiple product rules (which represent and
+        // OR condition)
+        // If we decide to increase the number of groups later this behat step will need to be refactored but so far
+        // it matches our needs.
         $command->setProductConditions([
             new ProductRuleGroup(
                 $quantity,

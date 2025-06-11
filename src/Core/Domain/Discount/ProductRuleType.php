@@ -26,6 +26,9 @@
 
 namespace PrestaShop\PrestaShop\Core\Domain\Discount;
 
+/**
+ * Product rules target a type of entities, which are identified via this enum.
+ */
 enum ProductRuleType: string
 {
     case CATEGORIES = 'categories';

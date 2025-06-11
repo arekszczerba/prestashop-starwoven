@@ -70,6 +70,13 @@ class UpdateDiscountConditionsCommand
     }
 
     /**
+     * So far the form UX only allows ONE condition group, the legacy allowed for more conditions.
+     * We prefer to leave this possibility open in case some business logic are changed. If we are
+     * sure of the new behaviour after the testing phase this cas be refactored.
+     *
+     * Note: it also allows for more possibilities on the API side, however in this case maybe the
+     * form should be able to display multiple groups even if it doesn't allow creating them.
+     *
      * @param ProductRuleGroup[] $productConditions
      *
      * @return self

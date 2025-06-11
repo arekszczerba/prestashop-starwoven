@@ -26,8 +26,20 @@
 
 namespace PrestaShop\PrestaShop\Core\Domain\Discount;
 
+/**
+ * Product rule groups have an AND/&& condition between them, meaning if multiple groups are set
+ * on a discount they all must be satisfied for the discount to be valid.
+ *
+ * Each group is associated with a specific minimum quantity of products that must respect the specified
+ * rules. However, the product rules have an OR/|| condition between them so the minimum quantity must
+ * match one or several rules defined.
+ */
 class ProductRuleGroup
 {
+    /**
+     * @param int $quantity
+     * @param ProductRule[] $rules
+     */
     public function __construct(
         private readonly int $quantity,
         private readonly array $rules,
