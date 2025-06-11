@@ -724,7 +724,7 @@ abstract class ModuleCore implements ModuleInterface
             SET m.`version` = \'' . pSQL($version) . '\'
             WHERE m.`name` = \'' . pSQL($name) . '\'');
         
-        if(isset(static::$modules_cache[$name]['upgrade']) && true == static::$modules_cache[$name]['upgrade']['success']) {
+        if (isset(static::$modules_cache[$name]['upgrade']) && true == static::$modules_cache[$name]['upgrade']['success']) {
             Hook::exec('actionModuleUpgradeAfter', ['module_name' => $name, 'old_version' => static::$modules_cache[$name]['upgrade']['upgraded_from'], 'new_version' => $version]);
         }
 
