@@ -384,6 +384,10 @@ class CustomerCore extends ObjectModel
      */
     public function delete()
     {
+        if (empty((int) $this->id)) {
+            return false;
+        }
+
         if (!count(Order::getCustomerOrders((int) $this->id))) {
             $addresses = $this->getAddresses((int) Configuration::get('PS_LANG_DEFAULT'));
             foreach ($addresses as $address) {
@@ -393,12 +397,7 @@ class CustomerCore extends ObjectModel
         }
         Db::getInstance()->execute('DELETE FROM `' . _DB_PREFIX_ . 'customer_group` WHERE `id_customer` = ' . (int) $this->id);
         Db::getInstance()->execute('DELETE FROM ' . _DB_PREFIX_ . 'message WHERE id_customer=' . (int) $this->id);
-
-        // Remove specific prices only if we got some sensible ID of a customer.
-        // If we would pass zero or null further below, it would delete all non-customer-restricted specific prices.
-        if (!empty((int) $this->id)) {
-            Db::getInstance()->execute('DELETE FROM ' . _DB_PREFIX_ . 'specific_price WHERE id_customer=' . (int)$this->id);
-        }
+        Db::getInstance()->execute('DELETE FROM ' . _DB_PREFIX_ . 'specific_price WHERE id_customer=' . (int) $this->id);
 
         $carts = Db::getInstance()->executeS('SELECT id_cart FROM ' . _DB_PREFIX_ . 'cart WHERE id_customer=' . (int) $this->id . ' AND id_cart NOT IN (SELECT id_cart FROM `' . _DB_PREFIX_ . 'orders`)');
         if ($carts) {
