@@ -438,6 +438,14 @@ class ConfigurationCore extends ObjectModel
      */
     public static function updateValue($key, $values, $html = false, $idShopGroup = null, $idShop = null)
     {
+        if (!is_array($values)) {
+            $values = [$values];
+        }
+        foreach ($values as $lang => $value) {
+            $storedValue = Configuration::get($key, $lang, $idShopGroup, $idShop, null);
+            Hook::exec('actionConfigurationUpdateBefore', ['name' => $key, 'current_value' => $storedValue, 'new_value' => $value]);
+        }
+
         if (!Validate::isConfigName($key)) {
             die(Tools::displayError(Context::getContext()->getTranslator()->trans('[%s] is not a valid configuration key', [Tools::htmlentitiesUTF8($key)], 'Admin.Notifications.Error')));
         }
