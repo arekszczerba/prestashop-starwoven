@@ -24,11 +24,27 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 
-namespace PrestaShop\PrestaShop\Core\Domain\Discount\Exception;
+namespace PrestaShop\PrestaShop\Adapter\Discount\CommandHandler;
 
-class CannotUpdateDiscountException extends DiscountException
+use PrestaShop\PrestaShop\Adapter\Discount\Update\DiscountConditionsUpdater;
+use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsCommandHandler;
+use PrestaShop\PrestaShop\Core\Domain\Discount\Command\UpdateDiscountConditionsCommand;
+use PrestaShop\PrestaShop\Core\Domain\Discount\CommandHandler\UpdateDiscountConditionsHandlerInterface;
+
+#[AsCommandHandler]
+class UpdateDiscountConditionsHandler implements UpdateDiscountConditionsHandlerInterface
 {
-    public const FAILED_UPDATE_DISCOUNT = 1;
+    public function __construct(
+        private readonly DiscountConditionsUpdater $updater,
+    ) {
+    }
 
-    public const FAILED_UPDATE_CONDITIONS = 2;
+    public function handle(UpdateDiscountConditionsCommand $command): void
+    {
+        $this->updater->update(
+            $command->getDiscountId(),
+            $command->getMinimumProductsQuantity(),
+            $command->getProductConditions(),
+        );
+    }
 }

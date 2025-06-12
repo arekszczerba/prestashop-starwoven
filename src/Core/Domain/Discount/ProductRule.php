@@ -24,11 +24,30 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 
-namespace PrestaShop\PrestaShop\Core\Domain\Discount\Exception;
+namespace PrestaShop\PrestaShop\Core\Domain\Discount;
 
-class CannotUpdateDiscountException extends DiscountException
+/**
+ * The product rules have an OR/|| condition between them so the minimum quantity of products (defined on the
+ * parent group) must match one or several rules defined.
+ *
+ * A product rule is defined by the type of entity it matches (products, categories, ...) and a list of item IDs
+ * for this specific entity.
+ */
+class ProductRule
 {
-    public const FAILED_UPDATE_DISCOUNT = 1;
+    public function __construct(
+        private readonly ProductRuleType $type,
+        private readonly array $itemIds,
+    ) {
+    }
 
-    public const FAILED_UPDATE_CONDITIONS = 2;
+    public function getType(): ProductRuleType
+    {
+        return $this->type;
+    }
+
+    public function getItemIds(): array
+    {
+        return $this->itemIds;
+    }
 }

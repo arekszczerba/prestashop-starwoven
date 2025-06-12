@@ -24,11 +24,38 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 
-namespace PrestaShop\PrestaShop\Core\Domain\Discount\Exception;
+namespace PrestaShop\PrestaShop\Core\Domain\Discount;
 
-class CannotUpdateDiscountException extends DiscountException
+/**
+ * Product rule groups have an AND/&& condition between them, meaning if multiple groups are set
+ * on a discount they all must be satisfied for the discount to be valid.
+ *
+ * Each group is associated with a specific minimum quantity of products that must respect the specified
+ * rules. However, the product rules have an OR/|| condition between them so the minimum quantity must
+ * match one or several rules defined.
+ */
+class ProductRuleGroup
 {
-    public const FAILED_UPDATE_DISCOUNT = 1;
+    /**
+     * @param int $quantity
+     * @param ProductRule[] $rules
+     */
+    public function __construct(
+        private readonly int $quantity,
+        private readonly array $rules,
+    ) {
+    }
 
-    public const FAILED_UPDATE_CONDITIONS = 2;
+    public function getQuantity(): int
+    {
+        return $this->quantity;
+    }
+
+    /**
+     * @return ProductRule[]
+     */
+    public function getRules(): array
+    {
+        return $this->rules;
+    }
 }

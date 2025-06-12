@@ -28,6 +28,7 @@ namespace PrestaShop\PrestaShop\Core\Domain\Discount\QueryResult;
 
 use DateTimeImmutable;
 use PrestaShop\Decimal\DecimalNumber;
+use PrestaShop\PrestaShop\Core\Domain\Discount\ProductRuleGroup;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountType;
 
 class DiscountForEditing
@@ -54,6 +55,8 @@ class DiscountForEditing
         private readonly ?int $reductionProduct,
         private readonly ?int $giftProductId,
         private readonly ?int $giftCombinationId,
+        private readonly int $minimumProductQuantity,
+        private readonly array $productConditions,
     ) {
     }
 
@@ -160,5 +163,18 @@ class DiscountForEditing
     public function getLocalizedNames(): array
     {
         return $this->localizedNames;
+    }
+
+    public function getMinimumProductQuantity(): int
+    {
+        return $this->minimumProductQuantity;
+    }
+
+    /**
+     * @return ProductRuleGroup[]
+     */
+    public function getProductConditions(): array
+    {
+        return $this->productConditions;
     }
 }

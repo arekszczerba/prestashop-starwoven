@@ -48,10 +48,11 @@ class GetDiscountForEditingHandler implements GetDiscountForEditingHandlerInterf
      */
     public function handle(GetDiscountForEditing $query): DiscountForEditing
     {
-        $cartRule = $this->discountRepository->get($query->discountId);
+        $cartRule = $this->discountRepository->get($query->getDiscountId());
+        $discountConditions = $this->discountRepository->getProductRulesGroup($query->getDiscountId());
 
         return new DiscountForEditing(
-            $query->discountId->getValue(),
+            $query->getDiscountId()->getValue(),
             $cartRule->name,
             $cartRule->priority,
             $cartRule->active,
@@ -72,6 +73,8 @@ class GetDiscountForEditingHandler implements GetDiscountForEditingHandlerInterf
             $cartRule->reduction_product,
             $cartRule->gift_product,
             $cartRule->gift_product_attribute,
+            $cartRule->minimum_product_quantity,
+            $discountConditions,
         );
     }
 }

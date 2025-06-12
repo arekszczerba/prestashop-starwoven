@@ -24,11 +24,13 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 
-namespace PrestaShop\PrestaShop\Core\Domain\Discount\Exception;
+namespace PrestaShop\PrestaShop\Core\Domain\Discount;
 
-class CannotUpdateDiscountException extends DiscountException
+/**
+ * Product rules target a type of entities, which are identified via this enum.
+ */
+enum ProductRuleType: string
 {
-    public const FAILED_UPDATE_DISCOUNT = 1;
-
-    public const FAILED_UPDATE_CONDITIONS = 2;
+    case CATEGORIES = 'categories';
+    case PRODUCTS = 'products';
 }
