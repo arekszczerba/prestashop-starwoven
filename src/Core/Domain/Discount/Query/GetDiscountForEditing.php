@@ -30,7 +30,7 @@ use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountId;
 
 class GetDiscountForEditing
 {
-    public readonly DiscountId $discountId;
+    private readonly DiscountId $discountId;
 
     public function __construct(int $discountId)
     {

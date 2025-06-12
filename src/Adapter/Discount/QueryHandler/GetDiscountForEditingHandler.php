@@ -52,7 +52,7 @@ class GetDiscountForEditingHandler implements GetDiscountForEditingHandlerInterf
         $discountConditions = $this->discountRepository->getProductRulesGroup($query->getDiscountId());
 
         return new DiscountForEditing(
-            $query->discountId->getValue(),
+            $query->getDiscountId()->getValue(),
             $cartRule->name,
             $cartRule->priority,
             $cartRule->active,
