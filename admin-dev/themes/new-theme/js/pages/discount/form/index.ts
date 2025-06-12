@@ -24,7 +24,7 @@
  */
 
 import PriceReductionManager from '@components/form/price-reduction-manager';
-import FormFieldToggler, { SwitchEventData, ToggleType } from '@js/components/form/form-field-toggler';
+import FormFieldToggler, {SwitchEventData, ToggleType} from '@js/components/form/form-field-toggler';
 import DiscountMap from '@pages/discount/discount-map';
 import CreateFreeGiftDiscount from '@pages/discount/form/create-free-gift-discount';
 
@@ -74,7 +74,8 @@ $(() => {
   // we need to reset value of the code input if "auto" mode is selected@
   eventEmitter.on(DiscountMap.discountUsabilityModeChangeEvent, (event: SwitchEventData) => {
     if (event.targetSelector === DiscountMap.codeGeneratorInput && event.disable) {
-      let input: HTMLInputElement|null = document.querySelector(DiscountMap.codeGeneratorInput + " input");
+      const input: HTMLInputElement|null = document.querySelector(`${DiscountMap.codeGeneratorInput} input`);
+
       if (input !== null) {
         input.value = '';
       }
