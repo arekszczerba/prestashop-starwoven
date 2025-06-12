@@ -95,8 +95,7 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
 
         $command->setActive(true);
 
-        // Random code based on discount type
-        $command->setCode(strtoupper(uniqid($discountType . '_')));
+        $command->setCode($data['usability']['code'] ?? '');
         $command->setTotalQuantity(100);
 
         /** @var DiscountId $discountId */
@@ -142,6 +141,7 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
         }
         $command
             ->setLocalizedNames($data['information']['names'])
+            ->setCode($data['usability']['code'] ?? '')
         ;
         $this->commandBus->handle($command);
         $this->updateDiscountConditions($id, $data);

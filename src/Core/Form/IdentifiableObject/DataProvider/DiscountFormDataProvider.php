@@ -61,7 +61,11 @@ class DiscountFormDataProvider implements FormDataProviderInterface
 
     public function getDefaultData()
     {
-        return [];
+        return [
+            'usability' => [
+                'mode' => 'auto',
+            ],
+        ];
     }
 
     /**
@@ -122,6 +126,10 @@ class DiscountFormDataProvider implements FormDataProviderInterface
                         'include_tax' => $discountForEditing->getMinimumAmountTaxIncluded(),
                     ],
                 ],
+            ],
+            'usability' => [
+                'mode' => $discountForEditing->getCode() ? 'code' : 'auto',
+                'code' => $discountForEditing->getCode(),
             ],
         ];
     }

@@ -80,6 +80,9 @@ class DiscountType extends TranslatorAwareType
                 ])
             ;
         }
+
+        $builder
+            ->add('usability', DiscountUsabilityType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)
