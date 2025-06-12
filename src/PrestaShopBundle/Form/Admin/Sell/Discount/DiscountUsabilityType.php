@@ -38,6 +38,8 @@ use Symfony\Component\Validator\Constraints\When;
 
 class DiscountUsabilityType extends TranslatorAwareType
 {
+    public const AUTO_MODE = 'auto';
+    public const CODE_MODE = 'code';
     protected const GENERATED_CODE_LENGTH = 8;
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -49,8 +51,8 @@ class DiscountUsabilityType extends TranslatorAwareType
                     'class' => 'bold',
                 ],
                 'choices' => [
-                    $this->trans('Create automatic discount', 'Admin.Catalog.Feature') => 'auto',
-                    $this->trans('Generate discount code', 'Admin.Catalog.Feature') => 'code',
+                    $this->trans('Create automatic discount', 'Admin.Catalog.Feature') => self::AUTO_MODE,
+                    $this->trans('Generate discount code', 'Admin.Catalog.Feature') => self::CODE_MODE,
                 ],
                 'expanded' => true,
                 'multiple' => false,
@@ -64,7 +66,7 @@ class DiscountUsabilityType extends TranslatorAwareType
                 'required' => false,
                 'constraints' => [
                     new When([
-                        'expression' => 'this.getParent().get("mode").getData() === "code"',
+                        'expression' => "this.getParent().get('mode').getData() === '" . self::CODE_MODE . "'",
                         'constraints' => [
                             new NotBlank(),
                             new UniqueDiscountCode(),

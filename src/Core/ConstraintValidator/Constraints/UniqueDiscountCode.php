@@ -36,7 +36,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class UniqueDiscountCode extends Constraint
 {
-    public $message = 'The cart rule code is already used (conflict with cart rule "%s").';
+    public $message = 'The discount code is already used (conflict with discount "%s").';
 
     /**
      * {@inheritdoc}

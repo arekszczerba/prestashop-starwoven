@@ -30,6 +30,7 @@ namespace PrestaShop\PrestaShop\Adapter\Discount\Validate;
 use CartRule;
 use PrestaShop\Decimal\DecimalNumber;
 use PrestaShop\PrestaShop\Adapter\AbstractObjectModelValidator;
+use PrestaShop\PrestaShop\Adapter\Discount\Repository\DiscountRepository;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Command\AddDiscountCommand;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Exception\DiscountConstraintException;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountType;
@@ -41,6 +42,13 @@ use PrestaShopException;
  */
 class DiscountValidator extends AbstractObjectModelValidator
 {
+    protected ?DiscountRepository $discountRepository = null;
+
+    public function setDiscountRepository(DiscountRepository $discountRepository): void
+    {
+        $this->discountRepository = $discountRepository;
+    }
+
     public function validate(CartRule $cartRule): void
     {
         $this->validateCartRuleProperty($cartRule, 'id_customer', DiscountConstraintException::INVALID_CUSTOMER_ID);
@@ -136,6 +144,12 @@ class DiscountValidator extends AbstractObjectModelValidator
 
     private function assertCodeIsUnique(CartRule $cartRule): void
     {
+        // To avoid circular dependency, we need to set the repository with setDiscountRepository.
+        // So, we need to check if discountRepository property is set before use this function!
+        if ($this->discountRepository === null) {
+            throw new CoreException('Discount repository is mandatory to check discount code uniquicity.');
+        }
+
         $code = $cartRule->code;
 
         if (empty($code)) {
@@ -143,14 +157,14 @@ class DiscountValidator extends AbstractObjectModelValidator
         }
 
         try {
-            $duplicateCodeCartRuleId = (int) CartRule::getIdByCode($code);
+            $duplicateCodeCartRuleId = $this->discountRepository->getIdByCode($code);
         } catch (PrestaShopException $e) {
-            throw new CoreException('Error occurred when trying to check if cart rule code is unique', 0, $e);
+            throw new CoreException('Error occurred when trying to check if discount code is unique', 0, $e);
         }
 
         if ($duplicateCodeCartRuleId && $duplicateCodeCartRuleId !== (int) $cartRule->id) {
             throw new DiscountConstraintException(
-                sprintf('This cart rule code "%s" is already used (conflit with cart rule %s)', $code, $duplicateCodeCartRuleId),
+                sprintf('This discount code "%s" is already used (conflict with discount %s)', $code, $duplicateCodeCartRuleId),
                 DiscountConstraintException::NON_UNIQUE_CODE
             );
         }

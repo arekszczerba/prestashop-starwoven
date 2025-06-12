@@ -89,8 +89,8 @@ class UniqueDiscountCodeValidatorTest extends ConstraintValidatorTestCase
 
         $constraint = new UniqueDiscountCode();
         $this->validator->validate('UNIQUE_CODE', $constraint);
-        $this->buildViolation(sprintf($constraint->message, 2))
-            ->setParameter('%s', '"UNIQUE_CODE"')
+        $this->buildViolation($constraint->message)
+            ->setParameter('%s', '2')
             ->assertRaised();
     }
 

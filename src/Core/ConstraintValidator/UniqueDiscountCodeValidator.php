@@ -52,32 +52,27 @@ class UniqueDiscountCodeValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, UniqueDiscountCode::class);
         }
 
-        /** @var Form $form */
-        $form = $this->context->getObject();
-        $formData = $form->getRoot()->getNormData();
-
+        // If the discount code is empty, no need to check for uniqueness
         if (empty($value)) {
-            // If the discount code is empty, no need to check for uniqueness
             return;
         }
 
         // If the discount code is not empty, check if it already exists
+        /** @var Form $form */
+        $form = $this->context->getObject();
+        $formData = $form->getRoot()->getNormData();
+
         try {
             $existingDiscountId = $this->discountRepository->getIdByCode($value);
 
-            if ($existingDiscountId === $formData['id']) {
+            if (isset($formData['id']) && $existingDiscountId === $formData['id']) {
                 // If the existing discount is the same as the one being edited, no violation
                 return;
             }
 
-            $message = sprintf(
-                $constraint->message,
-                $existingDiscountId
-            );
-
-            $this->context->buildViolation($message)
+            $this->context->buildViolation($constraint->message)
                 ->setTranslationDomain('Admin.Notifications.Error')
-                ->setParameter('%s', $this->formatValue($value))
+                ->setParameter('%s', $this->formatValue($existingDiscountId))
                 ->addViolation();
         } catch (DiscountNotFoundException $e) {
             // If there is an error while fetching the discount, we can assume it does not exist

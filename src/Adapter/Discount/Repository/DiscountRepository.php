@@ -50,6 +50,7 @@ class DiscountRepository extends AbstractObjectModelRepository
         protected readonly Connection $connection,
         protected readonly string $dbPrefix
     ) {
+        $this->cartRuleValidator->setDiscountRepository($this);
     }
 
     public function add(CartRule $cartRule): CartRule
@@ -140,8 +141,13 @@ class DiscountRepository extends AbstractObjectModelRepository
 
     public function getIdByCode(string $code): ?int
     {
-        $code = mb_strtoupper(trim($code));
-        $cartRuleId = CartRule::getIdByCode($code);
+        $cartRuleId = $this->connection->createQueryBuilder()
+            ->select('id_cart_rule')
+            ->from($this->dbPrefix . 'cart_rule')
+            ->where('code = :code')
+            ->setParameter('code', $code)
+            ->fetchOne()
+        ;
 
         if (false === $cartRuleId) {
             throw new DiscountNotFoundException(sprintf('Discount with code "%s" not found.', $code));

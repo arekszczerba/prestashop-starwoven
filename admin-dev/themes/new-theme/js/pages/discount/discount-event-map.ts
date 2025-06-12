@@ -22,19 +22,7 @@
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
-const discountContainer = '.discount-container';
 
 export default {
-  codeGeneratorInput: '#discount_usability .code-generator-selector',
-  currencySelect: '#discount_value_reduction_currency',
-  currencySelectContainer: '.price-reduction-currency-selector',
-  discountContainer,
-  includeTaxInput: '#discount_value_reduction_include_tax',
-  usabilityModeSelectInput: '#discount_usability_mode .form-check-input',
-  reductionTypeSelect: '#discount_value_reduction_type',
-  reductionValueSymbol: `${discountContainer} .price-reduction-value .input-group .input-group-append .input-group-text,
-   .price-reduction-value .input-group .input-group-prepend .input-group-text`,
-  freeGiftProductSearchContainer: '#discount_free_gift',
-  discountTypeRadios: '#discount_type_selector_discount_type_selector input[type="radio"]',
-  discountTypeSubmit: '#discountTypeSubmit',
+  discountUsabilityModeChange: 'discountUsabilityModeChange',
 };
