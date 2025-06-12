@@ -143,7 +143,7 @@ describe('API : Check endpoints', async () => {
         '/product/{productId}/image: POST',
         // tests/UI/campaigns/functional/API/02_endpoints/06_product/04_getProductIdImages.ts
         '/product/{productId}/images: GET',
-        // @todo : Scenario & UI Test
+        // tests/UI/campaigns/functional/API/02_endpoints/06_product/05_patchProductIdShops.ts
         '/product/{productId}/shops: PATCH',
         // tests/UI/campaigns/functional/API/02_endpoints/06_product/06_deleteProductId.ts
         '/product/{productId}: DELETE',
