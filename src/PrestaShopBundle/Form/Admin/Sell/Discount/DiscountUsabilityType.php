@@ -45,6 +45,9 @@ class DiscountUsabilityType extends TranslatorAwareType
         $builder
             ->add('mode', ChoiceType::class, [
                 'label' => $this->trans('Specify discount mode', 'Admin.Catalog.Feature'),
+                'label_attr' => [
+                    'class' => 'bold',
+                ],
                 'choices' => [
                     $this->trans('Create automatic discount', 'Admin.Catalog.Feature') => 'auto',
                     $this->trans('Generate discount code', 'Admin.Catalog.Feature') => 'code',
