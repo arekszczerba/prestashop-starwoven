@@ -24,18 +24,23 @@
  */
 
 import PriceReductionManager from '@components/form/price-reduction-manager';
+import FormFieldToggler, { SwitchEventData, ToggleType } from '@js/components/form/form-field-toggler';
 import DiscountMap from '@pages/discount/discount-map';
 import CreateFreeGiftDiscount from '@pages/discount/form/create-free-gift-discount';
 
 $(() => {
-  const {eventEmitter} = window.prestashop.instance;
-
   window.prestashop.component.initComponents(
     [
+      'EventEmitter',
       'TranslatableInput',
       'ToggleChildrenChoice',
+      'GeneratableInput',
+      'FormFieldToggler',
     ],
   );
+
+  const {eventEmitter} = window.prestashop.instance;
+
   new CreateFreeGiftDiscount(eventEmitter);
 
   new PriceReductionManager(
@@ -55,4 +60,24 @@ $(() => {
       $(DiscountMap.currencySelect).fadeIn();
     }
   }
+
+  // Initialize the form field toggler for the discount usability mode
+  new FormFieldToggler({
+    disablingInputSelector: DiscountMap.usabilityModeSelectInput,
+    targetSelector: DiscountMap.codeGeneratorInput,
+    disableOnMatch: false,
+    matchingValue: 'code',
+    switchEvent: DiscountMap.discountUsabilityModeChangeEvent,
+    toggleType: ToggleType.visibility,
+  });
+  // Listen to the discount usability mode change event,
+  // we need to reset value of the code input if "auto" mode is selected@
+  eventEmitter.on(DiscountMap.discountUsabilityModeChangeEvent, (event: SwitchEventData) => {
+    if (event.targetSelector === DiscountMap.codeGeneratorInput && event.disable) {
+      let input: HTMLInputElement|null = document.querySelector(DiscountMap.codeGeneratorInput + " input");
+      if (input !== null) {
+        input.value = '';
+      }
+    }
+  });
 });

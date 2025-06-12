@@ -25,10 +25,13 @@
 const discountContainer = '.discount-container';
 
 export default {
+  codeGeneratorInput: '#discount_usability .code-generator-selector',
   currencySelect: '#discount_value_reduction_currency',
   currencySelectContainer: '.price-reduction-currency-selector',
   discountContainer,
+  discountUsabilityModeChangeEvent: 'DiscountUsabilityModeChange',
   includeTaxInput: '#discount_value_reduction_include_tax',
+  usabilityModeSelectInput: '#discount_usability_mode .form-check-input',
   reductionTypeSelect: '#discount_value_reduction_type',
   reductionValueSymbol: `${discountContainer} .price-reduction-value .input-group .input-group-append .input-group-text,
    .price-reduction-value .input-group .input-group-prepend .input-group-text`,
