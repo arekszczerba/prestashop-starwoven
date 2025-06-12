@@ -138,6 +138,18 @@ class DiscountRepository extends AbstractObjectModelRepository
         return $productRulesGroups;
     }
 
+    public function getIdByCode(string $code): ?int
+    {
+        $code = mb_strtoupper(trim($code));
+        $cartRuleId = CartRule::getIdByCode($code);
+
+        if (false === $cartRuleId) {
+            throw new DiscountNotFoundException(sprintf('Discount with code "%s" not found.', $code));
+        }
+
+        return $cartRuleId;
+    }
+
     public function partialUpdate(CartRule $cartRule, array $updatableProperties, int $errorCode): void
     {
         $this->cartRuleValidator->validate($cartRule);

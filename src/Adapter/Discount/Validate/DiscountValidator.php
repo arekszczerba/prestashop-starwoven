@@ -150,7 +150,7 @@ class DiscountValidator extends AbstractObjectModelValidator
 
         if ($duplicateCodeCartRuleId && $duplicateCodeCartRuleId !== (int) $cartRule->id) {
             throw new DiscountConstraintException(
-                sprintf('Cart rule with code "%s" already exists', $code),
+                sprintf('This cart rule code "%s" is already used (conflit with cart rule %s)', $code, $duplicateCodeCartRuleId),
                 DiscountConstraintException::NON_UNIQUE_CODE
             );
         }
