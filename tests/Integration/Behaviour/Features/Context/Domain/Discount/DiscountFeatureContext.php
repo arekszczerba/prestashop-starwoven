@@ -64,6 +64,14 @@ class DiscountFeatureContext extends AbstractDomainFeatureContext
     }
 
     /**
+     * @Then I should get an error that the discount code is already used
+     */
+    public function assertDiscountCodeAlreadyUsed(): void
+    {
+        $this->assertLastErrorIs(DiscountConstraintException::class, DiscountConstraintException::NON_UNIQUE_CODE);
+    }
+
+    /**
      * @Then I should get an error that the discount is invalid
      */
     public function assertDiscountIsInvalid(): void
