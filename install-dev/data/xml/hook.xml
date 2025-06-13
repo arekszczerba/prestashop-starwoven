@@ -51,6 +51,11 @@
       <title>Payment confirmation</title>
       <description>This hook displays new elements after the payment is validated</description>
     </hook>
+    <hook id="actionPaymentModuleProductVarTplAfter">
+      <name>actionPaymentModuleProductVarTplAfter</name>
+      <title>Triggers after product data is prepared for e-mail template</title>
+      <description>Allows to modify product data in e-mail template.</description>
+    </hook>
     <hook id="displayPaymentReturn">
       <name>displayPaymentReturn</name>
       <title>Payment return</title>
