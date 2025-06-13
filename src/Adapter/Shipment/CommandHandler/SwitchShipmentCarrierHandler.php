@@ -31,9 +31,11 @@ namespace PrestaShop\PrestaShop\Adapter\Shipment\CommandHandler;
 use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsCommandHandler;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\SwitchShipmentCarrierCommand;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\CommandHandler\SwitchShipmentCarrierHandlerInterface;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentFailureException;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentNotFoundException;
 use PrestaShopBundle\Entity\Repository\ShipmentRepository;
 use PrestaShopBundle\Entity\Shipment;
+use Throwable;
 
 /**
  * Switch shipment carrier
@@ -50,8 +52,9 @@ class SwitchShipmentCarrierHandler implements SwitchShipmentCarrierHandlerInterf
      * {@inheritdoc}
      *
      * @throws ShipmentNotFoundException
+     * @throws ShipmentFailureException
      */
-    public function handle(SwitchShipmentCarrierCommand $command)
+    public function handle(SwitchShipmentCarrierCommand $command): void
     {
         $shipmentId = $command->getShipmentId()->getValue();
         $carrierId = $command->getCarrierId()->getValue();
@@ -60,7 +63,7 @@ class SwitchShipmentCarrierHandler implements SwitchShipmentCarrierHandlerInterf
             /** @var Shipment|null $shipment */
             $shipment = $this->shipmentRepository->findOneBy(['id' => $shipmentId]);
         } catch (Throwable $e) {
-            throw new ShipmentNotFoundException(sprintf('Could not find shipment with id "%s"', $shipmentId), 0, $e);
+            throw new ShipmentNotFoundException(sprintf('Could not find shipment with id "%s"', $shipmentId), 0, $e->getMessage());
         }
 
         if ($shipment === null) {
@@ -72,7 +75,7 @@ class SwitchShipmentCarrierHandler implements SwitchShipmentCarrierHandlerInterf
         try {
             $this->shipmentRepository->save($shipment);
         } catch (Throwable $e) {
-            // TODO: add exception
+            throw new ShipmentFailureException(sprintf('Could not save shipment update with id "%s"', $shipmentId), 0, $e->getMessage());
         }
     }
 }

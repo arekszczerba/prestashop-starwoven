@@ -26,17 +26,8 @@
 
 declare(strict_types=1);
 
-namespace PrestaShop\PrestaShop\Core\Domain\Shipment\CommandHandler;
+namespace PrestaShop\PrestaShop\Core\Domain\Shipment\Exception;
 
-use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\SwitchShipmentCarrierCommand;
-
-/**
- * Defines contract for SwitchShipmentCarrierHandler
- */
-interface SwitchShipmentCarrierHandlerInterface
+class ShipmentFailureException extends ShipmentException
 {
-    /**
-     * @param SwitchShipmentCarrierCommand $command
-     */
-    public function handle(SwitchShipmentCarrierCommand $command): void;
 }
