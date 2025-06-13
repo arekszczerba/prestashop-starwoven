@@ -30,7 +30,9 @@ declare(strict_types=1);
 namespace Tests\Integration\Behaviour\Features\Context\Domain;
 
 use Behat\Gherkin\Node\TableNode;
+use Exception;
 use PHPUnit\Framework\Assert;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\SwitchShipmentCarrierCommand;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentProducts;
 use RuntimeException;
@@ -38,6 +40,47 @@ use Tests\Integration\Behaviour\Features\Context\SharedStorage;
 
 class ShipmentFeatureContext extends AbstractDomainFeatureContext
 {
+    /**
+     * @When I switch the carrier for shipment :shipmentReference to :carrierReference
+     */
+    public function switchShipmentCarrier(string $shipmentReference, string $carrierReference): void
+    {
+        $shipmentId = SharedStorage::getStorage()->get($shipmentReference);
+        $carrierId = $this->referenceToId($carrierReference);
+
+        try {
+            $this->getCommandBus()->handle(new SwitchShipmentCarrierCommand($shipmentId, $carrierId));
+        } catch (Exception $error) {
+            throw new RuntimeException(sprintf('Error then switch shipment "%s" to carrier "%s" : %s', [$shipmentReference, $carrierReference, $error]));
+        }
+    }
+
+    /**
+     * @Then the :orderReference with shipment :shipmentReference should have carrier :carrierReference
+     */
+    public function theOrderWithShipmentShouldHaveCarrier(string $orderReference, string $shipmentReference, string $carrierReference): void
+    {
+        $shipmentId = $this->referenceToId($shipmentReference);
+        $orderId = $this->referenceToId($orderReference);
+
+        $shipments = $this->getQueryBus()->handle(new GetOrderShipments($orderId));
+
+        foreach ($shipments as $shipment) {
+            if ($shipment->getId() === $shipmentId) {
+                $expectedCarrierId = $this->referenceToId($carrierReference);
+                Assert::assertEquals(
+                    $expectedCarrierId,
+                    $shipment->getCarrierId(),
+                    sprintf('Shipment carrier "%s" is incorrect after the switch', $shipmentReference)
+                );
+
+                return;
+            }
+        }
+
+        throw new RuntimeException(sprintf('Shipment "%s" not found for order "%s"', $shipmentReference, $orderReference));
+    }
+
     /**
      * @Then the order :orderReference should have the following shipments:
      *
