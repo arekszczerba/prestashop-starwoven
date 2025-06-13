@@ -5433,6 +5433,11 @@
       <title>Provide a PDF renderer</title>
       <description>This hook allows to provide a custom PDF renderer to generate PDF files</description>
     </hook>
+    <hook id="actionGetPdfTemplateObject">
+      <name>actionGetPdfTemplateObject</name>
+      <title>Get PDF template object</title>
+      <description>This hook allows to recieve a PDF template object from modules</description>
+    </hook>
     <hook id="displayAdminStoreInformation">
       <name>displayAdminStoreInformation</name>
       <title>Display extra store information</title>
