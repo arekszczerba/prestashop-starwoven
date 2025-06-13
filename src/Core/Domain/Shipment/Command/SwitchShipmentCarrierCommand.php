@@ -29,9 +29,9 @@ declare(strict_types=1);
 namespace PrestaShop\PrestaShop\Core\Domain\Shipment\Command;
 
 use PrestaShop\PrestaShop\Core\Domain\Carrier\Exception\CarrierConstraintException;
+use PrestaShop\PrestaShop\Core\Domain\Carrier\ValueObject\CarrierId;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentException;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\ValueObject\ShipmentId;
-use PrestaShop\PrestaShop\Core\Domain\Carrier\ValueObject\CarrierId;
 
 class SwitchShipmentCarrierCommand
 {

@@ -74,6 +74,5 @@ class SwitchShipmentCarrierHandler implements SwitchShipmentCarrierHandlerInterf
         } catch (Throwable $e) {
             // TODO: add exception
         }
-
     }
 }
