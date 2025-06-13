@@ -66,7 +66,7 @@ class DiscountUsabilityType extends TranslatorAwareType
                 'required' => false,
                 'constraints' => [
                     new When([
-                        'expression' => "this.getParent().get('mode').getData() === '" . self::CODE_MODE . "'",
+                        'expression' => 'this.getParent().get("mode").getData() === constant("PrestaShopBundle\\\Form\\\Admin\\\Sell\\\Discount\\\DiscountUsabilityType::CODE_MODE")',
                         'constraints' => [
                             new NotBlank(),
                             new UniqueDiscountCode(),

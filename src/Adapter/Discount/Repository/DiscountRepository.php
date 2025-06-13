@@ -139,18 +139,22 @@ class DiscountRepository extends AbstractObjectModelRepository
         return $productRulesGroups;
     }
 
+    /**
+     * Returns the ID of a discount by its code.
+     * null is returned if the discount does not exist.
+     */
     public function getIdByCode(string $code): ?int
     {
         $cartRuleId = $this->connection->createQueryBuilder()
             ->select('id_cart_rule')
             ->from($this->dbPrefix . 'cart_rule')
-            ->where('code = :code')
-            ->setParameter('code', $code)
+            ->where('UPPER(code) = :code')
+            ->setParameter('code', mb_strtoupper(trim($code)))
             ->fetchOne()
         ;
 
         if (false === $cartRuleId) {
-            throw new DiscountNotFoundException(sprintf('Discount with code "%s" not found.', $code));
+            return null;
         }
 
         return $cartRuleId;

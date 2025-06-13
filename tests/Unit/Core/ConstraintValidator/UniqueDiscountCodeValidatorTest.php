@@ -30,7 +30,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PrestaShop\PrestaShop\Adapter\Discount\Repository\DiscountRepository;
 use PrestaShop\PrestaShop\Core\ConstraintValidator\Constraints\UniqueDiscountCode;
 use PrestaShop\PrestaShop\Core\ConstraintValidator\UniqueDiscountCodeValidator;
-use PrestaShop\PrestaShop\Core\Domain\Discount\Exception\DiscountNotFoundException;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -59,8 +58,8 @@ class UniqueDiscountCodeValidatorTest extends ConstraintValidatorTestCase
     public function testItDoesNotValidateEmptyCode()
     {
         $this->mockFormWithData(['id' => 1]);
-        $this->assertNoViolation();
         $this->validator->validate('', new UniqueDiscountCode());
+        $this->assertNoViolation();
     }
 
     public function testItValidatesUniqueCode()
@@ -71,10 +70,10 @@ class UniqueDiscountCodeValidatorTest extends ConstraintValidatorTestCase
             ->expects($this->once())
             ->method('getIdByCode')
             ->with('UNIQUE_CODE')
-            ->willThrowException(new DiscountNotFoundException());
+            ->willReturn(null);
 
-        $this->assertNoViolation();
         $this->validator->validate('UNIQUE_CODE', new UniqueDiscountCode());
+        $this->assertNoViolation();
     }
 
     public function testIfViolateUnicityForAnotherCode()
@@ -104,8 +103,8 @@ class UniqueDiscountCodeValidatorTest extends ConstraintValidatorTestCase
             ->with('UNIQUE_CODE')
             ->willReturn(1);
 
-        $this->assertNoViolation();
         $this->validator->validate('UNIQUE_CODE', new UniqueDiscountCode());
+        $this->assertNoViolation();
     }
 
     protected function createValidator()

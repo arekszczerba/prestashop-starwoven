@@ -30,7 +30,6 @@ namespace PrestaShop\PrestaShop\Core\ConstraintValidator;
 
 use PrestaShop\PrestaShop\Adapter\Discount\Repository\DiscountRepository;
 use PrestaShop\PrestaShop\Core\ConstraintValidator\Constraints\UniqueDiscountCode;
-use PrestaShop\PrestaShop\Core\Domain\Discount\Exception\DiscountNotFoundException;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -62,20 +61,17 @@ class UniqueDiscountCodeValidator extends ConstraintValidator
         $form = $this->context->getObject();
         $formData = $form->getRoot()->getNormData();
 
-        try {
-            $existingDiscountId = $this->discountRepository->getIdByCode($value);
+        $existingDiscountId = $this->discountRepository->getIdByCode($value);
 
-            if (isset($formData['id']) && $existingDiscountId === $formData['id']) {
-                // If the existing discount is the same as the one being edited, no violation
-                return;
-            }
-
-            $this->context->buildViolation($constraint->message)
-                ->setTranslationDomain('Admin.Notifications.Error')
-                ->setParameter('%s', $this->formatValue($existingDiscountId))
-                ->addViolation();
-        } catch (DiscountNotFoundException $e) {
-            // If there is an error while fetching the discount, we can assume it does not exist
+        // If we don't have discount with this code, or if the existing discount
+        // is the same as the one being edited => no violation
+        if (null === $existingDiscountId || isset($formData['id']) && $existingDiscountId === $formData['id']) {
+            return;
         }
+
+        $this->context->buildViolation($constraint->message)
+            ->setTranslationDomain('Admin.Notifications.Error')
+            ->setParameter('%s', $this->formatValue($existingDiscountId))
+            ->addViolation();
     }
 }

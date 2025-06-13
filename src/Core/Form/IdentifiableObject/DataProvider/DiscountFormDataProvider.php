@@ -65,6 +65,7 @@ class DiscountFormDataProvider implements FormDataProviderInterface
         return [
             'usability' => [
                 'mode' => DiscountUsabilityType::AUTO_MODE,
+                'code' => '',
             ],
         ];
     }
