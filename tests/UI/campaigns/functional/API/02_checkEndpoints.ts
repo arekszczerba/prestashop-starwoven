@@ -105,6 +105,14 @@ describe('API : Check endpoints', async () => {
         '/customers/group/{customerGroupId}: PUT',
         // tests/UI/campaigns/functional/API/02_endpoints/02_customerGroup/04_postCustomersGroup.ts
         '/customers/group: POST',
+        // @todo
+        '/discount/{discountId}: DELETE',
+        // @todo
+        '/discount/{discountId}: GET',
+        // @todo
+        '/discount: POST',
+        // @todo
+        '/discounts: GET',
         // tests/UI/campaigns/functional/API/02_endpoints/03_hook/01_putHookStatusId.ts
         '/hook-status: PUT',
         // tests/UI/campaigns/functional/API/02_endpoints/03_hook/02_getHooksId.ts
