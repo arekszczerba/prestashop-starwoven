@@ -56,32 +56,6 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
     }
 
     /**
-     * @Then the :orderReference with shipment :shipmentReference should have carrier :carrierReference
-     */
-    public function theOrderWithShipmentShouldHaveCarrier(string $orderReference, string $shipmentReference, string $carrierReference): void
-    {
-        $shipmentId = $this->referenceToId($shipmentReference);
-        $orderId = $this->referenceToId($orderReference);
-
-        $shipments = $this->getQueryBus()->handle(new GetOrderShipments($orderId));
-
-        foreach ($shipments as $shipment) {
-            if ($shipment->getId() === $shipmentId) {
-                $expectedCarrierId = $this->referenceToId($carrierReference);
-                Assert::assertEquals(
-                    $expectedCarrierId,
-                    $shipment->getCarrierId(),
-                    sprintf('Shipment carrier "%s" is incorrect after the switch', $shipmentReference)
-                );
-
-                return;
-            }
-        }
-
-        throw new RuntimeException(sprintf('Shipment "%s" not found for order "%s"', $shipmentReference, $orderReference));
-    }
-
-    /**
      * @Then the order :orderReference should have the following shipments:
      *
      * @param string $orderReference

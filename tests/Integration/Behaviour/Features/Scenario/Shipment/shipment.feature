@@ -62,4 +62,6 @@ Feature: Retrieving shipment for orders
       | taxRuleGroup     | US-AL Rate (4%)                    |
       | rangeBehavior    | disabled                           |
     When I switch the carrier for shipment "shipment1" to "new_carrier"
-    Then the "bo_order1" with shipment "shipment1" should have carrier "new_carrier"
+    Then the order "bo_order1" should have the following shipments:
+      | shipment  | carrier         | tracking_number | address | shipping_cost_tax_excl | shipping_cost_tax_incl |
+      | shipment1 | new_carrier     |                 | US      |                    7.0 |                   7.42 |
