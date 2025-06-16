@@ -116,3 +116,13 @@ Feature: Product associated with different carriers
       | bottle of beer | 1        |
       | saucisson      | 2        |
     And the shipment "shipment2" should be deleted
+
+  Scenario: Retrieve available shipments for merge action
+    Then order "bo_order1" should get available shipments for product "bottle of beer":
+      | shipment_name                  | can_handle_merge |
+      | Shipment 1 Beer carrier        | 1             |
+      | Shipment 2 Saucisson carrier   | 0             |
+    Then order "bo_order1" should get available shipments for product "saucisson":
+      | shipment_name                  | can_handle_merge |
+      | Shipment 1 Beer carrier        | 0             |
+      | Shipment 2 Saucisson carrier   | 1             |

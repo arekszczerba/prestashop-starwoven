@@ -32,11 +32,13 @@ namespace Tests\Integration\Behaviour\Features\Context\Domain;
 use Behat\Gherkin\Node\TableNode;
 use Exception;
 use OrderDetail;
+use Order;
 use PHPUnit\Framework\Assert;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\MergeProductsToShipment;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\SwitchShipmentCarrierCommand;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentProducts;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\ListAvailableShipments;
 use RuntimeException;
 use Tests\Integration\Behaviour\Features\Context\SharedStorage;
 
@@ -168,5 +170,30 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
         $this->getCommandBus()->handle(
             new MergeProductsToShipment($sourceShipmentId, $targetShipmentId, $orderDetailQuantities)
         );
+    }
+
+    /**
+     * @Then order :orderReference should get available shipments for product :productReference:
+     */
+    public function orderShouldGetAvailableShipmentsForSpecificProduct(string $orderReference, string $productReference, TableNode $table): void
+    {
+        $orderId = $this->referenceToId($orderReference);
+        $data = $table->getColumnsHash();
+        $orderDetailList = (new Order($orderId))->getOrderDetailList();
+        $orderDetailsId = [];
+        foreach ($orderDetailList as $orderDetail) {
+            if ($orderDetail['product_name'] === $productReference) {
+                $orderDetailsId[] = $orderDetail['id_order_detail'];
+            }
+        }
+
+        $testAvailableShipmentForProduct = $this->getQueryBus()->handle(
+            new ListAvailableShipments($orderId, $orderDetailsId)
+        );
+
+        for ($i = 0; $i < count($testAvailableShipmentForProduct); ++$i) {
+            Assert::assertEquals($testAvailableShipmentForProduct[$i]->getShipmentName(), $data[$i]['shipment_name']);
+            Assert::assertEquals($testAvailableShipmentForProduct[$i]->getHandleProduct(), (bool) $data[$i]['can_handle_merge']);
+        }
     }
 }

@@ -30,7 +30,7 @@ class ShipmentsForMerge
 {
     public function __construct(
         private int $id,
-        private string $carrierName,
+        private string $shipmentName,
         private bool $canHandleProduct,
     ) {
     }
@@ -46,9 +46,9 @@ class ShipmentsForMerge
     /**
      * @return string
      */
-    public function getCarrierName(): string
+    public function getShipmentName(): string
     {
-        return $this->carrierName;
+        return $this->shipmentName;
     }
 
     /**

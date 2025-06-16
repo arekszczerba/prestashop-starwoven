@@ -61,7 +61,7 @@ class ListAvailableShipmentsHandler implements ListAvailableShipmentsHandlerInte
         } catch (Throwable $e) {
             throw new ShipmentNotFoundException(sprintf('Could not find shipment for order id "%s"', $orderId), 0, $e);
         }
-        if (empty($result)) {
+        if (empty($getShipmentsFromOrder)) {
             return $shipments;
         }
 
@@ -70,11 +70,12 @@ class ListAvailableShipmentsHandler implements ListAvailableShipmentsHandlerInte
                 $orderDetail = new OrderDetail($orderDetailId);
                 $carrierCompatibleWithProduct = array_map(function ($carrier) {
                     return $carrier['id_carrier'];
-                }, (new Product($orderDetail->product_id)->getCarriers()));
+                }, (new Product($orderDetail->product_id))->getCarriers());
 
                 if ($shipment->getDeliveredAt() === null) {
                     $isCompatible = in_array($shipment->getCarrierId(), $carrierCompatibleWithProduct);
-                    $shipments[] = new ShipmentsForMerge($shipment->getId(), (new Carrier($shipment->getCarrierId()))->name, $isCompatible);
+                    $shipmentName = 'Shipment ' . $shipment->getId() . ' ' . (new Carrier($shipment->getCarrierId()))->name;
+                    $shipments[] = new ShipmentsForMerge($shipment->getId(), $shipmentName, $isCompatible);
                 }
             }
         }
