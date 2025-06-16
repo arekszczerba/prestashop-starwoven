@@ -28,6 +28,6 @@ declare(strict_types=1);
 
 namespace PrestaShop\PrestaShop\Core\Domain\Shipment\Exception;
 
-class ShipmentFailureException extends ShipmentException
+class CannotSaveShipmentException extends ShipmentException
 {
 }

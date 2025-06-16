@@ -31,7 +31,7 @@ namespace PrestaShop\PrestaShop\Adapter\Shipment\CommandHandler;
 use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsCommandHandler;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\SwitchShipmentCarrierCommand;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\CommandHandler\SwitchShipmentCarrierHandlerInterface;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentFailureException;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\CannotSaveShipmentException;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentNotFoundException;
 use PrestaShopBundle\Entity\Repository\ShipmentRepository;
 use PrestaShopBundle\Entity\Shipment;
@@ -52,7 +52,7 @@ class SwitchShipmentCarrierHandler implements SwitchShipmentCarrierHandlerInterf
      * {@inheritdoc}
      *
      * @throws ShipmentNotFoundException
-     * @throws ShipmentFailureException
+     * @throws CannotSaveShipmentException
      */
     public function handle(SwitchShipmentCarrierCommand $command): void
     {
@@ -75,7 +75,7 @@ class SwitchShipmentCarrierHandler implements SwitchShipmentCarrierHandlerInterf
         try {
             $this->shipmentRepository->save($shipment);
         } catch (Throwable $e) {
-            throw new ShipmentFailureException(sprintf('Could not save shipment update with id "%s"', $shipmentId), 0, $e);
+            throw new CannotSaveShipmentException(sprintf('Could not save shipment update with id "%s"', $shipmentId), 0, $e);
         }
     }
 }
