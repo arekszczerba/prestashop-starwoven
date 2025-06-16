@@ -31,6 +31,10 @@ class FormFieldCore
     private $label = '';
     private $value = null;
     private $availableValues = [];
+    /**
+     * @var int|null
+     */
+    private $minLength = null;
     private $maxLength = null;
     private $errors = [];
     private $constraints = [];
@@ -53,6 +57,7 @@ class FormFieldCore
             'label' => $this->getLabel(),
             'value' => $this->getValue(),
             'availableValues' => $this->getAvailableValues(),
+            'minLength' => $this->getMinLength(),
             'maxLength' => $this->getMaxLength(),
             'errors' => $this->getErrors(),
             'autocomplete' => $this->getAutocompleteAttribute(),
@@ -140,6 +145,18 @@ class FormFieldCore
         $this->availableValues[$availableValue] = $label;
 
         return $this;
+    }
+
+    public function setMinLength(?int $min): self
+    {
+        $this->minLength = $min;
+
+        return $this;
+    }
+
+    public function getMinLength(): ?int
+    {
+        return $this->minLength;
     }
 
     public function setMaxLength($max)
