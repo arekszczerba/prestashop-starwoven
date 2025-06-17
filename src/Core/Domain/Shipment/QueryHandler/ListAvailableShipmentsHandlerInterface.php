@@ -26,14 +26,13 @@
 
 namespace PrestaShop\PrestaShop\Core\Domain\Shipment\QueryHandler;
 
-use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentProducts;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\ListAvailableShipments;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\ShipmentsForMerge;
 
 interface ListAvailableShipmentsHandlerInterface
 {
     /**
-     * @param GetShipmentProducts $query
+     * @param ListAvailableShipments $query
      *
      * @return ShipmentsForMerge[]
      */
