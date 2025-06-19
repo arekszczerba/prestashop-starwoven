@@ -94,3 +94,25 @@ Feature: Product associated with different carriers
     Then the shipment "shipment2" should have the following products:
       | product_name | quantity |
       | saucisson    | 2        |
+
+  Scenario: Merge product into a shipment with specified quantity
+    Given I merge product from "shipment2" into "shipment1" with following information:
+      | product_name | quantity |
+      | saucisson    | 1        |
+    Then the shipment "shipment1" should have the following products:
+      | product_name   | quantity |
+      | bottle of beer | 1        |
+      | saucisson      | 1        |
+    And the shipment "shipment2" should have the following products:
+      | product_name   | quantity |
+      | saucisson      | 1        |
+
+  Scenario: Merge product into a shipment with full quantity
+    Given I merge product from "shipment2" into "shipment1" with following information:
+      | product_name | quantity |
+      | saucisson    | 1        |
+    Then the shipment "shipment1" should have the following products:
+      | product_name   | quantity |
+      | bottle of beer | 1        |
+      | saucisson      | 2        |
+    And the shipment "shipment2" should be deleted

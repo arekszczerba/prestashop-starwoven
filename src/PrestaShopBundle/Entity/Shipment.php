@@ -34,6 +34,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Table()
  *
+ * @ORM\Entity()
  * @ORM\Entity(repositoryClass="PrestaShopBundle\Entity\Repository\ShipmentRepository"))
  *
  * @ORM\HasLifecycleCallbacks
@@ -112,7 +113,7 @@ class Shipment
     /**
      * @var Collection<ShipmentProduct>
      *
-     * @ORM\OneToMany(targetEntity="PrestaShopBundle\Entity\ShipmentProduct", mappedBy="shipment", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="PrestaShopBundle\Entity\ShipmentProduct", mappedBy="shipment", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private Collection $products;
 
@@ -266,8 +267,18 @@ class Shipment
     public function addShipmentProduct(ShipmentProduct $shipmentProduct): self
     {
         $this->products[] = $shipmentProduct;
-
         $shipmentProduct->setShipment($this);
+
+        return $this;
+    }
+
+    public function removeProduct(ShipmentProduct $product): self
+    {
+        if ($this->products->removeElement($product)) {
+            if ($product->getShipment() === $this) {
+                $product->setShipment(null);
+            }
+        }
 
         return $this;
     }

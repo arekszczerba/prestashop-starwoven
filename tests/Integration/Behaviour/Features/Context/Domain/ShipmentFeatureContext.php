@@ -30,9 +30,11 @@ declare(strict_types=1);
 namespace Tests\Integration\Behaviour\Features\Context\Domain;
 
 use Behat\Gherkin\Node\TableNode;
-use Exception;
 use PHPUnit\Framework\Assert;
+use Exception;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\SwitchShipmentCarrierCommand;
+use OrderDetail;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\MergeProductsToShipment;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentProducts;
 use RuntimeException;
@@ -115,5 +117,56 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
             Assert::assertEquals($shipmentProducts[$i]->getQuantity(), (int) $data[$i]['quantity']);
             Assert::assertEquals($shipmentProducts[$i]->getProductName(), $data[$i]['product_name']);
         }
+    }
+
+    /**
+     * @Then the shipment :shipmentReference should be deleted
+     *
+     * @param string $shipmentReference
+     */
+    public function verifyIfShipmentIsDeleted(string $shipmentReference)
+    {
+        $shipmentId = SharedStorage::getStorage()->get($shipmentReference);
+
+        $shipmentProducts = $this->getQueryBus()->handle(
+            new GetShipmentProducts($shipmentId)
+        );
+
+        Assert::assertEmpty($shipmentProducts);
+    }
+
+    /**
+     * @Given I merge product from :sourceShipment into :targetShipment with following information:
+     *
+     * @param string $sourceShipmentReference
+     * @param string $targetShipmentReference
+     * @param TableNode $table
+     */
+    public function mergeProducsToShipment(string $sourceShipmentReference, string $targetShipmentReference, TableNode $table): void
+    {
+        $data = $table->getColumnsHash();
+        $orderDetailQuantities = [];
+        $sourceShipmentId = SharedStorage::getStorage()->get($sourceShipmentReference);
+        $targetShipmentId = SharedStorage::getStorage()->get($targetShipmentReference);
+
+        $getSourceShipmentProducts = $this->getQueryBus()->handle(
+            new GetShipmentProducts($sourceShipmentId)
+        );
+
+        foreach ($getSourceShipmentProducts as $sourceShipmentProduct) {
+            $orderDetail = new OrderDetail($sourceShipmentProduct->getOrderDetailId());
+            foreach ($data as $value) {
+                if ($orderDetail->product_name === $value['product_name']) {
+                    $orderDetailQuantities[] = [
+                        'id_order_detail' => $orderDetail->id,
+                        'quantity' => $value['quantity'],
+                    ];
+                }
+            }
+        }
+
+        $this->getCommandBus()->handle(
+            new MergeProductsToShipment($sourceShipmentId, $targetShipmentId, $orderDetailQuantities)
+        );
     }
 }

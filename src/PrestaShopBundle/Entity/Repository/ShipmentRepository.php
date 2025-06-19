@@ -30,6 +30,7 @@ namespace PrestaShopBundle\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use PrestaShopBundle\Entity\Shipment;
+use PrestaShopBundle\Entity\ShipmentProduct;
 
 class ShipmentRepository extends EntityRepository
 {
@@ -43,6 +44,11 @@ class ShipmentRepository extends EntityRepository
         return $this->findBy(['orderId' => $orderId]);
     }
 
+    public function findByShipmentId(int $shipmentId): ?Shipment
+    {
+        return $this->findOneBy(['id' => $shipmentId]);
+    }
+
     public function findByCarrierId(int $carrierId): array
     {
         return $this->findBy(['carrierId' => $carrierId]);
@@ -54,5 +60,57 @@ class ShipmentRepository extends EntityRepository
         $this->getEntityManager()->flush();
 
         return $shipment->getId();
+    }
+
+    public function delete(Shipment $shipment): void
+    {
+        $this->getEntityManager()->remove($shipment);
+        $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @param Shipment $source
+     * @param Shipment $target
+     * @param ShipmentProduct[] $shipmentProducts
+     */
+    public function mergeProducsToShipment(Shipment $source, Shipment $target, $shipmentProducts): void
+    {
+        $sourceProductsByOrderDetailId = array_reduce($source->getProducts()->toArray(), function ($carry, ShipmentProduct $product) {
+            $carry[$product->getOrderDetailId()] = $product;
+
+            return $carry;
+        }, []);
+
+        $targetProductsByOrderDetailId = array_reduce($target->getProducts()->toArray(), function ($carry, ShipmentProduct $product) {
+            $carry[$product->getOrderDetailId()] = $product;
+
+            return $carry;
+        }, []);
+
+        foreach ($shipmentProducts as $shipmentProduct) {
+            if (empty($targetProductsByOrderDetailId[$shipmentProduct->getOrderDetailId()])) {
+                $target->addShipmentProduct($shipmentProduct);
+            } else {
+                $targetProduct = $targetProductsByOrderDetailId[$shipmentProduct->getOrderDetailId()];
+                $newQuantity = $targetProduct->getQuantity() + $shipmentProduct->getQuantity();
+                $targetProduct->setQuantity($newQuantity);
+            }
+            $orderDetailId = $shipmentProduct->getOrderDetailId();
+
+            if (!empty($sourceProductsByOrderDetailId[$orderDetailId])) {
+                $sourceProduct = $sourceProductsByOrderDetailId[$orderDetailId];
+                $newQuantity = $sourceProduct->getQuantity() - $shipmentProduct->getQuantity();
+                if ($newQuantity <= 0) {
+                    $source->removeProduct($sourceProduct);
+                } else {
+                    $sourceProduct->setQuantity($newQuantity);
+                }
+            }
+        }
+        $this->getEntityManager()->flush();
+
+        if ($source->getProducts()->isEmpty()) {
+            $this->delete($source);
+        }
     }
 }
