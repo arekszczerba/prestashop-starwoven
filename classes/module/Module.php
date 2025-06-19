@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
@@ -723,7 +724,7 @@ abstract class ModuleCore implements ModuleInterface
             UPDATE `' . _DB_PREFIX_ . 'module` m
             SET m.`version` = \'' . pSQL($version) . '\'
             WHERE m.`name` = \'' . pSQL($name) . '\'');
-        
+
         if (isset(static::$modules_cache[$name]['upgrade']) && true == static::$modules_cache[$name]['upgrade']['success']) {
             Hook::exec('actionModuleUpgradeAfter', ['module_name' => $name, 'old_version' => static::$modules_cache[$name]['upgrade']['upgraded_from'], 'new_version' => $version]);
         }
