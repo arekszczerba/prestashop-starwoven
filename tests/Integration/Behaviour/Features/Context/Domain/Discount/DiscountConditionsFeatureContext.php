@@ -28,6 +28,7 @@ namespace Tests\Integration\Behaviour\Features\Context\Domain\Discount;
 
 use Behat\Gherkin\Node\TableNode;
 use PHPUnit\Framework\Assert;
+use PrestaShop\Decimal\DecimalNumber;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Command\UpdateDiscountConditionsCommand;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ProductRule;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ProductRuleGroup;
@@ -35,9 +36,31 @@ use PrestaShop\PrestaShop\Core\Domain\Discount\ProductRuleType;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Query\GetDiscountForEditing;
 use PrestaShop\PrestaShop\Core\Domain\Discount\QueryResult\DiscountForEditing;
 use Tests\Integration\Behaviour\Features\Context\Domain\AbstractDomainFeatureContext;
+use Tests\Integration\Behaviour\Features\Context\Util\PrimitiveUtils;
 
 class DiscountConditionsFeatureContext extends AbstractDomainFeatureContext
 {
+    /**
+     * @When I update discount :discountReference with the condition of a minimum amount:
+     *
+     * @param string $discountReference
+     * @param TableNode $tableNode
+     *
+     * @return void
+     */
+    public function updateDiscountConditionMinimalAmount(string $discountReference, TableNode $tableNode): void
+    {
+        $data = $tableNode->getRowsHash();
+        $command = new UpdateDiscountConditionsCommand($this->referenceToId($discountReference));
+        $command->setMinimumAmount(
+            new DecimalNumber($data['minimum_amount']),
+            $this->referenceToId($data['minimum_amount_currency']),
+            PrimitiveUtils::castStringBooleanIntoBoolean($data['minimum_amount_tax_included']),
+            PrimitiveUtils::castStringBooleanIntoBoolean($data['minimum_amount_shipping_included']),
+        );
+        $this->getCommandBus()->handle($command);
+    }
+
     /**
      * @When I update discount :discountReference with the condition it requires at least :quantity products
      *

@@ -57,6 +57,10 @@ class DiscountForEditing
         private readonly ?int $giftCombinationId,
         private readonly int $minimumProductQuantity,
         private readonly array $productConditions,
+        private readonly ?DecimalNumber $minimumAmount,
+        private readonly ?int $minimumAmountCurrencyId,
+        private readonly ?bool $minimumAmountTaxIncluded,
+        private readonly ?bool $minimumAmountShippingIncluded,
     ) {
     }
 
@@ -176,5 +180,25 @@ class DiscountForEditing
     public function getProductConditions(): array
     {
         return $this->productConditions;
+    }
+
+    public function getMinimumAmount(): ?DecimalNumber
+    {
+        return $this->minimumAmount;
+    }
+
+    public function getMinimumAmountCurrencyId(): ?int
+    {
+        return $this->minimumAmountCurrencyId;
+    }
+
+    public function getMinimumAmountTaxIncluded(): ?bool
+    {
+        return $this->minimumAmountTaxIncluded;
+    }
+
+    public function getMinimumAmountShippingIncluded(): ?bool
+    {
+        return $this->minimumAmountShippingIncluded;
     }
 }

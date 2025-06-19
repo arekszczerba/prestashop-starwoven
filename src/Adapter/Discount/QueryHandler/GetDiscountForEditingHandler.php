@@ -75,6 +75,10 @@ class GetDiscountForEditingHandler implements GetDiscountForEditingHandlerInterf
             $cartRule->gift_product_attribute,
             $cartRule->minimum_product_quantity,
             $discountConditions,
+            (float) $cartRule->minimum_amount > 0.00 ? new DecimalNumber($cartRule->minimum_amount) : null,
+            $cartRule->minimum_amount_currency,
+            $cartRule->minimum_amount_tax,
+            $cartRule->minimum_amount_shipping,
         );
     }
 }

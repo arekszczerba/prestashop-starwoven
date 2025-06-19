@@ -26,9 +26,12 @@
 
 namespace PrestaShop\PrestaShop\Core\Domain\Discount\Command;
 
+use PrestaShop\Decimal\DecimalNumber;
+use PrestaShop\PrestaShop\Core\Domain\Currency\ValueObject\CurrencyId;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Exception\DiscountConstraintException;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ProductRuleGroup;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountId;
+use PrestaShop\PrestaShop\Core\Domain\ValueObject\Money;
 
 class UpdateDiscountConditionsCommand
 {
@@ -37,6 +40,10 @@ class UpdateDiscountConditionsCommand
     private ?int $minimumProductsQuantity = null;
 
     private ?array $productConditions = null;
+
+    private ?Money $minimumAmount = null;
+
+    private ?bool $minimumAmountShippingIncluded = null;
 
     public function __construct(int $discountId)
     {
@@ -60,6 +67,28 @@ class UpdateDiscountConditionsCommand
         }
 
         $this->minimumProductsQuantity = $minimumProductsQuantity;
+
+        return $this;
+    }
+
+    public function getMinimumAmount(): ?Money
+    {
+        return $this->minimumAmount;
+    }
+
+    public function getMinimumAmountShippingIncluded(): ?bool
+    {
+        return $this->minimumAmountShippingIncluded;
+    }
+
+    public function setMinimumAmount(DecimalNumber $amountDiscount, int $currencyId, bool $taxIncluded, bool $minimumAmountShippingIncluded): self
+    {
+        if ($amountDiscount->isLowerThanZero()) {
+            throw new DiscountConstraintException(sprintf('Money amount cannot be lower than zero, %s given', $amountDiscount), DiscountConstraintException::INVALID_DISCOUNT_VALUE_CANNOT_BE_NEGATIVE);
+        }
+
+        $this->minimumAmount = new Money($amountDiscount, new CurrencyId($currencyId), $taxIncluded);
+        $this->minimumAmountShippingIncluded = $minimumAmountShippingIncluded;
 
         return $this;
     }

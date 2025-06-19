@@ -1,4 +1,5 @@
-{# **
+<?php
+/**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
  *
@@ -21,12 +22,34 @@
  * @author    PrestaShop SA and Contributors <contact@prestashop.com>
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
- * #}
+ */
 
-{#
- # DiscountConditionsType uses ToggleChildrenChoiceType as a parent to use its switch features but we want it
- # to look lije a card so we use the CardType row block to have the same row rendering.
- #}
-{% block _discount_conditions_row %}
-  {{ block('card_row') }}
-{% endblock %}
+namespace PrestaShopBundle\Twig\Extension;
+
+use Symfony\Component\Form\FormView;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
+
+/**
+ * This function allows updating a form vars from the twig, the new vars are merged with the existing ones.
+ * Used in ToggleChildrenChoiceType to force invalid state on the radio children.
+ *
+ * Example: {{ update_form_vars(form, {valid: false}) }}
+ */
+class UpdateFormVarsExtension extends AbstractExtension
+{
+    public function getFunctions(): array
+    {
+        return [
+            new TwigFunction(
+                'update_form_vars',
+                [$this, 'updateFormVars']
+            ),
+        ];
+    }
+
+    public function updateFormVars(FormView $formView, array $newVars): void
+    {
+        $formView->vars = array_merge($formView->vars, $newVars);
+    }
+}
