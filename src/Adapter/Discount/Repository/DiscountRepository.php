@@ -50,7 +50,6 @@ class DiscountRepository extends AbstractObjectModelRepository
         protected readonly Connection $connection,
         protected readonly string $dbPrefix
     ) {
-        $this->cartRuleValidator->setDiscountRepository($this);
     }
 
     public function add(CartRule $cartRule): CartRule
