@@ -998,7 +998,7 @@ class LinkCore
                 'extension' => $extension,
             ],
             null,
-            true,
+            true
         );
 
         if (!empty($overrideUrl)) {
@@ -1044,7 +1044,7 @@ class LinkCore
                 'ids' => $ids,
                 'type' => $type,
                 'extension' => $extension,
-            ],
+            ]
         );
 
         return $url;
