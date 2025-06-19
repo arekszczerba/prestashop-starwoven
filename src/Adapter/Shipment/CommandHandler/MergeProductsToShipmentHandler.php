@@ -74,8 +74,7 @@ class MergeProductsToShipmentHandler implements MergeProductsToShipmentHandlerIn
         try {
             $this->repository->mergeProducsToShipment($sourceShipment, $targetShipment, $shipmentProducts);
         } catch (Throwable $e) {
-            // throw new CannotMergeProductToShipmentException(sprintf('Cannot merge products to shipment with id "%s"', $targetId), 0, $e);
-            throw new CannotMergeProductToShipmentException($e->getMessage());
+            throw new CannotMergeProductToShipmentException(sprintf('Cannot merge products to shipment with id "%s"', $targetId), 0, $e);
         }
     }
 }
