@@ -45,6 +45,8 @@ class UpdateDiscountConditionsHandler implements UpdateDiscountConditionsHandler
             $command->getDiscountId(),
             $command->getMinimumProductsQuantity(),
             $command->getProductConditions(),
+            $command->getMinimumAmount(),
+            $command->getMinimumAmountShippingIncluded(),
         );
     }
 }

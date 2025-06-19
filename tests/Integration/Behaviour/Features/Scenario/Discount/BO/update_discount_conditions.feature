@@ -9,6 +9,7 @@ Feature: Update discount condition
 
   Background:
     Given shop "shop1" with name "test_shop" exists
+    Given there is a currency named "usd" with iso code "USD" and exchange rate of 0.92
 
   Scenario: Create discount with minimum products quantity
     When I create a "free_shipping" discount "discount_with_min_products" with following properties:
@@ -45,3 +46,24 @@ Feature: Update discount condition
     Then discount "discount_with_restricted_products" should have the following product conditions matching at least 42 products:
       | condition_type | items                              |
       | products       | beer_product, potato_chips_product |
+
+  Scenario: Create discount with minimum amount
+    When I create a "free_shipping" discount "discount_with_min_amount" with following properties:
+      | name[en-US] | Promotion |
+    Then discount "discount_with_min_amount" should have the following properties:
+      | name[en-US] | Promotion     |
+      | type        | free_shipping |
+    When I update discount "discount_with_min_amount" with the condition of a minimum amount:
+      | minimum_amount                   | 12.56 |
+      | minimum_amount_currency          | usd   |
+      | minimum_amount_tax_included      | true  |
+      | minimum_amount_shipping_included | true  |
+    Then discount "discount_with_min_amount" should have the following properties:
+      | name[en-US]                      | Promotion     |
+      | type                             | free_shipping |
+      | minimum_product_quantity         | 0             |
+      | minimum_amount                   | 12.56         |
+      | minimum_amount_currency          | usd           |
+      | minimum_amount_tax_included      | true          |
+      | minimum_amount_shipping_included | true          |
+    And discount "discount_with_min_amount" should have no product conditions
