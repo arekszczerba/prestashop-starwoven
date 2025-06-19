@@ -113,7 +113,7 @@ class Shipment
     /**
      * @var Collection<ShipmentProduct>
      *
-     * @ORM\OneToMany(targetEntity="PrestaShopBundle\Entity\ShipmentProduct", mappedBy="shipment", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="PrestaShopBundle\Entity\ShipmentProduct", mappedBy="shipment", cascade={"all"}, orphanRemoval=true)
      */
     private Collection $products;
 
