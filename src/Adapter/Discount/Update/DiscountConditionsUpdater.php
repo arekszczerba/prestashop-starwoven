@@ -165,13 +165,13 @@ class DiscountConditionsUpdater
         $discount->minimum_amount_tax = false;
         $discount->minimum_amount_shipping = false;
 
-        return $this->cleanDiscountProductRules($discount) + [
+        return array_merge($this->cleanDiscountProductRules($discount), [
             'minimum_product_quantity',
             'minimum_amount',
             'minimum_amount_currency',
             'minimum_amount_tax',
             'minimum_amount_shipping',
-        ];
+        ]);
     }
 
     private function cleanDiscountProductRules(CartRule $discount): array
