@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
@@ -439,11 +440,11 @@ class ConfigurationCore extends ObjectModel
     public static function updateValue($key, $values, $html = false, $idShopGroup = null, $idShop = null)
     {
         Hook::exec('actionConfigurationUpdateValueBefore', [
-          'key' => $key,
-          'values' => $values,
-          'html' => $html,
-          'idShopGroup' => $idShopGroup,
-          'idShop' => $idShop,
+            'key' => $key,
+            'values' => $values,
+            'html' => $html,
+            'idShopGroup' => $idShopGroup,
+            'idShop' => $idShop,
         ]);
 
         if (!Validate::isConfigName($key)) {
