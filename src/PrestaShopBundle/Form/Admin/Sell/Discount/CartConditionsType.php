@@ -26,6 +26,9 @@
 
 namespace PrestaShopBundle\Form\Admin\Sell\Discount;
 
+use PrestaShopBundle\Form\Admin\Sell\Product\Stock\PackedProductType;
+use PrestaShopBundle\Form\Admin\Type\EntitySearchInputType;
+use PrestaShopBundle\Form\Admin\Type\ProductSearchType;
 use PrestaShopBundle\Form\Admin\Type\ToggleChildrenChoiceType;
 use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -38,6 +41,7 @@ class CartConditionsType extends TranslatorAwareType
 {
     public const MINIMUM_AMOUNT = 'minimum_amount';
     public const MINIMUM_PRODUCT_QUANTITY = 'minimum_product_quantity';
+    public const SPECIFIC_PRODUCTS = 'specific_products';
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -72,6 +76,26 @@ class CartConditionsType extends TranslatorAwareType
                             'this.getParent().getParent().get("children_selector").getData() === "%s" && this.getParent().get("children_selector").getData() === "%s"',
                             DiscountConditionsType::CART_CONDITIONS,
                             self::MINIMUM_PRODUCT_QUANTITY
+                        ),
+                        constraints: [
+                            new GreaterThan(0),
+                        ],
+                    ),
+                ],
+            ])
+            ->add(self::SPECIFIC_PRODUCTS, ProductSearchType::class, [
+                'layout' => EntitySearchInputType::LIST_LAYOUT,
+                'entry_type' => PackedProductType::class,
+                'limit' => 0,
+                'label' => $this->trans('Specific product', 'Admin.Catalog.Feature'),
+                'include_combinations' => false,
+                'required' => false,
+                'constraints' => [
+                    new When(
+                        expression: sprintf(
+                            'this.getParent().getParent().get("children_selector").getData() === "%s" && this.getParent().get("children_selector").getData() === "%s"',
+                            DiscountConditionsType::CART_CONDITIONS,
+                            self::SPECIFIC_PRODUCTS
                         ),
                         constraints: [
                             new GreaterThan(0),

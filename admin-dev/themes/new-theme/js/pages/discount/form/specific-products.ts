@@ -21,40 +21,28 @@
  * @author    PrestaShop SA and Contributors <contact@prestashop.com>
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
- */
+*/
 
-import PriceReductionManager from '@components/form/price-reduction-manager';
+import {EventEmitter} from 'events';
+import EntitySearchInput from '@components/entity-search-input';
 import DiscountMap from '@pages/discount/discount-map';
-import CreateFreeGiftDiscount from '@pages/discount/form/create-free-gift-discount';
-import SpecificProducts from '@pages/discount/form/specific-products';
 
-$(() => {
-  window.prestashop.component.initComponents(
-    [
-      'TranslatableInput',
-      'ToggleChildrenChoice',
-      'GeneratableInput',
-    ],
-  );
+const {$} = window;
+export default class SpecificProducts {
+  $specificProductsSearchInput: JQuery;
 
-  new CreateFreeGiftDiscount();
-  new SpecificProducts();
+  entitySearchInput!: EntitySearchInput;
 
-  new PriceReductionManager(
-    DiscountMap.reductionTypeSelect,
-    DiscountMap.includeTaxInput,
-    DiscountMap.currencySelect,
-    DiscountMap.reductionValueSymbol,
-    DiscountMap.currencySelectContainer,
-  );
-  toggleCurrency();
-  document.querySelector(DiscountMap.reductionTypeSelect)?.addEventListener('change', toggleCurrency);
+  constructor() {
+    this.$specificProductsSearchInput = $(DiscountMap.specificProductsSearchContainer);
 
-  function toggleCurrency(): void {
-    if ($(DiscountMap.reductionTypeSelect).val() === 'percentage') {
-      $(DiscountMap.currencySelect).fadeOut();
-    } else {
-      $(DiscountMap.currencySelect).fadeIn();
+    if (this.$specificProductsSearchInput.length) {
+      const autocompleteUrl = (document.querySelector(DiscountMap.specificProductsSearchContainer) as HTMLElement)
+        ?.dataset.remoteUrl;
+      this.entitySearchInput = new EntitySearchInput(
+        this.$specificProductsSearchInput,
+        {remoteUrl: autocompleteUrl},
+      );
     }
   }
-});
+}

@@ -35,4 +35,5 @@ export default {
   freeGiftProductSearchContainer: '#discount_free_gift',
   discountTypeRadios: '#discount_type_selector_discount_type_selector input[type="radio"]',
   discountTypeSubmit: '#discountTypeSubmit',
+  specificProductsSearchContainer: '#discount_conditions_cart_conditions_specific_products',
 };

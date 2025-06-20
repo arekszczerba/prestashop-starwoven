@@ -1,3 +1,4 @@
+<?php
 /**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
@@ -23,38 +24,31 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 
-import PriceReductionManager from '@components/form/price-reduction-manager';
-import DiscountMap from '@pages/discount/discount-map';
-import CreateFreeGiftDiscount from '@pages/discount/form/create-free-gift-discount';
-import SpecificProducts from '@pages/discount/form/specific-products';
+namespace PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject;
 
-$(() => {
-  window.prestashop.component.initComponents(
-    [
-      'TranslatableInput',
-      'ToggleChildrenChoice',
-      'GeneratableInput',
-    ],
-  );
+use PrestaShop\PrestaShop\Core\Domain\Discount\Exception\DiscountConstraintException;
 
-  new CreateFreeGiftDiscount();
-  new SpecificProducts();
-
-  new PriceReductionManager(
-    DiscountMap.reductionTypeSelect,
-    DiscountMap.includeTaxInput,
-    DiscountMap.currencySelect,
-    DiscountMap.reductionValueSymbol,
-    DiscountMap.currencySelectContainer,
-  );
-  toggleCurrency();
-  document.querySelector(DiscountMap.reductionTypeSelect)?.addEventListener('change', toggleCurrency);
-
-  function toggleCurrency(): void {
-    if ($(DiscountMap.reductionTypeSelect).val() === 'percentage') {
-      $(DiscountMap.currencySelect).fadeOut();
-    } else {
-      $(DiscountMap.currencySelect).fadeIn();
+class DiscountConditionsId
+{
+    public function __construct(private readonly int $discountConditionsId)
+    {
+        $this->assertIsPositiveInt($discountConditionsId);
     }
-  }
-});
+
+    public function getValue(): int
+    {
+        return $this->discountConditionsId;
+    }
+
+    /**
+     * @param int $value
+     *
+     * @throws DiscountConstraintException
+     */
+    private function assertIsPositiveInt(int $value): void
+    {
+        if (0 >= $value) {
+            throw new DiscountConstraintException(sprintf('Invalid discount conditions id "%s".', $value), DiscountConstraintException::INVALID_ID);
+        }
+    }
+}

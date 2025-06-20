@@ -35,6 +35,9 @@ use PrestaShop\PrestaShop\Core\Domain\Discount\Command\UpdateDiscountCommand;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Command\UpdateDiscountConditionsCommand;
 use PrestaShop\PrestaShop\Core\Domain\Discount\DiscountSettings;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Exception\DiscountConstraintException;
+use PrestaShop\PrestaShop\Core\Domain\Discount\ProductRule;
+use PrestaShop\PrestaShop\Core\Domain\Discount\ProductRuleGroup;
+use PrestaShop\PrestaShop\Core\Domain\Discount\ProductRuleType;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountId;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountType;
 use PrestaShop\PrestaShop\Core\Domain\Exception\DomainConstraintException;
@@ -179,6 +182,20 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
                 );
             }
         }
+
+        $specificProducts = $data['conditions']['cart_conditions']['specific_products'] ?? [];
+        $productRuleGroups = [];
+
+        foreach ($specificProducts as $specificProduct) {
+            $productRuleGroups[] = new ProductRuleGroup(
+                $specificProduct['quantity'] ?? 1,
+                [
+                    new ProductRule(ProductRuleType::PRODUCTS, [$specificProduct['id']]),
+                ]
+            );
+        }
+
+        $conditionsCommand->setProductConditions($productRuleGroups);
 
         $this->commandBus->handle($conditionsCommand);
     }
