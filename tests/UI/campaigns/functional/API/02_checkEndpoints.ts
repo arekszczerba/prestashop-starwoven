@@ -105,13 +105,13 @@ describe('API : Check endpoints', async () => {
         '/customers/group/{customerGroupId}: PUT',
         // tests/UI/campaigns/functional/API/02_endpoints/02_customerGroup/04_postCustomersGroup.ts
         '/customers/group: POST',
-        // @todo
+        // @todo : https://github.com/PrestaShop/PrestaShop/issues/38784
         '/discount/{discountId}: DELETE',
-        // @todo
+        // @todo : https://github.com/PrestaShop/PrestaShop/issues/38647
         '/discount/{discountId}: GET',
-        // @todo
+        // @todo : https://github.com/PrestaShop/PrestaShop/issues/38784
         '/discount: POST',
-        // @todo
+        // @todo : https://github.com/PrestaShop/PrestaShop/issues/38784
         '/discounts: GET',
         // tests/UI/campaigns/functional/API/02_endpoints/03_hook/01_putHookStatusId.ts
         '/hook-status: PUT',
