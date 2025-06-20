@@ -59,7 +59,7 @@ class CountryContextBuilder implements LegacyContextBuilderInterface
             zoneId: (int) $legacyCountry->id_zone,
             currencyId: (int) $legacyCountry->id_currency,
             isoCode: $legacyCountry->iso_code,
-            callPrefix: $legacyCountry->call_prefix,
+            callPrefix: (int) $legacyCountry->call_prefix,
             name: $legacyCountry->name[$this->languageContext->getId()] ?? reset($legacyCountry->name),
             containsStates: (bool) $legacyCountry->contains_states,
             identificationNumberNeeded: (bool) $legacyCountry->need_identification_number,
