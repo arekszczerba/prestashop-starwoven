@@ -35,6 +35,7 @@ use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentException;
 /**
  * @ORM\Table()
  *
+ * @ORM\Entity()
  * @ORM\Entity(repositoryClass="PrestaShopBundle\Entity\Repository\ShipmentRepository"))
  *
  * @ORM\HasLifecycleCallbacks
