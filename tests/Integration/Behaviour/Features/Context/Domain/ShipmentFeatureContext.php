@@ -30,11 +30,11 @@ declare(strict_types=1);
 namespace Tests\Integration\Behaviour\Features\Context\Domain;
 
 use Behat\Gherkin\Node\TableNode;
-use PHPUnit\Framework\Assert;
 use Exception;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\SwitchShipmentCarrierCommand;
 use OrderDetail;
+use PHPUnit\Framework\Assert;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\MergeProductsToShipment;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\SwitchShipmentCarrierCommand;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentProducts;
 use RuntimeException;
