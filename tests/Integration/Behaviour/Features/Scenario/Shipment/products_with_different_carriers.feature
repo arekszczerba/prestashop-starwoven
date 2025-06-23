@@ -126,3 +126,19 @@ Feature: Product associated with different carriers
       | shipment_name                  | can_handle_merge |
       | Shipment 1 Beer carrier        | 0             |
       | Shipment 2 Saucisson carrier   | 1             |
+
+  Scenario: Splitting a shipment
+    Given I create carrier "pickup_carrier" with specified properties:
+      | name | Pickup |
+    And I assign product "saucisson" with following carriers:
+      | pickup_carrier |
+    And I split the shipment "shipment2" to create a new shipment with "pickup_carrier" with following products:
+      | product_name | quantity |
+      | saucisson    | 1        |
+    And the shipment "shipment2" should have the following products:
+      | product_name | quantity |
+      | saucisson    | 1        |
+    And the order "bo_order1" should have "3" shipments:
+    Then the shipment "shipment3" should have the following products:
+      | product_name | quantity |
+      | saucisson    | 1        |

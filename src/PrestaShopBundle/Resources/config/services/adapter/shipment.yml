@@ -15,3 +15,5 @@ services:
   PrestaShop\PrestaShop\Adapter\Shipment\QueryHandler\ListAvailableShipmentsHandler:
 
   PrestaShop\PrestaShop\Adapter\Shipment\QueryHandler\GetShipmentForViewingHandler:
+
+  PrestaShop\PrestaShop\Adapter\Shipment\CommandHandler\SplitShipmentHandler:

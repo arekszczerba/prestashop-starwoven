@@ -36,6 +36,7 @@ use OrderDetail;
 use PHPUnit\Framework\Assert;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\MergeProductsToShipment;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\SwitchShipmentCarrierCommand;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\SplitShipment;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentForViewing;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentProducts;
@@ -93,9 +94,9 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
                 throw new RuntimeException('Shipment [' . $shipment->getId() . '] does not belong to order [' . $orderId . ']');
             }
 
-            Assert::assertEquals($shipment->getTrackingNumber(), $shipmentData['tracking_number'], 'Wrong tracking number for ' . $carrierReference);
+            Assert::assertEquals($shipment->getTrackingNumber(), $shipmentData['tracking_number']);
             Assert::assertEquals($shipment->getCarrierId(), $carrierId, 'Wrong carrier ID for ' . $carrierReference);
-            Assert::assertEquals($shipment->getAddressId(), $addressId, 'Wrong address ID for ' . $carrierReference);
+            Assert::assertEquals($shipment->getAddressId(), $addressId);
             Assert::assertEquals($shipment->getShippingCostTaxExcluded(), $shipmentData['shipping_cost_tax_excl'], 'Wrong shipping cast tax excluded for ' . $carrierReference);
             Assert::assertEquals($shipment->getShippingCostTaxIncluded(), $shipmentData['shipping_cost_tax_incl'], 'Wrong shipping cast tax included for ' . $carrierReference);
             SharedStorage::getStorage()->set($shipmentData['shipment'], $shipment->getId());
@@ -222,5 +223,57 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
         Assert::assertEquals($expected['city'], $address->getCity(), 'City mismatch');
         Assert::assertEquals($expected['state'], $address->getStateName(), 'State mismatch');
         Assert::assertEquals($expected['country'], $address->getCountry(), 'Country mismatch');
+    }
+
+    /**
+     * @Given I split the shipment :shipmentReference to create a new shipment with :carrierReference with following products:
+     *
+     * @param string $shipmentReference
+     * @param TableNode $table
+     */
+    public function splitShipment(string $shipmentReference, string $carrierReference, TableNode $table): void
+    {
+        $data = $table->getColumnsHash();
+        $orderDetailQuantities = [];
+        $shipmentId = SharedStorage::getStorage()->get($shipmentReference);
+        $carrierId = $this->referenceToId($carrierReference);
+        $getShipmentProducts = $this->getQueryBus()->handle(
+            new GetShipmentProducts($shipmentId)
+        );
+
+        foreach ($getShipmentProducts as $sourceShipmentProduct) {
+            $orderDetail = new OrderDetail($sourceShipmentProduct->getOrderDetailId());
+            foreach ($data as $value) {
+                if ($orderDetail->product_name === $value['product_name']) {
+                    $orderDetailQuantities[] = [
+                        'id_order_detail' => $orderDetail->id,
+                        'quantity' => $value['quantity'],
+                    ];
+                }
+            }
+        }
+
+        $this->getCommandBus()->handle(
+            new SplitShipment($shipmentId, $orderDetailQuantities, $carrierId)
+        );
+    }
+
+    /**
+     * @Then the order :orderReference should have :shipmentNumberReference shipments:
+     *
+     * @param string $orderReference
+     * @param string $nbrShipment
+     */
+    public function assertShipmentForOrder(string $orderReference, string $nbrShipment): void
+    {
+        $orderId = $this->referenceToId($orderReference);
+        $shipments = $this->getQueryBus()->handle(
+            new GetOrderShipments($orderId)
+        );
+
+        Assert::assertEquals(count($shipments), (int) $nbrShipment);
+        $getLastShipment = end($shipments);
+
+        SharedStorage::getStorage()->set('shipment' . $getLastShipment->getId(), $getLastShipment->getId());
     }
 }
