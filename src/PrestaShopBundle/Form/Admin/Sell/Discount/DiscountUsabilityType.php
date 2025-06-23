@@ -26,63 +26,23 @@
 
 namespace PrestaShopBundle\Form\Admin\Sell\Discount;
 
-use PrestaShop\PrestaShop\Core\ConstraintValidator\Constraints\UniqueDiscountCode;
 use PrestaShopBundle\Form\Admin\Type\CardType;
-use PrestaShopBundle\Form\Admin\Type\GeneratableTextType;
 use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\When;
 
 class DiscountUsabilityType extends TranslatorAwareType
 {
-    public const AUTO_MODE = 'auto';
-    public const CODE_MODE = 'code';
-    protected const GENERATED_CODE_LENGTH = 8;
+    public const MODE = 'mode';
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('mode', ChoiceType::class, [
-                'label' => $this->trans('Specify discount mode', 'Admin.Catalog.Feature'),
-                'label_attr' => [
-                    'class' => 'bold',
-                ],
-                'choices' => [
-                    $this->trans('Create automatic discount', 'Admin.Catalog.Feature') => self::AUTO_MODE,
-                    $this->trans('Generate discount code', 'Admin.Catalog.Feature') => self::CODE_MODE,
-                ],
-                'expanded' => true,
-                'multiple' => false,
-            ])
-            ->add('code', GeneratableTextType::class, [
-                'label' => false, // No label for the code field, as it is self-explanatory
-                'row_attr' => [
-                    'class' => 'pl-4 code-generator-selector d-none', // Add padding to align with the choice options and hide by default
-                ],
-                'generated_value_length' => self::GENERATED_CODE_LENGTH,
+            ->add(self::MODE, DiscountUsabilityModeType::class, [
+                'label' => $this->trans('Specifiy discount mode', 'Admin.Catalog.Feature'),
+                'label_tag_name' => 'h3',
                 'required' => false,
-                'constraints' => [
-                    new When([
-                        'expression' => 'this.getParent().get("mode").getData() === constant("PrestaShopBundle\\\Form\\\Admin\\\Sell\\\Discount\\\DiscountUsabilityType::CODE_MODE")',
-                        'constraints' => [
-                            new NotBlank(),
-                            new UniqueDiscountCode(),
-                        ],
-                    ]),
-                ],
             ])
         ;
-    }
-
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        parent::configureOptions($resolver);
-        $resolver->setDefaults([
-            'label' => $this->trans('Usability conditions', 'Admin.Catalog.Feature'),
-        ]);
     }
 
     public function getParent()

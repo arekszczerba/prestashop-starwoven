@@ -45,7 +45,7 @@ use PrestaShop\PrestaShop\Core\Domain\Shop\Exception\ShopAssociationNotFound;
 use PrestaShop\PrestaShop\Core\Domain\Shop\Exception\ShopException;
 use PrestaShop\PrestaShop\Core\Domain\Shop\ValueObject\ShopId;
 use PrestaShop\PrestaShop\Core\Product\Combination\NameBuilder\CombinationNameBuilder;
-use PrestaShopBundle\Form\Admin\Sell\Discount\DiscountUsabilityType;
+use PrestaShopBundle\Form\Admin\Sell\Discount\DiscountUsabilityModeType;
 
 class DiscountFormDataProvider implements FormDataProviderInterface
 {
@@ -64,8 +64,10 @@ class DiscountFormDataProvider implements FormDataProviderInterface
     {
         return [
             'usability' => [
-                'mode' => DiscountUsabilityType::AUTO_MODE,
-                'code' => '',
+                'mode' => [
+                    'children_selector' => DiscountUsabilityModeType::AUTO_MODE,
+                    'code' => '',
+                ],
             ],
         ];
     }
@@ -130,8 +132,10 @@ class DiscountFormDataProvider implements FormDataProviderInterface
                 ],
             ],
             'usability' => [
-                'mode' => $discountForEditing->getCode() ? DiscountUsabilityType::CODE_MODE : DiscountUsabilityType::AUTO_MODE,
-                'code' => $discountForEditing->getCode(),
+                'mode' => [
+                    'children_selector' => $discountForEditing->getCode() ? DiscountUsabilityModeType::CODE_MODE : DiscountUsabilityModeType::AUTO_MODE,
+                    'code' => $discountForEditing->getCode(),
+                ],
             ],
         ];
     }
