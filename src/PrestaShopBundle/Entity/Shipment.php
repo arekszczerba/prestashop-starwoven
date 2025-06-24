@@ -34,7 +34,6 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Table()
  *
- * @ORM\Entity()
  * @ORM\Entity(repositoryClass="PrestaShopBundle\Entity\Repository\ShipmentRepository"))
  *
  * @ORM\HasLifecycleCallbacks

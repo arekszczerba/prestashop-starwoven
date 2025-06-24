@@ -62,10 +62,7 @@ class MergeProductsToShipment
         return $this->targetShipmentId;
     }
 
-    /**
-     * @return OrderDetailQuantity
-     */
-    public function getOrderDetailQuantities(): OrderDetailQuantity
+    public function getOrderDetailQuantity(): OrderDetailQuantity
     {
         return $this->orderDetailQuantities;
     }

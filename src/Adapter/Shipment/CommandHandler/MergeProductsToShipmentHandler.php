@@ -50,7 +50,7 @@ class MergeProductsToShipmentHandler implements MergeProductsToShipmentHandlerIn
     {
         $sourceId = $command->getSourceShipmentId()->getValue();
         $targetId = $command->getTargetShipmentId()->getValue();
-        $products = $command->getOrderDetailQuantities()->getValue();
+        $products = $command->getOrderDetailQuantity()->getValue();
         $sourceShipment = $this->repository->findByShipmentId($sourceId);
         $targetShipment = $this->repository->findByShipmentId($targetId);
         $shipmentProducts = [];

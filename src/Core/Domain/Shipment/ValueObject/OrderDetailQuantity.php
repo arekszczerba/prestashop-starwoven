@@ -50,7 +50,7 @@ class OrderDetailQuantity
             }
         }
 
-        $this->items = array_values($items);
+        $this->items = $items;
     }
 
     /**
