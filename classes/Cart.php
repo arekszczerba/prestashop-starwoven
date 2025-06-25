@@ -3652,7 +3652,7 @@ class CartCore extends ObjectModel
          * If the module has an id_carrier property, we set it to the current carrier ID.
          *
          * We need to check if the property exists because not all carrier modules have this property.
-         * Those that extend CarrierModule have it automatically, but those extendind regular Module may not.
+         * Those that extend CarrierModule have it automatically, but those extending regular Module may not.
          */
         /** @phpstan-ignore-next-line */
         if (property_exists($module, 'id_carrier')) {
