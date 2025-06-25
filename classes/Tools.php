@@ -2122,9 +2122,11 @@ class ToolsCore
             $path = _PS_ROOT_DIR_ . '/.htaccess';
         }
 
+        // Check if option "Apache optimization" was enabled in performance settings
         if (null === $cache_control) {
             $cache_control = (int) Configuration::get('PS_HTACCESS_CACHE_CONTROL');
         }
+
         if (null === $disable_multiviews) {
             $disable_multiviews = (bool) Configuration::get('PS_HTACCESS_DISABLE_MULTIVIEWS');
         }
@@ -2186,9 +2188,6 @@ class ToolsCore
         }
 
         fwrite($write_fd, "RewriteEngine on\n");
-
-        // Protect .git files or folders
-        fwrite($write_fd, "# Protect .git\nRewriteRule \.git - [F,L]\n");
 
         if (
             !$medias
@@ -2283,6 +2282,7 @@ class ToolsCore
                 }
                 fwrite($write_fd, 'RewriteRule ^images_ie/?([^/]+)\.(jpe?g|png|gif)$ %{ENV:REWRITEBASE}js/jquery/plugins/fancybox/images/$1.$2 [L]' . PHP_EOL);
             }
+
             // Redirections to dispatcher
             if ($rewrite_settings) {
                 fwrite($write_fd, "\n# Send all other traffic to dispatcher\n");
@@ -2302,17 +2302,22 @@ class ToolsCore
 
         fwrite($write_fd, "</IfModule>\n\n");
 
+        // Serve fonts properly and avoid CORS issues
+        fwrite($write_fd, "# Serve fonts properly and avoid CORS issues\n");
         fwrite($write_fd, "AddType application/vnd.ms-fontobject .eot\n");
         fwrite($write_fd, "AddType font/ttf .ttf\n");
         fwrite($write_fd, "AddType font/otf .otf\n");
         fwrite($write_fd, "AddType application/font-woff .woff\n");
         fwrite($write_fd, "AddType font/woff2 .woff2\n");
         fwrite($write_fd, "<IfModule mod_headers.c>
-	<FilesMatch \"\.(ttf|ttc|otf|eot|woff|woff2|svg)$\">
-		Header set Access-Control-Allow-Origin \"*\"
-	</FilesMatch>
+    <FilesMatch \"\.(ttf|ttc|otf|eot|woff|woff2|svg)$\">
+        Header set Access-Control-Allow-Origin \"*\"
+    </FilesMatch>
 </IfModule>\n\n");
-        fwrite($write_fd, '<Files composer.lock>
+
+        // Protect sensitive files from being accessed directly
+        fwrite($write_fd, '# Protect sensitive files from being accessed directly
+<FilesMatch "^(composer\.lock|\.git.*|\.env.*)$">
     # Apache 2.2
     <IfModule !mod_authz_core.c>
         Order deny,allow
@@ -2323,40 +2328,45 @@ class ToolsCore
     <IfModule mod_authz_core.c>
         Require all denied
     </IfModule>
-</Files>
+</FilesMatch>
+
 ');
-        // Cache control
+        // If option "Apache optimization" was enabled in performance settings, setup cache control
         if ($cache_control) {
-            $cache_control = "<IfModule mod_expires.c>
-	ExpiresActive On
+            $cache_control = "# Cache control for static files
+<IfModule mod_expires.c>
+    ExpiresActive On
     AddType image/webp .webp
     ExpiresByType image/webp \"access plus 1 month\"
     ExpiresByType image/avif \"access plus 1 month\"
-	ExpiresByType image/gif \"access plus 1 month\"
-	ExpiresByType image/jpeg \"access plus 1 month\"
-	ExpiresByType image/png \"access plus 1 month\"
-	ExpiresByType text/css \"access plus 1 week\"
-	ExpiresByType text/javascript \"access plus 1 week\"
-	ExpiresByType application/javascript \"access plus 1 week\"
-	ExpiresByType application/x-javascript \"access plus 1 week\"
-	ExpiresByType image/x-icon \"access plus 1 year\"
-	ExpiresByType image/svg+xml \"access plus 1 year\"
-	ExpiresByType image/vnd.microsoft.icon \"access plus 1 year\"
-	ExpiresByType application/font-woff \"access plus 1 year\"
-	ExpiresByType application/x-font-woff \"access plus 1 year\"
-	ExpiresByType font/woff2 \"access plus 1 year\"
-	ExpiresByType application/vnd.ms-fontobject \"access plus 1 year\"
-	ExpiresByType font/opentype \"access plus 1 year\"
-	ExpiresByType font/ttf \"access plus 1 year\"
-	ExpiresByType font/otf \"access plus 1 year\"
-	ExpiresByType application/x-font-ttf \"access plus 1 year\"
-	ExpiresByType application/x-font-otf \"access plus 1 year\"
+    ExpiresByType image/gif \"access plus 1 month\"
+    ExpiresByType image/jpeg \"access plus 1 month\"
+    ExpiresByType image/png \"access plus 1 month\"
+    ExpiresByType text/css \"access plus 1 week\"
+    ExpiresByType text/javascript \"access plus 1 week\"
+    ExpiresByType application/javascript \"access plus 1 week\"
+    ExpiresByType application/x-javascript \"access plus 1 week\"
+    ExpiresByType image/x-icon \"access plus 1 year\"
+    ExpiresByType image/svg+xml \"access plus 1 year\"
+    ExpiresByType image/vnd.microsoft.icon \"access plus 1 year\"
+    ExpiresByType application/font-woff \"access plus 1 year\"
+    ExpiresByType application/x-font-woff \"access plus 1 year\"
+    ExpiresByType font/woff2 \"access plus 1 year\"
+    ExpiresByType application/vnd.ms-fontobject \"access plus 1 year\"
+    ExpiresByType font/opentype \"access plus 1 year\"
+    ExpiresByType font/ttf \"access plus 1 year\"
+    ExpiresByType font/otf \"access plus 1 year\"
+    ExpiresByType application/x-font-ttf \"access plus 1 year\"
+    ExpiresByType application/x-font-otf \"access plus 1 year\"
 </IfModule>
 
+# Remove Etag header as this can cause issues with caching
 <IfModule mod_headers.c>
     Header unset Etag
 </IfModule>
 FileETag none
+
+# Enable GZIP compression for text, HTML, JavaScript, CSS, fonts and SVG files
 <IfModule mod_deflate.c>
     <IfModule mod_filter.c>
         AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/x-javascript font/ttf application/x-font-ttf font/otf application/x-font-otf font/opentype image/svg+xml
