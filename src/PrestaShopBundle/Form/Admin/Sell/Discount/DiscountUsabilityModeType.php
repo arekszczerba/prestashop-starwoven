@@ -26,6 +26,7 @@
 
 namespace PrestaShopBundle\Form\Admin\Sell\Discount;
 
+use PrestaShop\PrestaShop\Core\ConstraintValidator\Constraints\TypedRegex;
 use PrestaShop\PrestaShop\Core\ConstraintValidator\Constraints\UniqueDiscountCode;
 use PrestaShopBundle\Form\Admin\Type\GeneratableTextType;
 use PrestaShopBundle\Form\Admin\Type\ToggleChildrenChoiceType;
@@ -60,6 +61,7 @@ class DiscountUsabilityModeType extends TranslatorAwareType
                         ),
                         constraints: [
                             new NotBlank(),
+                            new TypedRegex(TypedRegex::TYPE_DISCOUNT_CODE),
                             new UniqueDiscountCode(),
                         ],
                     ),
