@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
@@ -242,6 +243,7 @@ class AdminAPIController extends PrestaShopAdminController
             'layoutHeaderToolbarBtn' => $this->getApiClientsToolbarButtons(),
             'isAdminAPIMultistoreDisabled' => $isAdminAPIMultistoreDisabled,
             'configurationForm' => $configurationForm,
+            'enableSidebar' => true,
         ]);
     }
 
@@ -357,7 +359,6 @@ class AdminAPIController extends PrestaShopAdminController
     private function isAdminAPIMultistoreDisabled(): bool
     {
         return !$this->getFeatureFlagStateChecker()->isEnabled(FeatureFlagSettings::FEATURE_FLAG_ADMIN_API_MULTISTORE)
-            && $this->getShopContext()->isMultiShopEnabled()
-        ;
+            && $this->getShopContext()->isMultiShopEnabled();
     }
 }
