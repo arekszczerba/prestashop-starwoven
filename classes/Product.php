@@ -7458,7 +7458,11 @@ class ProductCore extends ObjectModel
             $id_lang = Context::getContext()->language->id;
         }
 
-        $interval = Category::getInterval($this->id_category_default);
+        // Verify we got the interval, the category may not exist at all
+        if (empty($interval = Category::getInterval($this->id_category_default))) {
+            return [];
+        }
+
         $sql = new DbQuery();
         $sql->from('category', 'c');
         $sql->leftJoin('category_lang', 'cl', 'c.id_category = cl.id_category AND id_lang = ' . (int) $id_lang . Shop::addSqlRestrictionOnLang('cl'));

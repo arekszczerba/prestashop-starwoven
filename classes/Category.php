@@ -1967,7 +1967,8 @@ class CategoryCore extends ObjectModel
             $shop = Context::getContext()->shop;
         }
 
-        if (!$interval = Category::getInterval($shop->getCategory())) {
+        // Verify we got the interval of shop category
+        if (empty($interval = Category::getInterval($shop->getCategory()))) {
             return false;
         }
 
@@ -1990,14 +1991,21 @@ class CategoryCore extends ObjectModel
             $shop = Context::getContext()->shop;
         }
 
-        if (!$interval = Category::getInterval($shop->getCategory())) {
+        // Verify we got the interval of shop category
+        if (empty($interval = Category::getInterval($shop->getCategory()))) {
             return false;
         }
+
         $sql = new DbQuery();
         $sql->select('c.`nleft`, c.`nright`');
         $sql->from('category', 'c');
         $sql->where('c.`id_category` = ' . (int) $idCategory);
         $row = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow($sql);
+
+        // If it doesn't exist, we can end up right here
+        if (empty($row)) {
+            return false;
+        }
 
         return $row['nleft'] >= $interval['nleft'] && $row['nright'] <= $interval['nright'];
     }

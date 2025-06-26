@@ -45,6 +45,7 @@ class LinkCore
     protected $ssl_enable;
     protected $urlShopId = null;
 
+    // Categories that will not be used for URL rewriting
     protected static $category_disable_rewrite = null;
 
     /**
@@ -67,6 +68,7 @@ class LinkCore
             define('_PS_BASE_URL_SSL_', Tools::getShopDomainSsl(true));
         }
 
+        // Define categories that will not be used for URL rewriting
         if (Link::$category_disable_rewrite === null) {
             Link::$category_disable_rewrite = [
                 Configuration::get('PS_HOME_CATEGORY'),
@@ -229,9 +231,12 @@ class LinkCore
             $product = $this->getProductObject($product, $idLang, $idShop);
             $params['category'] = (!$category) ? $product->category : $category;
             $cats = [];
+            /*
+             * We will use all categories in the path of the default category,
+             * with two exceptions - the root category and the home category.
+             */
             foreach ($product->getParentCategories($idLang) as $cat) {
                 if (!in_array($cat['id_category'], Link::$category_disable_rewrite)) {
-                    // remove root and home category from the URL
                     $cats[] = $cat['link_rewrite'];
                 }
             }
