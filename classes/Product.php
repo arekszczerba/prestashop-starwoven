@@ -2639,6 +2639,11 @@ class ProductCore extends ObjectModel
             return false;
         }
 
+        // If this product does not have any combinations, no need to do any queries
+        if ($this->getProductType() != ProductType::TYPE_COMBINATIONS) {
+            return false;
+        }
+
         $result = Db::getInstance()->executeS(
             'SELECT pai.`id_image`, pai.`id_product_attribute`, il.`legend`
             FROM `' . _DB_PREFIX_ . 'product_attribute_image` pai
