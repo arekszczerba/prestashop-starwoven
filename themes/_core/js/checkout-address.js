@@ -30,7 +30,7 @@ const {addressForm} = prestashop.selectors.checkout;
 const editAddress = psGetRequestParameter('editAddress');
 const useSameAddress = psGetRequestParameter('use_same_address');
 
-export function updateAddressForm() {
+function updateAddressForm() {
   const $addressForm = $(`${addressForm} form`);
   const requestData = $addressForm.serialize();
   const confirmedRequestData = new URLSearchParams(requestData);
