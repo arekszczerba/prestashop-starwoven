@@ -658,7 +658,7 @@ class ValidateCore
     }
 
     /**
-     * Check for birthDate validity. To avoid year in two digits, disallow date < 200 years ago
+     * Check for birthDate validity. To avoid year in two digits, disallow date < 120 years ago to match with BO rules
      *
      * @param string $date birthdate to validate
      * @param string $format optional format
@@ -675,10 +675,10 @@ class ValidateCore
         if (!empty(DateTime::getLastErrors()['warning_count']) || false === $d) {
             return false;
         }
-        $twoHundredYearsAgo = new DateTime();
-        $twoHundredYearsAgo->sub(new DateInterval('P200Y'));
+        $oneHundredTwentyYearsAgo = new DateTime();
+        $oneHundredTwentyYearsAgo->sub(new DateInterval('P120Y'));
 
-        return $d->setTime(0, 0, 0) <= new DateTime() && $d->setTime(0, 0, 0) >= $twoHundredYearsAgo;
+        return $d->setTime(0, 0, 0) <= new DateTime() && $d->setTime(0, 0, 0) >= $oneHundredTwentyYearsAgo;
     }
 
     /**
