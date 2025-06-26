@@ -49,6 +49,7 @@ class FormFieldTest extends TestCase
             'maxLength' => null,
             'errors' => [],
             'autocomplete' => '',
+            'attr' => [],
         ], $formField->toArray());
     }
 
@@ -70,6 +71,7 @@ class FormFieldTest extends TestCase
             'maxLength' => null,
             'errors' => [],
             'autocomplete' => '',
+            'attr' => [],
         ], $formField->toArray());
 
         $formField->setMinLength(null);
@@ -86,6 +88,7 @@ class FormFieldTest extends TestCase
             'maxLength' => null,
             'errors' => [],
             'autocomplete' => '',
+            'attr' => [],
         ], $formField->toArray());
     }
 }
