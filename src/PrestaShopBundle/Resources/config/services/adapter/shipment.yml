@@ -17,3 +17,5 @@ services:
   PrestaShop\PrestaShop\Adapter\Shipment\QueryHandler\GetShipmentForViewingHandler:
 
   PrestaShop\PrestaShop\Adapter\Shipment\CommandHandler\SplitShipmentHandler:
+
+  PrestaShop\PrestaShop\Adapter\Shipment\CommandHandler\DeleteProductFromShipmentHandler:

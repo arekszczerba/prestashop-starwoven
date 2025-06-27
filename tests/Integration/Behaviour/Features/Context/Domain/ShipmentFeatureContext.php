@@ -36,6 +36,7 @@ use OrderDetail;
 use PHPUnit\Framework\Assert;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\MergeProductsToShipment;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\SplitShipment;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\DeleteProductFromShipment;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\SwitchShipmentCarrierCommand;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentForViewing;
@@ -258,6 +259,8 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
         );
     }
 
+
+
     /**
      * @Then the order :orderReference should have :shipmentNumberReference shipments:
      *
@@ -275,5 +278,35 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
         $getLastShipment = end($shipments);
 
         SharedStorage::getStorage()->set('shipment' . $getLastShipment->getId(), $getLastShipment->getId());
+    }
+
+    /**
+     * @Then I remove product from the shipment :shipmentReference with following properties:
+     *
+     * @param string $shipmentReference
+     * @param TableNode $table
+     */
+    public function deleteProductFromShipment(string $shipmentReference, TableNode $table)
+    {
+        $shipmentId = SharedStorage::getStorage()->get($shipmentReference);
+        $data = $table->getColumnsHash();
+        $getShipmentProducts = $this->getQueryBus()->handle(
+            new GetShipmentProducts($shipmentId)
+        );
+
+        $orderReferenceIds = 0;
+
+        foreach ($getShipmentProducts as $product) {
+            $orderDetail = new OrderDetail($product->getOrderDetailId());
+            foreach ($data as $value) {
+                if ($orderDetail->product_name === $value['product_name']) {
+                    $orderReferenceIds = $product->getOrderDetailId();
+                }
+            }
+        }
+
+        $this->getCommandBus()->handle(
+            new DeleteProductFromShipment($shipmentId, $orderReferenceIds)
+        );
     }
 }
