@@ -56,12 +56,12 @@ docker compose up
 
 Then reach your shop on this URL: http://localhost:8001
 
-Or the backoffice on this URL: http://localhost:8001/admin-dev (default access credentials: admin@prestashop.com / prestashop)
+Or the backoffice on this URL: http://localhost:8001/admin-dev (default access credentials: demo@prestashop.com / Correct Horse Battery Staple)
 
 You can customize the admin credentials by setting the following environment variables before running docker compose:
 ```
 export ADMIN_MAIL=your-email@example.com
-export ADMIN_PASSWD=your-secure-password
+export ADMIN_PASSWD=Your-Secure-Password
 docker compose up
 ```
 
