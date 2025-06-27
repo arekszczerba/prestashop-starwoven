@@ -56,7 +56,16 @@ docker compose up
 
 Then reach your shop on this URL: http://localhost:8001
 
-Docker will bind your port 8001 to the web server. If you want to use other port, open and modify the file `docker-compose.yml`.
+Or the backoffice on this URL: http://localhost:8001/admin-dev (default access credentials: admin@prestashop.com / prestashop)
+
+You can customize the admin credentials by setting the following environment variables before running docker compose:
+```
+export ADMIN_MAIL=your-email@example.com
+export ADMIN_PASSWD=your-secure-password
+docker compose up
+```
+
+Docker will bind your port **8001** to the web server. If you want to use other port, open and modify the file `docker-compose.yml`.
 MySQL credentials can also be found and modified in this file if needed.
 
 **Note:**  Before auto-installing PrestaShop, this container checks the file *app/config/parameters.php* does not exist on startup.
