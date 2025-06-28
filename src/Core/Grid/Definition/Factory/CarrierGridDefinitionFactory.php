@@ -88,11 +88,7 @@ class CarrierGridDefinitionFactory extends AbstractGridDefinitionFactory
         $this->connection = $connection;
         $this->dbPrefix = $dbPrefix;
 
-        $sql = 'SELECT count(external_module_name)
-                FROM ' . $this->dbPrefix . 'carrier
-                WHERE deleted = 0 AND external_module_name != ""';
-
-        $this->showExternalModuleColumn = (int) $this->connection->fetchOne($sql) > 0;
+        $this->showExternalModuleColumn = $this->hasActiveExternalModuleCarriers();
     }
 
     /**
@@ -354,5 +350,14 @@ class CarrierGridDefinitionFactory extends AbstractGridDefinitionFactory
             ->add(
                 $this->buildBulkDeleteAction('admin_carriers_bulk_delete')
             );
+    }
+
+    protected function hasActiveExternalModuleCarriers()
+    {
+        $sql = 'SELECT count(external_module_name)
+                FROM ' . $this->dbPrefix . 'carrier
+                WHERE deleted = 0 AND external_module_name != ""';
+
+        return (int) $this->connection->fetchOne($sql) > 0;
     }
 }
