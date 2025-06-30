@@ -1501,8 +1501,6 @@ class LanguageCore extends ObjectModel implements LanguageInterface
     /**
      * Check if more on than one language is activated.
      *
-     * @since 1.5.0
-     *
      * @return bool
      */
     public static function isMultiLanguageActivated($id_shop = null)

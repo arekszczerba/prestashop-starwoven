@@ -250,7 +250,6 @@ class CarrierCore extends ObjectModel
     }
 
     /**
-     * @since 1.5.0
      * @see ObjectModel::delete()
      */
     public function delete()
@@ -888,8 +887,6 @@ class CarrierCore extends ObjectModel
     /**
      * Gets a specific group.
      *
-     * @since 1.5.0
-     *
      * @return array Group
      */
     public function getGroups()
@@ -1298,8 +1295,6 @@ class CarrierCore extends ObjectModel
     /**
      * Returns the Tax rates associated to the Carrier.
      *
-     * @since 1.5
-     *
      * @param Address $address Address optional
      *
      * @return float Total Tax rate for this Carrier
@@ -1318,8 +1313,6 @@ class CarrierCore extends ObjectModel
     /**
      * Returns the taxes calculator associated to the carrier.
      *
-     * @since 1.5
-     *
      * @param Address $address Address
      *
      * @return TaxCalculator|AverageTaxOfProductsTaxCalculator Tax calculator object
@@ -1337,8 +1330,6 @@ class CarrierCore extends ObjectModel
 
     /**
      * This tricky method generates a SQL clause to check if ranged data are overloaded by multishop.
-     *
-     * @since 1.5.0
      *
      * @param string $range_table Range table
      *
@@ -1371,8 +1362,6 @@ class CarrierCore extends ObjectModel
 
     /**
      * Moves a carrier.
-     *
-     * @since 1.5.0
      *
      * @param bool $way Up (1) or Down (0)
      * @param int|null $position Current position of the Carrier
@@ -1420,8 +1409,6 @@ class CarrierCore extends ObjectModel
      * Reorder Carrier positions
      * Called after deleting a Carrier.
      *
-     * @since 1.5.0
-     *
      * @return bool $return
      */
     public static function cleanPositions()
@@ -1448,8 +1435,6 @@ class CarrierCore extends ObjectModel
     /**
      * Gets the highest carrier position.
      *
-     * @since 1.5.0
-     *
      * @return int $position
      */
     public static function getHigherPosition()
@@ -1464,8 +1449,6 @@ class CarrierCore extends ObjectModel
 
     /**
      * For a given product, gets the carrier available.
-     *
-     * @since 1.5.0
      *
      * @param Product $product The id of the product, or an array with at least the package size and weight
      * @param int|null $id_warehouse Warehouse ID - not used anymore
@@ -1616,8 +1599,6 @@ class CarrierCore extends ObjectModel
 
     /**
      * Assign one (ore more) group to all carriers.
-     *
-     * @since 1.5.0
      *
      * @param int|array $id_group_list Group ID or array of Group IDs
      * @param array $exception List of Carrier IDs to ignore
