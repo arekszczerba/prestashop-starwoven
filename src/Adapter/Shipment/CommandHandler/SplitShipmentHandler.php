@@ -49,7 +49,7 @@ class SplitShipmentHandler implements SplitShipmentHandlerInterface
     {
         $carrierId = $command->getCarrierId()->getValue();
         $shipmentToRemoveProductId = $command->getShipmentId()->getValue();
-        $products = $command->getOrderDetailQuantities()->getValue();
+        $products = $command->getOrderDetailQuantity()->getValue();
         $findShipment = $this->repository->findOneBy(['id' => $shipmentToRemoveProductId]);
 
         if (!$findShipment) {

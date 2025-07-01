@@ -37,7 +37,7 @@ class SplitShipment
     /**
      * @var OrderDetailQuantity
      */
-    private $orderDetailQuantities;
+    private $orderDetailQuantity;
 
     /**
      * @var CarrierId
@@ -46,12 +46,12 @@ class SplitShipment
 
     public function __construct(
         int $shipmentId,
-        array $orderDetailQuantities,
+        array $orderDetailQuantity,
         int $carrierId
     ) {
         $this->shipmentId = new ShipmentId($shipmentId);
-        $this->orderDetailQuantities = new OrderDetailQuantity(
-            $orderDetailQuantities,
+        $this->orderDetailQuantity = new OrderDetailQuantity(
+            $orderDetailQuantity,
         );
         $this->carrierId = new CarrierId($carrierId);
     }
@@ -61,9 +61,9 @@ class SplitShipment
         return $this->shipmentId;
     }
 
-    public function getOrderDetailQuantities(): OrderDetailQuantity
+    public function getOrderDetailQuantity(): OrderDetailQuantity
     {
-        return $this->orderDetailQuantities;
+        return $this->orderDetailQuantity;
     }
 
     public function getCarrierId(): CarrierId
