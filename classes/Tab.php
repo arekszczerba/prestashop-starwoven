@@ -635,9 +635,6 @@ class TabCore extends ObjectModel
         return parent::update($nullValues);
     }
 
-    /**
-     * @since 1.5.0
-     */
     public static function getClassNameById($idTab)
     {
         return Db::getInstance()->getValue('SELECT class_name FROM ' . _DB_PREFIX_ . 'tab WHERE id_tab = ' . (int) $idTab);

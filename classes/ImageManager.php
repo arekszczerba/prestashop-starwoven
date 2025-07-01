@@ -28,8 +28,6 @@
  * Class ImageManagerCore.
  *
  * This class includes functions for image manipulation
- *
- * @since 1.5.0
  */
 class ImageManagerCore
 {

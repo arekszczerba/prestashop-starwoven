@@ -662,8 +662,6 @@ class LinkCore
     /**
      * Create a link to a module.
      *
-     * @since    1.5.0
-     *
      * @param string $module Module name
      * @param string $controller
      * @param array $params
