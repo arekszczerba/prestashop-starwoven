@@ -30,6 +30,7 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentException;
 
 /**
  * @ORM\Table()
@@ -273,10 +274,8 @@ class Shipment
 
     public function removeProduct(ShipmentProduct $product): self
     {
-        if ($this->products->removeElement($product)) {
-            if ($product->getShipment() === $this) {
-                $product->setShipment(null);
-            }
+        if (!$this->products->removeElement($product)) {
+            throw new ShipmentException('Trying to remove a product that does not belong to the shipment');
         }
 
         return $this;

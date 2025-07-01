@@ -44,7 +44,7 @@ class ShipmentRepository extends EntityRepository
         return $this->findBy(['orderId' => $orderId]);
     }
 
-    public function findByShipmentId(int $shipmentId): ?Shipment
+    public function findById(int $shipmentId): ?Shipment
     {
         return $this->findOneBy(['id' => $shipmentId]);
     }
@@ -73,19 +73,10 @@ class ShipmentRepository extends EntityRepository
      * @param Shipment $target
      * @param ShipmentProduct[] $shipmentProducts
      */
-    public function mergeProducsToShipment(Shipment $source, Shipment $target, $shipmentProducts): void
+    public function mergeProductsToShipment(Shipment $source, Shipment $target, array $shipmentProducts): void
     {
-        $sourceProductsByOrderDetailId = array_reduce($source->getProducts()->toArray(), function ($carry, ShipmentProduct $product) {
-            $carry[$product->getOrderDetailId()] = $product;
-
-            return $carry;
-        }, []);
-
-        $targetProductsByOrderDetailId = array_reduce($target->getProducts()->toArray(), function ($carry, ShipmentProduct $product) {
-            $carry[$product->getOrderDetailId()] = $product;
-
-            return $carry;
-        }, []);
+        $sourceProductsByOrderDetailId = $this->getShipmentProductByOrderDetailId($source);
+        $targetProductsByOrderDetailId = $this->getShipmentProductByOrderDetailId($target);
 
         foreach ($shipmentProducts as $shipmentProduct) {
             if (empty($targetProductsByOrderDetailId[$shipmentProduct->getOrderDetailId()])) {
@@ -112,5 +103,14 @@ class ShipmentRepository extends EntityRepository
         if ($source->getProducts()->isEmpty()) {
             $this->delete($source);
         }
+    }
+
+    private function getShipmentProductByOrderDetailId(Shipment $shipment): array
+    {
+        return array_reduce($shipment->getProducts()->toArray(), function ($carry, ShipmentProduct $product) {
+            $carry[$product->getOrderDetailId()] = $product;
+
+            return $carry;
+        }, []);
     }
 }

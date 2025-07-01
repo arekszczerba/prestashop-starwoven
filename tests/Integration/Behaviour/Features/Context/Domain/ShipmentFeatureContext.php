@@ -142,7 +142,7 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
      * @param string $targetShipmentReference
      * @param TableNode $table
      */
-    public function mergeProducsToShipment(string $sourceShipmentReference, string $targetShipmentReference, TableNode $table): void
+    public function mergeProductsToShipment(string $sourceShipmentReference, string $targetShipmentReference, TableNode $table): void
     {
         $data = $table->getColumnsHash();
         $orderDetailQuantities = [];

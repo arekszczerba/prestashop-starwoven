@@ -51,8 +51,8 @@ class MergeProductsToShipmentHandler implements MergeProductsToShipmentHandlerIn
         $sourceId = $command->getSourceShipmentId()->getValue();
         $targetId = $command->getTargetShipmentId()->getValue();
         $products = $command->getOrderDetailQuantity()->getValue();
-        $sourceShipment = $this->repository->findByShipmentId($sourceId);
-        $targetShipment = $this->repository->findByShipmentId($targetId);
+        $sourceShipment = $this->repository->findById($sourceId);
+        $targetShipment = $this->repository->findById($targetId);
         $shipmentProducts = [];
 
         if (!$sourceShipment) {
@@ -72,7 +72,7 @@ class MergeProductsToShipmentHandler implements MergeProductsToShipmentHandlerIn
         }, $products);
 
         try {
-            $this->repository->mergeProducsToShipment($sourceShipment, $targetShipment, $shipmentProducts);
+            $this->repository->mergeProductsToShipment($sourceShipment, $targetShipment, $shipmentProducts);
         } catch (Throwable $e) {
             throw new CannotMergeProductToShipmentException(sprintf('Cannot merge products to shipment with id "%s"', $targetId), 0, $e);
         }
