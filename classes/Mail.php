@@ -258,7 +258,7 @@ class MailCore extends ObjectModel
             $from = $configuration['PS_SHOP_EMAIL'];
         }
 
-        // Validate it again, PS_SHOP_EMAIL could be wrong or empty 
+        // Validate it again, PS_SHOP_EMAIL could be wrong or empty
         if (!Validate::isEmail($from)) {
             $from = null;
         }
@@ -268,7 +268,7 @@ class MailCore extends ObjectModel
             $fromName = $configuration['PS_SHOP_NAME'];
         }
 
-        // Validate it again, PS_SHOP_NAME could be wrong or empty 
+        // Validate it again, PS_SHOP_NAME could be wrong or empty
         if (!Validate::isMailName($fromName)) {
             $fromName = null;
         }
@@ -370,7 +370,6 @@ class MailCore extends ObjectModel
         try {
             // Connect with the appropriate configuration, either SMTP or sendmail
             if ($configuration['PS_MAIL_METHOD'] == self::METHOD_SMTP) {
-
                 // Setup TLS configuration
                 if (!isset($configuration['PS_MAIL_SMTP_ENCRYPTION']) || Tools::strtolower($configuration['PS_MAIL_SMTP_ENCRYPTION']) === 'off') {
                     $isTls = false;
@@ -405,7 +404,7 @@ class MailCore extends ObjectModel
             // And initialize the mailer with the transport selected
             $mailer = new Mailer($transport);
 
-            /* 
+            /*
              * Now, we will load and verify the templates used to send this message
              * First, we build list of language ISO codes to try to use.
              * We will search for them in following order:
@@ -625,7 +624,7 @@ class MailCore extends ObjectModel
                     }
                 }
             }
-            
+
             // Assign the from name and adress to the email
             $email->from(new Address($from, (string) $fromName));
 
