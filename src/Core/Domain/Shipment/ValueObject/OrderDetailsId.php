@@ -45,7 +45,7 @@ class OrderDetailsId
     public function __construct(array $orderDetailsId)
     {
         if (0 >= count($orderDetailsId)) {
-            throw new Exception('You need  to provide at least one order detail id');
+            throw new Exception('You need to provide at least one order detail ID');
         }
 
         $this->orderDetailsId = $orderDetailsId;

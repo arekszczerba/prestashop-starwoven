@@ -35,6 +35,7 @@ use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryHandler\ListAvailableShipmen
 use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\ShipmentsForMerge;
 use PrestaShopBundle\Entity\Repository\ShipmentRepository;
 use Product;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
 #[AsQueryHandler]
@@ -42,6 +43,7 @@ class ListAvailableShipmentsHandler implements ListAvailableShipmentsHandlerInte
 {
     public function __construct(
         private readonly ShipmentRepository $repository,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -74,7 +76,7 @@ class ListAvailableShipmentsHandler implements ListAvailableShipmentsHandlerInte
 
                 if ($shipment->getDeliveredAt() === null) {
                     $isCompatible = in_array($shipment->getCarrierId(), $carrierCompatibleWithProduct);
-                    $shipmentName = 'Shipment ' . $shipment->getId() . ' ' . (new Carrier($shipment->getCarrierId()))->name;
+                    $shipmentName = $this->translator->trans('Shipment ', [], 'Shop.Forms.Labels') . $shipment->getId() . ' ' . (new Carrier($shipment->getCarrierId()))->name;
                     $shipments[] = new ShipmentsForMerge($shipment->getId(), $shipmentName, $isCompatible);
                 }
             }

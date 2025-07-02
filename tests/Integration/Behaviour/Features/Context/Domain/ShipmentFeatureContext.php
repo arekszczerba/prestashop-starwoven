@@ -173,16 +173,16 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
     }
 
     /**
-     * @Then order :orderReference should get available shipments for product :productReference:
+     * @Then order :orderReference should get available shipments for product :productName:
      */
-    public function orderShouldGetAvailableShipmentsForSpecificProduct(string $orderReference, string $productReference, TableNode $table): void
+    public function orderShouldGetAvailableShipmentsForSpecificProduct(string $orderReference, string $productName, TableNode $table): void
     {
         $orderId = $this->referenceToId($orderReference);
         $data = $table->getColumnsHash();
         $orderDetailList = (new Order($orderId))->getOrderDetailList();
         $orderDetailsId = [];
         foreach ($orderDetailList as $orderDetail) {
-            if ($orderDetail['product_name'] === $productReference) {
+            if ($orderDetail['product_name'] === $productName) {
                 $orderDetailsId[] = $orderDetail['id_order_detail'];
             }
         }
