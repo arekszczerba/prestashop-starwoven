@@ -36,6 +36,7 @@ use PHPUnit\Framework\Assert;
 use PrestaShop\PrestaShop\Core\Domain\Carrier\Command\AddCarrierCommand;
 use PrestaShop\PrestaShop\Core\Domain\Carrier\Command\EditCarrierCommand;
 use PrestaShop\PrestaShop\Core\Domain\Carrier\Exception\CarrierConstraintException;
+use PrestaShop\PrestaShop\Core\Domain\Carrier\Query\GetAvailableCarriers;
 use PrestaShop\PrestaShop\Core\Domain\Carrier\Query\GetCarrierForEditing;
 use PrestaShop\PrestaShop\Core\Domain\Carrier\QueryResult\EditableCarrier;
 use PrestaShop\PrestaShop\Core\Domain\Carrier\ValueObject\CarrierId;
@@ -404,6 +405,65 @@ class CarrierFeatureContext extends AbstractDomainFeatureContext
             CarrierConstraintException::class,
             constant(CarrierConstraintException::class . '::' . $errorCode)
         );
+    }
+
+    /**
+     * @Then the products :products should have the following carriers:
+     *
+     * @param string $products
+     * @param TableNode $table
+     */
+    public function assertCarriersWithState(string $products, TableNode $table)
+    {
+        $expectedRows = $table->getColumnsHash();
+
+        $expectedAvailable = [];
+        $expectedFiltered = [];
+
+        foreach ($expectedRows as $row) {
+            $carrier = ['name' => $row['carrier']];
+
+            if (strtolower($row['state']) === 'available') {
+                $expectedAvailable[] = $carrier;
+            } elseif (strtolower($row['state']) === 'filtered') {
+                $expectedFiltered[] = [
+                    'carrier' => $row['carrier'],
+                    'products' => $row['products'] ?? '',
+                ];
+            }
+        }
+
+        $productNames = explode(',', $products);
+        $productIds = [];
+
+        foreach ($productNames as $productName) {
+            $productIds[] = $this->referenceToId(trim($productName));
+        }
+
+        $carriersResult = $this->getQueryBus()->handle(
+            new GetAvailableCarriers($productIds)
+        );
+
+        $actualAvailable = array_map(function ($carrierSummary) {
+            return ['name' => $carrierSummary->getName()];
+        }, $carriersResult->getAvailableCarriers());
+
+        $actualFiltered = [];
+
+        foreach ($carriersResult->getFilteredOutCarriers() as $removedCarrier) {
+            $carrierName = $removedCarrier->getCarrier()->getName();
+            $productNames = array_map(function ($productSummary) {
+                return $productSummary->getName();
+            }, $removedCarrier->getProducts());
+
+            $actualFiltered[] = [
+                'carrier' => $carrierName,
+                'products' => implode(', ', $productNames),
+            ];
+        }
+
+        Assert::assertEquals($expectedAvailable, $actualAvailable, 'Available carriers do not match expected.');
+        Assert::assertEquals($expectedFiltered, $actualFiltered, 'Filtered carriers do not match expected.');
     }
 
     private function createCarrierUsingCommand(

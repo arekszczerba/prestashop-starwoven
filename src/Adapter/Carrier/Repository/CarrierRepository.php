@@ -353,4 +353,40 @@ class CarrierRepository extends AbstractMultiShopObjectModelRepository
             ->fetchOne()
         ;
     }
+
+    /**
+     * Returns a mapping of product IDs to their available carriers.
+     *
+     * @param int[] $productIds list of product IDs
+     *
+     * @return array<int, array<int, array{id_carrier: int, name: string}>>
+     *
+     * An associative array where the key is the product ID and the value is an array of carriers.
+     * Each carrier is represented as an associative array with keys:
+     *  - id_carrier: The carrier ID.
+     *  - name: The carrier name.
+     */
+    public function findCarriersByProductIds(array $productIds, ShopId $shopId): array
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $qb->select('pc.id_product as product_id, c.id_carrier AS id_carrier, c.name')
+            ->from($this->prefix . 'product_carrier', 'pc')
+            ->innerJoin('pc', $this->prefix . 'carrier', 'c', 'c.id_reference = pc.id_carrier_reference AND c.deleted = 0')
+            ->where($qb->expr()->in('pc.id_product', ':product_ids'))
+            ->andWhere('pc.id_shop = :shop_id')
+            ->setParameter('product_ids', $productIds, ArrayParameterType::INTEGER)
+            ->setParameter('shop_id', $shopId->getValue());
+
+        $results = $qb->executeQuery()->fetchAllAssociative();
+
+        $mapping = [];
+        foreach ($results as $row) {
+            $mapping[$row['product_id']][] = [
+                'id_carrier' => $row['id_carrier'],
+                'name' => $row['name'],
+            ];
+        }
+
+        return $mapping;
+    }
 }
