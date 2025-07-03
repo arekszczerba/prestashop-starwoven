@@ -627,7 +627,7 @@ class MailCore extends ObjectModel
                     $templateHtml = strtr($templateHtml, $templateVars);
                     $email->html($templateHtml);
 
-                    $templateTxt = (new PrestaShop\PrestaShop\Core\MailTemplate\Transformation\HTMLToTextTransformation)->apply($templateHtml, []);
+                    $templateTxt = (new PrestaShop\PrestaShop\Core\MailTemplate\Transformation\HTMLToTextTransformation())->apply($templateHtml, []);
                     $email->text($templateTxt);
                     break;
             }
