@@ -145,6 +145,7 @@ Feature: Product associated with different carriers
     Then the shipment "shipment1" should have the following products:
       | product_name   | quantity |
       | bottle of beer | 1        |
+      | bottle of sparking water | 2        |
       | saucisson      | 1        |
     And the shipment "shipment2" should have the following products:
       | product_name   | quantity |
@@ -158,6 +159,7 @@ Feature: Product associated with different carriers
     Then the shipment "shipment1" should have the following products:
       | product_name   | quantity |
       | bottle of beer | 1        |
+      | bottle of sparking water | 2        |
       | saucisson      | 2        |
     And the shipment "shipment2" should be deleted
 
@@ -177,3 +179,4 @@ Feature: Product associated with different carriers
     Then the shipment "shipment1" should have the following products:
     | product_name | quantity |
     |  bottle of sparking water   |     2    |
+    |  saucisson   |     2    |
