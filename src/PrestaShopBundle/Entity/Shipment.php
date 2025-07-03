@@ -278,6 +278,7 @@ class Shipment
             if ($product->getShipment() !== $this) {
                 throw new ShipmentException('Trying to remove a product that does not belong to the shipment');
             }
+            $product->setShipment(null);
         }
 
         return $this;
