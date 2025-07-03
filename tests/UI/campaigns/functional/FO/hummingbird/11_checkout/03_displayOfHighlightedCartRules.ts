@@ -135,8 +135,8 @@ describe('FO - Checkout : Display of highlighted cart rule', async () => {
       const priceATI = await foHummingbirdCartPage.getATIPrice(page);
       expect(priceATI).to.equal(parseFloat(totalAfterPromoCode.toFixed(2)));
 
-      const discountValue = await foHummingbirdCartPage.getDiscountValue(page, 1);
-      expect(discountValue).to.equal(-cartRuleWithCodeData.discountAmount!.value);
+      const discountValue = await foHummingbirdCartPage.getCartRuleValue(page, 1);
+      expect(discountValue).to.equal(`-€${cartRuleWithCodeData.discountAmount!.value.toFixed(2)}`);
     });
 
     it('should remove the discount', async function () {

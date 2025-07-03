@@ -168,7 +168,7 @@ describe('BO - Orders - Create order : Check summary', async () => {
       it('should check summary block', async function () {
         await testContext.addContextItem(this, 'testIdentifier', 'checkSummaryBlock1', baseContext);
 
-        const totalTaxes = await utilsCore.percentage(dataProducts.demo_12.priceTaxExcluded, dataProducts.demo_12.tax);
+        const totalTaxes = utilsCore.percentage(dataProducts.demo_12.priceTaxExcluded, dataProducts.demo_12.tax);
 
         const result = await boOrdersCreatePage.getSummaryDetails(page);
         await Promise.all([
@@ -197,7 +197,7 @@ describe('BO - Orders - Create order : Check summary', async () => {
       it('should check summary block', async function () {
         await testContext.addContextItem(this, 'testIdentifier', 'checkSummaryBlock2', baseContext);
 
-        const totalTaxes = await utilsCore.percentage(
+        const totalTaxes = utilsCore.percentage(
           dataProducts.demo_12.priceTaxExcluded - cartRuleWithCodeData.discountAmount!.value,
           20,
         );
@@ -227,7 +227,7 @@ describe('BO - Orders - Create order : Check summary', async () => {
       it('should check summary block', async function () {
         await testContext.addContextItem(this, 'testIdentifier', 'checkSummaryBlock3', baseContext);
 
-        const totalTaxes = await utilsCore.percentage(dataProducts.demo_12.priceTaxExcluded, dataProducts.demo_12.tax);
+        const totalTaxes = utilsCore.percentage(dataProducts.demo_12.priceTaxExcluded, dataProducts.demo_12.tax);
 
         const result = await boOrdersCreatePage.getSummaryDetails(page);
         await Promise.all([

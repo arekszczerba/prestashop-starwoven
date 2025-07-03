@@ -144,8 +144,8 @@ describe('FO - Checkout : Display of totals', async () => {
       const priceATI = await foClassicCartPage.getATIPrice(page);
       expect(priceATI).to.equal(parseFloat(totalAfterPromoCode.toFixed(2)));
 
-      const discountValue = await foClassicCartPage.getDiscountValue(page, 1);
-      expect(discountValue).to.equal(-cartRuleWithCodeData.discountAmount!.value);
+      const discountValue = await foClassicCartPage.getCartRuleValue(page, 1);
+      expect(discountValue).to.equal(`-€${cartRuleWithCodeData.discountAmount!.value.toFixed(2)}`);
     });
 
     it('should validate shopping cart and go to checkout page', async function () {
