@@ -29,7 +29,9 @@ declare(strict_types=1);
 namespace PrestaShopBundle\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentException;
 use PrestaShopBundle\Entity\Shipment;
+use PrestaShopBundle\Entity\ShipmentProduct;
 
 class ShipmentRepository extends EntityRepository
 {
@@ -43,6 +45,11 @@ class ShipmentRepository extends EntityRepository
         return $this->findBy(['orderId' => $orderId]);
     }
 
+    public function findById(int $shipmentId): ?Shipment
+    {
+        return $this->findOneBy(['id' => $shipmentId]);
+    }
+
     public function findByCarrierId(int $carrierId): array
     {
         return $this->findBy(['carrierId' => $carrierId]);
@@ -54,5 +61,56 @@ class ShipmentRepository extends EntityRepository
         $this->getEntityManager()->flush();
 
         return $shipment->getId();
+    }
+
+    public function delete(Shipment $shipment): void
+    {
+        $this->getEntityManager()->remove($shipment);
+        $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @param Shipment $source
+     * @param Shipment $target
+     * @param ShipmentProduct[] $shipmentProducts
+     */
+    public function mergeProductsToShipment(Shipment $source, Shipment $target, array $shipmentProducts): void
+    {
+        $sourceProductsByOrderDetailId = $this->getShipmentProductByOrderDetailId($source);
+        $targetProductsByOrderDetailId = $this->getShipmentProductByOrderDetailId($target);
+
+        foreach ($shipmentProducts as $shipmentProduct) {
+            if (empty($sourceProductsByOrderDetailId[$shipmentProduct->getOrderDetailId()])) {
+                throw new ShipmentException(sprintf('Order detail with id %d does not exist in source shipment', $shipmentProduct->getOrderDetailId()));
+            }
+            if (empty($targetProductsByOrderDetailId[$shipmentProduct->getOrderDetailId()])) {
+                $target->addShipmentProduct($shipmentProduct);
+            } else {
+                $targetProduct = $targetProductsByOrderDetailId[$shipmentProduct->getOrderDetailId()];
+                $newQuantity = $targetProduct->getQuantity() + $shipmentProduct->getQuantity();
+                $targetProduct->setQuantity($newQuantity);
+            }
+            $sourceProduct = $sourceProductsByOrderDetailId[$shipmentProduct->getOrderDetailId()];
+            $newQuantity = $sourceProduct->getQuantity() - $shipmentProduct->getQuantity();
+            if ($newQuantity <= 0) {
+                $source->removeProduct($sourceProduct);
+            } else {
+                $sourceProduct->setQuantity($newQuantity);
+            }
+        }
+        $this->getEntityManager()->flush();
+
+        if ($source->getProducts()->isEmpty()) {
+            $this->delete($source);
+        }
+    }
+
+    private function getShipmentProductByOrderDetailId(Shipment $shipment): array
+    {
+        return array_reduce($shipment->getProducts()->toArray(), function ($carry, ShipmentProduct $product) {
+            $carry[$product->getOrderDetailId()] = $product;
+
+            return $carry;
+        }, []);
     }
 }

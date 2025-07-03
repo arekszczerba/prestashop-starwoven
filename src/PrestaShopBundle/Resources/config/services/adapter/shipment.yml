@@ -9,3 +9,5 @@ services:
   PrestaShop\PrestaShop\Adapter\Shipment\QueryHandler\GetShipmentProductsHandler:
 
   PrestaShop\PrestaShop\Adapter\Shipment\CommandHandler\SwitchShipmentCarrierHandler:
+
+  PrestaShop\PrestaShop\Adapter\Shipment\CommandHandler\MergeProductsToShipmentHandler:
