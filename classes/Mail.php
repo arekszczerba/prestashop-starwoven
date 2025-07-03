@@ -104,6 +104,7 @@ class MailCore extends ObjectModel
     public const TYPE_HTML = 1;
     public const TYPE_TEXT = 2;
     public const TYPE_BOTH = 3;
+    public const TYPE_BOTH_AUTOMATIC_TEXT = 4;
 
     /**
      * Send mail under SMTP server.
@@ -462,6 +463,7 @@ class MailCore extends ObjectModel
                 } elseif (!file_exists($templatePath . $isoTemplate . '.html')
                           && (
                               $configuration['PS_MAIL_TYPE'] == Mail::TYPE_BOTH
+                              || $configuration['PS_MAIL_TYPE'] == Mail::TYPE_BOTH_AUTOMATIC_TEXT
                               || $configuration['PS_MAIL_TYPE'] == Mail::TYPE_HTML
                           )
                 ) {
@@ -602,13 +604,32 @@ class MailCore extends ObjectModel
             $templateVars = array_merge($templateVars, $extraTemplateVars);
 
             // Assign the content itself to the email message
-            if ($configuration['PS_MAIL_TYPE'] == Mail::TYPE_BOTH || $configuration['PS_MAIL_TYPE'] == Mail::TYPE_HTML) {
-                $templateHtml = strtr($templateHtml, $templateVars);
-                $email->html($templateHtml);
-            }
-            if ($configuration['PS_MAIL_TYPE'] == Mail::TYPE_BOTH || $configuration['PS_MAIL_TYPE'] == Mail::TYPE_TEXT) {
-                $templateTxt = strtr($templateTxt, $templateVars);
-                $email->text($templateTxt);
+            switch ($configuration['PS_MAIL_TYPE']) {
+                case Mail::TYPE_HTML:
+                    $templateHtml = strtr($templateHtml, $templateVars);
+                    $email->html($templateHtml);
+                    break;
+
+                case Mail::TYPE_TEXT:
+                    $templateTxt = strtr($templateTxt, $templateVars);
+                    $email->text($templateTxt);
+                    break;
+
+                case Mail::TYPE_BOTH:
+                    $templateHtml = strtr($templateHtml, $templateVars);
+                    $email->html($templateHtml);
+
+                    $templateTxt = strtr($templateTxt, $templateVars);
+                    $email->text($templateTxt);
+                    break;
+
+                case Mail::TYPE_BOTH_AUTOMATIC_TEXT:
+                    $templateHtml = strtr($templateHtml, $templateVars);
+                    $email->html($templateHtml);
+
+                    $templateTxt = (new PrestaShop\PrestaShop\Core\MailTemplate\Transformation\HTMLToTextTransformation)->apply($templateHtml, []);
+                    $email->text($templateTxt);
+                    break;
             }
 
             // Attach files to the email
