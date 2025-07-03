@@ -95,28 +95,6 @@ Feature: Product associated with different carriers
       | product_name | quantity |
       | saucisson    | 2        |
 
-  Scenario: Merge product into a shipment with specified quantity
-    Given I merge product from "shipment2" into "shipment1" with following information:
-      | product_name | quantity |
-      | saucisson    | 1        |
-    Then the shipment "shipment1" should have the following products:
-      | product_name   | quantity |
-      | bottle of beer | 1        |
-      | saucisson      | 1        |
-    And the shipment "shipment2" should have the following products:
-      | product_name   | quantity |
-      | saucisson      | 1        |
-
-  Scenario: Merge product into a shipment with full quantity
-    Given I merge product from "shipment2" into "shipment1" with following information:
-      | product_name | quantity |
-      | saucisson    | 1        |
-    Then the shipment "shipment1" should have the following products:
-      | product_name   | quantity |
-      | bottle of beer | 1        |
-      | saucisson      | 2        |
-    And the shipment "shipment2" should be deleted
-
   Scenario: Retrieve available shipments for merge action
     Then order "bo_order1" should get available shipments for product "bottle of beer":
       | shipment_name                  | can_handle_merge |
@@ -142,3 +120,25 @@ Feature: Product associated with different carriers
     Then the shipment "shipment3" should have the following products:
       | product_name | quantity |
       | saucisson    | 1        |
+
+  Scenario: Merge product into a shipment with specified quantity
+    Given I merge product from "shipment2" into "shipment1" with following information:
+      | product_name | quantity |
+      | saucisson    | 1        |
+    Then the shipment "shipment1" should have the following products:
+      | product_name   | quantity |
+      | bottle of beer | 1        |
+      | saucisson      | 1        |
+    And the shipment "shipment2" should have the following products:
+      | product_name   | quantity |
+      | saucisson      | 1        |
+    And the shipment "shipment2" should be deleted
+
+  Scenario: Merge product into a shipment with full quantity
+    Given I merge product from "shipment3" into "shipment1" with following information:
+      | product_name | quantity |
+      | saucisson    | 1        |
+    Then the shipment "shipment1" should have the following products:
+      | product_name   | quantity |
+      | bottle of beer | 1        |
+      | saucisson      | 2        |
