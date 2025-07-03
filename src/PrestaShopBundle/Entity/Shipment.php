@@ -274,10 +274,11 @@ class Shipment
 
     public function removeProduct(ShipmentProduct $product): self
     {
+        if ($product->getShipment() !== $this) {
+            throw new ShipmentException('Trying to remove a product that does not belong to the shipment');
+        }
+
         if ($this->products->removeElement($product)) {
-            if ($product->getShipment() !== $this) {
-                throw new ShipmentException('Trying to remove a product that does not belong to the shipment');
-            }
             $product->setShipment(null);
         }
 

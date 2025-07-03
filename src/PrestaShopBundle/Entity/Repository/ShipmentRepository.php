@@ -29,6 +29,7 @@ declare(strict_types=1);
 namespace PrestaShopBundle\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentException;
 use PrestaShopBundle\Entity\Shipment;
 use PrestaShopBundle\Entity\ShipmentProduct;
 
@@ -79,6 +80,9 @@ class ShipmentRepository extends EntityRepository
         $targetProductsByOrderDetailId = $this->getShipmentProductByOrderDetailId($target);
 
         foreach ($shipmentProducts as $shipmentProduct) {
+            if (empty($sourceProductsByOrderDetailId[$shipmentProduct->getOrderDetailId()])) {
+                throw new ShipmentException(sprintf('Order detail with id %d does not exist in source shipment', $shipmentProduct->getOrderDetailId()));
+            }
             if (empty($targetProductsByOrderDetailId[$shipmentProduct->getOrderDetailId()])) {
                 $target->addShipmentProduct($shipmentProduct);
             } else {
@@ -86,16 +90,12 @@ class ShipmentRepository extends EntityRepository
                 $newQuantity = $targetProduct->getQuantity() + $shipmentProduct->getQuantity();
                 $targetProduct->setQuantity($newQuantity);
             }
-            $orderDetailId = $shipmentProduct->getOrderDetailId();
-
-            if (!empty($sourceProductsByOrderDetailId[$orderDetailId])) {
-                $sourceProduct = $sourceProductsByOrderDetailId[$orderDetailId];
-                $newQuantity = $sourceProduct->getQuantity() - $shipmentProduct->getQuantity();
-                if ($newQuantity <= 0) {
-                    $source->removeProduct($sourceProduct);
-                } else {
-                    $sourceProduct->setQuantity($newQuantity);
-                }
+            $sourceProduct = $sourceProductsByOrderDetailId[$shipmentProduct->getOrderDetailId()];
+            $newQuantity = $sourceProduct->getQuantity() - $shipmentProduct->getQuantity();
+            if ($newQuantity <= 0) {
+                $source->removeProduct($sourceProduct);
+            } else {
+                $sourceProduct->setQuantity($newQuantity);
             }
         }
         $this->getEntityManager()->flush();
