@@ -170,8 +170,6 @@ class DiscountFormDataProvider implements FormDataProviderInterface
             }
         }
 
-        // dd($productConditions);
-
         return $productConditions;
     }
 
