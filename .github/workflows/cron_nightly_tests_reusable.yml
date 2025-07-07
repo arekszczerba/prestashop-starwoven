@@ -104,45 +104,6 @@ jobs:
           - 'modules:30-39'
           - 'regression'
         exclude:
-          ## 1.7.8.x
-          - BRANCH: 1.7.8.x
-            CAMPAIGN: 'audit'
-          - BRANCH: 1.7.8.x
-            CAMPAIGN: 'cldr'
-          - BRANCH: 1.7.8.x
-            CAMPAIGN: 'functional:BO:advanced-parameters:11-12'
-          - BRANCH: 1.7.8.x
-            CAMPAIGN: 'functional:BO:dashboard'
-          - BRANCH: 1.7.8.x
-            CAMPAIGN: 'functional:productV2'
-          - BRANCH: 1.7.8.x
-            CAMPAIGN: 'functional:API'
-          - BRANCH: 1.7.8.x
-            CAMPAIGN: 'functional:FO:classic:01-03'
-          - BRANCH: 1.7.8.x
-            CAMPAIGN: 'functional:FO:classic:04-07'
-          - BRANCH: 1.7.8.x
-            CAMPAIGN: 'functional:FO:classic:08-12'
-          - BRANCH: 1.7.8.x
-            CAMPAIGN: 'functional:FO:hummingbird:01-03'
-          - BRANCH: 1.7.8.x
-            CAMPAIGN: 'functional:FO:hummingbird:04-07'
-          - BRANCH: 1.7.8.x
-            CAMPAIGN: 'functional:FO:hummingbird:08-12'
-          - BRANCH: 1.7.8.x
-            CAMPAIGN: 'functional:WS'
-          - BRANCH: 1.7.8.x
-            CAMPAIGN: 'modules'
-          - BRANCH: 1.7.8.x
-            CAMPAIGN: 'modules:01-09'
-          - BRANCH: 1.7.8.x
-            CAMPAIGN: 'modules:10-19'
-          - BRANCH: 1.7.8.x
-            CAMPAIGN: 'modules:20-29'
-          - BRANCH: 1.7.8.x
-            CAMPAIGN: 'modules:30-39'
-          - BRANCH: 1.7.8.x
-            CAMPAIGN: 'sanity:productV2'
           ## 8.0.x
           - BRANCH: 8.0.x
             CAMPAIGN: 'audit'
@@ -258,7 +219,7 @@ jobs:
       REPORTS_DIR: 'reports_${{ matrix.BRANCH }}'  # Where to move test's reports
       TEST_CAMPAIGN: ${{ matrix.CAMPAIGN }}  # Command to execute from the matrix
       INSTALL_AUTO: ${{ (matrix.CAMPAIGN == 'sanity') && 'false' || 'true' }}
-      ENABLE_SSL: ${{ ((matrix.BRANCH == '8.0.x') || (matrix.BRANCH == '1.7.8.x')) && 'false' || 'true' }}
+      ENABLE_SSL: ${{ (matrix.BRANCH == '8.0.x') && 'false' || 'true' }}
 
     steps:
       - uses: actions/checkout@v4
