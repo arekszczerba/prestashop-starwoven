@@ -234,6 +234,38 @@ class DiscountFeatureContext extends AbstractDomainFeatureContext
             $command->setCode($data['code']);
         }
 
+        if (!empty($data['reduction_percent'])) {
+            $command->setPercentDiscount(new DecimalNumber($data['reduction_percent']));
+        }
+
+        if (!empty($data['reduction_amount'])) {
+            try {
+                $command->setAmountDiscount(
+                    new DecimalNumber($data['reduction_amount']),
+                    $this->getSharedStorage()->get($data['reduction_currency']),
+                    PrimitiveUtils::castStringBooleanIntoBoolean($data['taxIncluded']),
+                );
+            } catch (DiscountConstraintException $e) {
+                $this->setLastException($e);
+            }
+        }
+
+        if (!empty($data['reduction_product'])) {
+            if ((int) $data['reduction_product'] === -1 || (int) $data['reduction_product'] === -2) {
+                $command->setReductionProduct((int) $data['reduction_product']);
+            } else {
+                $command->setReductionProduct($this->getSharedStorage()->get($data['reduction_product']));
+            }
+        }
+
+        if (!empty($data['gift_product'])) {
+            $command->setProductId($this->referenceToId($data['gift_product']));
+        }
+
+        if (!empty($data['gift_combination'])) {
+            $command->setCombinationId($this->referenceToId($data['gift_combination']));
+        }
+
         try {
             /* @var DiscountId $discountId */
             $this->getCommandBus()->handle($command);
