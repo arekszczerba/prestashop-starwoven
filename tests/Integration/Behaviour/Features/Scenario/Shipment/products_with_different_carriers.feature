@@ -172,6 +172,7 @@ Feature: Product associated with different carriers
       | shipment_name                  | can_handle_merge |
       | Shipment 1 Beer carrier        | 0             |
       | Shipment 2 Saucisson carrier   | 1             |
+
   Scenario: Delete product from a existing shipment:
     When I remove product from the shipment "shipment1" with following properties:
     | product_name |
