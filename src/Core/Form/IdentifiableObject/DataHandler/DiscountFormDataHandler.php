@@ -181,21 +181,21 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
                     $data['conditions']['cart_conditions']['minimum_amount']['shipping_included'],
                 );
             }
+        } elseif ($data['conditions']['cart_conditions']['children_selector'] === CartConditionsType::SPECIFIC_PRODUCTS) {
+            $specificProducts = $data['conditions']['cart_conditions']['specific_products'] ?? [];
+            $productRuleGroups = [];
+
+            foreach ($specificProducts as $specificProduct) {
+                $productRuleGroups[] = new ProductRuleGroup(
+                    $specificProduct['quantity'] ?? 1,
+                    [
+                        new ProductRule(ProductRuleType::PRODUCTS, [$specificProduct['id']]),
+                    ]
+                );
+            }
+
+            $conditionsCommand->setProductConditions($productRuleGroups);
         }
-
-        $specificProducts = $data['conditions']['cart_conditions']['specific_products'] ?? [];
-        $productRuleGroups = [];
-
-        foreach ($specificProducts as $specificProduct) {
-            $productRuleGroups[] = new ProductRuleGroup(
-                $specificProduct['quantity'] ?? 1,
-                [
-                    new ProductRule(ProductRuleType::PRODUCTS, [$specificProduct['id']]),
-                ]
-            );
-        }
-
-        $conditionsCommand->setProductConditions($productRuleGroups);
 
         $this->commandBus->handle($conditionsCommand);
     }

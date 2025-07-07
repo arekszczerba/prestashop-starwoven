@@ -26,7 +26,6 @@
 
 namespace PrestaShopBundle\Form\Admin\Sell\Discount;
 
-use PrestaShopBundle\Form\Admin\Sell\Product\Stock\PackedProductType;
 use PrestaShopBundle\Form\Admin\Type\EntitySearchInputType;
 use PrestaShopBundle\Form\Admin\Type\ProductSearchType;
 use PrestaShopBundle\Form\Admin\Type\ToggleChildrenChoiceType;
@@ -85,7 +84,7 @@ class CartConditionsType extends TranslatorAwareType
             ])
             ->add(self::SPECIFIC_PRODUCTS, ProductSearchType::class, [
                 'layout' => EntitySearchInputType::LIST_LAYOUT,
-                'entry_type' => PackedProductType::class,
+                'entry_type' => ProductConditionType::class,
                 'limit' => 0,
                 'label' => $this->trans('Specific product', 'Admin.Catalog.Feature'),
                 'include_combinations' => false,
