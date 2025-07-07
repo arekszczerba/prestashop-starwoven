@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
@@ -23,6 +24,7 @@
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
+
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 class DispatcherCore
@@ -370,7 +372,7 @@ class DispatcherCore
 
                 break;
 
-                // Dispatch module controller for front office
+            // Dispatch module controller for front office
             case self::FC_MODULE:
                 $module_name = Validate::isModuleName(Tools::getValue('module')) ? Tools::getValue('module') : '';
                 $module = Module::getInstanceByName($module_name);
@@ -397,9 +399,10 @@ class DispatcherCore
 
                 break;
 
-                // Dispatch back office controller + module back office controller
+            // Dispatch back office controller + module back office controller
             case self::FC_ADMIN:
-                if ($this->use_default_controller
+                if (
+                    $this->use_default_controller
                     && !Tools::getValue('token')
                     && Validate::isLoadedObject(Context::getContext()->employee)
                     && Context::getContext()->employee->isLoggedBack()
@@ -448,7 +451,8 @@ class DispatcherCore
                     );
                     if (!isset($controllers[strtolower($this->controller)])) {
                         // If this is a parent tab, load the first child
-                        if (Validate::isLoadedObject($tab)
+                        if (
+                            Validate::isLoadedObject($tab)
                             && $tab->id_parent == 0
                             && ($tabs = Tab::getTabs(Context::getContext()->language->id, $tab->id))
                             && isset($tabs[0])
@@ -537,7 +541,7 @@ class DispatcherCore
             if (preg_match('#^/([a-z]{2})(?:/.*)?$#', $requestUri, $matches)) {
                 $_GET['isolang'] = $matches[1];
                 $requestUri = substr($requestUri, 3);
-            // Otherwise, we use the default language
+                // Otherwise, we use the default language
             } else {
                 $defaultLanguage = new Language((int) Configuration::get('PS_LANG_DEFAULT'));
                 $_GET['isolang'] = $defaultLanguage->iso_code;
@@ -586,7 +590,8 @@ class DispatcherCore
             foreach ($modules_routes as $module_route) {
                 if (is_array($module_route) && count($module_route)) {
                     foreach ($module_route as $route => $route_details) {
-                        if (array_key_exists('controller', $route_details)
+                        if (
+                            array_key_exists('controller', $route_details)
                             && array_key_exists('rule', $route_details)
                             && array_key_exists('keywords', $route_details)
                             && array_key_exists('params', $route_details)
@@ -703,7 +708,7 @@ class DispatcherCore
             $transform_keywords = [];
             preg_match_all(
                 '#\\\{(([^{}]*)\\\:)?(' .
-                implode('|', array_keys($keywords)) . ')(\\\:([^{}]*))?\\\}#',
+                    implode('|', array_keys($keywords)) . ')(\\\:([^{}]*))?\\\}#',
                 $regexp,
                 $m
             );
@@ -727,16 +732,16 @@ class DispatcherCore
                     $regexp = str_replace(
                         $m[0][$i],
                         $prepend_regexp .
-                        '(?P<' . $keywords[$keyword]['param'] . '>' . $keywords[$keyword]['regexp'] . ')' .
-                        $append_regexp,
+                            '(?P<' . $keywords[$keyword]['param'] . '>' . $keywords[$keyword]['regexp'] . ')' .
+                            $append_regexp,
                         $regexp
                     );
                 } else {
                     $regexp = str_replace(
                         $m[0][$i],
                         $prepend_regexp .
-                        '(' . $keywords[$keyword]['regexp'] . ')' .
-                        $append_regexp,
+                            '(' . $keywords[$keyword]['regexp'] . ')' .
+                            $append_regexp,
                         $regexp
                     );
                 }
@@ -890,8 +895,10 @@ class DispatcherCore
             $this->loadRoutes($id_shop);
         }
 
-        if (!isset($this->routes[$id_shop]) || !isset($this->routes[$id_shop][$id_lang])
-            || !isset($this->routes[$id_shop][$id_lang][$route_id])) {
+        if (
+            !isset($this->routes[$id_shop]) || !isset($this->routes[$id_shop][$id_lang])
+            || !isset($this->routes[$id_shop][$id_lang][$route_id])
+        ) {
             return false;
         }
 
@@ -900,28 +907,42 @@ class DispatcherCore
     }
 
     /**
-     * Check if a route rule contain all required keywords of default route definition.
+     * Check if a route rule contain all required keywords and if all keywords exist for default route definition.
      *
      * @param string $route_id
      * @param string $rule Rule to verify
-     * @param array $errors List of missing keywords
+     * @param array $errors List of missing or unknown keywords
      *
      * @return bool
      */
     public function validateRoute($route_id, $rule, &$errors = [])
     {
-        $errors = [];
+        $errors = [
+            'missing' => [],
+            'unknown' => []
+        ];
         if (!isset($this->default_routes[$route_id])) {
             return false;
         }
 
-        foreach ($this->default_routes[$route_id]['keywords'] as $keyword => $data) {
-            if (isset($data['param']) && !preg_match('#\{([^{}]*:)?' . $keyword . '(:[^{}]*)?\}#', $rule)) {
-                $errors[] = $keyword;
+        preg_match_all('/\{(?:\/:)?([\w_]+)\}/', $rule, $matches);
+        $found_keywords = $matches[1];
+
+        $expected_keywords = array_keys($this->default_routes[$route_id]['keywords']);
+
+        foreach ($found_keywords as $keyword) {
+            if (!in_array($keyword, $expected_keywords)) {
+                $errors['unknown'][] = $keyword;
             }
         }
 
-        return (count($errors)) ? false : true;
+        foreach ($this->default_routes[$route_id]['keywords'] as $keyword => $data) {
+            if (isset($data['param']) && !preg_match('#\{([^{}]*:)?' . $keyword . '(:[^{}]*)?\}#', $rule)) {
+                $errors['missing'][] = $keyword;
+            }
+        }
+
+        return empty($errors['missing']) && empty($errors['unknown']);
     }
 
     /**
@@ -961,8 +982,7 @@ class DispatcherCore
             $query = http_build_query($params, '', '&');
             $index_link = $this->use_routes ? '' : 'index.php';
 
-            return ($route_id == 'index') ? $index_link . (($query) ? '?' . $query : '') :
-                ((trim($route_id) == '') ? '' : $index_link . '?controller=' . $route_id) . (($query) ? '&' . $query : '') . $anchor;
+            return ($route_id == 'index') ? $index_link . (($query) ? '?' . $query : '') : ((trim($route_id) == '') ? '' : $index_link . '?controller=' . $route_id) . (($query) ? '&' . $query : '') . $anchor;
         }
         $route = $this->routes[$id_shop][$id_lang][$route_id];
         // Check required fields
@@ -1066,7 +1086,8 @@ class DispatcherCore
 
         $controller = Tools::getValue('controller');
 
-        if (isset($controller)
+        if (
+            isset($controller)
             && is_string($controller)
             && preg_match('/^([0-9a-z_-]+)\?(.*)=(.*)$/Ui', $controller, $m)
         ) {
@@ -1095,7 +1116,8 @@ class DispatcherCore
             // "controller_not_found" (a static file should not go through the dispatcher)
             if (
                 !preg_match('/\.(gif|jpe?g|png|css|js|ico)$/i', parse_url($test_request_uri, PHP_URL_PATH))
-                || preg_match('/^\/upload/', parse_url($test_request_uri, PHP_URL_PATH))) {
+                || preg_match('/^\/upload/', parse_url($test_request_uri, PHP_URL_PATH))
+            ) {
                 // Add empty route as last route to prevent this greedy regexp to match request uri before right time
                 if ($this->empty_route) {
                     $this->addRoute(

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
@@ -48,20 +49,28 @@ class RouteValidator
     }
 
     /**
-     * Check if a route rule contain all required keywords of default route definition.
+     * @deprecated since 9.0.1, use isRouteValid instead.
+     */
+    public function doesRouteContainsRequiredKeywords($routeId, $rule)
+    {
+        return $this->isRouteValid($routeId, $rule);
+    }
+
+    /**
+     * Check if a route rule is valid.
      *
      * @param string $routeId
      * @param string $rule Rule to verify
      *
-     * @return array - returns list of missing keywords
+     * @return array - returns list of missing or unknown keywords
      *
      * @throws PrestaShopException
      */
-    public function doesRouteContainsRequiredKeywords($routeId, $rule)
+    public function isRouteValid($routeId, $rule)
     {
-        $missingKeywords = [];
-        $validationResult = Dispatcher::getInstance()->validateRoute($routeId, $rule, $missingKeywords);
+        $errors = [];
+        $validationResult = Dispatcher::getInstance()->validateRoute($routeId, $rule, $errors);
 
-        return $validationResult ? [] : $missingKeywords;
+        return $validationResult ? [] : $errors;
     }
 }

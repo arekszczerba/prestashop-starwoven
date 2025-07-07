@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
@@ -23,6 +24,7 @@
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
+
 declare(strict_types=1);
 
 namespace PrestaShopBundle\Form\Admin\Configure\ShopParameters\TrafficSeo\Meta;
@@ -105,7 +107,7 @@ final class MetaSettingsUrlSchemaFormDataProvider implements FormDataProviderInt
     private function validateData(array $data)
     {
         $patternErrors = [];
-        $requiredFieldErrors = [];
+        $fieldErrors = [];
         foreach ($data as $routeId => $rule) {
             if (!$this->routeValidator->isRoutePattern($rule)) {
                 $patternErrors[] = $this->translator->trans(
@@ -117,19 +119,23 @@ final class MetaSettingsUrlSchemaFormDataProvider implements FormDataProviderInt
                 );
             }
 
-            $missingKeywords = $this->routeValidator->doesRouteContainsRequiredKeywords($routeId, $rule);
+            $errors = $this->routeValidator->isRouteValid($routeId, $rule);
 
-            if (!empty($missingKeywords)) {
-                foreach ($missingKeywords as $keyword) {
-                    $requiredFieldErrors[] = $this->translator->trans(
-                        'Keyword "{%keyword%}" required for route "%routeName%" (rule: "%routeRule%")',
-                        [
-                            '%keyword%' => $keyword,
-                            '%routeName%' => $routeId,
-                            '%routeRule%' => $rule,
-                        ],
-                        'Admin.Shopparameters.Feature'
-                    );
+            foreach (['missing', 'unknown'] as $type) {
+                if (!empty($errors[$type])) {
+                    foreach ($errors[$type] as $keyword) {
+                        $fieldErrors[] = $this->translator->trans(
+                            $type === 'missing'
+                                ? 'Keyword "{%keyword%}" required for route "%routeName%" (rule: "%routeRule%")'
+                                : 'Keyword "{%keyword%}" doesn\'t exist for route "%routeName%" (rule: "%routeRule%")',
+                            [
+                                '%keyword%' => $keyword,
+                                '%routeName%' => $routeId,
+                                '%routeRule%' => $rule,
+                            ],
+                            'Admin.Shopparameters.Feature'
+                        );
+                    }
                 }
             }
         }
@@ -138,6 +144,6 @@ final class MetaSettingsUrlSchemaFormDataProvider implements FormDataProviderInt
             return $patternErrors;
         }
 
-        return $requiredFieldErrors;
+        return $fieldErrors;
     }
 }
