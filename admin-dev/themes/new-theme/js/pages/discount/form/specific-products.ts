@@ -27,19 +27,19 @@ import EntitySearchInput from '@components/entity-search-input';
 import DiscountMap from '@pages/discount/discount-map';
 
 const {$} = window;
-export default class CreateFreeGiftDiscount {
-  $freeGiftSearchInput: JQuery;
+export default class SpecificProducts {
+  $specificProductsSearchInput: JQuery;
 
   entitySearchInput!: EntitySearchInput;
 
   constructor() {
-    this.$freeGiftSearchInput = $(DiscountMap.freeGiftProductSearchContainer);
+    this.$specificProductsSearchInput = $(DiscountMap.specificProductsSearchContainer);
 
-    if (this.$freeGiftSearchInput.length) {
-      const autocompleteUrl = (document.querySelector(DiscountMap.freeGiftProductSearchContainer) as HTMLElement)
+    if (this.$specificProductsSearchInput.length) {
+      const autocompleteUrl = (document.querySelector(DiscountMap.specificProductsSearchContainer) as HTMLElement)
         ?.dataset.remoteUrl;
       this.entitySearchInput = new EntitySearchInput(
-        this.$freeGiftSearchInput,
+        this.$specificProductsSearchInput,
         {remoteUrl: autocompleteUrl},
       );
     }

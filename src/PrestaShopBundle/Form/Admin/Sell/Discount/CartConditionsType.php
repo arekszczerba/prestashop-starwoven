@@ -26,6 +26,8 @@
 
 namespace PrestaShopBundle\Form\Admin\Sell\Discount;
 
+use PrestaShopBundle\Form\Admin\Type\EntitySearchInputType;
+use PrestaShopBundle\Form\Admin\Type\ProductSearchType;
 use PrestaShopBundle\Form\Admin\Type\ToggleChildrenChoiceType;
 use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -38,6 +40,7 @@ class CartConditionsType extends TranslatorAwareType
 {
     public const MINIMUM_AMOUNT = 'minimum_amount';
     public const MINIMUM_PRODUCT_QUANTITY = 'minimum_product_quantity';
+    public const SPECIFIC_PRODUCTS = 'specific_products';
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -78,6 +81,14 @@ class CartConditionsType extends TranslatorAwareType
                         ],
                     ),
                 ],
+            ])
+            ->add(self::SPECIFIC_PRODUCTS, ProductSearchType::class, [
+                'layout' => EntitySearchInputType::LIST_LAYOUT,
+                'entry_type' => ProductConditionType::class,
+                'limit' => 0,
+                'label' => $this->trans('Specific products', 'Admin.Catalog.Feature'),
+                'include_combinations' => false,
+                'required' => false,
             ])
         ;
     }

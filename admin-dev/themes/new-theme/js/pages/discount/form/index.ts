@@ -26,20 +26,19 @@
 import PriceReductionManager from '@components/form/price-reduction-manager';
 import DiscountMap from '@pages/discount/discount-map';
 import CreateFreeGiftDiscount from '@pages/discount/form/create-free-gift-discount';
+import SpecificProducts from '@pages/discount/form/specific-products';
 
 $(() => {
   window.prestashop.component.initComponents(
     [
-      'EventEmitter',
       'TranslatableInput',
       'ToggleChildrenChoice',
       'GeneratableInput',
     ],
   );
 
-  const {eventEmitter} = window.prestashop.instance;
-
-  new CreateFreeGiftDiscount(eventEmitter);
+  new CreateFreeGiftDiscount();
+  new SpecificProducts();
 
   new PriceReductionManager(
     DiscountMap.reductionTypeSelect,

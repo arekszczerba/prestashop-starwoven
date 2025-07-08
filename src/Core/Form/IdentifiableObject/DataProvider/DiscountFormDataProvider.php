@@ -93,6 +93,9 @@ class DiscountFormDataProvider implements FormDataProviderInterface
         } elseif ($discountForEditing->getMinimumAmount()) {
             $selectedCondition = 'cart_conditions';
             $selectedCartCondition = 'minimum_amount';
+        } elseif ($discountForEditing->getProductConditions()) {
+            $selectedCondition = 'cart_conditions';
+            $selectedCartCondition = 'specific_products';
         }
 
         return [
@@ -129,6 +132,7 @@ class DiscountFormDataProvider implements FormDataProviderInterface
                         'currency' => $discountForEditing->getMinimumAmountCurrencyId(),
                         'include_tax' => $discountForEditing->getMinimumAmountTaxIncluded(),
                     ],
+                    'specific_products' => $this->getProductConditionsDetails($discountForEditing),
                 ],
             ],
             'usability' => [
@@ -138,6 +142,33 @@ class DiscountFormDataProvider implements FormDataProviderInterface
                 ],
             ],
         ];
+    }
+
+    private function getProductConditionsDetails(DiscountForEditing $discountForEditing): array
+    {
+        $productConditions = [];
+        foreach ($discountForEditing->getProductConditions() as $conditions) {
+            foreach ($conditions->getRules() as $rule) {
+                $product = $this->productRepository->getProductByDefaultShop(new ProductId($rule->getItemIds()[0]));
+                $name = $product->name[$this->languageContext->getId()];
+
+                $productConditions[] = [
+                    'id' => $product->id,
+                    'name' => $name,
+                    'image' => $this->productImageProvider->getProductCoverUrl(
+                        new ProductId($product->id),
+                        new ShopId($this->shopContext->getId())
+                    ),
+                    'unique_identifier' => null,
+                    'product_id' => null,
+                    'combination_id' => null,
+                    'reference' => null,
+                    'quantity' => $conditions->getQuantity(),
+                ];
+            }
+        }
+
+        return $productConditions;
     }
 
     /**
