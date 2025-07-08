@@ -106,8 +106,14 @@ Feature: Full UX discount test
       | total          | $37.00 |
     When I add 1 product "product1" to the cart "dummy_cart"
     And cart "dummy_cart" total with tax included should be '$40.00'
+    # the cart rule for auto discounts is applied automatically, but is not visible in the cart if we hide discounts
     And my cart "dummy_cart" should have the following details:
       | total_products | $40.00 |
       | shipping       | $0.00  |
       | total_discount | $0.00  |
+      | total          | $40.00 |
+    And my cart "dummy_cart" should have the following details, without hiding auto discounts:
+      | total_products | $40.00 |
+      | shipping       | $7.00  |
+      | total_discount | -$7.00  |
       | total          | $40.00 |

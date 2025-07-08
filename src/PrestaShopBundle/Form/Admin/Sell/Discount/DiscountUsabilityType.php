@@ -32,12 +32,10 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class DiscountUsabilityType extends TranslatorAwareType
 {
-    public const MODE = 'mode';
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add(self::MODE, DiscountUsabilityModeType::class, [
+            ->add('mode', DiscountUsabilityModeType::class, [
                 'label' => $this->trans('Specifiy discount mode', 'Admin.Catalog.Feature'),
                 'label_tag_name' => 'h3',
                 'required' => false,

@@ -75,7 +75,6 @@ class DiscountUsabilityModeType extends TranslatorAwareType
         parent::configureOptions($resolver);
         $resolver->setDefaults([
             'required' => false,
-            'form_theme' => '@PrestaShop/Admin/Sell/Catalog/Discount/FormTheme/conditions_form_theme.html.twig',
         ]);
     }
 
