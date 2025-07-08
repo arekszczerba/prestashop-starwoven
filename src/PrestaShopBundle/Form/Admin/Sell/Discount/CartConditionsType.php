@@ -86,21 +86,9 @@ class CartConditionsType extends TranslatorAwareType
                 'layout' => EntitySearchInputType::LIST_LAYOUT,
                 'entry_type' => ProductConditionType::class,
                 'limit' => 0,
-                'label' => $this->trans('Specific product', 'Admin.Catalog.Feature'),
+                'label' => $this->trans('Specific products', 'Admin.Catalog.Feature'),
                 'include_combinations' => false,
                 'required' => false,
-                'constraints' => [
-                    new When(
-                        expression: sprintf(
-                            'this.getParent().getParent().get("children_selector").getData() === "%s" && this.getParent().get("children_selector").getData() === "%s"',
-                            DiscountConditionsType::CART_CONDITIONS,
-                            self::SPECIFIC_PRODUCTS
-                        ),
-                        constraints: [
-                            new GreaterThan(0),
-                        ],
-                    ),
-                ],
             ])
         ;
     }

@@ -132,9 +132,7 @@ class DiscountFormDataProvider implements FormDataProviderInterface
                         'currency' => $discountForEditing->getMinimumAmountCurrencyId(),
                         'include_tax' => $discountForEditing->getMinimumAmountTaxIncluded(),
                     ],
-                    'specific_products' => [
-                        $this->getProductConditionsDetails($discountForEditing),
-                    ],
+                    'specific_products' => $this->getProductConditionsDetails($discountForEditing),
                 ],
             ],
             'usability' => [
@@ -154,7 +152,7 @@ class DiscountFormDataProvider implements FormDataProviderInterface
                 $product = $this->productRepository->getProductByDefaultShop(new ProductId($rule->getItemIds()[0]));
                 $name = $product->name[$this->languageContext->getId()];
 
-                $productConditions = [
+                $productConditions[] = [
                     'id' => $product->id,
                     'name' => $name,
                     'image' => $this->productImageProvider->getProductCoverUrl(

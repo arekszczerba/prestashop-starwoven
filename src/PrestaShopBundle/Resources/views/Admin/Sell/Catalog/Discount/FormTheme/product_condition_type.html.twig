@@ -1,4 +1,4 @@
-/**
+{# **
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
  *
@@ -21,27 +21,23 @@
  * @author    PrestaShop SA and Contributors <contact@prestashop.com>
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
-*/
+ * #}
 
-import EntitySearchInput from '@components/entity-search-input';
-import DiscountMap from '@pages/discount/discount-map';
-
-const {$} = window;
-export default class SpecificProducts {
-  $specificProductsSearchInput: JQuery;
-
-  entitySearchInput!: EntitySearchInput;
-
-  constructor() {
-    this.$specificProductsSearchInput = $(DiscountMap.specificProductsSearchContainer);
-
-    if (this.$specificProductsSearchInput.length) {
-      const autocompleteUrl = (document.querySelector(DiscountMap.specificProductsSearchContainer) as HTMLElement)
-        ?.dataset.remoteUrl;
-      this.entitySearchInput = new EntitySearchInput(
-        this.$specificProductsSearchInput,
-        {remoteUrl: autocompleteUrl},
-      );
-    }
-  }
-}
+{% block entity_item_list_row %}
+  {% set attr = attr|merge({class: (attr.class|default('') ~ ' media entity-item')|trim}) %}
+  <li {{ block('widget_container_attributes') }}>
+    <div class="media-left">
+      {{ form_widget(form.image) }}
+    </div>
+    <div class="media-body media-middle">
+      {{ form_widget(form.name) }}
+    </div>
+    <div class="media-body media-middle">
+      {{ form_widget(form.quantity) }}
+    </div>
+    <div class="media-right">
+      <i class="material-icons entity-item-delete">clear</i>
+    </div>
+    {{ form_rest(form) }}
+  </li>
+{% endblock %}

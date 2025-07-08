@@ -27,10 +27,10 @@
 namespace PrestaShopBundle\Form\Admin\Sell\Discount;
 
 use PrestaShopBundle\Form\Admin\Sell\Product\SearchedProductItemType;
-use PrestaShopBundle\Form\Admin\Type\TextPreviewType;
 use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Type;
@@ -43,10 +43,6 @@ class ProductConditionType extends TranslatorAwareType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('reference', TextPreviewType::class, [
-                'label' => false,
-                'preview_class' => 'reference-preview',
-            ])
             // @Todo must be an IntegerType or NumberType, but according with a prototype EntitySearchInputType limitation, set to TextType
             // @link https://github.com/PrestaShop/PrestaShop/issues/28513
             ->add('quantity', TextType::class, [
@@ -70,5 +66,13 @@ class ProductConditionType extends TranslatorAwareType
     public function getParent(): string
     {
         return SearchedProductItemType::class;
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
+        $resolver->setDefaults([
+            'form_theme' => '@PrestaShop/Admin/Sell/Catalog/Discount/FormTheme/product_condition_type.html.twig',
+        ]);
     }
 }
