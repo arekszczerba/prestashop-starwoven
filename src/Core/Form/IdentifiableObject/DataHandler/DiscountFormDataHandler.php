@@ -40,6 +40,7 @@ use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountType;
 use PrestaShop\PrestaShop\Core\Domain\Exception\DomainConstraintException;
 use PrestaShopBundle\Form\Admin\Sell\Discount\CartConditionsType;
 use PrestaShopBundle\Form\Admin\Sell\Discount\DiscountConditionsType;
+use PrestaShopBundle\Form\Admin\Sell\Discount\DiscountUsabilityModeType;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -95,8 +96,12 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
 
         $command->setActive(true);
 
-        // Random code based on discount type
-        $command->setCode(strtoupper(uniqid($discountType . '_')));
+        if ($data['usability']['mode']['children_selector'] === DiscountUsabilityModeType::CODE_MODE) {
+            $command->setCode($data['usability']['mode']['code'] ?? '');
+        } else {
+            $command->setCode('');
+        }
+
         $command->setTotalQuantity(100);
 
         /** @var DiscountId $discountId */
@@ -140,9 +145,14 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
             default:
                 throw new RuntimeException('Unknown discount type ' . $discountType);
         }
-        $command
-            ->setLocalizedNames($data['information']['names'])
-        ;
+        $command->setLocalizedNames($data['information']['names']);
+
+        if ($data['usability']['mode']['children_selector'] === DiscountUsabilityModeType::CODE_MODE) {
+            $command->setCode($data['usability']['mode']['code'] ?? '');
+        } else {
+            $command->setCode('');
+        }
+
         $this->commandBus->handle($command);
         $this->updateDiscountConditions($id, $data);
     }

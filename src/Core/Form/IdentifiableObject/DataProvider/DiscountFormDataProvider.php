@@ -45,6 +45,7 @@ use PrestaShop\PrestaShop\Core\Domain\Shop\Exception\ShopAssociationNotFound;
 use PrestaShop\PrestaShop\Core\Domain\Shop\Exception\ShopException;
 use PrestaShop\PrestaShop\Core\Domain\Shop\ValueObject\ShopId;
 use PrestaShop\PrestaShop\Core\Product\Combination\NameBuilder\CombinationNameBuilder;
+use PrestaShopBundle\Form\Admin\Sell\Discount\DiscountUsabilityModeType;
 
 class DiscountFormDataProvider implements FormDataProviderInterface
 {
@@ -61,7 +62,14 @@ class DiscountFormDataProvider implements FormDataProviderInterface
 
     public function getDefaultData()
     {
-        return [];
+        return [
+            'usability' => [
+                'mode' => [
+                    'children_selector' => DiscountUsabilityModeType::AUTO_MODE,
+                    'code' => '',
+                ],
+            ],
+        ];
     }
 
     /**
@@ -121,6 +129,12 @@ class DiscountFormDataProvider implements FormDataProviderInterface
                         'currency' => $discountForEditing->getMinimumAmountCurrencyId(),
                         'include_tax' => $discountForEditing->getMinimumAmountTaxIncluded(),
                     ],
+                ],
+            ],
+            'usability' => [
+                'mode' => [
+                    'children_selector' => $discountForEditing->getCode() ? DiscountUsabilityModeType::CODE_MODE : DiscountUsabilityModeType::AUTO_MODE,
+                    'code' => $discountForEditing->getCode(),
                 ],
             ],
         ];

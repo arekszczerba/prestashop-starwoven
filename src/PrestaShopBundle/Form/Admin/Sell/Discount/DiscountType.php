@@ -80,6 +80,11 @@ class DiscountType extends TranslatorAwareType
                 ])
             ;
         }
+
+        $builder
+            ->add('usability', DiscountUsabilityType::class, [
+                'label' => $this->trans('Usability conditions', 'Admin.Catalog.Feature'),
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

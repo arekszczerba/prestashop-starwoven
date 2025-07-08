@@ -28,14 +28,17 @@ import DiscountMap from '@pages/discount/discount-map';
 import CreateFreeGiftDiscount from '@pages/discount/form/create-free-gift-discount';
 
 $(() => {
-  const {eventEmitter} = window.prestashop.instance;
-
   window.prestashop.component.initComponents(
     [
+      'EventEmitter',
       'TranslatableInput',
       'ToggleChildrenChoice',
+      'GeneratableInput',
     ],
   );
+
+  const {eventEmitter} = window.prestashop.instance;
+
   new CreateFreeGiftDiscount(eventEmitter);
 
   new PriceReductionManager(

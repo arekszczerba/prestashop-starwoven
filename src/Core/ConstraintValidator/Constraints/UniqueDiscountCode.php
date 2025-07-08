@@ -1,4 +1,5 @@
-{# **
+<?php
+/**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
  *
@@ -21,12 +22,27 @@
  * @author    PrestaShop SA and Contributors <contact@prestashop.com>
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
- * #}
+ */
 
-{#
- # DiscountConditionsType uses ToggleChildrenChoiceType as a parent to use its switch features but we want it
- # to look like a card so we use the CardType row block to have the same row rendering.
- #}
-{% block _discount_conditions_row %}
-  {{ block('card_row') }}
-{% endblock %}
+declare(strict_types=1);
+
+namespace PrestaShop\PrestaShop\Core\ConstraintValidator\Constraints;
+
+use PrestaShop\PrestaShop\Core\ConstraintValidator\UniqueDiscountCodeValidator;
+use Symfony\Component\Validator\Constraint;
+
+/**
+ * Validation constraint for making sure that a discount code isn't already used by another discount.
+ */
+class UniqueDiscountCode extends Constraint
+{
+    public $message = 'The discount code is already used (conflict with discount "%s").';
+
+    /**
+     * {@inheritdoc}
+     */
+    public function validatedBy()
+    {
+        return UniqueDiscountCodeValidator::class;
+    }
+}
