@@ -195,6 +195,33 @@ class CartFeatureContext extends AbstractDomainFeatureContext
     }
 
     /**
+     * @When /^I add (\d+) combination(?:s)? "(.+)" from product "(.+)" to the cart "(.+)"$/
+     *
+     * @param int $quantity
+     * @param string $combinationReference
+     * @param string $productReference
+     * @param string $cartReference
+     */
+    public function addCombinationsToCart(int $quantity, string $combinationReference, string $productReference, string $cartReference)
+    {
+        try {
+            $this->getCommandBus()->handle(
+                new AddProductToCartCommand(
+                    $this->referenceToId($cartReference),
+                    $this->referenceToId($productReference),
+                    $quantity,
+                    $this->referenceToId($combinationReference)
+                )
+            );
+
+            // Clear cart static cache or it will have no products in next calls
+            Cart::resetStaticCache();
+        } catch (MinimalQuantityException $e) {
+            $this->setLastException($e);
+        }
+    }
+
+    /**
      * @When I update product :productName in the cart :cartReference to :price
      *
      * @param string $productName

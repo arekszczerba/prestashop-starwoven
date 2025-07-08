@@ -67,3 +67,34 @@ Feature: Update discount condition
       | minimum_amount_tax_included      | true          |
       | minimum_amount_shipping_included | true          |
     And discount "discount_with_min_amount" should have no product conditions
+
+  Scenario: Create discount with restricted list of combinations
+    Given attribute group "Size" named "Size" in en language exists
+    And attribute "S" named "S" in en language exists
+    And attribute "M" named "M" in en language exists
+    And attribute "L" named "L" in en language exists
+    Given I add product "metal_tshirt" with following information:
+      | name[en-US] | metal tshirt |
+      | type        | combinations |
+    When I generate combinations for product metal_tshirt using following attributes:
+      | Size | [S,M,L] |
+    Then product "metal_tshirt" should have following combinations:
+      | id reference | combination name | reference | attributes | impact on price | quantity | is default |
+      | metalTshirtS | Size - S         |           | [Size:S]   | 0               | 0        | true       |
+      | metalTshirtM | Size - M         |           | [Size:M]   | 0               | 0        | false      |
+      | metalTshirtL | Size - L         |           | [Size:L]   | 0               | 0        | false      |
+    When I create a "free_shipping" discount "discount_with_restricted_combinations" with following properties:
+      | name[en-US] | Promotion |
+    Then discount "discount_with_restricted_combinations" should have the following properties:
+      | name[en-US] | Promotion     |
+      | type        | free_shipping |
+    When I update discount "discount_with_restricted_combinations" with following conditions matching at least 42 products:
+      | condition_type | items                      |
+      | combinations   | metalTshirtM, metalTshirtL |
+    Then discount "discount_with_restricted_combinations" should have the following properties:
+      | name[en-US]              | Promotion     |
+      | type                     | free_shipping |
+      | minimum_product_quantity | 0             |
+    Then discount "discount_with_restricted_combinations" should have the following product conditions matching at least 42 products:
+      | condition_type | items                      |
+      | combinations   | metalTshirtM, metalTshirtL |

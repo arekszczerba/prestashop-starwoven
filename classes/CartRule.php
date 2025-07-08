@@ -1162,6 +1162,36 @@ class CartRuleCore extends ObjectModel
                             $eligible_products_list = $this->filterProducts($eligible_products_list, $matching_products_list, $product_rule['type']);
 
                             break;
+                        case 'combinations':
+                            $cart_combinations = Db::getInstance()->executeS('
+							SELECT cp.quantity, cp.`id_product`, cp.`id_product_attribute`
+							FROM `' . _DB_PREFIX_ . 'cart_product` cp
+							WHERE cp.`id_cart` = ' . (int) $cart->id . '
+							AND CONCAT(cp.`id_product`, "-", cp.`id_product_attribute`) IN (' . implode(',', array_map(fn ($combinationIdentifier) => '"' . $combinationIdentifier . '"', $eligible_products_list)) . ')');
+                            $count_matching_combinations = 0;
+                            $matching_combinations_list = [];
+                            foreach ($cart_combinations as $cart_combination) {
+                                if (in_array($cart_combination['id_product_attribute'], $product_rule['values'])) {
+                                    $count_matching_combinations += $cart_combination['quantity'];
+                                    // Todo: Handle correct check when combination gift is handled
+                                    if ($alreadyInCart && $this->gift_product == $cart_combination['id_product']) {
+                                        --$count_matching_combinations;
+                                    }
+                                    $matching_combinations_list[] = $cart_combination['id_product'] . '-' . $cart_combination['id_product_attribute'];
+                                }
+                            }
+                            if ($count_matching_combinations < $product_rule_group['quantity']) {
+                                if ($countRulesProduct === 1) {
+                                    return (!$displayError) ? false : $this->trans('You cannot use this voucher with these products', [], 'Shop.Notifications.Error');
+                                } else {
+                                    ++$condition;
+
+                                    break;
+                                }
+                            }
+                            $eligible_products_list = $this->filterProducts($eligible_products_list, $matching_combinations_list, $product_rule['type']);
+
+                            break;
                         case 'categories':
                             $cart_categories = Db::getInstance()->executeS('
 							SELECT cp.quantity, cp.`id_product`, cp.`id_product_attribute`, catp.`id_category`
@@ -1253,6 +1283,8 @@ class CartRuleCore extends ObjectModel
                             $eligible_products_list = $this->filterProducts($eligible_products_list, $matching_products_list, $product_rule['type']);
 
                             break;
+                        default:
+                            return (!$displayError) ? false : $this->trans('Unknown type of product restriction', [], 'Shop.Notifications.Error');
                     }
                     if (!count($eligible_products_list)) {
                         if ($countRulesProduct === 1) {
