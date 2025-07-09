@@ -563,3 +563,9 @@ services:
     autowire: true
     arguments:
       - '@prestashop.core.query.doctrine_search_criteria_applicator'
+
+  PrestaShop\PrestaShop\Core\Grid\Query\ShipmentQueryBuilder:
+    parent: 'prestashop.core.grid.abstract_query_builder'
+    public: false
+    arguments:
+      $searchCriteriaApplicator: '@prestashop.core.query.doctrine_search_criteria_applicator'

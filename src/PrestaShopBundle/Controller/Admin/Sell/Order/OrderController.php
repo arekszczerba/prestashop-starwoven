@@ -32,6 +32,7 @@ use InvalidArgumentException;
 use PrestaShop\PrestaShop\Adapter\Currency\CurrencyDataProvider;
 use PrestaShop\PrestaShop\Adapter\LegacyContext;
 use PrestaShop\PrestaShop\Adapter\PDF\OrderInvoicePdfGenerator;
+use PrestaShop\PrestaShop\Adapter\Tools;
 use PrestaShop\PrestaShop\Core\Action\ActionsBarButtonsCollection;
 use PrestaShop\PrestaShop\Core\Domain\Cart\Query\GetCartForOrderCreation;
 use PrestaShop\PrestaShop\Core\Domain\CartRule\Exception\InvalidCartRuleDiscountValueException;
@@ -84,6 +85,8 @@ use PrestaShop\PrestaShop\Core\Domain\Product\Exception\ProductSearchEmptyPhrase
 use PrestaShop\PrestaShop\Core\Domain\Product\Query\SearchProducts;
 use PrestaShop\PrestaShop\Core\Domain\Product\QueryResult\FoundProduct;
 use PrestaShop\PrestaShop\Core\Domain\ValueObject\QuerySorting;
+use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagSettings;
+use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagStateCheckerInterface;
 use PrestaShop\PrestaShop\Core\Form\ChoiceProvider\LanguageByIdChoiceProvider;
 use PrestaShop\PrestaShop\Core\Form\ConfigurableFormChoiceProviderInterface;
 use PrestaShop\PrestaShop\Core\Form\FormChoiceProviderInterface;
@@ -91,10 +94,12 @@ use PrestaShop\PrestaShop\Core\Form\IdentifiableObject\Builder\FormBuilderInterf
 use PrestaShop\PrestaShop\Core\Form\IdentifiableObject\Handler\FormHandlerInterface;
 use PrestaShop\PrestaShop\Core\Grid\Definition\Factory\OrderGridDefinitionFactory;
 use PrestaShop\PrestaShop\Core\Grid\GridFactory;
+use PrestaShop\PrestaShop\Core\Grid\GridFactoryInterface;
 use PrestaShop\PrestaShop\Core\Kpi\Row\KpiRowFactoryInterface;
 use PrestaShop\PrestaShop\Core\Order\OrderSiblingProviderInterface;
 use PrestaShop\PrestaShop\Core\PDF\PDFGeneratorInterface;
 use PrestaShop\PrestaShop\Core\Search\Filters\OrderFilters;
+use PrestaShop\PrestaShop\Core\Search\Filters\ShipmentFilters;
 use PrestaShopBundle\Component\CsvResponse;
 use PrestaShopBundle\Controller\Admin\PrestaShopAdminController;
 use PrestaShopBundle\Exception\InvalidModuleException;
@@ -428,6 +433,10 @@ class OrderController extends PrestaShopAdminController
         #[Autowire(service: 'prestashop.core.form.identifiable_object.builder.cancel_product_form_builder')] FormBuilderInterface $formBuilder,
         #[Autowire(service: 'prestashop.adapter.order.order_sibling_provider')] OrderSiblingProviderInterface $orderSiblingProvider,
         CurrencyDataProvider $currencyDataProvider,
+        FeatureFlagStateCheckerInterface $featureFlagStateChecker,
+        #[Autowire(service: 'PrestaShop\PrestaShop\Core\Grid\Factory\ShipmentFactory')] GridFactoryInterface $shipmentGridFactory,
+        ShipmentFilters $filters,
+        Tools $tools,
     ): Response {
         try {
             /** @var OrderForViewing $orderForViewing */
@@ -437,6 +446,9 @@ class OrderController extends PrestaShopAdminController
 
             return $this->redirectToRoute('admin_orders_index');
         }
+
+        $filters = new ShipmentFilters(['filters' => ['order_id' => $orderId]] + $filters->all());
+        $shipmentsGrid = $shipmentGridFactory->getGrid($filters);
 
         $updateOrderStatusForm = $this->formFactory->createNamed(
             'update_order_status',
@@ -552,6 +564,26 @@ class OrderController extends PrestaShopAdminController
             )
         );
 
+        $shipmentsLabel = $this->trans(
+            'Shipments ([1]%shipment_count%[/1])',
+            [
+                '%shipment_count%' => $shipmentsGrid->getData()->getRecordsTotal(),
+                '[1]' => '<span class="count">',
+                '[/1]' => '</span>',
+            ],
+            'Admin.Shipping.Feature'
+        );
+
+        $carriersLabel = $this->trans(
+            'Carriers ([1]%carriers_count%[/1])',
+            [
+                '%carriers_count%' => count($orderForViewing->getShipping()->getCarriers()),
+                '[1]' => '<span class="count">',
+                '[/1]' => '</span>',
+            ],
+            'Admin.Shipping.Feature'
+        );
+
         return $this->render('@PrestaShop/Admin/Sell/Order/Order/view.html.twig', [
             'showContentHeader' => true,
             'enableSidebar' => true,
@@ -581,6 +613,10 @@ class OrderController extends PrestaShopAdminController
             'paginationNumOptions' => $paginationNumOptions,
             'isAvailableQuantityDisplayed' => (bool) $this->getConfiguration()->get('PS_STOCK_MANAGEMENT'),
             'internalNoteForm' => $internalNoteForm->createView(),
+            'isImprovedShipmentFeatureFlagEnabled' => $featureFlagStateChecker->isEnabled(FeatureFlagSettings::FEATURE_FLAG_IMPROVED_SHIPMENT),
+            'shipmentsGrid' => $this->presentGrid($shipmentsGrid),
+            'shipmentsLabel' => $tools->purifyHTML($shipmentsLabel),
+            'carriersLabel' => $tools->purifyHTML($carriersLabel),
         ]);
     }
 
