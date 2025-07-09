@@ -113,4 +113,57 @@ class ShipmentRepository extends EntityRepository
             return $carry;
         }, []);
     }
+
+    /**
+     * @param int $carrierId
+     * @param Shipment $shipmentToRemoveProduct
+     * @param ShipmentProduct[] $shipmentProductsToMove
+     */
+    public function splitShipment(int $carrierId, Shipment $shipmentToRemoveProduct, array $shipmentProductsToMove): void
+    {
+        $shipmentProductsByOrderDetailId = array_reduce($shipmentToRemoveProduct->getProducts()->toArray(), function ($carry, ShipmentProduct $product) {
+            $carry[$product->getOrderDetailId()] = $product;
+
+            return $carry;
+        }, []);
+
+        $shipmentProducts = [];
+
+        $newShipment = new Shipment();
+        $newShipment->setCarrierId($carrierId);
+        $newShipment->setOrderId($shipmentToRemoveProduct->getOrderId());
+        $newShipment->setTrackingNumber(null);
+        $newShipment->setAddressId($shipmentToRemoveProduct->getAddressId());
+        $newShipment->setShippingCostTaxExcluded($shipmentToRemoveProduct->getShippingCostTaxExcluded());
+        $newShipment->setShippingCostTaxIncluded($shipmentToRemoveProduct->getShippingCostTaxIncluded());
+
+        foreach ($shipmentProductsToMove as $shipmentProductToMove) {
+            $orderDetailId = $shipmentProductToMove->getOrderDetailId();
+            $quantity = $shipmentProductToMove->getQuantity();
+            $existingProduct = $shipmentProductsByOrderDetailId[$orderDetailId] ?? null;
+            if ($existingProduct) {
+                $remainingQty = $existingProduct->getQuantity() - $quantity;
+                if ($remainingQty <= 0) {
+                    $shipmentToRemoveProduct->removeProduct($existingProduct);
+                } else {
+                    $existingProduct->setQuantity($remainingQty);
+                }
+            } else {
+                throw new ShipmentException(sprintf('Cannot find product with order detail id %s', $orderDetailId));
+            }
+            $shipmentProducts[] = (new ShipmentProduct())
+                ->setOrderDetailId($orderDetailId)
+                ->setQuantity($quantity)
+                ->setShipment($newShipment);
+        }
+
+        foreach ($shipmentProducts as $shipmentProduct) {
+            $newShipment->addShipmentProduct($shipmentProduct);
+        }
+        $this->save($newShipment);
+
+        if ($shipmentToRemoveProduct->getProducts()->isEmpty()) {
+            $this->delete($shipmentToRemoveProduct);
+        }
+    }
 }
