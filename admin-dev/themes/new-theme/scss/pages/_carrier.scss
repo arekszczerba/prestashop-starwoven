@@ -1,0 +1,10 @@
+$component: "carrier" !default;
+
+.#{$component} {
+  &__logo {
+    max-width: var(--#{$cdk}size-128);
+    max-height: var(--#{$cdk}size-128);
+    padding: var(--#{$cdk}size-4);
+    border: var(--#{$cdk}size-1) solid var(--#{$cdk}primary-400);
+  }
+}
