@@ -2,7 +2,7 @@
 @restore-all-tables-before-feature
 @discount-condition-restricted-products
 Feature: Full UX discount test
-  PrestaShop allows discounts with minimal quantity as the condition
+  PrestaShop allows discounts with restricted products as the condition
 
   Background:
     Given there is a customer named "testCustomer" whose email is "pub@prestashop.com"
