@@ -37,8 +37,10 @@ use PHPUnit\Framework\Assert;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\MergeProductsToShipment;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\SwitchShipmentCarrierCommand;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentForViewing;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentProducts;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\ListAvailableShipments;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\ShipmentForViewing;
 use RuntimeException;
 use Tests\Integration\Behaviour\Features\Context\SharedStorage;
 
@@ -195,5 +197,30 @@ class ShipmentFeatureContext extends AbstractDomainFeatureContext
             Assert::assertEquals($testAvailableShipmentForProduct[$i]->getShipmentName(), $data[$i]['shipment_name']);
             Assert::assertEquals($testAvailableShipmentForProduct[$i]->getHandleProduct(), (bool) $data[$i]['can_handle_merge']);
         }
+    }
+
+    /**
+     * @Then the shipment view :shipmentReference should contain:
+     */
+    public function assertShipmentForViewing(string $shipmentReference, TableNode $table): void
+    {
+        $expected = $table->getRowsHash();
+
+        /** @var ShipmentForViewing $shipment */
+        $shipment = $this->getQueryBus()->handle(
+            new GetShipmentForViewing(SharedStorage::getStorage()->get($shipmentReference))
+        );
+
+        Assert::assertEquals($expected['tracking_number'], $shipment->getTrackingNumber(), 'Tracking number mismatch');
+        Assert::assertEquals($expected['carrier_name'], $shipment->getCarrierSummary()->getName(), 'Carrier name mismatch');
+
+        $address = $shipment->getShippingAdressSummary();
+        Assert::assertEquals($expected['firstname'], $address->getFirstname(), 'Firstname mismatch');
+        Assert::assertEquals($expected['lastname'], $address->getLastname(), 'Lastname mismatch');
+        Assert::assertEquals($expected['address1'], $address->getAddress1(), 'Address1 mismatch');
+        Assert::assertEquals($expected['postcode'], $address->getPostalCode(), 'Postcode mismatch');
+        Assert::assertEquals($expected['city'], $address->getCity(), 'City mismatch');
+        Assert::assertEquals($expected['state'], $address->getStateName(), 'State mismatch');
+        Assert::assertEquals($expected['country'], $address->getCountry(), 'Country mismatch');
     }
 }
