@@ -33,6 +33,7 @@ use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\Collection;
+use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Constraints\GreaterThan;
 use Symfony\Component\Validator\Constraints\When;
 
@@ -84,11 +85,26 @@ class CartConditionsType extends TranslatorAwareType
             ])
             ->add(self::SPECIFIC_PRODUCTS, ProductSearchType::class, [
                 'layout' => EntitySearchInputType::LIST_LAYOUT,
-                'entry_type' => ProductConditionType::class,
+                'entry_type' => SpecificProductType::class,
                 'limit' => 0,
                 'label' => $this->trans('Specific products', 'Admin.Catalog.Feature'),
                 'include_combinations' => false,
                 'required' => false,
+                'constraints' => [
+                    new When(
+                        expression: sprintf(
+                            'this.getParent().getParent().get("children_selector").getData() === "%s" && this.getParent().get("children_selector").getData() === "%s"',
+                            DiscountConditionsType::CART_CONDITIONS,
+                            self::SPECIFIC_PRODUCTS
+                        ),
+                        constraints: [
+                            new Count(
+                                min: 1,
+                                minMessage: $this->trans('You need to select at least one product.', 'Admin.Catalog.Notification'),
+                            ),
+                        ],
+                    ),
+                ],
             ])
         ;
     }

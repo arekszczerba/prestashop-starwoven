@@ -118,6 +118,24 @@ class UpdateDiscountConditionsCommand
             if (!$productCondition instanceof ProductRuleGroup) {
                 throw new DiscountConstraintException(sprintf('Product conditions must be an array of %s', ProductRuleGroup::class), DiscountConstraintException::INVALID_PRODUCTS_CONDITIONS);
             }
+            if (empty($productCondition->getRules())) {
+                throw new DiscountConstraintException(sprintf('Product conditions rules cannot be empty'), DiscountConstraintException::INVALID_PRODUCTS_CONDITIONS);
+            }
+
+            foreach ($productCondition->getRules() as $rule) {
+                if (empty($rule->getItemIds())) {
+                    throw new DiscountConstraintException(sprintf('Product conditions rule items cannot be empty'), DiscountConstraintException::INVALID_PRODUCTS_CONDITIONS);
+                }
+
+                foreach ($rule->getItemIds() as $itemId) {
+                    if (!is_int($itemId)) {
+                        throw new DiscountConstraintException(sprintf('Product conditions rule item ID must be an integer'), DiscountConstraintException::INVALID_PRODUCTS_CONDITIONS);
+                    }
+                    if ((int) $itemId <= 0) {
+                        throw new DiscountConstraintException(sprintf('Product conditions rule item ID must be strictly positive'), DiscountConstraintException::INVALID_PRODUCTS_CONDITIONS);
+                    }
+                }
+            }
         }
 
         $this->productConditions = $productConditions;
