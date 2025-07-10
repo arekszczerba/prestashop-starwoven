@@ -1205,6 +1205,7 @@ class ProductController extends PrestaShopAdminController
                 'id' => $productForAssociation->getProductId(),
                 'name' => $productName,
                 'image' => $productForAssociation->getImageUrl(),
+                'product_type' => $productForAssociation->getProductType(),
             ];
         }
 
