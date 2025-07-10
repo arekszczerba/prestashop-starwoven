@@ -188,11 +188,11 @@ describe('BO - Catalog - Cart rules : CRUD cart rule with priority', async () =>
       expect(totalDiscountValue)
         .to.equal(-(cartRulePriority2.discountAmount!.value + cartRulePriority1.discountAmount!.value));
 
-      const firstDiscountValue = await foClassicCartPage.getDiscountValue(page, 1);
-      expect(firstDiscountValue).to.equal(-(cartRulePriority1.discountAmount!.value));
+      const firstDiscountValue = await foClassicCartPage.getCartRuleValue(page, 1);
+      expect(firstDiscountValue).to.equal(`-€${cartRulePriority1.discountAmount!.value.toFixed(2)}`);
 
-      const secondDiscountValue = await foClassicCartPage.getDiscountValue(page, 1);
-      expect(secondDiscountValue).to.equal(-(cartRulePriority2.discountAmount!.value));
+      const secondDiscountValue = await foClassicCartPage.getCartRuleValue(page, 1);
+      expect(secondDiscountValue).to.equal(`-€${cartRulePriority2.discountAmount!.value.toFixed(2)}`);
     });
 
     it('should remove product from shopping cart', async function () {

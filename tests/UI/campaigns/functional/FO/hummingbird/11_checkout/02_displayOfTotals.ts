@@ -149,8 +149,8 @@ describe('FO - Checkout : Display of totals', async () => {
       const priceATI = await foHummingbirdCartPage.getATIPrice(page);
       expect(priceATI).to.equal(parseFloat(totalAfterPromoCode.toFixed(2)));
 
-      const discountValue = await foHummingbirdCartPage.getDiscountValue(page, 1);
-      expect(discountValue).to.equal(-cartRuleWithCodeData.discountAmount!.value);
+      const discountValue = await foHummingbirdCartPage.getCartRuleValue(page, 1);
+      expect(discountValue).to.equal(`-€${cartRuleWithCodeData.discountAmount!.value.toFixed(2)}`);
     });
 
     it('should validate shopping cart and go to checkout page', async function () {

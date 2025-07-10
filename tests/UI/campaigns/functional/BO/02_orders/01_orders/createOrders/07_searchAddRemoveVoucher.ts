@@ -179,7 +179,7 @@ describe('BO - Orders - Create order : Search, add and remove voucher', async ()
     it('should check summary block', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'checkSummaryBlock1', baseContext);
 
-      const totalTaxes = await utilsCore.percentage(
+      const totalTaxes = utilsCore.percentage(
         dataProducts.demo_12.priceTaxExcluded - cartRuleWithoutCodeData.discountAmount!.value,
         20,
       );
@@ -318,7 +318,7 @@ describe('BO - Orders - Create order : Search, add and remove voucher', async ()
     it('should check summary block', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'checkSummaryBlock2', baseContext);
 
-      const totalTaxes = await utilsCore.percentage(
+      const totalTaxes = utilsCore.percentage(
         dataProducts.demo_12.priceTaxExcluded - cartRuleWithCodeData.discountAmount!.value,
         20,
       );
