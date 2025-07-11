@@ -36,4 +36,8 @@ export default {
   discountTypeRadios: '#discount_type_selector_discount_type_selector input[type="radio"]',
   discountTypeSubmit: '#discountTypeSubmit',
   specificProductsSearchContainer: '#discount_conditions_cart_conditions_specific_products',
+  specificProductItem: '.specific-product-item',
+  specificProductId: '.specific-product-id',
+  specificProductType: '.specific-product-type',
+  specificCombinationId: '.specific-combination-choice',
 };

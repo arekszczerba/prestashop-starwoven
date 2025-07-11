@@ -27,16 +27,19 @@
 namespace PrestaShop\PrestaShop\Core\Form\IdentifiableObject\DataProvider;
 
 use PrestaShop\PrestaShop\Adapter\Attribute\Repository\AttributeRepository;
+use PrestaShop\PrestaShop\Adapter\Product\Combination\Repository\CombinationRepository;
 use PrestaShop\PrestaShop\Adapter\Product\Repository\ProductRepository;
 use PrestaShop\PrestaShop\Core\CommandBus\CommandBusInterface;
 use PrestaShop\PrestaShop\Core\Context\LanguageContext;
 use PrestaShop\PrestaShop\Core\Context\ShopContext;
 use PrestaShop\PrestaShop\Core\Domain\Discount\DiscountSettings;
+use PrestaShop\PrestaShop\Core\Domain\Discount\ProductRuleType;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Query\GetDiscountForEditing;
 use PrestaShop\PrestaShop\Core\Domain\Discount\QueryResult\DiscountForEditing;
 use PrestaShop\PrestaShop\Core\Domain\Language\ValueObject\LanguageId;
 use PrestaShop\PrestaShop\Core\Domain\Product\Combination\Exception\CombinationConstraintException;
 use PrestaShop\PrestaShop\Core\Domain\Product\Combination\ValueObject\CombinationId;
+use PrestaShop\PrestaShop\Core\Domain\Product\Combination\ValueObject\NoCombinationId;
 use PrestaShop\PrestaShop\Core\Domain\Product\Exception\ProductConstraintException;
 use PrestaShop\PrestaShop\Core\Domain\Product\Exception\ProductNotFoundException;
 use PrestaShop\PrestaShop\Core\Domain\Product\Image\Provider\ProductImageProviderInterface;
@@ -46,17 +49,21 @@ use PrestaShop\PrestaShop\Core\Domain\Shop\Exception\ShopException;
 use PrestaShop\PrestaShop\Core\Domain\Shop\ValueObject\ShopId;
 use PrestaShop\PrestaShop\Core\Product\Combination\NameBuilder\CombinationNameBuilder;
 use PrestaShopBundle\Form\Admin\Sell\Discount\DiscountUsabilityModeType;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 
 class DiscountFormDataProvider implements FormDataProviderInterface
 {
     public function __construct(
         private readonly CommandBusInterface $queryBus,
         private readonly ProductRepository $productRepository,
+        private readonly CombinationRepository $combinationRepository,
         private readonly CombinationNameBuilder $combinationNameBuilder,
         private readonly ProductImageProviderInterface $productImageProvider,
         private readonly LanguageContext $languageContext,
         private readonly AttributeRepository $attributeRepository,
         private readonly ShopContext $shopContext,
+        private readonly RequestStack $requestStack,
     ) {
     }
 
@@ -132,7 +139,7 @@ class DiscountFormDataProvider implements FormDataProviderInterface
                         'currency' => $discountForEditing->getMinimumAmountCurrencyId(),
                         'include_tax' => $discountForEditing->getMinimumAmountTaxIncluded(),
                     ],
-                    'specific_products' => $this->getProductConditionsDetails($discountForEditing),
+                    'specific_products' => $this->getSpecificProducts($discountForEditing),
                 ],
             ],
             'usability' => [
@@ -144,31 +151,61 @@ class DiscountFormDataProvider implements FormDataProviderInterface
         ];
     }
 
-    private function getProductConditionsDetails(DiscountForEditing $discountForEditing): array
+    private function getSpecificProducts(DiscountForEditing $discountForEditing): array
     {
-        $productConditions = [];
+        $specificProducts = [];
         foreach ($discountForEditing->getProductConditions() as $conditions) {
             foreach ($conditions->getRules() as $rule) {
-                $product = $this->productRepository->getProductByDefaultShop(new ProductId($rule->getItemIds()[0]));
-                $name = $product->name[$this->languageContext->getId()];
+                if ($rule->getType() == ProductRuleType::PRODUCTS) {
+                    // The data is not formatted as expected and would break the page (it may happen with data from old page),
+                    // to be resilient against this kind of data so we ignore it. But it means some data is going be lost so
+                    // we warn the user
+                    if (count($rule->getItemIds()) === 0) {
+                        $this->displayWarning('Invalid specific product has been removed from form data, it will be erased if you submit this form.');
+                        continue;
+                    }
 
-                $productConditions[] = [
+                    $productId = new ProductId($rule->getItemIds()[0]);
+                    $productDefaultShopId = $this->productRepository->getProductDefaultShopId($productId);
+                    $product = $this->productRepository->get($productId, $productDefaultShopId);
+                    $combinationIdValue = NoCombinationId::NO_COMBINATION_ID;
+                    $imageUrl = $this->productImageProvider->getProductCoverUrl($productId, $productDefaultShopId);
+                } elseif ($rule->getType() == ProductRuleType::COMBINATIONS) {
+                    // The data is not formatted as expected and would break the page (it may happen with data from old page),
+                    // to be resilient against this kind of data so we ignore it. But it means some data is going be lost so
+                    // we warn the user
+                    if (count($rule->getItemIds()) === 0) {
+                        $this->displayWarning('Invalid specific combination has been removed from form data, it will be erased if you submit this form.');
+                        continue;
+                    }
+
+                    $combinationIdValue = $rule->getItemIds()[0];
+                    $combinationId = new CombinationId($combinationIdValue);
+                    $productId = $this->combinationRepository->getProductId($combinationId);
+                    $productDefaultShopId = $this->productRepository->getProductDefaultShopId($productId);
+                    $product = $this->productRepository->get($productId, $productDefaultShopId);
+                    $imageUrl = $this->productImageProvider->getCombinationCoverUrl($combinationId, $productDefaultShopId);
+                } else {
+                    continue;
+                }
+
+                $productName = $product->name[$this->languageContext->getId()];
+                if (!empty($product->reference)) {
+                    $productName .= sprintf(' (ref: %s)', $product->reference);
+                }
+
+                $specificProducts[] = [
                     'id' => $product->id,
-                    'name' => $name,
-                    'image' => $this->productImageProvider->getProductCoverUrl(
-                        new ProductId($product->id),
-                        new ShopId($this->shopContext->getId())
-                    ),
-                    'unique_identifier' => null,
-                    'product_id' => null,
-                    'combination_id' => null,
-                    'reference' => null,
+                    'combination_id' => $combinationIdValue,
+                    'product_type' => $product->product_type,
+                    'name' => $productName,
+                    'image' => $imageUrl,
                     'quantity' => $conditions->getQuantity(),
                 ];
             }
         }
 
-        return $productConditions;
+        return $specificProducts;
     }
 
     /**
@@ -212,5 +249,13 @@ class DiscountFormDataProvider implements FormDataProviderInterface
             'name' => $name,
             'imageUrl' => $imageUrl,
         ];
+    }
+
+    private function displayWarning(string $message): void
+    {
+        $session = $this->requestStack->getCurrentRequest()->getSession();
+        if ($session instanceof FlashBagAwareSessionInterface) {
+            $session->getFlashBag()->add('warning', $message);
+        }
     }
 }
