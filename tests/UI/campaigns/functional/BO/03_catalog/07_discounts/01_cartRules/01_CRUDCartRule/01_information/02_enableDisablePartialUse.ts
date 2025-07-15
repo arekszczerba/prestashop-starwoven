@@ -53,7 +53,8 @@ describe('BO - Catalog - Cart rules : CRUD cart rule with enabled/disabled parti
     },
   });
 
-  const amountValue: number = cartRuleEnabledPartialUse.discountAmount!.value - dataProducts.demo_1.finalPrice;
+  const amountValue: number = parseFloat(cartRuleEnabledPartialUse.discountAmount!.value.toString())
+    - dataProducts.demo_1.finalPrice;
 
   // before and after functions
   before(async function () {

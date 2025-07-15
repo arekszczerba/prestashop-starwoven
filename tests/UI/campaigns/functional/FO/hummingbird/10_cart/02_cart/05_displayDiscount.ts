@@ -51,6 +51,7 @@ describe('FO - cart : Display discount', async () => {
     applyDiscountTo: 'Specific product',
     product: dataProducts.demo_9.name,
   });
+  const secondCartRuleDiscount: number = parseFloat(secondCartRuleData.discountAmount!.value.toString());
 
   // Pre-condition: Create first cart rule
   createCartRuleTest(firstCartRuleData, `${baseContext}_PreTest_1`);
@@ -183,7 +184,7 @@ describe('FO - cart : Display discount', async () => {
       await testContext.addContextItem(this, 'testIdentifier', 'checkDiscountValue2', baseContext);
 
       const discountValue = await foHummingbirdCartPage.getCartRuleValue(page, 2);
-      expect(discountValue).to.equal(`-€${secondCartRuleData.discountAmount!.value.toFixed(2)}`);
+      expect(discountValue).to.equal(`-€${secondCartRuleDiscount.toFixed(2)}`);
     });
 
     it('should check the total after the discount', async function () {
@@ -193,7 +194,7 @@ describe('FO - cart : Display discount', async () => {
 
       const totalAfterDiscount = await foHummingbirdCartPage.getATIPrice(page);
       expect(totalAfterDiscount.toString())
-        .to.equal((dataProducts.demo_9.finalPrice * 2 - (firstDiscount + secondCartRuleData.discountAmount!.value))
+        .to.equal((dataProducts.demo_9.finalPrice * 2 - (firstDiscount + secondCartRuleDiscount))
           .toFixed(2));
     });
 
