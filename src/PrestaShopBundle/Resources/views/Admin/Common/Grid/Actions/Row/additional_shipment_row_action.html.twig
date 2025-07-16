@@ -44,8 +44,10 @@
       {% if show_split %}
         <a class="js-split-shipment-btn dropdown-item"
           href="#"
-          data-toggle="modal"
-          data-target="#splitShipmentModal"
+          data-show-modal="split-shipment"
+      data-toggle="modal"
+      data-target="#splitShipmentModal"
+      data-order-id="{{ record[action.options.order_id_field] }}"
           data-shipment-id="{{ record[action.options.shipment_id_field] }}">
             {{ 'Split'|trans({}, 'Admin.Actions') }}
         </a>

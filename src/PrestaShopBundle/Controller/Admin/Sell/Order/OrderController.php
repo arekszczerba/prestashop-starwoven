@@ -719,7 +719,6 @@ class OrderController extends PrestaShopAdminController
     #[AdminSecurity("is_granted('update', 'AdminOrders')", redirectRoute: 'admin_orders_view', redirectQueryParamsToKeep: ['orderId'], message: 'You do not have permission to edit this.')]
     public function splitShipmentAction(int $orderId, int $shipmentId): RedirectResponse
     {
-
        // new SplitShipment()
         return $this->redirectToRoute('admin_orders_view', [
             'shipmentId' => $shipmentId,

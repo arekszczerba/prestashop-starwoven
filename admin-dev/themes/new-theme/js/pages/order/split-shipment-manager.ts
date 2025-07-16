@@ -26,13 +26,14 @@ import Router from '@components/router';
 import OrderViewPageMap from './OrderViewPageMap';
 
 export default class SplitShipmentManager {
-  private refreshCarriersRoute = 'admin_orders_shipment_refresh_carriers';
+  private refreshFormRoute = 'admin_orders_shipment_get_split_form';
+  private shipmentId: int|null = null;
+  private orderId: int|null = null;
 
   private router = new Router();
 
   constructor() {
     this.initSplitShipmentEventHandler();
-    this.initCarrierRefreshOnProductSelection();
   }
 
   initSplitShipmentEventHandler(): void {
@@ -46,14 +47,36 @@ export default class SplitShipmentManager {
       const target = event.target as HTMLElement;
 
       if (target && target.matches(OrderViewPageMap.showSplitShipmentModalBtn)) {
-        const shipmentId = target.getAttribute('data-shipment-id');
-        const input = document.querySelector<HTMLInputElement>(OrderViewPageMap.splitShipmentTrackingShipmentId);
+        this.shipmentId = target.dataset['shipmentId'];
+        this.orderId = target.dataset['orderId'];
 
-        if (input && shipmentId) {
-          input.value = shipmentId;
-        }
+        this.refreshSplitShipmentForm();
       }
     });
+  }
+
+  refreshSplitShipmentForm(): void {
+    try {
+      const response = await fetch(this.router.generate(this.refreshFormRoute, {
+        orderId: this.shipmentId,
+        shipmentId: this.orderId,
+      }), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+
+      const formContainer = document.querySelector(OrderViewPageMap.splitShipmentModal);
+      formContainer?.replaceChild(response)
+    } catch (error) {
+      console.error('Error while loading split shipment form:', error);
+    }
+
   }
 
   initCarrierRefreshOnProductSelection(): void {
