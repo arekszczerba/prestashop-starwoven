@@ -683,3 +683,7 @@ services:
   PrestaShopBundle\Form\Admin\Improve\Design\ImageSettings\DeleteImageTypeType: ~
   PrestaShopBundle\Form\Admin\Improve\Design\ImageSettings\ImageSettingsType: ~
   PrestaShopBundle\Form\Admin\Improve\Design\ImageSettings\RegenerateThumbnailsType: ~
+
+  PrestaShopBundle\Form\Admin\Sell\Order\Shipment\MergeShipmentType:
+    arguments:
+      $translator: '@translator'

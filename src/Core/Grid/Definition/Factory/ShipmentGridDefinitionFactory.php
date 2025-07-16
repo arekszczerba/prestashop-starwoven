@@ -155,6 +155,9 @@ final class ShipmentGridDefinitionFactory extends AbstractFilterableGridDefiniti
                     ->setIcon('more_vert')
                     ->setOptions([
                         'shipment_id_field' => 'shipment_number',
+                        'order_id_field' => 'order_id',
+                        'items' => 'items',
+                        'total_shipments' => 'total_shipments',
                     ]));
     }
 }

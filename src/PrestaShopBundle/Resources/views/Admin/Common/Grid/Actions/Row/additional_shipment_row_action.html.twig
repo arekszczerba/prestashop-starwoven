@@ -23,27 +23,45 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  * #}
 
-<div class="dropdown">
-  <span
-    class="grid-{{ action.name|lower }}-row-link"
-    data-toggle="dropdown"
-    role="button"
-    aria-haspopup="true"
-    aria-expanded="false"
-    title="More"
-    style="cursor: pointer;"
-  >
-    <i class="material-icons">{{ action.icon }}</i>
-  </span>
+{% set show_merge = record[action.options.total_shipments] > 1 %}
+{% set show_split = record[action.options.items] > 1 %}
+{% set show_dropdown = show_split or show_merge %}
 
-  <div class="dropdown-menu dropdown-menu-right">
-    <a class="js-split-shipment-btn dropdown-item"
-      href="#"
-      data-toggle="modal"
-      data-target="#splitShipmentModal"
-      data-shipment-id="{{ record[action.options.shipment_id_field] }}">
-      Split
-    </a>
-    <a class="dropdown-item" href="#" data-action="merge">Merge</a>
+{% if show_dropdown %}
+  <div class="dropdown">
+    <span
+      class="grid-{{ action.name|lower }}-row-link"
+      data-toggle="dropdown"
+      role="button"
+      aria-haspopup="true"
+      aria-expanded="false"
+      title="More"
+      style="cursor: pointer;"
+    >
+      <i class="material-icons">{{ action.icon }}</i>
+    </span>
+
+    <div class="dropdown-menu dropdown-menu-right">
+      {% if show_split %}
+        <a class="js-split-shipment-btn dropdown-item"
+          href="#"
+          data-toggle="modal"
+          data-target="#splitShipmentModal"
+          data-shipment-id="{{ record[action.options.shipment_id_field] }}">
+            Split
+        </a>
+      {% endif %}
+      {% if show_merge %}
+        <a class="dropdown-item"
+          href="#"
+          data-toggle="modal"
+          data-target="#mergeShipmentModal"
+          data-show-modal="merge-shipment"
+          data-order-id="{{ record[action.options.order_id_field] }}"
+          data-shipment-id="{{ record[action.options.shipment_id_field] }}">
+            Merge
+        </a>
+      {% endif %}
+    </div>
   </div>
-</div>
+{% endif %}

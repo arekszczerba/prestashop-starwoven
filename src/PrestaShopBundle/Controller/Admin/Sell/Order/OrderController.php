@@ -84,6 +84,11 @@ use PrestaShop\PrestaShop\Core\Domain\Product\Exception\ProductOutOfStockExcepti
 use PrestaShop\PrestaShop\Core\Domain\Product\Exception\ProductSearchEmptyPhraseException;
 use PrestaShop\PrestaShop\Core\Domain\Product\Query\SearchProducts;
 use PrestaShop\PrestaShop\Core\Domain\Product\QueryResult\FoundProduct;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\MergeProductsToShipment;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentProducts;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipment;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipmentProduct;
 use PrestaShop\PrestaShop\Core\Domain\ValueObject\QuerySorting;
 use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagSettings;
 use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagStateCheckerInterface;
@@ -114,6 +119,7 @@ use PrestaShopBundle\Form\Admin\Sell\Order\EditProductRowType;
 use PrestaShopBundle\Form\Admin\Sell\Order\InternalNoteType;
 use PrestaShopBundle\Form\Admin\Sell\Order\OrderMessageType;
 use PrestaShopBundle\Form\Admin\Sell\Order\OrderPaymentType;
+use PrestaShopBundle\Form\Admin\Sell\Order\Shipment\MergeShipmentType;
 use PrestaShopBundle\Form\Admin\Sell\Order\UpdateOrderShippingType;
 use PrestaShopBundle\Form\Admin\Sell\Order\UpdateOrderStatusType;
 use PrestaShopBundle\Security\Attribute\AdminSecurity;
@@ -618,6 +624,94 @@ class OrderController extends PrestaShopAdminController
             'shipmentsLabel' => $tools->purifyHTML($shipmentsLabel),
             'carriersLabel' => $tools->purifyHTML($carriersLabel),
         ]);
+    }
+
+    #[AdminSecurity("is_granted('update', 'AdminOrders')", redirectRoute: 'admin_orders_view', redirectQueryParamsToKeep: ['orderId'], message: 'You do not have permission to edit this.')]
+    public function getMergeShipmentForm(int $orderId, Request $request): Response
+    {
+        $shipmentId = (int) $request->query->get('shipmentId');
+        $formData = $this->getMergeFormData($orderId, $shipmentId);
+
+        $form = $this->createForm(MergeShipmentType::class, null, $formData);
+
+        return $this->render('@PrestaShop/Admin/Sell/Order/Order/Blocks/View/merge_shipment_form.html.twig', [
+            'mergeShipmentForm' => $form->createView(),
+            'orderId' => $orderId,
+            'shipmentId' => $shipmentId,
+            'products' => $formData['products'],
+        ]);
+    }
+
+    /**
+     * @param int $orderId
+     * @param Request $request
+     *
+     * @return RedirectResponse
+     */
+    #[AdminSecurity("is_granted('update', 'AdminOrders')", redirectRoute: 'admin_orders_view', redirectQueryParamsToKeep: ['orderId'], message: 'You do not have permission to edit this.')]
+    public function mergeShipmentAction(int $orderId, Request $request): RedirectResponse
+    {
+        $shipmentId = (int) $request->query->get('shipmentId');
+        $formData = $this->getMergeFormData($orderId, $shipmentId);
+
+        $form = $this->createForm(MergeShipmentType::class, null, $formData);
+        $form->handleRequest($request);
+
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            $this->addFlash('error', 'Invalid merge shipment form.');
+
+            return $this->redirectToRoute('admin_orders_view', ['orderId' => $orderId]);
+        }
+
+        /** @var OrderShipment $targetShipment */
+        $targetShipment = $form->get('merge_to_shipment')->getData();
+        $targetShipmentId = $targetShipment->getId();
+
+        $submittedData = $request->request->all('merge_shipment');
+        $selectedProducts = [];
+
+        foreach ($submittedData as $key => $value) {
+            if (str_starts_with($key, 'product_') && $value) {
+                $orderDetailId = (int) str_replace('product_', '', $key);
+                $quantityKey = 'quantity_' . $orderDetailId;
+
+                $selectedProducts[] = [
+                    'id_order_detail' => $orderDetailId,
+                    'quantity' => (int) ($submittedData[$quantityKey] ?? 0),
+                ];
+            }
+        }
+
+        $command = new MergeProductsToShipment(
+            $shipmentId,
+            $targetShipmentId,
+            $selectedProducts
+        );
+        $this->dispatchCommand($command);
+
+        return $this->redirectToRoute('admin_orders_view', [
+            'orderId' => $orderId,
+        ]);
+    }
+
+    private function getMergeFormData(int $orderId, int $shipmentId): array
+    {
+        /** @var OrderShipmentProduct[] $products */
+        $products = $this->dispatchQuery(new GetShipmentProducts($shipmentId));
+
+        /** @var OrderShipment[] $shipments */
+        $shipments = $this->dispatchQuery(new GetOrderShipments($orderId));
+
+        $shipments = array_filter($shipments, fn (OrderShipment $s) => $s->getId() !== $shipmentId);
+
+        foreach ($products as &$p) {
+            $p = $p->toArray();
+        }
+
+        return [
+            'products' => $products,
+            'shipments' => $shipments,
+        ];
     }
 
     /**

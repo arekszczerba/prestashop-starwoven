@@ -59,6 +59,7 @@ final class ShipmentQueryBuilder extends AbstractDoctrineQueryBuilder
             ->select([
                 's.id_shipment AS shipment_number',
                 's.date_add AS date',
+                's.id_order AS order_id',
                 'c.name AS carrier',
                 's.tracking_number',
                 'COUNT(sp.id_shipment_product) AS items',
