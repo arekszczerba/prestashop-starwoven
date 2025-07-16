@@ -28,9 +28,9 @@ import OrderViewPageMap from './OrderViewPageMap';
 export default class SplitShipmentManager {
   private refreshFormRoute = 'admin_orders_shipment_get_split_form';
 
-  private shipmentId: int|null = null;
+  private shipmentId: number|null = null;
 
-  private orderId: int|null = null;
+  private orderId: number|null = null;
 
   private router = new Router();
 
@@ -57,7 +57,7 @@ export default class SplitShipmentManager {
     });
   }
 
-  refreshSplitShipmentForm(): void {
+  async refreshSplitShipmentForm(): void {
     try {
       const response = await fetch(this.router.generate(this.refreshFormRoute, {
         orderId: this.shipmentId,
@@ -74,7 +74,7 @@ export default class SplitShipmentManager {
       }
 
       const formContainer = document.querySelector(OrderViewPageMap.splitShipmentModal);
-      formContainer?.replaceChild(response);
+      formContainer?.innerHTML(response);
     } catch (error) {
       console.error('Error while loading split shipment form:', error);
     }
