@@ -1,0 +1,71 @@
+<div class="modal-dialog" role="document">
+  {{ form_start(splitShipmentForm, {
+    action: path('admin_orders_split_shipment', {orderId: orderId, shipmentId: shipmentId})
+  }) }}
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">{{ 'Split shipment'|trans({}, 'Admin.Orderscustomers.Feature') }}</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="{{ 'Close'|trans({}, 'Admin.Actions') }}">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <p>
+        {{ 'Select the items to send separately'|trans({}, 'Admin.Orderscustomers.Feature') }}
+        <i class="material-icons" data-toggle="tooltip" title="{{ 'These items will be shipped in a separate package'|trans }}">help_outline</i>
+      </p>
+
+      <table class="table table-borderless">
+        <thead>
+        <tr>
+          <th>{{ 'Products'|trans }}</th>
+          <th class="text-right">{{ 'Select quantity'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for product in splitShipmentForm.products %}
+          <tr>
+            <td>
+              <div class="form-check">
+                {{ form_widget(product.selected, { attr: {'class': 'form-check-input', 'data-product-id': product.id.vars.value} }) }}
+                <label class="form-check-label">
+                  <strong>{{ product.name.vars.value }}</strong><br>
+                  <small>{{ 'Reference:'|trans }} {{ product.reference.vars.value }}</small>
+                </label>
+              </div>
+            </td>
+            <td class="text-right">
+              {{ form_widget(product.quantity) }}
+              <span>/{{ product.max_quantity.vars.value }}</span>
+            </td>
+          </tr>
+          {{ form_rest(product) }}
+        {% endfor %}
+        </tbody>
+      </table>
+
+      <div class="form-group mt-4">
+        <label>{{ 'Select the carrier in charge'|trans }}</label>
+        <i class="material-icons" data-toggle="tooltip" title="{{ 'Choose the carrier responsible for this shipment'|trans }}">help_outline</i>
+        {{ form_widget(splitShipmentForm.carrier, { attr: {'class': 'form-control', 'id': 'carrier-select'} }) }}
+        <a href="{{ path('admin_carriers_index') }}" target="_blank">
+          {{ 'Manage carriers'|trans }}
+          <i class="material-icons">open_in_new</i>
+        </a>
+      </div>
+
+      {{ form_rest(splitShipmentForm) }}
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+        {{ 'Cancel'|trans({}, 'Admin.Actions') }}
+      </button>
+      <button type="submit" class="btn btn-primary" id="submitSplitShipment" disabled>
+        {{ 'Split shipment'|trans({}, 'Admin.Actions') }}
+      </button>
+    </div>
+  </div>
+  {{ form_end(splitShipmentForm) }}
+</div>

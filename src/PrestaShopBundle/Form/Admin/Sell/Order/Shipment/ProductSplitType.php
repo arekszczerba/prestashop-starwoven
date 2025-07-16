@@ -44,11 +44,11 @@ class ProductSplitType extends AbstractType
             ->add('quantity', IntegerType::class, [
                 'attr' => [
                     'min' => 1,
+                    'max' => $options->max_quantity,
                 ],
             ])
             ->add('id', HiddenType::class)
             ->add('name', HiddenType::class)
-            ->add('reference', HiddenType::class)
             ->add('max_quantity', HiddenType::class);
     }
 
@@ -56,6 +56,7 @@ class ProductSplitType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => null,
+            'max_quantity' => 1,
         ]);
     }
 }

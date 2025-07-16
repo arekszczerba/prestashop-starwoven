@@ -24,23 +24,20 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 
-use PrestaShop\PrestaShop\Core\Form\ConfigurableFormChoiceProviderInterface;
+namespace PrestaShopBundle\Form\Admin\Sell\Order\Shipment;
+
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
-namespace PrestaShopBundle\Form\Admin\Sell\Order\Shipment;
+use PrestaShop\PrestaShop\Adapter\Form\ChoiceProvider\AvailableCarriersForShipmentChoiceProvider;
 
 class SplitShipmentType extends AbstractType
 {
-    private ConfigurableFormChoiceProviderInterface $carrierForOrderChoiceProvider;
-
-    public function __construct(ConfigurableFormChoiceProviderInterface $carrierForOrderChoiceProvider)
+    public function __construct(private readonly AvailableCarriersForShipmentChoiceProvider $availableCarriersForShipmentChoiceProvider)
     {
-        $this->carrierForOrderChoiceProvider = $carrierForOrderChoiceProvider;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -56,8 +53,8 @@ class SplitShipmentType extends AbstractType
         $builder->add('shipment_id', HiddenType::class);
 
         $builder->add('carrier', ChoiceType::class, [
-            'choices' => $this->carrierForOrderChoiceProvider->getChoices([
-                'order_id' => $options['order_id'],
+            'choices' => $this->availableCarriersForShipmentChoiceProvider->getChoices([
+                'selectedProduct' => $options['selectedProducts'],
             ]),
             'autocomplete' => true,
         ]);
@@ -67,7 +64,7 @@ class SplitShipmentType extends AbstractType
     {
         $resolver->setDefaults([
             'products' => [],
-            'order_id' => null,
+            'selectedProducts' => [],
         ]);
     }
 }

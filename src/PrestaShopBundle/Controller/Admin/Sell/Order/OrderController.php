@@ -84,11 +84,12 @@ use PrestaShop\PrestaShop\Core\Domain\Product\Exception\ProductOutOfStockExcepti
 use PrestaShop\PrestaShop\Core\Domain\Product\Exception\ProductSearchEmptyPhraseException;
 use PrestaShop\PrestaShop\Core\Domain\Product\Query\SearchProducts;
 use PrestaShop\PrestaShop\Core\Domain\Product\QueryResult\FoundProduct;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\SplitShipment;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentProducts;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipmentProduct;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\MergeProductsToShipment;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentProducts;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipment;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipmentProduct;
 use PrestaShop\PrestaShop\Core\Domain\ValueObject\QuerySorting;
 use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagSettings;
 use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagStateCheckerInterface;
@@ -119,6 +120,7 @@ use PrestaShopBundle\Form\Admin\Sell\Order\EditProductRowType;
 use PrestaShopBundle\Form\Admin\Sell\Order\InternalNoteType;
 use PrestaShopBundle\Form\Admin\Sell\Order\OrderMessageType;
 use PrestaShopBundle\Form\Admin\Sell\Order\OrderPaymentType;
+use PrestaShopBundle\Form\Admin\Sell\Order\Shipment\SplitShipmentType;
 use PrestaShopBundle\Form\Admin\Sell\Order\Shipment\MergeShipmentType;
 use PrestaShopBundle\Form\Admin\Sell\Order\UpdateOrderShippingType;
 use PrestaShopBundle\Form\Admin\Sell\Order\UpdateOrderStatusType;
@@ -712,6 +714,35 @@ class OrderController extends PrestaShopAdminController
             'products' => $products,
             'shipments' => $shipments,
         ];
+    }
+
+    #[AdminSecurity("is_granted('update', 'AdminOrders')", redirectRoute: 'admin_orders_view', redirectQueryParamsToKeep: ['orderId'], message: 'You do not have permission to edit this.')]
+    public function splitShipmentAction(int $orderId, int $shipmentId): RedirectResponse
+    {
+
+       // new SplitShipment()
+        return $this->redirectToRoute('admin_orders_view', [
+            'shipmentId' => $shipmentId,
+        ]);
+    }
+
+    #[AdminSecurity("is_granted('update', 'AdminOrders')", message: 'You do not have permission to edit this.')]
+    public function getShipmentSplitForm(int $orderId, int $shipmentId, Request $request): Response
+    {
+        /** @var OrderShipmentProduct[] $orderShipmentProducts */
+        $orderShipmentProducts = $this->dispatchQuery(new GetShipmentProducts($shipmentId));
+
+        $splitShipmentTypeForm = $this->createForm(SplitShipmentType::class, [
+            'products' => $orderShipmentProducts,
+        ], [
+            'selectedProducts' => [],
+        ]);
+
+        return $this->render('@PrestaShop/Admin/Sell/Order/Order/Blocks/split_shipment.html.twig', [
+            'splitShipmentForm' => $splitShipmentTypeForm->createView(),
+            'orderId' => $orderId,
+            'shipmentId' => $shipmentId,
+        ]);
     }
 
     /**
