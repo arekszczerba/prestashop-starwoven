@@ -28,9 +28,9 @@ import OrderViewPageMap from './OrderViewPageMap';
 export default class SplitShipmentManager {
   private refreshFormRoute = 'admin_orders_shipment_get_split_form';
 
-  private shipmentId: number|null = null;
+  private shipmentId: string|null = null;
 
-  private orderId: number|null = null;
+  private orderId: string|null = null;
 
   private router = new Router();
 
@@ -49,15 +49,23 @@ export default class SplitShipmentManager {
       const target = event.target as HTMLElement;
 
       if (target && target.matches(OrderViewPageMap.showSplitShipmentModalBtn)) {
-        this.shipmentId = target.dataset.shipmentId;
+
+        if (!target.dataset.orderId) {
+          throw new Error('impossible to retrieve order id');
+        }
         this.orderId = target.dataset.orderId;
+
+        if (!target.dataset.shipmentId) {
+          throw new Error('impossible to retrieve shipment id');
+        }
+        this.shipmentId = target.dataset.shipmentId;
 
         this.refreshSplitShipmentForm();
       }
     });
   }
 
-  async refreshSplitShipmentForm(): void {
+  async refreshSplitShipmentForm(): Promise<void> {
     try {
       const response = await fetch(this.router.generate(this.refreshFormRoute, {
         orderId: this.shipmentId,
@@ -74,7 +82,7 @@ export default class SplitShipmentManager {
       }
 
       const formContainer = document.querySelector(OrderViewPageMap.splitShipmentModal);
-      formContainer?.innerHTML(response);
+      formContainer!.innerHTML = await response.text();
     } catch (error) {
       console.error('Error while loading split shipment form:', error);
     }
