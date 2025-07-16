@@ -27,7 +27,9 @@ import OrderViewPageMap from './OrderViewPageMap';
 
 export default class SplitShipmentManager {
   private refreshFormRoute = 'admin_orders_shipment_get_split_form';
+
   private shipmentId: int|null = null;
+
   private orderId: int|null = null;
 
   private router = new Router();
@@ -47,8 +49,8 @@ export default class SplitShipmentManager {
       const target = event.target as HTMLElement;
 
       if (target && target.matches(OrderViewPageMap.showSplitShipmentModalBtn)) {
-        this.shipmentId = target.dataset['shipmentId'];
-        this.orderId = target.dataset['orderId'];
+        this.shipmentId = target.dataset.shipmentId;
+        this.orderId = target.dataset.orderId;
 
         this.refreshSplitShipmentForm();
       }
@@ -72,67 +74,66 @@ export default class SplitShipmentManager {
       }
 
       const formContainer = document.querySelector(OrderViewPageMap.splitShipmentModal);
-      formContainer?.replaceChild(response)
+      formContainer?.replaceChild(response);
     } catch (error) {
       console.error('Error while loading split shipment form:', error);
     }
-
   }
 
-  initCarrierRefreshOnProductSelection(): void {
-    const modal = document.getElementById('splitShipmentModal');
-
-    if (!modal) {
-      return;
-    }
-
-    const carrierSelect = modal.querySelector<HTMLSelectElement>('select[name$="[carrier]"]');
-
-    if (!carrierSelect) {
-      return;
-    }
-
-    modal.addEventListener('change', async (event) => {
-      const target = event.target as HTMLInputElement;
-
-      if (target && target.matches('input[type="checkbox"][name$="[selected]"]')) {
-        const checkboxes = modal.querySelectorAll<HTMLInputElement>('input[type="checkbox"][name$="[selected]"]:checked');
-        const selectedProductIds: number[] = [];
-
-        checkboxes.forEach((checkbox) => {
-          const id = checkbox.dataset.productId;
-
-          if (id) {
-            selectedProductIds.push(Number(id));
-          }
-        });
-
-        try {
-          const response = await fetch(this.router.generate(this.refreshCarriersRoute), {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({selectedProducts: selectedProductIds}),
-          });
-
-          if (!response.ok) {
-            throw new Error(await response.text());
-          }
-
-          const data = await response.json();
-          const carriersMap = data.carriers as Record<string, string>;
-
-          carrierSelect.innerHTML = ''; // Clear options
-
-          for (const [label, value] of Object.entries(carriersMap)) {
-            const option = new Option(label, value);
-            carrierSelect.appendChild(option);
-          }
-        } catch (error) {
-          console.error('Error while loading carriers:', error);
-        }
-      }
-    });
-  }
+  // initCarrierRefreshOnProductSelection(): void {
+  //   const modal = document.getElementById('splitShipmentModal');
+  //
+  //   if (!modal) {
+  //     return;
+  //   }
+  //
+  //   const carrierSelect = modal.querySelector<HTMLSelectElement>('select[name$="[carrier]"]');
+  //
+  //   if (!carrierSelect) {
+  //     return;
+  //   }
+  //
+  //   modal.addEventListener('change', async (event) => {
+  //     const target = event.target as HTMLInputElement;
+  //
+  //     if (target && target.matches('input[type="checkbox"][name$="[selected]"]')) {
+  //       const checkboxes = modal.querySelectorAll<HTMLInputElement>('input[type="checkbox"][name$="[selected]"]:checked');
+  //       const selectedProductIds: number[] = [];
+  //
+  //       checkboxes.forEach((checkbox) => {
+  //         const id = checkbox.dataset.productId;
+  //
+  //         if (id) {
+  //           selectedProductIds.push(Number(id));
+  //         }
+  //       });
+  //
+  //       try {
+  //         const response = await fetch(this.router.generate(this.refreshCarriersRoute), {
+  //           method: 'POST',
+  //           headers: {
+  //             'Content-Type': 'application/json',
+  //           },
+  //           body: JSON.stringify({selectedProducts: selectedProductIds}),
+  //         });
+  //
+  //         if (!response.ok) {
+  //           throw new Error(await response.text());
+  //         }
+  //
+  //         const data = await response.json();
+  //         const carriersMap = data.carriers as Record<string, string>;
+  //
+  //         carrierSelect.innerHTML = ''; // Clear options
+  //
+  //         for (const [label, value] of Object.entries(carriersMap)) {
+  //           const option = new Option(label, value);
+  //           carrierSelect.appendChild(option);
+  //         }
+  //       } catch (error) {
+  //         console.error('Error while loading carriers:', error);
+  //       }
+  //     }
+  //   });
+  // }
 }
