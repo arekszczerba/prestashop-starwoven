@@ -81,6 +81,9 @@
   {% if orderForViewing.hasInvoice() %}
     <td>{{ product.orderInvoiceNumber }}</td>
   {% endif %}
+  {% if isMultiShipmentFeatureFlagIsEnabled and product.shipmentId%}
+    <td class="cellProductShipment">{{ product.shipmentId }}</td>
+  {% endif %}
   {% if not orderForViewing.delivered %}
     <td class="text-right cellProductActions">
       <button
