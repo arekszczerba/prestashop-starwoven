@@ -28,7 +28,13 @@
           <tr>
             <td>
               <div class="form-check">
-                {{ form_widget(product.selected, { attr: {'class': 'form-check-input', 'data-product-id': product.order_detail_id.vars.value} }) }}
+                {{ form_widget(product.selected, {
+                  attr: {
+                    'class': 'form-check-input',
+                    'data-product-id': product.order_detail_id.vars.value
+                  },
+                  label: false })
+                }}
                 <label class="form-check-label">
                   <strong>{{ product.product_name.vars.value }}</strong><br>
                   <small>{{ 'Reference:'|trans }} {{ product.product_reference.vars.value }}</small>
