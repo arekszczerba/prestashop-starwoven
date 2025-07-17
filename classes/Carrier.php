@@ -553,19 +553,19 @@ class CarrierCore extends ObjectModel
         }
 
         switch ($modules_filters) {
-            case 1:
+            case self::PS_CARRIERS_ONLY:
                 $sql .= ' AND c.is_module = 0 ';
 
                 break;
-            case 2:
+            case self::CARRIERS_MODULE:
                 $sql .= ' AND c.is_module = 1 ';
 
                 break;
-            case 3:
+            case self::CARRIERS_MODULE_NEED_RANGE:
                 $sql .= ' AND c.is_module = 1 AND c.need_range = 1 ';
 
                 break;
-            case 4:
+            case self::PS_CARRIERS_AND_CARRIER_MODULES_NEED_RANGE:
                 $sql .= ' AND (c.is_module = 0 OR c.need_range = 1) ';
 
                 break;
@@ -700,11 +700,11 @@ class CarrierCore extends ObjectModel
             $id_currency = $context->currency->id;
         }
 
-        if (is_array($groups) && !empty($groups)) {
-            $result = Carrier::getCarriers($id_lang, true, false, (int) $id_zone, $groups, self::PS_CARRIERS_AND_CARRIER_MODULES_NEED_RANGE);
-        } else {
-            $result = Carrier::getCarriers($id_lang, true, false, (int) $id_zone, [Configuration::get('PS_UNIDENTIFIED_GROUP')], self::PS_CARRIERS_AND_CARRIER_MODULES_NEED_RANGE);
+        // Use provided groups or a default group if none provided
+        if (!is_array($groups) || !empty($groups)) {
+            $groups = [Configuration::get('PS_UNIDENTIFIED_GROUP')];
         }
+        $result = Carrier::getCarriers($id_lang, true, false, (int) $id_zone, $groups, self::PS_CARRIERS_AND_CARRIER_MODULES_NEED_RANGE);
         $results_array = [];
 
         foreach ($result as $k => $row) {
