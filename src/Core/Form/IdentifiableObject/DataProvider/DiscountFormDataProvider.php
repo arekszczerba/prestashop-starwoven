@@ -91,6 +91,8 @@ class DiscountFormDataProvider implements FormDataProviderInterface
         $discountForEditing = $this->queryBus->handle(new GetDiscountForEditing($id));
         $isAmountDiscount = $discountForEditing->getAmountDiscount() !== null;
         $details = $this->getGiftDetails($discountForEditing);
+        $specificProducts = $this->getSpecificProducts($discountForEditing);
+        $productSegment = $this->getProductSegmentDetails($discountForEditing);
 
         $selectedCondition = 'none';
         $selectedCartCondition = 'none';
@@ -100,9 +102,12 @@ class DiscountFormDataProvider implements FormDataProviderInterface
         } elseif ($discountForEditing->getMinimumAmount()) {
             $selectedCondition = 'cart_conditions';
             $selectedCartCondition = 'minimum_amount';
-        } elseif ($discountForEditing->getProductConditions()) {
+        } elseif (!empty($specificProducts)) {
             $selectedCondition = 'cart_conditions';
             $selectedCartCondition = 'specific_products';
+        } elseif (!empty($productSegment['manufacturer'])) {
+            $selectedCondition = 'cart_conditions';
+            $selectedCartCondition = 'product_segment';
         }
 
         return [
@@ -139,7 +144,8 @@ class DiscountFormDataProvider implements FormDataProviderInterface
                         'currency' => $discountForEditing->getMinimumAmountCurrencyId(),
                         'include_tax' => $discountForEditing->getMinimumAmountTaxIncluded(),
                     ],
-                    'specific_products' => $this->getSpecificProducts($discountForEditing),
+                    'specific_products' => $specificProducts,
+                    'product_segment' => $productSegment,
                 ],
             ],
             'usability' => [
@@ -257,5 +263,27 @@ class DiscountFormDataProvider implements FormDataProviderInterface
         if ($session instanceof FlashBagAwareSessionInterface) {
             $session->getFlashBag()->add('warning', $message);
         }
+    }
+
+    private function getProductSegmentDetails(DiscountForEditing $discountForEditing): array
+    {
+        $productSegment = [
+            'manufacturer' => 0,
+            'quantity' => 0,
+        ];
+
+        foreach ($discountForEditing->getProductConditions() as $condition) {
+            foreach ($condition->getRules() as $rule) {
+                if ($rule->getType() === ProductRuleType::MANUFACTURERS) {
+                    foreach ($rule->getItemIds() as $manufacturerId) {
+                        $productSegment['manufacturer'] = $manufacturerId;
+                    }
+                }
+            }
+
+            $productSegment['quantity'] = $condition->getQuantity();
+        }
+
+        return $productSegment;
     }
 }
