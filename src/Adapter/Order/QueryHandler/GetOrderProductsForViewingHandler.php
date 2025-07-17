@@ -216,6 +216,7 @@ final class GetOrderProductsForViewingHandler extends AbstractOrderHandler imple
                     foreach ($shipmentProducts as $shipmentProduct) {
                         if ($shipmentProduct->getOrderDetailId() == $product['id_order_detail']) {
                             $shipmentId = $shipmentProduct->getShipment()->getId();
+                            break;
                         }
                     }
                 }
