@@ -701,7 +701,7 @@ class CarrierCore extends ObjectModel
         }
 
         // Use provided groups or a default group if none provided
-        if (!is_array($groups) || !empty($groups)) {
+        if (!is_array($groups) || empty($groups)) {
             $groups = [Configuration::get('PS_UNIDENTIFIED_GROUP')];
         }
         $result = Carrier::getCarriers($id_lang, true, false, (int) $id_zone, $groups, self::PS_CARRIERS_AND_CARRIER_MODULES_NEED_RANGE);
