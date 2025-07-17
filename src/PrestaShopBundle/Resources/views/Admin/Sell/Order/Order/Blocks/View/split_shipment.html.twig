@@ -28,19 +28,21 @@
           <tr>
             <td>
               <div class="form-check">
-                {{ form_widget(product.selected, { attr: {'class': 'form-check-input', 'data-product-id': product.id.vars.value} }) }}
+                {{ form_widget(product.selected, { attr: {'class': 'form-check-input', 'data-product-id': product.order_detail_id.vars.value} }) }}
                 <label class="form-check-label">
-                  <strong>{{ product.name.vars.value }}</strong><br>
-                  <small>{{ 'Reference:'|trans }} {{ product.reference.vars.value }}</small>
+                  <strong>{{ product.product_name.vars.value }}</strong><br>
+                  <small>{{ 'Reference:'|trans }} {{ product.product_reference.vars.value }}</small>
                 </label>
               </div>
             </td>
             <td class="text-right">
-              {{ form_widget(product.quantity) }}
-              <span>/{{ product.max_quantity.vars.value }}</span>
+              {{ form_widget(product.selected_quantity, { attr: {'max': product.quantity.vars.value }}) }}
+              <span>/{{ product.quantity.vars.value }}</span>
+            </td>
+            <td>
+              {{ form_rest(product) }}
             </td>
           </tr>
-          {{ form_rest(product) }}
         {% endfor %}
         </tbody>
       </table>
@@ -59,7 +61,7 @@
     </div>
 
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+      <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" data-target="#splitShipmentModal">
         {{ 'Cancel'|trans({}, 'Admin.Actions') }}
       </button>
       <button type="submit" class="btn btn-primary" id="submitSplitShipment" disabled>

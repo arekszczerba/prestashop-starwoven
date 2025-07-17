@@ -30,11 +30,14 @@ import OrderViewPage from '@pages/order/view/order-view-page';
 import OrderProductAutocomplete from '@pages/order/view/order-product-add-autocomplete';
 import OrderProductAdd from '@pages/order/view/order-product-add';
 import OrderViewPageMessagesHandler from './message/order-view-page-messages-handler';
+import SplitShipmentManager from "@pages/order/split-shipment-manager";
 import MergeShipmentManager from './merge-shipment-manager';
 
 const {$} = window;
 
 $(() => {
+  new SplitShipmentManager();
+
   const DISCOUNT_TYPE_AMOUNT = 'amount';
   const DISCOUNT_TYPE_PERCENT = 'percent';
   const DISCOUNT_TYPE_FREE_SHIPPING = 'free_shipping';

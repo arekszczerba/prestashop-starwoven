@@ -719,25 +719,31 @@ class OrderController extends PrestaShopAdminController
     #[AdminSecurity("is_granted('update', 'AdminOrders')", redirectRoute: 'admin_orders_view', redirectQueryParamsToKeep: ['orderId'], message: 'You do not have permission to edit this.')]
     public function splitShipmentAction(int $orderId, int $shipmentId): RedirectResponse
     {
-       // new SplitShipment()
+        // new SplitShipment()
         return $this->redirectToRoute('admin_orders_view', [
             'shipmentId' => $shipmentId,
         ]);
     }
 
     #[AdminSecurity("is_granted('update', 'AdminOrders')", message: 'You do not have permission to edit this.')]
-    public function getShipmentSplitForm(int $orderId, int $shipmentId, Request $request): Response
+    public function getShipmentSplitForm(Request $request): Response
     {
+        $orderId = (int) $request->query->get('orderId');
+        $shipmentId = (int) $request->query->get('shipmentId');
+
         /** @var OrderShipmentProduct[] $orderShipmentProducts */
         $orderShipmentProducts = $this->dispatchQuery(new GetShipmentProducts($shipmentId));
 
+        foreach ($orderShipmentProducts as &$order) {
+            $order = $order->toArray();
+        }
+
         $splitShipmentTypeForm = $this->createForm(SplitShipmentType::class, [
             'products' => $orderShipmentProducts,
-        ], [
             'selectedProducts' => [],
         ]);
 
-        return $this->render('@PrestaShop/Admin/Sell/Order/Order/Blocks/split_shipment.html.twig', [
+        return $this->render('@PrestaShop/Admin/Sell/Order/Order/Blocks/View/split_shipment.html.twig', [
             'splitShipmentForm' => $splitShipmentTypeForm->createView(),
             'orderId' => $orderId,
             'shipmentId' => $shipmentId,

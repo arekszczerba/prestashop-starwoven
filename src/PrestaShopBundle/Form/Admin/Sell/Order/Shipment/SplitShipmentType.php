@@ -54,7 +54,7 @@ class SplitShipmentType extends AbstractType
 
         $builder->add('carrier', ChoiceType::class, [
             'choices' => $this->availableCarriersForShipmentChoiceProvider->getChoices([
-                'selectedProduct' => $options['selectedProducts'],
+                'selectedProducts' => $options['selectedProducts'],
             ]),
             'autocomplete' => true,
         ]);

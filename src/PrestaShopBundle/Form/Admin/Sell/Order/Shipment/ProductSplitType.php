@@ -29,6 +29,7 @@ namespace PrestaShopBundle\Form\Admin\Sell\Order\Shipment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -40,23 +41,24 @@ class ProductSplitType extends AbstractType
         $builder
             ->add('selected', CheckboxType::class, [
                 'required' => false,
+                'label' => '',
             ])
-            ->add('quantity', IntegerType::class, [
+            ->add('selected_quantity', IntegerType::class, [
                 'attr' => [
                     'min' => 1,
-                    'max' => $options->max_quantity,
                 ],
             ])
-            ->add('id', HiddenType::class)
-            ->add('name', HiddenType::class)
-            ->add('max_quantity', HiddenType::class);
+            ->add('order_detail_id', HiddenType::class)
+            ->add('product_name', HiddenType::class)
+            ->add('product_reference', HiddenType::class)
+            ->add('quantity', HiddenType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
+        parent::configureOptions($resolver);
         $resolver->setDefaults([
             'data_class' => null,
-            'max_quantity' => 1,
         ]);
     }
 }
