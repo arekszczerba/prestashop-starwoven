@@ -730,6 +730,8 @@ class OrderController extends PrestaShopAdminController
     {
         $orderId = (int) $request->query->get('orderId');
         $shipmentId = (int) $request->query->get('shipmentId');
+        $selectedProducts = $request->query->get('selectedProducts', []);
+        $carrierId = $request->query->get('carrierId');
 
         /** @var OrderShipmentProduct[] $orderShipmentProducts */
         $orderShipmentProducts = $this->dispatchQuery(new GetShipmentProducts($shipmentId));

@@ -44,7 +44,6 @@ export default class SplitShipmentManager {
     if (!mainDiv) {
       throw new Error('impossible to retrieve main div of the page');
     }
-
     mainDiv.addEventListener('click', this.onSplitShipmentClick);
   }
 
@@ -63,7 +62,8 @@ export default class SplitShipmentManager {
       }
       this.shipmentId = Number(target.dataset.shipmentId);
 
-      this.refreshSplitShipmentForm();
+      await this.refreshSplitShipmentForm();
+      $(OrderViewPageMap.splitShipmentModal).modal('show');
     }
   }
 
@@ -83,67 +83,30 @@ export default class SplitShipmentManager {
         throw new Error(await response.text());
       }
 
-      const formContainer = document.querySelector(OrderViewPageMap.splitShipmentModal);
-      formContainer!.innerHTML = await response.text();
+      const modalContainer = document.querySelector('#splitShipmentModalContainer');
+      modalContainer!.innerHTML = await response.text();
+
+      this.initCloseButtonModals();
     } catch (error) {
       console.error('Error while loading split shipment form:', error);
     }
   }
 
-  // initCarrierRefreshOnProductSelection(): void {
-  //   const modal = document.getElementById('splitShipmentModal');
-  //
-  //   if (!modal) {
-  //     return;
-  //   }
-  //
-  //   const carrierSelect = modal.querySelector<HTMLSelectElement>('select[name$="[carrier]"]');
-  //
-  //   if (!carrierSelect) {
-  //     return;
-  //   }
-  //
-  //   modal.addEventListener('change', async (event) => {
-  //     const target = event.target as HTMLInputElement;
-  //
-  //     if (target && target.matches('input[type="checkbox"][name$="[selected]"]')) {
-  //       const checkboxes = modal.querySelectorAll<HTMLInputElement>('input[type="checkbox"][name$="[selected]"]:checked');
-  //       const selectedProductIds: number[] = [];
-  //
-  //       checkboxes.forEach((checkbox) => {
-  //         const id = checkbox.dataset.productId;
-  //
-  //         if (id) {
-  //           selectedProductIds.push(Number(id));
-  //         }
-  //       });
-  //
-  //       try {
-  //         const response = await fetch(this.router.generate(this.refreshCarriersRoute), {
-  //           method: 'POST',
-  //           headers: {
-  //             'Content-Type': 'application/json',
-  //           },
-  //           body: JSON.stringify({selectedProducts: selectedProductIds}),
-  //         });
-  //
-  //         if (!response.ok) {
-  //           throw new Error(await response.text());
-  //         }
-  //
-  //         const data = await response.json();
-  //         const carriersMap = data.carriers as Record<string, string>;
-  //
-  //         carrierSelect.innerHTML = ''; // Clear options
-  //
-  //         for (const [label, value] of Object.entries(carriersMap)) {
-  //           const option = new Option(label, value);
-  //           carrierSelect.appendChild(option);
-  //         }
-  //       } catch (error) {
-  //         console.error('Error while loading carriers:', error);
-  //       }
-  //     }
-  //   });
-  // }
+  initCloseButtonModals = () => {
+    const modal = document.querySelector(OrderViewPageMap.splitShipmentModal);
+    const closeButtons = modal?.querySelectorAll('[data-dismiss="modal"]');
+    if (closeButtons && closeButtons.length > 0) {
+      closeButtons.forEach(btn => {
+        btn.removeEventListener('click', this.closeModal);
+        btn.addEventListener('click', this.closeModal);
+      })
+    }
+  }
+
+  closeModal = () => {
+    $(OrderViewPageMap.splitShipmentModal).modal('hide');
+    this.shipmentId = null;
+    this.orderId = null;
+
+  }
 }

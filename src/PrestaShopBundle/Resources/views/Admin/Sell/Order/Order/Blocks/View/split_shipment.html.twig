@@ -1,3 +1,4 @@
+<div class="modal fade" id="splitShipmentModal" tabindex="-1" role="dialog">
 <div class="modal-dialog" role="document">
   {{ form_start(splitShipmentForm, {
     action: path('admin_orders_split_shipment', {orderId: orderId, shipmentId: shipmentId})
@@ -16,7 +17,7 @@
         <i class="material-icons" data-toggle="tooltip" title="{{ 'These items will be shipped in a separate package'|trans }}">help_outline</i>
       </p>
 
-      <table class="table table-borderless">
+      <table class="table">
         <thead>
         <tr>
           <th>{{ 'Products'|trans }}</th>
@@ -27,7 +28,7 @@
         {% for product in splitShipmentForm.products %}
           <tr>
             <td>
-              <div class="form-check">
+              <div class="form-check d-flex">
                 {{ form_widget(product.selected, {
                   attr: {
                     'class': 'form-check-input',
@@ -35,19 +36,20 @@
                   },
                   label: false })
                 }}
-                <label class="form-check-label">
-                  <strong>{{ product.product_name.vars.value }}</strong><br>
-                  <small>{{ 'Reference:'|trans }} {{ product.product_reference.vars.value }}</small>
+                <label class="form-check-label d-flex" for="{{ product.selected.vars.id }}">
+                  <div data-role="image" style="width: 40px; height: 40px; border: 1px solid grey; background: lightgrey;"></div>
+                  <div class="ml-2">
+                    <strong>{{ product.product_name.vars.value }}</strong><br>
+                    <small>{{ 'Reference:'|trans }} {{ product.product_reference.vars.value }}</small>
+                  </div>
                 </label>
               </div>
             </td>
-            <td class="text-right">
-              {{ form_widget(product.selected_quantity, { attr: {'max': product.quantity.vars.value }}) }}
-              <span>/{{ product.quantity.vars.value }}</span>
+            <td class="text-right d-flex align-items-center">
+              {{ form_widget(product.selected_quantity, { attr: {'max': product.quantity.vars.value, 'class': 'form-number-input' }}) }}
+              <span class="ml-2">/{{ product.quantity.vars.value }}</span>
             </td>
-            <td>
-              {{ form_rest(product) }}
-            </td>
+            {{ form_rest(product) }}
           </tr>
         {% endfor %}
         </tbody>
@@ -67,7 +69,7 @@
     </div>
 
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" data-target="#splitShipmentModal">
+      <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
         {{ 'Cancel'|trans({}, 'Admin.Actions') }}
       </button>
       <button type="submit" class="btn btn-primary" id="submitSplitShipment" disabled>
@@ -76,4 +78,5 @@
     </div>
   </div>
   {{ form_end(splitShipmentForm) }}
+</div>
 </div>

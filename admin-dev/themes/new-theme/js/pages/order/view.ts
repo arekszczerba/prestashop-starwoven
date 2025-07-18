@@ -36,12 +36,11 @@ import MergeShipmentManager from './merge-shipment-manager';
 const {$} = window;
 
 $(() => {
-  new SplitShipmentManager();
-
   const DISCOUNT_TYPE_AMOUNT = 'amount';
   const DISCOUNT_TYPE_PERCENT = 'percent';
   const DISCOUNT_TYPE_FREE_SHIPPING = 'free_shipping';
 
+  new SplitShipmentManager();
   new MergeShipmentManager();
   new OrderShippingManager();
 

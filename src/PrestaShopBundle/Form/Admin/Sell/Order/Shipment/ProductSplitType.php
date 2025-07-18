@@ -33,6 +33,9 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Validator\Constraints\Range;
 
 class ProductSplitType extends AbstractType
 {
@@ -43,15 +46,36 @@ class ProductSplitType extends AbstractType
                 'required' => false,
                 'label' => '',
             ])
-            ->add('selected_quantity', IntegerType::class, [
-                'attr' => [
-                    'min' => 1,
-                ],
-            ])
+//            ->add('selected_quantity', IntegerType::class, [
+//                'attr' => [
+//                    'min' => 1,
+//                ],
+//            ])
             ->add('order_detail_id', HiddenType::class)
             ->add('product_name', HiddenType::class)
             ->add('product_reference', HiddenType::class)
             ->add('quantity', HiddenType::class);
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            $data = $event->getData();
+            $form = $event->getForm();
+
+            $max = isset($data['quantity']) ? (int) $data['quantity'] : null;
+
+            $form->add('selected_quantity', IntegerType::class, [
+                'data' => 1,
+                'attr' => [
+                    'min' => 1,
+                    'max' => $max,
+                ],
+                'constraints' => [
+                    new Range([
+                        'min' => 1,
+                        'max' => $max,
+                    ]),
+                ],
+            ]);
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void
