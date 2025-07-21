@@ -247,6 +247,7 @@ default:
         - "%paths.base%/Features/Scenario/Manufacturer"
       contexts:
         - Tests\Integration\Behaviour\Features\Context\CommonFeatureContext
+        - Tests\Integration\Behaviour\Features\Context\LanguageFeatureContext
         - Tests\Integration\Behaviour\Features\Context\Domain\AddressFeatureContext
         - Tests\Integration\Behaviour\Features\Context\Domain\ManufacturerFeatureContext
     cms_page:
@@ -395,6 +396,7 @@ default:
         - "%paths.base%/Features/Scenario/Address"
       contexts:
         - Tests\Integration\Behaviour\Features\Context\CommonFeatureContext
+        - Tests\Integration\Behaviour\Features\Context\LanguageFeatureContext
         - Tests\Integration\Behaviour\Features\Context\Domain\AddressFeatureContext
         - Tests\Integration\Behaviour\Features\Context\Domain\CustomerFeatureContext
         - Tests\Integration\Behaviour\Features\Context\Domain\ManufacturerFeatureContext
