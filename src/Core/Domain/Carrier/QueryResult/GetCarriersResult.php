@@ -52,7 +52,7 @@ class GetCarriersResult
      */
     public function getAvailableCarriers(): array
     {
-        return $this->availableCarriers;
+        return array_map(function(CarrierSummary $carrier) { return $carrier->toArray(); }, $this->availableCarriers);
     }
 
     /**

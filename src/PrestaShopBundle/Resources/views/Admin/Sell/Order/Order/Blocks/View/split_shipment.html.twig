@@ -1,82 +1,60 @@
-<div class="modal fade" id="splitShipmentModal" tabindex="-1" role="dialog">
-<div class="modal-dialog" role="document">
-  {{ form_start(splitShipmentForm, {
-    action: path('admin_orders_split_shipment', {orderId: orderId, shipmentId: shipmentId})
-  }) }}
-  <div class="modal-content">
-    <div class="modal-header">
-      <h5 class="modal-title">{{ 'Split shipment'|trans({}, 'Admin.Orderscustomers.Feature') }}</h5>
-      <button type="button" class="close" data-dismiss="modal" aria-label="{{ 'Close'|trans({}, 'Admin.Actions') }}">
-        <span aria-hidden="true">×</span>
-      </button>
-    </div>
+{{ form_start(splitShipmentForm, {
+  action: path('admin_orders_split_shipment', {orderId: orderId, shipmentId: shipmentId})
+}) }}
+  <p>
+    {{ 'Select the items to send separately'|trans({}, 'Admin.Orderscustomers.Feature') }}
+    <i class="material-icons" data-toggle="tooltip" title="{{ 'These items will be shipped in a separate package'|trans }}">help_outline</i>
+  </p>
 
-    <div class="modal-body">
-      <p>
-        {{ 'Select the items to send separately'|trans({}, 'Admin.Orderscustomers.Feature') }}
-        <i class="material-icons" data-toggle="tooltip" title="{{ 'These items will be shipped in a separate package'|trans }}">help_outline</i>
-      </p>
-
-      <table class="table">
-        <thead>
-        <tr>
-          <th>{{ 'Products'|trans }}</th>
-          <th class="text-right">{{ 'Select quantity'|trans }}</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for product in splitShipmentForm.products %}
-          <tr>
-            <td>
-              <div class="form-check d-flex">
-                {{ form_widget(product.selected, {
-                  attr: {
-                    'class': 'form-check-input',
-                    'data-product-id': product.order_detail_id.vars.value
-                  },
-                  label: false })
-                }}
-                <label class="form-check-label d-flex" for="{{ product.selected.vars.id }}">
-                  <div data-role="image" style="width: 40px; height: 40px; border: 1px solid grey; background: lightgrey;"></div>
-                  <div class="ml-2">
-                    <strong>{{ product.product_name.vars.value }}</strong><br>
-                    <small>{{ 'Reference:'|trans }} {{ product.product_reference.vars.value }}</small>
-                  </div>
-                </label>
+  <table class="table">
+    <thead>
+    <tr>
+      <th>{{ 'Products'|trans }}</th>
+      <th class="text-right">{{ 'Select quantity'|trans }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for product in splitShipmentForm.products %}
+      <tr>
+        <td>
+          <div class="form-check d-flex">
+            {{ form_widget(product.selected, {
+              attr: {
+                'class': 'form-check-input',
+                'data-product-id': product.order_detail_id.vars.value
+              },
+              label: false })
+            }}
+            <label class="form-check-label d-flex" for="{{ product.selected.vars.id }}">
+              <div data-role="image" style="width: 40px; height: 40px; border: 1px solid grey; background: lightgrey;"></div>
+              <div class="ml-2">
+                <strong>{{ product.product_name.vars.value }}</strong><br>
+                <small>{{ 'Reference:'|trans }} {{ product.product_reference.vars.value }}</small>
               </div>
-            </td>
-            <td class="text-right d-flex align-items-center">
-              {{ form_widget(product.selected_quantity, { attr: {'max': product.quantity.vars.value, 'class': 'form-number-input' }}) }}
-              <span class="ml-2">/{{ product.quantity.vars.value }}</span>
-            </td>
-            {{ form_rest(product) }}
-          </tr>
-        {% endfor %}
-        </tbody>
-      </table>
+            </label>
+          </div>
+        </td>
+        <td class="text-right d-flex align-items-center">
+          {{ form_widget(product.selected_quantity, { attr: {'max': product.quantity.vars.value, 'class': 'form-number-input' }}) }}
+          <span class="ml-2">/{{ product.quantity.vars.value }}</span>
+        </td>
+        <td class="d-none">
+          {{ form_rest(product) }}
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
 
-      <div class="form-group mt-4">
-        <label>{{ 'Select the carrier in charge'|trans }}</label>
-        <i class="material-icons" data-toggle="tooltip" title="{{ 'Choose the carrier responsible for this shipment'|trans }}">help_outline</i>
-        {{ form_widget(splitShipmentForm.carrier, { attr: {'class': 'form-control', 'id': 'carrier-select'} }) }}
-        <a href="{{ path('admin_carriers_index') }}" target="_blank">
-          {{ 'Manage carriers'|trans }}
-          <i class="material-icons">open_in_new</i>
-        </a>
-      </div>
-
-      {{ form_rest(splitShipmentForm) }}
-    </div>
-
-    <div class="modal-footer">
-      <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
-        {{ 'Cancel'|trans({}, 'Admin.Actions') }}
-      </button>
-      <button type="submit" class="btn btn-primary" id="submitSplitShipment" disabled>
-        {{ 'Split shipment'|trans({}, 'Admin.Actions') }}
-      </button>
-    </div>
+  <div class="form-group mt-4">
+    <label>{{ 'Select the carrier in charge'|trans }}</label>
+    <i class="material-icons" data-toggle="tooltip" title="{{ 'Choose the carrier responsible for this shipment'|trans }}">help_outline</i>
+    {{ form_widget(splitShipmentForm.carrier, { attr: {'class': 'form-control', 'id': 'carrier-select'} }) }}
+    <a href="{{ path('admin_carriers_index') }}" target="_blank">
+      {{ 'Manage carriers'|trans }}
+      <i class="material-icons">open_in_new</i>
+    </a>
   </div>
-  {{ form_end(splitShipmentForm) }}
-</div>
-</div>
+
+  {{ form_rest(splitShipmentForm) }}
+{{ form_end(splitShipmentForm) }}

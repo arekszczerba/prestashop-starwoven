@@ -47,7 +47,7 @@ export default class SplitShipmentManager {
     mainDiv.addEventListener('click', this.onSplitShipmentClick);
   }
 
-  onSplitShipmentClick = (event: Event): void => {
+  onSplitShipmentClick = async (event: Event): Promise<void> => {
     const target = event.target as HTMLElement;
 
     if (target && target.matches(OrderViewPageMap.showSplitShipmentModalBtn)) {
@@ -67,11 +67,13 @@ export default class SplitShipmentManager {
     }
   }
 
-  async refreshSplitShipmentForm(): Promise<void> {
+  async refreshSplitShipmentForm(products: {} = {}, carrier: number = 0): Promise<void> {
     try {
       const response = await fetch(this.router.generate(this.refreshFormRoute, {
         orderId: this.orderId,
         shipmentId: this.shipmentId,
+        products,
+        carrier: carrier
       }), {
         method: 'GET',
         headers: {
@@ -83,30 +85,47 @@ export default class SplitShipmentManager {
         throw new Error(await response.text());
       }
 
-      const modalContainer = document.querySelector('#splitShipmentModalContainer');
-      modalContainer!.innerHTML = await response.text();
+      const formContainer = document.querySelector('#splitShipmentFormContainer');
+      formContainer!.innerHTML = await response.text();
 
-      this.initCloseButtonModals();
+      this.initForm();
     } catch (error) {
       console.error('Error while loading split shipment form:', error);
     }
   }
 
-  initCloseButtonModals = () => {
-    const modal = document.querySelector(OrderViewPageMap.splitShipmentModal);
-    const closeButtons = modal?.querySelectorAll('[data-dismiss="modal"]');
-    if (closeButtons && closeButtons.length > 0) {
-      closeButtons.forEach(btn => {
-        btn.removeEventListener('click', this.closeModal);
-        btn.addEventListener('click', this.closeModal);
-      })
+  get form(): HTMLFormElement {
+    const form = document.forms.namedItem('split_shipment');
+    if (!form) {
+      throw new Error('form not found')
     }
+    return form;
   }
 
-  closeModal = () => {
-    $(OrderViewPageMap.splitShipmentModal).modal('hide');
-    this.shipmentId = null;
-    this.orderId = null;
+  initForm = () => {
+    this.form.removeEventListener('change', this.onChangeForm);
+    this.form.addEventListener('change', this.onChangeForm);
+  }
 
+  onChangeForm = async () => {
+    const formData = new FormData(this.form);
+
+    const products: {[key: number]: { selected?: number; quantity?: number; }} = {}
+    let currentCarrier: number = 0;
+    const regexpKey = /split_shipment\[products\]\[(\d+)\]\[(selected|selected_quantity|order_detail_id)\]/;
+
+    formData.forEach((value, key) => {
+      const keyMatch = key.match(regexpKey);
+      if (keyMatch) {
+        const productIndex = Number(keyMatch[1]);
+        const fieldName = keyMatch[2];
+        products[productIndex] = {...(products[productIndex] ?? {}), [fieldName]: Number(value)}
+      }
+      if (key === 'split_shipment[carrier]') {
+        currentCarrier = Number(value);
+      }
+    });
+
+    await this.refreshSplitShipmentForm(products, currentCarrier);
   }
 }

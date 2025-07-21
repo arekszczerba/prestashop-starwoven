@@ -26,13 +26,13 @@
 
 namespace PrestaShopBundle\Form\Admin\Sell\Order\Shipment;
 
+use PrestaShop\PrestaShop\Adapter\Form\ChoiceProvider\AvailableCarriersForShipmentChoiceProvider;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use PrestaShop\PrestaShop\Adapter\Form\ChoiceProvider\AvailableCarriersForShipmentChoiceProvider;
 
 class SplitShipmentType extends AbstractType
 {
@@ -52,9 +52,20 @@ class SplitShipmentType extends AbstractType
 
         $builder->add('shipment_id', HiddenType::class);
 
+        $selectedProducts = array_filter(
+            $options['data']['products'],
+            function ($product) {
+                return !empty($product['selected']);
+            }
+        );
+
+        $selectedProductsId = array_map(function ($product) {
+            return $product['product_id'];
+        }, $selectedProducts);
+
         $builder->add('carrier', ChoiceType::class, [
             'choices' => $this->availableCarriersForShipmentChoiceProvider->getChoices([
-                'selectedProducts' => $options['selectedProducts'],
+                'selectedProducts' => $selectedProductsId,
             ]),
             'autocomplete' => true,
         ]);
@@ -64,7 +75,7 @@ class SplitShipmentType extends AbstractType
     {
         $resolver->setDefaults([
             'products' => [],
-            'selectedProducts' => [],
+            'carrier' => 0,
         ]);
     }
 }

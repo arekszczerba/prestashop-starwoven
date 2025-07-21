@@ -29,6 +29,7 @@ namespace PrestaShopBundle\Controller\Admin\Sell\Order;
 use Currency;
 use Exception;
 use InvalidArgumentException;
+use OrderDetail;
 use PrestaShop\PrestaShop\Adapter\Currency\CurrencyDataProvider;
 use PrestaShop\PrestaShop\Adapter\LegacyContext;
 use PrestaShop\PrestaShop\Adapter\PDF\OrderInvoicePdfGenerator;
@@ -730,19 +731,39 @@ class OrderController extends PrestaShopAdminController
     {
         $orderId = (int) $request->query->get('orderId');
         $shipmentId = (int) $request->query->get('shipmentId');
-        $selectedProducts = $request->query->get('selectedProducts', []);
-        $carrierId = $request->query->get('carrierId');
+        $productsFromQuery = $request->get('products', []) ?? [];
+        $selectedCarrier = (int) $request->query->get('carrier');
+
+        foreach ($productsFromQuery as &$prod) {
+            if (isset($prod['selected_quantity'])) {
+                $prod['selected_quantity'] = (int) $prod['selected_quantity'];
+            }
+            if (isset($prod['selected'])) {
+                $prod['selected'] = (bool) filter_var((int) $prod['selected'], FILTER_VALIDATE_BOOLEAN);
+            }
+        }
+
+        $productsQueryMap = array_column(
+            $productsFromQuery,
+            null,
+            'order_detail_id'
+        );
 
         /** @var OrderShipmentProduct[] $orderShipmentProducts */
         $orderShipmentProducts = $this->dispatchQuery(new GetShipmentProducts($shipmentId));
 
         foreach ($orderShipmentProducts as &$order) {
             $order = $order->toArray();
+            $id = $order['order_detail_id'] ?? null;
+            if ($id !== null && isset($productsQueryMap[$id])) {
+                $order['product_id'] = (new OrderDetail($order['order_detail_id']))->product_id;
+                $order = array_merge($order, $productsQueryMap[$id]);
+            }
         }
 
         $splitShipmentTypeForm = $this->createForm(SplitShipmentType::class, [
             'products' => $orderShipmentProducts,
-            'selectedProducts' => [],
+            'carrier' => $selectedCarrier,
         ]);
 
         return $this->render('@PrestaShop/Admin/Sell/Order/Order/Blocks/View/split_shipment.html.twig', [

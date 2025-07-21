@@ -46,4 +46,12 @@ class CarrierSummary
     {
         return $this->name;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'name' => $this->getName(),
+        ];
+    }
 }

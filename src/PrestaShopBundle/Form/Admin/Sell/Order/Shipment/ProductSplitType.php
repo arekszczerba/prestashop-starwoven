@@ -46,11 +46,6 @@ class ProductSplitType extends AbstractType
                 'required' => false,
                 'label' => '',
             ])
-//            ->add('selected_quantity', IntegerType::class, [
-//                'attr' => [
-//                    'min' => 1,
-//                ],
-//            ])
             ->add('order_detail_id', HiddenType::class)
             ->add('product_name', HiddenType::class)
             ->add('product_reference', HiddenType::class)
