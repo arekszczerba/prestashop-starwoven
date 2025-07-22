@@ -2348,7 +2348,7 @@ class OrderController extends PrestaShopAdminController
         ];
     }
 
-    private function isFeatureFlagIsEnabledForMultiShipment()
+    private function isFeatureFlagIsEnabledForMultiShipment(): bool
     {
         /** @var FeatureFlagStateCheckerInterface $featureFlagManager */
         $featureFlagManager = $this->getFeatureFlagStateChecker();
