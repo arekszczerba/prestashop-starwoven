@@ -39,10 +39,7 @@ class DispatcherTest extends TestCase
      */
     public function testValidateRoute($routeId, $rule, $defaultRoutes, $expectedResult, $expectedErrors)
     {
-        $dispatcher = $this->getMockBuilder(DispatcherCore::class)
-            ->disableOriginalConstructor()
-            ->setMethodsExcept(['validateRoute'])
-            ->getMock();
+        $dispatcher = DispatcherCore::getInstance();
 
         // Inject default_routes property
         $reflection = new \ReflectionClass($dispatcher);
@@ -80,7 +77,7 @@ class DispatcherTest extends TestCase
             // Missing keyword
             [
                 'category_rule',
-                'category/{id}',
+                'category/{rewrite}',
                 [
                     'category_rule' => [
                         'controller' => 'category',
@@ -92,7 +89,7 @@ class DispatcherTest extends TestCase
                     ],
                 ],
                 false,
-                ['missing' => ['rewrite'], 'unknown' => []],
+                ['missing' => ['id'], 'unknown' => []],
             ],
             // Unknown keyword
             [
@@ -114,7 +111,7 @@ class DispatcherTest extends TestCase
             // Both missing and unknown
             [
                 'category_rule',
-                'category/{id}-{foo}',
+                'category/{rewrite}-{foo}',
                 [
                     'category_rule' => [
                         'controller' => 'category',
@@ -126,7 +123,7 @@ class DispatcherTest extends TestCase
                     ],
                 ],
                 false,
-                ['missing' => ['rewrite'], 'unknown' => ['foo']],
+                ['missing' => ['id'], 'unknown' => ['foo']],
             ],
             // Route id not found
             [

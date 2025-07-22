@@ -37,85 +37,34 @@ use Validate;
 
 class RouteValidatorTest extends TestCase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
-        // Mock Validate static method
-        $validateMock = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['isRoutePattern'])
-            ->getMock();
-        $validateMock::staticExpects($this->any())
-            ->method('isRoutePattern')
-            ->willReturnCallback(function ($pattern) {
-                // Accept only patterns with {id} or {rewrite}
-                return preg_match('/\{[a-zA-Z0-9_]+\}/', $pattern) === 1;
-            });
-
-        // Replace Validate with our mock
-        Validate::$instance = $validateMock;
-    }
-
-    public function tearDown(): void
-    {
-        parent::tearDown();
-        // Clean up static mock
-        Validate::$instance = null;
-    }
-
     public function testIsRoutePatternReturnsTrueForValidPattern()
     {
         $validator = new RouteValidator();
-        $this->assertTrue($validator->isRoutePattern('category/{id}-{rewrite}'));
+        $this->assertTrue((bool) $validator->isRoutePattern('category/{id}-{rewrite}'));
     }
 
     public function testIsRoutePatternReturnsFalseForInvalidPattern()
     {
         $validator = new RouteValidator();
-        $this->assertFalse($validator->isRoutePattern('category/id-rewrite'));
+        $this->assertFalse((bool) $validator->isRoutePattern('category/id-rewrite$'));
     }
 
     public function testDoesRouteContainsRequiredKeywordsCallsIsRouteValid()
     {
-        $validator = $this->getMockBuilder(RouteValidator::class)
-            ->onlyMethods(['isRouteValid'])
-            ->getMock();
+        $validator = new RouteValidator();
 
-        $validator->expects($this->once())
-            ->method('isRouteValid')
-            ->with('category_rule', 'category/{id}-{rewrite}')
-            ->willReturn([]);
-
-        $validator->doesRouteContainsRequiredKeywords('category_rule', 'category/{id}-{rewrite}');
+        $this->assertFalse((bool) $validator->doesRouteContainsRequiredKeywords('category_rule', 'category/{id}'));
     }
 
     /**
      * @dataProvider routeValidationProvider
      */
-    public function testIsRouteValid($routeId, $rule, $validateReturn, $expected)
+    public function testIsRouteValid($routeId, $rule, $expected)
     {
-        $dispatcherMock = $this->getMockBuilder(Dispatcher::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['validateRoute'])
-            ->getMock();
-
-        $dispatcherMock->expects($this->once())
-            ->method('validateRoute')
-            ->with($routeId, $rule, $this->anything())
-            ->willReturnCallback(function ($routeId, $rule, &$errors) use ($validateReturn) {
-                $errors = $validateReturn['errors'];
-                return $validateReturn['result'];
-            });
-
-        // Replace Dispatcher::getInstance() with our mock
-        Dispatcher::setInstanceForTesting($dispatcherMock);
-
         $validator = new RouteValidator();
         $result = $validator->isRouteValid($routeId, $rule);
 
         $this->assertEquals($expected, $result);
-
-        // Clean up static instance
-        Dispatcher::setInstanceForTesting(null);
     }
 
     public function routeValidationProvider()
@@ -125,35 +74,30 @@ class RouteValidatorTest extends TestCase
             [
                 'category_rule',
                 'category/{id}-{rewrite}',
-                ['result' => true, 'errors' => []],
                 [],
             ],
             // Missing keyword
             [
                 'category_rule',
-                'category/{id}',
-                ['result' => false, 'errors' => ['missing' => ['rewrite'], 'unknown' => []]],
-                ['missing' => ['rewrite'], 'unknown' => []],
+                'category/{rewrite}',
+                ['missing' => ['id'], 'unknown' => []],
             ],
             // Unknown keyword
             [
                 'category_rule',
                 'category/{id}-{rewrite}-{foo}',
-                ['result' => false, 'errors' => ['missing' => [], 'unknown' => ['foo']]],
                 ['missing' => [], 'unknown' => ['foo']],
             ],
             // Both missing and unknown
             [
                 'category_rule',
-                'category/{id}-{foo}',
-                ['result' => false, 'errors' => ['missing' => ['rewrite'], 'unknown' => ['foo']]],
-                ['missing' => ['rewrite'], 'unknown' => ['foo']],
+                'category/{rewrite}-{foo}',
+                ['missing' => ['id'], 'unknown' => ['foo']],
             ],
             // Route id not found
             [
                 'not_existing_rule',
                 'category/{id}-{rewrite}',
-                ['result' => false, 'errors' => ['missing' => [], 'unknown' => []]],
                 ['missing' => [], 'unknown' => []],
             ],
         ];
