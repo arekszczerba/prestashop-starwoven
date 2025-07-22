@@ -219,6 +219,7 @@ final class GetOrderProductsForViewingHandler extends AbstractOrderHandler imple
                             break;
                         }
                     }
+                    break 2;
                 }
             }
 
