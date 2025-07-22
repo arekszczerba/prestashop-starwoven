@@ -31,6 +31,7 @@ namespace Tests\Unit\Classes;
 
 use DispatcherCore;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 class DispatcherTest extends TestCase
 {
@@ -42,7 +43,7 @@ class DispatcherTest extends TestCase
         $dispatcher = DispatcherCore::getInstance();
 
         // Inject default_routes property
-        $reflection = new \ReflectionClass($dispatcher);
+        $reflection = new ReflectionClass($dispatcher);
         $property = $reflection->getProperty('default_routes');
         $property->setAccessible(true);
         $property->setValue($dispatcher, $defaultRoutes);

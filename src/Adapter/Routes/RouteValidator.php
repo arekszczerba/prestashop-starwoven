@@ -66,7 +66,7 @@ class RouteValidator
      *
      * @throws PrestaShopException
      */
-    public function isRouteValid($routeId, $rule)
+    public function isRouteValid(string $routeId, string $rule): array
     {
         $errors = [];
         $validationResult = Dispatcher::getInstance()->validateRoute($routeId, $rule, $errors);

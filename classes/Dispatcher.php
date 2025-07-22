@@ -372,7 +372,7 @@ class DispatcherCore
 
                 break;
 
-            // Dispatch module controller for front office
+                // Dispatch module controller for front office
             case self::FC_MODULE:
                 $module_name = Validate::isModuleName(Tools::getValue('module')) ? Tools::getValue('module') : '';
                 $module = Module::getInstanceByName($module_name);
@@ -399,7 +399,7 @@ class DispatcherCore
 
                 break;
 
-            // Dispatch back office controller + module back office controller
+                // Dispatch back office controller + module back office controller
             case self::FC_ADMIN:
                 if (
                     $this->use_default_controller
@@ -541,7 +541,7 @@ class DispatcherCore
             if (preg_match('#^/([a-z]{2})(?:/.*)?$#', $requestUri, $matches)) {
                 $_GET['isolang'] = $matches[1];
                 $requestUri = substr($requestUri, 3);
-                // Otherwise, we use the default language
+            // Otherwise, we use the default language
             } else {
                 $defaultLanguage = new Language((int) Configuration::get('PS_LANG_DEFAULT'));
                 $_GET['isolang'] = $defaultLanguage->iso_code;
@@ -919,7 +919,7 @@ class DispatcherCore
     {
         $errors = [
             'missing' => [],
-            'unknown' => []
+            'unknown' => [],
         ];
         if (!isset($this->default_routes[$route_id])) {
             return false;

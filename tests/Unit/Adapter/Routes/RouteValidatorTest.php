@@ -31,9 +31,6 @@ namespace Tests\Unit\Adapter\Routes;
 
 use PHPUnit\Framework\TestCase;
 use PrestaShop\PrestaShop\Adapter\Routes\RouteValidator;
-use Dispatcher;
-use Validate;
-
 
 class RouteValidatorTest extends TestCase
 {
