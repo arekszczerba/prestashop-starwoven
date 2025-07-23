@@ -25,146 +25,177 @@
 import Router from '@components/router';
 import OrderViewPageMap from './OrderViewPageMap';
 
+type ProductData = { selected: number; selected_quantity: number; order_detail_id: number };
+type ProductsMap = Record<number, ProductData>;
+
 export default class SplitShipmentManager {
-  private refreshFormRoute = 'admin_orders_shipment_get_split_form';
-
-  private shipmentId: number|null = null;
-
-  private orderId: number|null = null;
-
+  private readonly refreshFormRoute = 'admin_orders_shipment_get_split_form';
+  private orderId?: number;
+  private shipmentId?: number;
   private router = new Router();
-
-  private currentAbortController: AbortController | null = null;
-
-  private debounceTimer: number|null = null;
+  private abortController?: AbortController;
+  private debounceTimer?: number;
 
   constructor() {
-    this.initSplitShipmentEventHandler();
+    this.attachEventListeners();
   }
 
-  initSplitShipmentEventHandler(): void {
-    const mainDiv = document.querySelector(OrderViewPageMap.mainDiv);
-
-    if (!mainDiv) {
-      throw new Error('impossible to retrieve main div of the page');
-    }
-    mainDiv.addEventListener('click', this.onSplitShipmentClick);
+  private attachEventListeners(): void {
+    const container = document.querySelector(OrderViewPageMap.mainDiv);
+    if (!container) throw new Error('Main container not found');
+    container.addEventListener('click', this.handleSplitButtonClick);
   }
 
-  onSplitShipmentClick = async (event: Event): Promise<void> => {
+  private handleSplitButtonClick = async (event: Event): Promise<void> => {
     const target = event.target as HTMLElement;
+    if (!target.matches(OrderViewPageMap.showSplitShipmentModalBtn)) {
+      return;
+    }
 
-    if (target && target.matches(OrderViewPageMap.showSplitShipmentModalBtn)) {
+    const orderId = target.dataset.orderId;
+    if (!orderId) {
+      throw new Error('Order ID missing');
+    }
 
-      if (!target.dataset.orderId) {
-        throw new Error('impossible to retrieve order id');
-      }
-      this.orderId = Number(target.dataset.orderId);
+    const shipmentId = target.dataset.shipmentId;
+    if (!shipmentId) {
+      throw new Error('Shipment ID missing');
+    }
 
-      if (!target.dataset.shipmentId) {
-        throw new Error('impossible to retrieve shipment id');
-      }
-      this.shipmentId = Number(target.dataset.shipmentId);
+    this.orderId = Number(orderId);
+    this.shipmentId = Number(shipmentId);
 
-      await this.refreshSplitShipmentForm();
-      $(OrderViewPageMap.splitShipmentModal).modal('show');
+    await this.refreshSplitShipmentForm();
+    $(OrderViewPageMap.splitShipmentModal).modal('show');
+  };
+
+  private abortOngoingFetch(): void {
+    if (this.abortController) {
+      this.abortController.abort();
+      this.abortController = undefined;
     }
   }
 
-  async refreshSplitShipmentForm(products: {} = {}, carrier: number = 0): Promise<void> {
+  private async fetchSplitFormHtml(
+    products: ProductsMap = {},
+    carrier: number = 0
+  ): Promise<string> {
+    this.abortOngoingFetch();
+    this.abortController = new AbortController();
+
+    const url = this.router.generate(this.refreshFormRoute, {
+      orderId: this.orderId,
+      shipmentId: this.shipmentId,
+      products,
+      carrier,
+    });
+
+    const response = await fetch(url, {
+      signal: this.abortController.signal,
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(text);
+    }
+
+    return response.text();
+  }
+
+  private async refreshSplitShipmentForm(
+    products: ProductsMap = {},
+    carrier: number = 0
+  ): Promise<void> {
     try {
-      if (this.currentAbortController) {
-        this.currentAbortController.abort();
+      const html = await this.fetchSplitFormHtml(products, carrier);
+      const container = document.querySelector(OrderViewPageMap.splitShipmentFormContainer);
+
+      if (!container) {
+        throw new Error('Form container not found');
       }
 
-      this.currentAbortController = new AbortController();
-      const { signal } = this.currentAbortController;
-
-      const refreshFormUrl = this.router.generate(this.refreshFormRoute, {
-        orderId: this.orderId,
-        shipmentId: this.shipmentId,
-        products,
-        carrier: carrier
-      });
-
-      const response = await fetch(refreshFormUrl, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        signal,
-      });
-
-      this.currentAbortController = null;
-
-      if (!response.ok) {
-        throw new Error(await response.text());
-      }
-
-      const formContainer = document.querySelector('#splitShipmentFormContainer');
-      formContainer!.innerHTML = await response.text();
-
-      this.initForm();
+      container.innerHTML = html;
+      this.initializeFormBehaviour();
     } catch (error: unknown) {
       if (error instanceof Error && error.name === 'AbortError') {
         return;
       }
-      console.error('Error while loading split shipment form:', error);
+      throw new Error('Failed to refresh split shipment form');
     }
   }
 
-  get form(): HTMLFormElement {
-    const form = document.forms.namedItem('split_shipment');
-    if (!form) {
-      throw new Error('form not found')
-    }
+  private get form(): HTMLFormElement {
+    const form = document.forms.namedItem('split_shipment') as HTMLFormElement;
+    if (!form) throw new Error('Split shipment form not found');
     return form;
   }
 
-  get submitButton(): HTMLButtonElement {
-    const button = document.querySelector<HTMLButtonElement>('button[type="submit"][form="split_shipment"]');
-    if (!button) {
-      throw new Error('Submit button not found')
-    }
-    return button;
+  private get submitButton(): HTMLButtonElement {
+    const btn = document.querySelector<HTMLButtonElement>(
+      'button[type="submit"][form="split_shipment"]'
+    );
+    if (!btn) throw new Error('Submit button not found');
+    return btn;
   }
 
-  toggleSubmitButton(enable: number = 0) {
-    this.submitButton.disabled = !enable;
+  private initializeFormBehaviour(): void {
+    this.form.removeEventListener('change', this.handleFormChange);
+    this.form.addEventListener('change', this.handleFormChange);
+
+    const carrierSelect = this.form.querySelector(
+      '#split_shipment_carrier'
+    ) as HTMLSelectElement;
+    this.toggleSubmitButton(!!carrierSelect?.value);
   }
 
-  initForm = () => {
-    this.form.removeEventListener('change', this.onChangeForm);
-    this.form.addEventListener('change', this.onChangeForm);
-    const carrierSelector: HTMLSelectElement|null = this.form.querySelector('#split_shipment_carrier');
-    this.toggleSubmitButton(Number(carrierSelector?.value))
-  }
+  private handleFormChange = (): void => {
+    const { products, carrier } = this.extractFormData();
 
-  onChangeForm = async () => {
+    clearTimeout(this.debounceTimer);
+    this.debounceTimer = window.setTimeout(() => {
+      this.refreshSplitShipmentForm(products, carrier);
+      this.debounceTimer = undefined;
+    }, 500);
+  };
+
+  private extractFormData(): { products: ProductsMap; carrier: number } {
     const formData = new FormData(this.form);
-
-    const products: {[key: number]: { selected?: number; quantity?: number; }} = {}
-    let currentCarrier: number = 0;
-    const regexpKey = /split_shipment\[products\]\[(\d+)\]\[(selected|selected_quantity|order_detail_id)\]/;
+    const products: ProductsMap = {};
+    let carrier = 0;
 
     formData.forEach((value, key) => {
-      const keyMatch = key.match(regexpKey);
-      if (keyMatch) {
-        const productIndex = Number(keyMatch[1]);
-        const fieldName = keyMatch[2];
-        products[productIndex] = {...(products[productIndex] ?? {}), [fieldName]: Number(value)}
-      }
       if (key === 'split_shipment[carrier]') {
-        currentCarrier = Number(value);
+        carrier = Number(value);
+        return;
       }
+
+      const match = key.match(
+        /split_shipment\[products\]\[(\d+)\]\[([^\]]+)\]/
+      );
+
+      if (!match || match[1] === null || match[2] === null) {
+        return;
+      }
+
+      const id = Number(match[1]);
+      const prop = match[2] as 'selected' | 'selected_quantity' | 'order_detail_id';
+      const number = Number(value);
+
+      products[id] = {
+        selected: products[id]?.selected ?? 0,
+        selected_quantity: products[id]?.selected_quantity ?? 0,
+        order_detail_id: products[id]?.order_detail_id ?? 0,
+        ...{
+          [prop]: number,
+        }
+      };
     });
 
-    if (this.debounceTimer) {
-      clearTimeout(this.debounceTimer);
-    }
-    this.debounceTimer = window.setTimeout(() => {
-      this.refreshSplitShipmentForm(products, currentCarrier);
-      this.debounceTimer = null;
-    }, 500);
+    return { products, carrier };
+  }
+
+  private toggleSubmitButton(isEnabled: boolean): void {
+    this.submitButton.disabled = !isEnabled;
   }
 }

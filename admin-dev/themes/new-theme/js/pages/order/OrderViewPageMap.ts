@@ -56,6 +56,7 @@ export default {
   submitMergeShipment: '#submitMergeShipment',
   selectMergeShipment: 'select[name="merge_shipment[merge_to_shipment]"]',
   showSplitShipmentModalBtn: '[data-show-modal="split-shipment"]',
+  splitShipmentFormContainer: '#splitShipmentFormContainer',
   splitShipmentModal: '#splitShipmentModal',
   updateOrderShippingTrackingNumberInput: '#update_order_shipping_tracking_number',
   updateOrderShippingCurrentOrderCarrierIdInput: '#update_order_shipping_current_order_carrier_id',
