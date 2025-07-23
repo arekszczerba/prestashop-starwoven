@@ -26,8 +26,6 @@
 
 namespace PrestaShop\PrestaShop\Adapter\Form\ChoiceProvider;
 
-use Address;
-use Carrier;
 use PrestaShop\PrestaShop\Core\CommandBus\CommandBusInterface;
 use PrestaShop\PrestaShop\Core\Domain\Carrier\Query\GetAvailableCarriers;
 use PrestaShop\PrestaShop\Core\Domain\Carrier\QueryResult\GetCarriersResult;
