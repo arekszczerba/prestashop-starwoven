@@ -6,7 +6,6 @@ use OrderDetail;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\ValueObject\OrderDetailsId;
 use PrestaShop\PrestaShop\Core\Exception\CoreException;
 use PrestaShop\PrestaShop\Core\Repository\AbstractObjectModelRepository;
-use PrestaShopDatabaseException;
 use PrestaShopException;
 
 class OrderDetailRepository extends AbstractObjectModelRepository
@@ -19,8 +18,6 @@ class OrderDetailRepository extends AbstractObjectModelRepository
      * @return OrderDetail
      *
      * @throws CoreException
-     * @throws PrestaShopDatabaseException
-     * @throws PrestaShopException
      */
     public function get(OrderDetailsId $orderDetailsId): OrderDetail
     {
@@ -28,7 +25,7 @@ class OrderDetailRepository extends AbstractObjectModelRepository
             $orderDetail = new OrderDetail($orderDetailsId->getValue());
 
             if ($orderDetail->id !== $orderDetailsId->getValue()) {
-                throw new OrderDetailNotFoundException($orderDetailsId, sprintf('%s #%d was not found', Order::class, $orderDetailsId->getValue()));
+                throw new OrderDetailNotFoundException($orderDetailsId, sprintf('%s #%d was not found', OrderDetail::class, $orderDetailsId->getValue()));
             }
         } catch (PrestaShopException $e) {
             throw new CoreException(
