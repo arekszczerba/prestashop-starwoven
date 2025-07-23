@@ -748,9 +748,8 @@ class OrderController extends PrestaShopAdminController
     }
 
     /**
-     * @throws PrestaShopException
-     * @throws PrestaShopDatabaseException
      * @throws CoreException
+     * @throws Exception
      */
     #[AdminSecurity("is_granted('update', 'AdminOrders')", message: 'You do not have permission to edit this.')]
     public function getShipmentSplitForm(Request $request): Response
