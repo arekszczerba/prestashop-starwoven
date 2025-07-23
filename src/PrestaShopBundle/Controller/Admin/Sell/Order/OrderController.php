@@ -718,10 +718,27 @@ class OrderController extends PrestaShopAdminController
     }
 
     #[AdminSecurity("is_granted('update', 'AdminOrders')", redirectRoute: 'admin_orders_view', redirectQueryParamsToKeep: ['orderId'], message: 'You do not have permission to edit this.')]
-    public function splitShipmentAction(int $orderId, int $shipmentId): RedirectResponse
+    public function splitShipmentAction(int $orderId, int $shipmentId, Request $request): RedirectResponse
     {
-        // new SplitShipment()
+        $data = $request->get('split_shipment', []);
+        $carrier = isset($data['carrier']) ? (int) $data['carrier'] : null;
+
+        $productsRaw = $data['products'] ?? [];
+        $products = [];
+
+        foreach ($productsRaw as $prod) {
+            if (isset($prod['selected']) && (int) $prod['selected'] === 1) {
+                $products[] = [
+                    'id_order_detail' => (int) $prod['order_detail_id'],
+                    'quantity' => (int) $prod['selected_quantity'],
+                ];
+            }
+        }
+
+        $this->dispatchQuery(new SplitShipment($shipmentId, $products, $carrier));
+
         return $this->redirectToRoute('admin_orders_view', [
+            'orderId' => $orderId,
             'shipmentId' => $shipmentId,
         ]);
     }
@@ -734,12 +751,12 @@ class OrderController extends PrestaShopAdminController
         $productsFromQuery = $request->get('products', []) ?? [];
         $selectedCarrier = (int) $request->query->get('carrier');
 
-        foreach ($productsFromQuery as &$prod) {
-            if (isset($prod['selected_quantity'])) {
-                $prod['selected_quantity'] = (int) $prod['selected_quantity'];
+        foreach ($productsFromQuery as &$product) {
+            if (isset($product['selected_quantity'])) {
+                $product['selected_quantity'] = (int) $product['selected_quantity'];
             }
-            if (isset($prod['selected'])) {
-                $prod['selected'] = (bool) filter_var((int) $prod['selected'], FILTER_VALIDATE_BOOLEAN);
+            if (isset($product['selected'])) {
+                $product['selected'] = (bool) filter_var((int) $product['selected'], FILTER_VALIDATE_BOOLEAN);
             }
         }
 
@@ -764,6 +781,8 @@ class OrderController extends PrestaShopAdminController
         $splitShipmentTypeForm = $this->createForm(SplitShipmentType::class, [
             'products' => $orderShipmentProducts,
             'carrier' => $selectedCarrier,
+            'shipment_id' => $shipmentId,
+            'order_id' => $orderId,
         ]);
 
         return $this->render('@PrestaShop/Admin/Sell/Order/Order/Blocks/View/split_shipment.html.twig', [

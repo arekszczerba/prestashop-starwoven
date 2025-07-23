@@ -57,8 +57,13 @@ class ProductSplitType extends AbstractType
 
             $max = isset($data['quantity']) ? (int) $data['quantity'] : null;
 
+            $default = array_key_exists('selected_quantity', $data)
+                ? (int) $data['selected_quantity']
+                : 1;
+
             $form->add('selected_quantity', IntegerType::class, [
-                'data' => 1,
+                'empty_data' => 1,
+                'data' => $default,
                 'attr' => [
                     'min' => 1,
                     'max' => $max,

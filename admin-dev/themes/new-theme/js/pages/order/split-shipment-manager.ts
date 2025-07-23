@@ -34,6 +34,10 @@ export default class SplitShipmentManager {
 
   private router = new Router();
 
+  private currentAbortController: AbortController | null = null;
+
+  private debounceTimer: number|null = null;
+
   constructor() {
     this.initSplitShipmentEventHandler();
   }
@@ -69,17 +73,29 @@ export default class SplitShipmentManager {
 
   async refreshSplitShipmentForm(products: {} = {}, carrier: number = 0): Promise<void> {
     try {
-      const response = await fetch(this.router.generate(this.refreshFormRoute, {
+      if (this.currentAbortController) {
+        this.currentAbortController.abort();
+      }
+
+      this.currentAbortController = new AbortController();
+      const { signal } = this.currentAbortController;
+
+      const refreshFormUrl = this.router.generate(this.refreshFormRoute, {
         orderId: this.orderId,
         shipmentId: this.shipmentId,
         products,
         carrier: carrier
-      }), {
+      });
+
+      const response = await fetch(refreshFormUrl, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
+        signal,
       });
+
+      this.currentAbortController = null;
 
       if (!response.ok) {
         throw new Error(await response.text());
@@ -89,7 +105,10 @@ export default class SplitShipmentManager {
       formContainer!.innerHTML = await response.text();
 
       this.initForm();
-    } catch (error) {
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === 'AbortError') {
+        return;
+      }
       console.error('Error while loading split shipment form:', error);
     }
   }
@@ -102,9 +121,23 @@ export default class SplitShipmentManager {
     return form;
   }
 
+  get submitButton(): HTMLButtonElement {
+    const button = document.querySelector<HTMLButtonElement>('button[type="submit"][form="split_shipment"]');
+    if (!button) {
+      throw new Error('Submit button not found')
+    }
+    return button;
+  }
+
+  toggleSubmitButton(enable: number = 0) {
+    this.submitButton.disabled = !enable;
+  }
+
   initForm = () => {
     this.form.removeEventListener('change', this.onChangeForm);
     this.form.addEventListener('change', this.onChangeForm);
+    const carrierSelector: HTMLSelectElement|null = this.form.querySelector('#split_shipment_carrier');
+    this.toggleSubmitButton(Number(carrierSelector?.value))
   }
 
   onChangeForm = async () => {
@@ -126,6 +159,12 @@ export default class SplitShipmentManager {
       }
     });
 
-    await this.refreshSplitShipmentForm(products, currentCarrier);
+    if (this.debounceTimer) {
+      clearTimeout(this.debounceTimer);
+    }
+    this.debounceTimer = window.setTimeout(() => {
+      this.refreshSplitShipmentForm(products, currentCarrier);
+      this.debounceTimer = null;
+    }, 500);
   }
 }
