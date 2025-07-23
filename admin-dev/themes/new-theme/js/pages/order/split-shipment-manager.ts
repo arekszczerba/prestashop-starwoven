@@ -30,10 +30,15 @@ type ProductsMap = Record<number, ProductData>;
 
 export default class SplitShipmentManager {
   private readonly refreshFormRoute = 'admin_orders_shipment_get_split_form';
+
   private orderId?: number;
+
   private shipmentId?: number;
+
   private router = new Router();
+
   private abortController?: AbortController;
+
   private debounceTimer?: number;
 
   constructor() {
@@ -42,22 +47,26 @@ export default class SplitShipmentManager {
 
   private attachEventListeners(): void {
     const container = document.querySelector(OrderViewPageMap.mainDiv);
+
     if (!container) throw new Error('Main container not found');
     container.addEventListener('click', this.handleSplitButtonClick);
   }
 
   private handleSplitButtonClick = async (event: Event): Promise<void> => {
     const target = event.target as HTMLElement;
+
     if (!target.matches(OrderViewPageMap.showSplitShipmentModalBtn)) {
       return;
     }
 
-    const orderId = target.dataset.orderId;
+    const {orderId} = target.dataset;
+
     if (!orderId) {
       throw new Error('Order ID missing');
     }
 
-    const shipmentId = target.dataset.shipmentId;
+    const {shipmentId} = target.dataset;
+
     if (!shipmentId) {
       throw new Error('Shipment ID missing');
     }
@@ -78,7 +87,7 @@ export default class SplitShipmentManager {
 
   private async fetchSplitFormHtml(
     products: ProductsMap = {},
-    carrier: number = 0
+    carrier: number = 0,
   ): Promise<string> {
     this.abortOngoingFetch();
     this.abortController = new AbortController();
@@ -92,7 +101,7 @@ export default class SplitShipmentManager {
 
     const response = await fetch(url, {
       signal: this.abortController.signal,
-      headers: { 'Content-Type': 'application/json' },
+      headers: {'Content-Type': 'application/json'},
     });
 
     if (!response.ok) {
@@ -105,7 +114,7 @@ export default class SplitShipmentManager {
 
   private async refreshSplitShipmentForm(
     products: ProductsMap = {},
-    carrier: number = 0
+    carrier: number = 0,
   ): Promise<void> {
     try {
       const html = await this.fetchSplitFormHtml(products, carrier);
@@ -127,14 +136,16 @@ export default class SplitShipmentManager {
 
   private get form(): HTMLFormElement {
     const form = document.forms.namedItem('split_shipment') as HTMLFormElement;
+
     if (!form) throw new Error('Split shipment form not found');
     return form;
   }
 
   private get submitButton(): HTMLButtonElement {
     const btn = document.querySelector<HTMLButtonElement>(
-      'button[type="submit"][form="split_shipment"]'
+      'button[type="submit"][form="split_shipment"]',
     );
+
     if (!btn) throw new Error('Submit button not found');
     return btn;
   }
@@ -144,13 +155,13 @@ export default class SplitShipmentManager {
     this.form.addEventListener('change', this.handleFormChange);
 
     const carrierSelect = this.form.querySelector(
-      '#split_shipment_carrier'
+      '#split_shipment_carrier',
     ) as HTMLSelectElement;
     this.toggleSubmitButton(!!carrierSelect?.value);
   }
 
   private handleFormChange = (): void => {
-    const { products, carrier } = this.extractFormData();
+    const {products, carrier} = this.extractFormData();
 
     clearTimeout(this.debounceTimer);
     this.debounceTimer = window.setTimeout(() => {
@@ -171,7 +182,7 @@ export default class SplitShipmentManager {
       }
 
       const match = key.match(
-        /split_shipment\[products\]\[(\d+)\]\[([^\]]+)\]/
+        /split_shipment\[products\]\[(\d+)\]\[([^\]]+)\]/,
       );
 
       if (!match || match[1] === null || match[2] === null) {
@@ -188,11 +199,11 @@ export default class SplitShipmentManager {
         order_detail_id: products[id]?.order_detail_id ?? 0,
         ...{
           [prop]: number,
-        }
+        },
       };
     });
 
-    return { products, carrier };
+    return {products, carrier};
   }
 
   private toggleSubmitButton(isEnabled: boolean): void {
