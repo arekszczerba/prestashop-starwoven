@@ -23,10 +23,10 @@
           <div class="form-check d-flex">
             {{ form_widget(product.selected, {
               attr: {
-                'class': 'form-check-input',
+                class: 'form-check-input',
                 'data-product-id': product.order_detail_id.vars.value
               },
-              label: false })
+              label: false})
             }}
             <label class="form-check-label d-flex" for="{{ product.selected.vars.id }}">
               <div data-role="image" style="width: 40px; height: 40px; border: 1px solid grey; background: lightgrey;"></div>
@@ -38,7 +38,7 @@
           </div>
         </td>
         <td class="text-right d-flex align-items-center">
-          {{ form_widget(product.selected_quantity, { attr: {'max': product.quantity.vars.value, 'class': 'form-number-input' }}) }}
+          {{ form_widget(product.selected_quantity, {attr: {max: product.quantity.vars.value, class: 'form-number-input'}}) }}
           <span class="ml-2">/{{ product.quantity.vars.value }}</span>
         </td>
         <td class="d-none">
@@ -52,7 +52,7 @@
   <div class="form-group mt-4">
     <label>{{ 'Select the carrier in charge'|trans }}</label>
     <i class="material-icons" data-toggle="tooltip" title="{{ 'Select the carrier that will be responsible for shipping the newly created shipment(s) containing the selected products.'|trans }}">help_outline</i>
-    {{ form_widget(splitShipmentForm.carrier, { attr: {'class': 'form-control', 'id': 'carrier-select'} }) }}
+    {{ form_widget(splitShipmentForm.carrier, {attr: {class: 'form-control', id: 'carrier-select'}}) }}
     <a href="{{ path('admin_carriers_index') }}" target="_blank">
       {{ 'Manage carriers'|trans }}
       <i class="material-icons">open_in_new</i>
