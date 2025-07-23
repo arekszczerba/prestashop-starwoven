@@ -29,9 +29,9 @@ namespace PrestaShopBundle\Controller\Admin\Sell\Order;
 use Currency;
 use Exception;
 use InvalidArgumentException;
-use OrderDetail;
 use PrestaShop\PrestaShop\Adapter\Currency\CurrencyDataProvider;
 use PrestaShop\PrestaShop\Adapter\LegacyContext;
+use PrestaShop\PrestaShop\Adapter\Order\Repository\OrderDetailRepository;
 use PrestaShop\PrestaShop\Adapter\PDF\OrderInvoicePdfGenerator;
 use PrestaShop\PrestaShop\Adapter\Tools;
 use PrestaShop\PrestaShop\Core\Action\ActionsBarButtonsCollection;
@@ -91,7 +91,9 @@ use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipmentProduct;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\MergeProductsToShipment;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipment;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\ValueObject\OrderDetailsId;
 use PrestaShop\PrestaShop\Core\Domain\ValueObject\QuerySorting;
+use PrestaShop\PrestaShop\Core\Exception\CoreException;
 use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagSettings;
 use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagStateCheckerInterface;
 use PrestaShop\PrestaShop\Core\Form\ChoiceProvider\LanguageByIdChoiceProvider;
@@ -127,6 +129,8 @@ use PrestaShopBundle\Form\Admin\Sell\Order\UpdateOrderShippingType;
 use PrestaShopBundle\Form\Admin\Sell\Order\UpdateOrderStatusType;
 use PrestaShopBundle\Security\Attribute\AdminSecurity;
 use PrestaShopBundle\Security\Attribute\DemoRestricted;
+use PrestaShopDatabaseException;
+use PrestaShopException;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -743,6 +747,11 @@ class OrderController extends PrestaShopAdminController
         ]);
     }
 
+    /**
+     * @throws PrestaShopException
+     * @throws PrestaShopDatabaseException
+     * @throws CoreException
+     */
     #[AdminSecurity("is_granted('update', 'AdminOrders')", message: 'You do not have permission to edit this.')]
     public function getShipmentSplitForm(Request $request): Response
     {
@@ -773,7 +782,7 @@ class OrderController extends PrestaShopAdminController
             $order = $order->toArray();
             $id = $order['order_detail_id'] ?? null;
             if ($id !== null && isset($productsQueryMap[$id])) {
-                $order['product_id'] = (new OrderDetail($order['order_detail_id']))->product_id;
+                $order['product_id'] = (new OrderDetailRepository())->get(new OrderDetailsId($order['order_detail_id']))->product_id;
                 $order = array_merge($order, $productsQueryMap[$id]);
             }
         }

@@ -24,50 +24,27 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 
-namespace PrestaShop\PrestaShop\Core\Domain\Carrier\QueryResult;
+namespace PrestaShop\PrestaShop\Core\Domain\Order\Exception;
+
+use Exception;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\ValueObject\OrderDetailsId;
 
 /**
- * Model returning available carriers as well as carriers that have been removed.
+ * Thrown when order is not found
  */
-class GetCarriersResult
+class OrderDetailNotFoundException extends OrderException
 {
-    /**
-     * @var CarrierSummary[]
-     */
-    private array $availableCarriers;
-
-    /**
-     * @var FilteredCarrier[]
-     */
-    private array $filteredCarrier;
-
-    public function __construct(array $availableCarriers, array $filteredCarrier)
-    {
-        $this->availableCarriers = $availableCarriers;
-        $this->filteredCarrier = $filteredCarrier;
+    public function __construct(
+        private readonly ?OrderDetailsId $orderDetailsId = null,
+        string $message = '',
+        int $code = 0,
+        ?Exception $previous = null
+    ) {
+        parent::__construct($message, $code, $previous);
     }
 
-    /**
-     * @return CarrierSummary[]
-     */
-    public function getAvailableCarriers(): array
+    public function getOrderDetailsId(): ?OrderDetailsId
     {
-        return $this->availableCarriers;
-    }
-
-    /**
-     * @return array{id: int, name: string}
-     */
-    public function getAvailableCarriersToArray(): array
-    {
-        return array_map(function (CarrierSummary $carrier) { return $carrier->toArray(); }, $this->availableCarriers);
-    }
-
-    /**
-     * @return FilteredCarrier[]
-     */
-    public function getFilteredOutCarriers(): array
-    {
-        return $this->filteredCarrier;
+        return $this->orderDetailsId;
     }
 }
