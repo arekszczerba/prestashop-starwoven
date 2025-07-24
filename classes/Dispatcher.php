@@ -344,7 +344,7 @@ class DispatcherCore
 
         // Dispatch with right front controller
         switch ($this->front_controller) {
-            // Dispatch front office controller
+                // Dispatch front office controller
             case self::FC_FRONT:
                 $controllers = Dispatcher::getControllers([
                     _PS_FRONT_CONTROLLER_DIR_,
@@ -370,7 +370,7 @@ class DispatcherCore
 
                 break;
 
-            // Dispatch module controller for front office
+                // Dispatch module controller for front office
             case self::FC_MODULE:
                 $module_name = Validate::isModuleName(Tools::getValue('module')) ? Tools::getValue('module') : '';
                 $module = Module::getInstanceByName($module_name);
@@ -399,8 +399,7 @@ class DispatcherCore
 
             // Dispatch back office controller + module back office controller
             case self::FC_ADMIN:
-                if (
-                    $this->use_default_controller
+                if ($this->use_default_controller
                     && !Tools::getValue('token')
                     && Validate::isLoadedObject(Context::getContext()->employee)
                     && Context::getContext()->employee->isLoggedBack()
@@ -449,8 +448,7 @@ class DispatcherCore
                     );
                     if (!isset($controllers[strtolower($this->controller)])) {
                         // If this is a parent tab, load the first child
-                        if (
-                            Validate::isLoadedObject($tab)
+                        if (Validate::isLoadedObject($tab)
                             && $tab->id_parent == 0
                             && ($tabs = Tab::getTabs(Context::getContext()->language->id, $tab->id))
                             && isset($tabs[0])
@@ -539,7 +537,7 @@ class DispatcherCore
             if (preg_match('#^/([a-z]{2})(?:/.*)?$#', $requestUri, $matches)) {
                 $_GET['isolang'] = $matches[1];
                 $requestUri = substr($requestUri, 3);
-                // Otherwise, we use the default language
+                    // Otherwise, we use the default language
             } else {
                 $defaultLanguage = new Language((int) Configuration::get('PS_LANG_DEFAULT'));
                 $_GET['isolang'] = $defaultLanguage->iso_code;
@@ -588,8 +586,7 @@ class DispatcherCore
             foreach ($modules_routes as $module_route) {
                 if (is_array($module_route) && count($module_route)) {
                     foreach ($module_route as $route => $route_details) {
-                        if (
-                            array_key_exists('controller', $route_details)
+                        if (array_key_exists('controller', $route_details)
                             && array_key_exists('rule', $route_details)
                             && array_key_exists('keywords', $route_details)
                             && array_key_exists('params', $route_details)
@@ -893,8 +890,7 @@ class DispatcherCore
             $this->loadRoutes($id_shop);
         }
 
-        if (
-            !isset($this->routes[$id_shop]) || !isset($this->routes[$id_shop][$id_lang])
+        if (!isset($this->routes[$id_shop]) || !isset($this->routes[$id_shop][$id_lang])
             || !isset($this->routes[$id_shop][$id_lang][$route_id])) {
             return false;
         }
