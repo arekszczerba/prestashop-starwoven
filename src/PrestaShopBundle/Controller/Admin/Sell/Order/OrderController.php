@@ -753,8 +753,7 @@ class OrderController extends PrestaShopAdminController
     public function getShipmentSplitForm(
         Request $request,
         #[Autowire(service: 'PrestaShop\PrestaShop\Adapter\Order\Repository\OrderDetailRepository')] OrderDetailRepository $orderDetailRepository,
-    ): Response
-    {
+    ): Response {
         $orderId = (int) $request->query->get('orderId');
         $shipmentId = (int) $request->query->get('shipmentId');
         $productsFromQuery = $request->get('products', []) ?? [];
