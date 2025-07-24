@@ -27,7 +27,7 @@
 namespace PrestaShop\PrestaShop\Core\Domain\Order\Exception;
 
 use Exception;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\ValueObject\OrderDetailsId;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\ValueObject\OrderDetailId;
 
 /**
  * Thrown when order is not found
@@ -35,7 +35,7 @@ use PrestaShop\PrestaShop\Core\Domain\Shipment\ValueObject\OrderDetailsId;
 class OrderDetailNotFoundException extends OrderException
 {
     public function __construct(
-        private readonly ?OrderDetailsId $orderDetailsId = null,
+        private readonly ?OrderDetailId $orderDetailId = null,
         string $message = '',
         int $code = 0,
         ?Exception $previous = null
@@ -43,8 +43,8 @@ class OrderDetailNotFoundException extends OrderException
         parent::__construct($message, $code, $previous);
     }
 
-    public function getOrderDetailsId(): ?OrderDetailsId
+    public function getOrderDetailId(): ?OrderDetailId
     {
-        return $this->orderDetailsId;
+        return $this->orderDetailId;
     }
 }
