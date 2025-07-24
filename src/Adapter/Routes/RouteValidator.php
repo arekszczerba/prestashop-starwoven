@@ -52,7 +52,9 @@ class RouteValidator
      */
     public function doesRouteContainsRequiredKeywords($routeId, $rule)
     {
-        return $this->isRouteValid($routeId, $rule);
+        $errors = $this->isRouteValid($routeId, $rule);
+
+        return $errors['missing'] ?? [];
     }
 
     /**
