@@ -54,8 +54,6 @@ class ProductSplitType extends AbstractType
             $data = $event->getData();
             $form = $event->getForm();
 
-            $max = isset($data['quantity']) ? (int) $data['quantity'] : null;
-
             $default = array_key_exists('selected_quantity', $data)
                 ? (int) $data['selected_quantity']
                 : 1;
@@ -65,12 +63,12 @@ class ProductSplitType extends AbstractType
                 'data' => $default,
                 'attr' => [
                     'min' => 1,
-                    'max' => $max,
+                    'max' => $data['quantity'],
                 ],
                 'constraints' => [
                     new Range([
                         'min' => 1,
-                        'max' => $max,
+                        'max' => $data['quantity'],
                     ]),
                 ],
             ]);

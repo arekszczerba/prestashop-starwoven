@@ -48,7 +48,7 @@ export default class SplitShipmentManager {
   private attachEventListeners(): void {
     const container = document.querySelector(OrderViewPageMap.mainDiv);
 
-    if (!container) throw new Error('Main container not found');
+    if (!container) throw new Error('Main container not found, split shipment manager can not be initiated.');
     container.addEventListener('click', this.handleSplitButtonClick);
   }
 

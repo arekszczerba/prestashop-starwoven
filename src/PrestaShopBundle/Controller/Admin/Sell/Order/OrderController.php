@@ -756,7 +756,7 @@ class OrderController extends PrestaShopAdminController
     ): Response {
         $orderId = (int) $request->query->get('orderId');
         $shipmentId = (int) $request->query->get('shipmentId');
-        $productsFromQuery = $request->get('products', []) ?? [];
+        $productsFromQuery = $request->get('products', []);
         $selectedCarrier = (int) $request->query->get('carrier');
 
         foreach ($productsFromQuery as &$product) {
@@ -777,12 +777,12 @@ class OrderController extends PrestaShopAdminController
         /** @var OrderShipmentProduct[] $orderShipmentProducts */
         $orderShipmentProducts = $this->dispatchQuery(new GetShipmentProducts($shipmentId));
 
-        foreach ($orderShipmentProducts as &$order) {
-            $order = $order->toArray();
-            $id = $order['order_detail_id'] ?? null;
+        foreach ($orderShipmentProducts as &$product) {
+            $product = $product->toArray();
+            $id = $product['order_detail_id'] ?? null;
             if ($id !== null && isset($productsQueryMap[$id])) {
-                $order['product_id'] = $orderDetailRepository->get(new OrderDetailId($order['order_detail_id']))->product_id;
-                $order = array_merge($order, $productsQueryMap[$id]);
+                $product['product_id'] = $orderDetailRepository->get(new OrderDetailId($product['order_detail_id']))->product_id;
+                $product = array_merge($product, $productsQueryMap[$id]);
             }
         }
 
