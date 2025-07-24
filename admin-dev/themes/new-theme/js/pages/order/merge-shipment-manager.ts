@@ -110,6 +110,7 @@ export default class MergeShipmentManager {
 
       const formContainer = document.querySelector(OrderViewPageMap.mergeShipmentModalContainer);
       formContainer!.innerHTML = await response.text();
+      window.prestaShopUiKit.init();
       this.initSubmitMergeShipmentStateHandler();
     } catch (error) {
       console.error('Error while loading merge shipment form:', error);

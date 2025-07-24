@@ -29,59 +29,88 @@
     shipmentId: shipmentId
   }),
   attr: {
-    id: 'merge_shipment'
-  }})
-}}
-    <p>
-      {{ 'Select items to merge'|trans({}, 'Admin.Orderscustomers.Feature') }}
-      <i class="material-icons" style="cursor: pointer;" data-toggle="tooltip" title="{{ 'Choose the products you wish to combine into a single shipment. These products will be moved from their current shipment to the selected destination shipment.'|trans({}, 'Admin.Orderscustomers.Notification') }}">
-        help_outline
-      </i>
-    </p>
+    id: 'merge_shipment',
+    class: 'shipment-form'
+  },
+}) }}
 
-    <table class="table table-borderless">
-      <thead>
-        <tr>
-          <th>{{ 'Products'|trans({}, 'Admin.Global') }}</th>
-          <th class="text-right">{{ 'Select quantity'|trans({}, 'Admin.Orderscustomers.Feature') }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for product in products %}
-          <tr>
-            <td>
-              <div class="form-check">
-                {{ form_widget(attribute(mergeShipmentForm, 'product_' ~ product.order_detail_id), {
-                  attr: {class: 'form-check-input'},
-                  label: false
-                }) }}
-                {% if product.product_image_path %}
-                  <img class="cellProductImg" src="{{ product.product_image_path }}" alt="{{ product.product_reference }}" />
-                {% endif %}
-                <label class="form-check-label">
-                  <strong>{{ product.product_name }}</strong><br>
-                  <small>{{ 'Reference'|trans({}, 'Admin.Global') }}: {{ product.product_reference }}</small>
-                </label>
-              </div>
-            </td>
-            <td class="text-right">
-              {{ form_widget(attribute(mergeShipmentForm, 'quantity_' ~ product.order_detail_id)) }}
-              <span>/{{ product.quantity }}</span>
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+<p class="shipment-form__tooltip-wrapper">
+  {{ 'Select items to merge'|trans({}, 'Admin.Orderscustomers.Feature') }}
 
-    <div class="form-group mt-4">
-      <label>{{ 'Select shipment to merge to'|trans({}, 'Admin.Orderscustomers.Feature') }}</label>
-      <i class="material-icons" style="cursor: pointer;" data-toggle="tooltip" title="{{ 'Select an existing shipment to which the chosen products will be added. All selected products will become part of this shipment.'|trans({}, 'Admin.Orderscustomers.Notification') }}">
-        help_outline
-      </i>
-      {{ form_widget(mergeShipmentForm.merge_to_shipment, {
-        attr: {class: 'form-control'}
-      }) }}
-    </div>
+  <a
+    href="#"
+    class="tooltip-link"
+    data-toggle="pstooltip"
+    title="{{ 'Choose the products you wish to combine into a single shipment. These products will be moved from their current shipment to the selected destination shipment.'|trans({}, 'Admin.Orderscustomers.Notification') }}"
+    data-placement="top"
+  >
+    <i class="material-icons">help_outline</i>
+  </a>
+</p>
 
-    {{ form_rest(mergeShipmentForm) }}
+<table class="table shipment-form__table">
+  <thead>
+    <tr>
+      <th>{{ 'Products'|trans({}, 'Admin.Global') }}</th>
+      <th class="text-right">{{ 'Select quantity'|trans({}, 'Admin.Orderscustomers.Feature') }}</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for product in products %}
+      <tr>
+        <td class="shipment-form__table-product-cell">
+          <label class="shipment-form__product-label" for="{{ attribute(mergeShipmentForm, 'product_' ~ product.order_detail_id).vars.id }}">
+            {{ form_widget(attribute(mergeShipmentForm, 'product_' ~ product.order_detail_id), {
+              attr: {class: 'form-check-input shipment-form__product-checkbox'},
+              label: false,
+            }) }}
+
+            {% if product.product_image_path %}
+              <img class="shipment-form__product-image" src="{{ product.product_image_path }}" alt="{{ product.product_reference }}" />
+            {% endif %}
+
+            <div class="shipment-form__product-info">
+              <p class="shipment-form__product-name">{{ product.product_name }}</p>
+              <p class="shipment-form__product-reference">{{ 'Reference'|trans({}, 'Admin.Global') }}: {{ product.product_reference }}</p>
+            </div>
+          </label>
+        </td>
+        <td class="shipment-form__table-quantity-cell">
+          <div class="shipment-form__quantity-wrapper">
+            {{ form_widget(attribute(mergeShipmentForm, 'quantity_' ~ product.order_detail_id)) }}
+            <span class="shipment-form__quantity-total">/{{ product.quantity }}</span>
+          </div>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div class="form-group mt-4">
+  <div class="shipment-form__tooltip-wrapper">
+    <label class="m-0" for="merge_shipment_merge_to_shipment">
+      {{ 'Select shipment to merge to'|trans({}, 'Admin.Orderscustomers.Feature') }}
+    </label>
+
+    <a
+      href="#"
+      class="tooltip-link"
+      data-toggle="pstooltip"
+      title="{{ 'Select an existing shipment to which the chosen products will be added. All selected products will become part of this shipment.'|trans({}, 'Admin.Orderscustomers.Notification') }}"
+      data-placement="top"
+    >
+      <i class="material-icons">help_outline</i>
+    </a>
+  </div>
+
+  {{ form_widget(mergeShipmentForm.merge_to_shipment, {
+    attr: {
+      class: 'form-control',
+      id: 'merge_shipment_merge_to_shipment',
+    }
+  }) }}
+</div>
+
+{{ form_rest(mergeShipmentForm) }}
 {{ form_end(mergeShipmentForm) }}
