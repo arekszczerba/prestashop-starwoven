@@ -324,6 +324,7 @@ default:
         - Tests\Integration\Behaviour\Features\Context\LegacyProductFeatureContext
         - Tests\Integration\Behaviour\Features\Context\ShopFeatureContext
         - Tests\Integration\Behaviour\Features\Transform\CurrencyTransformContext
+        - Tests\Integration\Behaviour\Features\Context\Domain\ManufacturerFeatureContext
 
     catalog_price_rule:
       paths:

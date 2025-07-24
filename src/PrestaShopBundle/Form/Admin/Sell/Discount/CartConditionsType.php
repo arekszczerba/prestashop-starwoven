@@ -42,6 +42,7 @@ class CartConditionsType extends TranslatorAwareType
     public const MINIMUM_AMOUNT = 'minimum_amount';
     public const MINIMUM_PRODUCT_QUANTITY = 'minimum_product_quantity';
     public const SPECIFIC_PRODUCTS = 'specific_products';
+    public const PRODUCT_SEGMENT = 'product_segment';
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -105,6 +106,9 @@ class CartConditionsType extends TranslatorAwareType
                         ],
                     ),
                 ],
+            ])
+            ->add(self::PRODUCT_SEGMENT, DiscountProductSegmentType::class, [
+                'label' => $this->trans('Product segment', 'Admin.Catalog.Feature'),
             ])
         ;
     }
