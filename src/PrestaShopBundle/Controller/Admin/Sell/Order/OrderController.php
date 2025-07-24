@@ -91,7 +91,7 @@ use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipmentProduct;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\MergeProductsToShipment;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipment;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\ValueObject\OrderDetailsId;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\ValueObject\OrderDetailId;
 use PrestaShop\PrestaShop\Core\Domain\ValueObject\QuerySorting;
 use PrestaShop\PrestaShop\Core\Exception\CoreException;
 use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagSettings;
@@ -779,7 +779,8 @@ class OrderController extends PrestaShopAdminController
             $order = $order->toArray();
             $id = $order['order_detail_id'] ?? null;
             if ($id !== null && isset($productsQueryMap[$id])) {
-                $order['product_id'] = (new OrderDetailRepository())->get(new OrderDetailsId($order['order_detail_id']))->product_id;
+                // TODO: add repository to services and autowire it
+                $order['product_id'] = (new OrderDetailRepository())->get(new OrderDetailId($order['order_detail_id']))->product_id;
                 $order = array_merge($order, $productsQueryMap[$id]);
             }
         }
