@@ -344,7 +344,7 @@ class DispatcherCore
 
         // Dispatch with right front controller
         switch ($this->front_controller) {
-                // Dispatch front office controller
+            // Dispatch front office controller
             case self::FC_FRONT:
                 $controllers = Dispatcher::getControllers([
                     _PS_FRONT_CONTROLLER_DIR_,
@@ -397,7 +397,7 @@ class DispatcherCore
 
                 break;
 
-            // Dispatch back office controller + module back office controller
+                // Dispatch back office controller + module back office controller
             case self::FC_ADMIN:
                 if ($this->use_default_controller
                     && !Tools::getValue('token')
@@ -537,7 +537,7 @@ class DispatcherCore
             if (preg_match('#^/([a-z]{2})(?:/.*)?$#', $requestUri, $matches)) {
                 $_GET['isolang'] = $matches[1];
                 $requestUri = substr($requestUri, 3);
-                    // Otherwise, we use the default language
+            // Otherwise, we use the default language
             } else {
                 $defaultLanguage = new Language((int) Configuration::get('PS_LANG_DEFAULT'));
                 $_GET['isolang'] = $defaultLanguage->iso_code;
