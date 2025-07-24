@@ -297,6 +297,8 @@ default:
         - Tests\Integration\Behaviour\Features\Context\CarrierFeatureContext
         - Tests\Integration\Behaviour\Features\Context\CartRuleFeatureContext
         - Tests\Integration\Behaviour\Features\Context\CategoryFeatureContext
+        - Tests\Integration\Behaviour\Features\Context\Domain\CategoryFeatureContext
+        - Tests\Integration\Behaviour\Features\Context\Domain\Product\UpdateCategoriesFeatureContext
         - Tests\Integration\Behaviour\Features\Context\CommonFeatureContext
         - Tests\Integration\Behaviour\Features\Context\Configuration\CommonConfigurationFeatureContext
         - Tests\Integration\Behaviour\Features\Context\ContextFeatureContext

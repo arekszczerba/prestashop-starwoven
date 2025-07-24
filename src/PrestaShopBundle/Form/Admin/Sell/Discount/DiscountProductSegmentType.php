@@ -27,6 +27,7 @@
 namespace PrestaShopBundle\Form\Admin\Sell\Discount;
 
 use PrestaShopBundle\Form\Admin\Sell\Product\Description\ManufacturerType;
+use PrestaShopBundle\Form\Admin\Type\CategoryChoiceTreeType;
 use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -37,6 +38,7 @@ use Symfony\Component\Validator\Constraints\When;
 
 class DiscountProductSegmentType extends TranslatorAwareType
 {
+    public const CATEGORY = 'category';
     public const MANUFACTURER = 'manufacturer';
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -44,6 +46,10 @@ class DiscountProductSegmentType extends TranslatorAwareType
         $builder
             ->add(self::MANUFACTURER, ManufacturerType::class, [
                 'label' => $this->trans('Brand', 'Admin.Catalog.Feature'),
+                'required' => false,
+            ])
+            ->add(self::CATEGORY, CategoryChoiceTreeType::class, [
+                'label' => $this->trans('Category', 'Admin.Catalog.Feature'),
                 'required' => false,
             ])
             ->add('quantity', IntegerType::class, [

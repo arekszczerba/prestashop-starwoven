@@ -34,6 +34,7 @@ $(() => {
       'TranslatableInput',
       'ToggleChildrenChoice',
       'GeneratableInput',
+      'ChoiceTree',
     ],
   );
 
@@ -57,4 +58,6 @@ $(() => {
       $(DiscountMap.currencySelect).fadeIn();
     }
   }
+
+  new window.prestashop.component.ChoiceTree('#discount_conditions_cart_conditions_product_segment_category');
 });
