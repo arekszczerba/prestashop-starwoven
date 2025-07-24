@@ -750,7 +750,10 @@ class OrderController extends PrestaShopAdminController
      * @throws Exception
      */
     #[AdminSecurity("is_granted('update', 'AdminOrders')", message: 'You do not have permission to edit this.')]
-    public function getShipmentSplitForm(Request $request): Response
+    public function getShipmentSplitForm(
+        Request $request,
+        #[Autowire(service: 'PrestaShop\PrestaShop\Adapter\Order\Repository\OrderDetailRepository')] OrderDetailRepository $orderDetailRepository,
+    ): Response
     {
         $orderId = (int) $request->query->get('orderId');
         $shipmentId = (int) $request->query->get('shipmentId');
@@ -779,8 +782,7 @@ class OrderController extends PrestaShopAdminController
             $order = $order->toArray();
             $id = $order['order_detail_id'] ?? null;
             if ($id !== null && isset($productsQueryMap[$id])) {
-                // TODO: add repository to services and autowire it
-                $order['product_id'] = (new OrderDetailRepository())->get(new OrderDetailId($order['order_detail_id']))->product_id;
+                $order['product_id'] = $orderDetailRepository->get(new OrderDetailId($order['order_detail_id']))->product_id;
                 $order = array_merge($order, $productsQueryMap[$id]);
             }
         }
