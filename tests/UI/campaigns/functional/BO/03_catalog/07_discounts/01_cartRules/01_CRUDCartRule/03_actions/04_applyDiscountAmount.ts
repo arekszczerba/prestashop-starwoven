@@ -20,6 +20,7 @@ import {
   type Page,
   utilsPlaywright,
   utilsCore,
+  dataCurrencies,
 } from '@prestashop-core/ui-testing';
 
 const baseContext: string = 'functional_BO_catalog_discounts_cartRules_CRUDCartRule_actions_applyDiscountAmount';
@@ -35,7 +36,7 @@ describe('BO - Cart rules - Actions : Apply a discount Amount', async () => {
     discountType: 'Amount',
     discountAmount: {
       value: 20,
-      currency: 'EUR',
+      currency: dataCurrencies.euro.isoCode,
       tax: 'Tax included',
     },
     applyDiscountTo: 'Order',
@@ -142,7 +143,7 @@ describe('BO - Cart rules - Actions : Apply a discount Amount', async () => {
 
       await foClassicCartPage.addPromoCode(page, cartRuleData.code);
 
-      const discount: number = parseFloat(cartRuleData.discountAmount!.value.toString());
+      const discount: number = cartRuleData.getDiscountAmount();
 
       const subTotalDiscount = await foClassicCartPage.getSubtotalDiscountValue(page);
       expect(subTotalDiscount.toFixed(2)).to.eq(`-${discount.toFixed(2)}`);
@@ -186,8 +187,8 @@ describe('BO - Cart rules - Actions : Apply a discount Amount', async () => {
       page = await boCartRulesCreatePage.changePage(browserContext, 1);
       await foClassicCartPage.reloadPage(page);
 
-      const discount: number = parseFloat(cartRuleData.discountAmount!.value.toString())
-        + utilsCore.percentage(parseFloat(cartRuleData.discountAmount!.value.toString()), dataProducts.demo_6.tax);
+      const discount: number = cartRuleData.getDiscountAmount()
+        + utilsCore.percentage(cartRuleData.getDiscountAmount(), dataProducts.demo_6.tax);
 
       const subTotalDiscount = await foClassicCartPage.getSubtotalDiscountValue(page);
       expect(subTotalDiscount.toFixed(2)).to.eq(`-${discount.toFixed(2)}`);
@@ -231,8 +232,8 @@ describe('BO - Cart rules - Actions : Apply a discount Amount', async () => {
       page = await boCartRulesCreatePage.changePage(browserContext, 1);
       await foClassicCartPage.reloadPage(page);
 
-      let discount: number = parseFloat(cartRuleData.discountAmount!.value.toString())
-        + utilsCore.percentage(parseFloat(cartRuleData.discountAmount!.value.toString()), dataProducts.demo_6.tax);
+      let discount: number = cartRuleData.getDiscountAmount()
+        + utilsCore.percentage(cartRuleData.getDiscountAmount(), dataProducts.demo_6.tax);
       discount = discount < dataProducts.demo_6.combinations[0].price ? discount : dataProducts.demo_6.combinations[0].price;
 
       const subTotalDiscount = await foClassicCartPage.getSubtotalDiscountValue(page);
