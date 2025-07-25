@@ -148,10 +148,20 @@ class QueryListProvider implements ProviderInterface
             [NormalizationMapper::NORMALIZATION_MAPPING => $filtersMapping]
         );
 
+        $orderBy = $queryParameters['orderBy'] ?? null;
+        if (!empty($orderBy)) {
+            // The orderBy parameter also needs to be mapped (the APIResource field should be used but may not match the SQL query one)
+            foreach ($filtersMapping as $apiKey => $gridKey) {
+                if ('[' . $orderBy . ']' === $apiKey) {
+                    $orderBy = str_replace(['[', ']'], '', $gridKey);
+                }
+            }
+        }
+
         $paginationParameters = [
             'filters' => $paginationFilters,
-            'orderBy' => array_key_exists('orderBy', $queryParameters) ? $queryParameters['orderBy'] : null,
-            'sortOrder' => array_key_exists('sortOrder', $queryParameters) ? $queryParameters['sortOrder'] : 'asc',
+            'orderBy' => $orderBy,
+            'sortOrder' => $queryParameters['sortOrder'] ?? 'asc',
             'offset' => array_key_exists('offset', $queryParameters) ? (int) $queryParameters['offset'] : null,
             'limit' => array_key_exists('limit', $queryParameters)
                 ? (int) $queryParameters['limit']
