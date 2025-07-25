@@ -87,6 +87,7 @@ services:
 
   PrestaShopBundle\Form\Admin\Sell\Order\Invoices\GenerateByStatusType:
     arguments:
+      $translator: '@translator'
       $orderStateChoiceProvider: '@prestashop.core.form.choice_provider.order_state_by_id'
       $orderCountsByState: '@=service("prestashop.core.api.order_invoice.repository").countByOrderState(service("prestashop.adapter.shop.context").getContextListShopID())'
 
