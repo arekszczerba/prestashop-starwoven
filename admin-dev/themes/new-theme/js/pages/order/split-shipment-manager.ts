@@ -75,7 +75,6 @@ export default class SplitShipmentManager {
     this.shipmentId = Number(shipmentId);
 
     await this.refreshSplitShipmentForm();
-    $(OrderViewPageMap.splitShipmentModal).modal('show');
   };
 
   private abortOngoingFetch(): void {
@@ -117,6 +116,8 @@ export default class SplitShipmentManager {
     carrier: number = 0,
   ): Promise<void> {
     try {
+      const modal = document.querySelector(OrderViewPageMap.splitShipmentModal);
+      modal?.classList.add('loading');
       const html = await this.fetchSplitFormHtml(products, carrier);
       const container = document.querySelector(OrderViewPageMap.splitShipmentFormContainer);
 
@@ -125,6 +126,7 @@ export default class SplitShipmentManager {
       }
 
       container.innerHTML = html;
+      modal?.classList.remove('loading');
       this.initializeFormBehaviour();
     } catch (error: unknown) {
       if (error instanceof Error && error.name === 'AbortError') {

@@ -749,7 +749,7 @@ class OrderController extends PrestaShopAdminController
      * @throws CoreException
      * @throws Exception
      */
-    #[AdminSecurity("is_granted('update', 'AdminOrders')", message: 'You do not have permission to edit this.')]
+    #[AdminSecurity("is_granted('update', 'AdminOrders')", message: 'You do not have permission to show this.')]
     public function getShipmentSplitForm(
         Request $request,
         #[Autowire(service: 'PrestaShop\PrestaShop\Adapter\Order\Repository\OrderDetailRepository')] OrderDetailRepository $orderDetailRepository,
