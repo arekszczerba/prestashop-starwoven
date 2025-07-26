@@ -1539,3 +1539,8 @@ parameters:
 			message: "#^Parameter \\#1 \\$className of method Doctrine\\\\ORM\\\\EntityManagerInterface\\:\\:getClassMetadata\\(\\) expects class\\-string\\<\\\\PrestaShop\\\\Module\\\\Banner\\\\Entity\\\\Banner\\>, string given\\.$#"
 			count: 1
 			path: tests/Integration/Adapter/ContainerBuilderTest.php
+
+		-
+			message: '#^Class PrestaShopBundle\\Command\\AboutCommand extends @final class Symfony\\Bundle\\FrameworkBundle\\Command\\AboutCommand\.$#'
+			count: 1
+			path: src/PrestaShopBundle/Command/AboutCommand.php
