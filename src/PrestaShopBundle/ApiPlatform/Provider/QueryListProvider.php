@@ -124,13 +124,19 @@ class QueryListProvider implements ProviderInterface
             );
         }
 
+        // Apply mapping the other way around, because filters may have default orderBy values named for Grid
+        // that need to be mapped to match the API naming
+        $filtersMapping = $operation->getExtraProperties()['filtersMapping'] ?? [];
+        $orderBy = $this->mapOrderByFieldForAPI($filter->getOrderBy(), $filtersMapping);
+
         return new PaginationElements(
             $count,
-            $filter->getOrderBy(),
+            $orderBy,
             $filter->getOrderWay(),
             $filter->getLimit(),
             $filter->getOffset(),
-            $filter->getFilters(),
+            // Keep the same filters provided in query parameters
+            $context['filters']['filters'] ?? [],
             $normalizedQueryResult
         );
     }
@@ -148,16 +154,7 @@ class QueryListProvider implements ProviderInterface
             [NormalizationMapper::NORMALIZATION_MAPPING => $filtersMapping]
         );
 
-        $orderBy = $queryParameters['orderBy'] ?? null;
-        if (!empty($orderBy)) {
-            // The orderBy parameter also needs to be mapped (the APIResource field should be used but may not match the SQL query one)
-            foreach ($filtersMapping as $apiKey => $gridKey) {
-                if ('[' . $orderBy . ']' === $apiKey) {
-                    $orderBy = str_replace(['[', ']'], '', $gridKey);
-                }
-            }
-        }
-
+        $orderBy = $this->mapOrderByFieldForGrid($queryParameters['orderBy'] ?? null, $filtersMapping);
         $paginationParameters = [
             'filters' => $paginationFilters,
             'orderBy' => $orderBy,
@@ -188,5 +185,37 @@ class QueryListProvider implements ProviderInterface
         $filters->add($paginationParameters);
 
         return $filters;
+    }
+
+    protected function mapOrderByFieldForGrid(?string $apiOrderBy, array $filtersMapping): ?string
+    {
+        if (empty($apiOrderBy) || empty($filtersMapping)) {
+            return $apiOrderBy;
+        }
+
+        // The orderBy parameter also needs to be mapped (the APIResource field should be used but may not match the SQL query one)
+        foreach ($filtersMapping as $apiKey => $gridKey) {
+            if ('[' . $apiOrderBy . ']' === $apiKey) {
+                $apiOrderBy = str_replace(['[', ']'], '', $gridKey);
+            }
+        }
+
+        return $apiOrderBy;
+    }
+
+    protected function mapOrderByFieldForAPI(?string $gridOrderBy, array $filtersMapping): ?string
+    {
+        if (empty($gridOrderBy)) {
+            return $gridOrderBy;
+        }
+
+        // The orderBy parameter also needs to be mapped (the APIResource field should be used but may not match the SQL query one)
+        foreach ($filtersMapping as $apiKey => $gridKey) {
+            if ('[' . $gridOrderBy . ']' === $gridKey) {
+                $gridOrderBy = str_replace(['[', ']'], '', $apiKey);
+            }
+        }
+
+        return $gridOrderBy;
     }
 }
