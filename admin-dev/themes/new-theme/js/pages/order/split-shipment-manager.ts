@@ -59,6 +59,14 @@ export default class SplitShipmentManager {
       return;
     }
 
+    const container = document.querySelector(OrderViewPageMap.splitShipmentFormContainer);
+
+    if (!container) {
+      throw new Error('Form container not found');
+    }
+
+    container.innerHTML = '';
+
     const {orderId} = target.dataset;
 
     if (!orderId) {
@@ -166,8 +174,8 @@ export default class SplitShipmentManager {
     const {products, carrier} = this.extractFormData();
 
     clearTimeout(this.debounceTimer);
-    this.debounceTimer = window.setTimeout(() => {
-      this.refreshSplitShipmentForm(products, carrier);
+    this.debounceTimer = window.setTimeout(async () => {
+      await this.refreshSplitShipmentForm(products, carrier);
       this.debounceTimer = undefined;
     }, 500);
   };
