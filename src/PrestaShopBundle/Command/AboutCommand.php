@@ -58,11 +58,11 @@ class AboutCommand extends BaseAboutCommand
         $io = new SymfonyStyle($input, $output);
 
         $rows = [
-            ['<info>Prestashop</>'],
+            ['<info>PrestaShop</>'],
             new TableSeparator(),
             ['Version', _PS_VERSION_],
             ['Debug mode', _PS_MODE_DEV_ ? 'true' : 'false'],
-            ['Cache', $this->configuration->get('PS_SMARTY_CACHE') ? 'true' : 'false'],
+            ['Smarty Cache', $this->configuration->get('PS_SMARTY_CACHE') ? 'true' : 'false'],
         ];
 
         $io->table([], $rows);
