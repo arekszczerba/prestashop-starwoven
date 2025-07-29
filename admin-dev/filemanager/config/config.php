@@ -38,7 +38,7 @@ require_once _PS_ADMIN_DIR_.'/../config/config.inc.php';
 global $kernel;
 
 if (!$kernel) {
-    require_once _PS_ROOT_DIR_ . '/app/AppKernel.php';
+    require_once _PS_ROOT_DIR_ . '/app/AdminKernel.php';
 
     $kernel = new AppKernel(
         _PS_ENV_,
