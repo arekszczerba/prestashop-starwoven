@@ -50,6 +50,7 @@ export default {
   updateOrderStatusActionInputWrapper: '#update_order_status_action_input_wrapper',
   updateOrderStatusActionForm: '#update_order_status_action_form',
   showOrderShippingUpdateModalBtn: '.js-update-shipping-btn',
+  mergeShipmentModal: '#mergeShipmentModal',
   showMergeShipmentModalBtn: '[data-show-modal="merge-shipment"]',
   mergeShipmentModalContainer: '#mergeShipmentFormContainer',
   submitMergeShipment: '#submitMergeShipment',

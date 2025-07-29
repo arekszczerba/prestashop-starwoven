@@ -42,9 +42,12 @@ export default class MergeShipmentManager {
     const mainDiv = document.querySelector(OrderViewPageMap.mainDiv);
 
     if (!mainDiv) {
-      throw new Error('Main container not found');
+      throw new Error(
+        `Initialization failed: main container not found for selector "${
+          OrderViewPageMap.mainDiv
+        }". The shipment merge feature cannot be initialized.`,
+      );
     }
-
     mainDiv.addEventListener('click', this.onMergeShipmentClick);
   }
 
@@ -93,6 +96,14 @@ export default class MergeShipmentManager {
   };
 
   async refreshMergeShipmentForm(): Promise<void> {
+    const modal = document.querySelector(OrderViewPageMap.mergeShipmentModal) as HTMLElement;
+
+    if (!modal) {
+      throw new Error('Merge shipment modal not found.');
+    }
+
+    modal.dataset.state = 'loading';
+
     try {
       const response = await fetch(this.router.generate(this.formRoute, {
         orderId: this.orderId,
@@ -107,9 +118,11 @@ export default class MergeShipmentManager {
       if (!response.ok) {
         throw new Error(await response.text());
       }
-
-      const formContainer = document.querySelector(OrderViewPageMap.mergeShipmentModalContainer);
+      const formContainer = document.querySelector(OrderViewPageMap.mergeShipmentModalContainer) as HTMLElement;
       formContainer!.innerHTML = await response.text();
+
+      modal.dataset.state = 'loaded';
+
       window.prestaShopUiKit.init();
       this.initSubmitMergeShipmentStateHandler();
     } catch (error) {
