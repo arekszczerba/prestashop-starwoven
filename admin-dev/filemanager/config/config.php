@@ -40,7 +40,7 @@ global $kernel;
 if (!$kernel) {
     require_once _PS_ROOT_DIR_ . '/app/AdminKernel.php';
 
-    $kernel = new AppKernel(
+    $kernel = new AdminKernel(
         _PS_ENV_,
         _PS_MODE_DEV_
     );
