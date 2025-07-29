@@ -677,7 +677,7 @@ class OrderController extends PrestaShopAdminController
 
                 $selectedProducts[] = [
                     'id_order_detail' => $orderDetailId,
-                    'quantity' => (int) ($submittedData[$quantityKey] ?? 0),
+                    'quantity' => (int) $submittedData[$quantityKey],
                 ];
             }
         }

@@ -35,8 +35,7 @@
       role="button"
       aria-haspopup="true"
       aria-expanded="false"
-      title="More"
-      style="cursor: pointer;"
+      title="{{ 'More'|trans({}, 'Admin.Actions') }}"
     >
       <i class="material-icons">{{ action.icon }}</i>
     </span>
@@ -48,7 +47,7 @@
           data-toggle="modal"
           data-target="#splitShipmentModal"
           data-shipment-id="{{ record[action.options.shipment_id_field] }}">
-            Split
+            {{ 'Split'|trans({}, 'Admin.Actions') }}
         </a>
       {% endif %}
       {% if show_merge %}
@@ -59,7 +58,7 @@
           data-show-modal="merge-shipment"
           data-order-id="{{ record[action.options.order_id_field] }}"
           data-shipment-id="{{ record[action.options.shipment_id_field] }}">
-            Merge
+            {{ 'Merge'|trans({}, 'Admin.Actions') }}
         </a>
       {% endif %}
     </div>

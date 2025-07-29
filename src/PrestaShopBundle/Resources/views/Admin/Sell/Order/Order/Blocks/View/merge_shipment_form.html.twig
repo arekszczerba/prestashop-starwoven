@@ -72,7 +72,7 @@
 
             <div class="shipment-form__product-info">
               <p class="shipment-form__product-name">{{ product.product_name }}</p>
-              <p class="shipment-form__product-reference">{{ 'Reference'|trans({}, 'Admin.Global') }}: {{ product.product_reference }}</p>
+              <p class="shipment-form__product-reference">{{ 'Reference: %reference%'|trans({'%reference%': product.product_reference}, 'Admin.Global') }}</p>
             </div>
           </label>
         </td>

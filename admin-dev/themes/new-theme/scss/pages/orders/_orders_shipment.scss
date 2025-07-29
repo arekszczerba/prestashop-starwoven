@@ -146,6 +146,24 @@
 }
 
 /* Skeleton */
+#mergeShipmentModal {
+  // Default state
+  .modal-body {
+    display: none;
+  }
+
+  // Loaded state: show modal body, hide skeleton
+  &[data-state="loaded"] {
+    .modal-body {
+      display: block;
+    }
+
+    .skeleton--shipment-modal {
+      display: none;
+    }
+  }
+}
+
 .skeleton--shipment-modal {
   width: calc(100% - var(--cdk-size-40));
   margin-block-start: var(--cdk-size-30);
