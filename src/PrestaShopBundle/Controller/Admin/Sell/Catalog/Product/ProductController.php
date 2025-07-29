@@ -1501,7 +1501,6 @@ class ProductController extends PrestaShopAdminController
      */
     private function getErrorMessages(): array
     {
-        // @todo: all the constraint error messages are missing for now (see ProductConstraintException)
         return [
             CannotDeleteProductException::class => $this->trans(
                 'An error occurred while deleting the object.',
@@ -1515,22 +1514,257 @@ class ProductController extends PrestaShopAdminController
             ),
             ProductConstraintException::class => [
                 ProductConstraintException::INVALID_PRICE => $this->trans(
-                    'Product price is invalid',
+                    'Product price is invalid.',
                     [],
                     'Admin.Notifications.Error'
                 ),
                 ProductConstraintException::INVALID_UNIT_PRICE => $this->trans(
-                    'Product price per unit is invalid',
+                    'Product price per unit is invalid.',
                     [],
                     'Admin.Notifications.Error'
                 ),
                 ProductConstraintException::INVALID_REDIRECT_TARGET => $this->trans(
-                    'When redirecting towards a product you must select a target product.',
+                    'Product "Redirection when offline" target is invalid.',
                     [],
                     'Admin.Catalog.Notification'
                 ),
                 ProductConstraintException::INVALID_ONLINE_DATA => $this->trans(
-                    'To put this product online, please enter a name.',
+                    'Product doesn\'t have the minimum data to go online.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_AVAILABLE_FOR_ORDER => $this->trans(
+                    'Product "Available for order" settings is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_REDIRECT_TYPE => $this->trans(
+                    'Product "Redirection when offline" behavior is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_SHOW_PRICE => $this->trans(
+                    'Product "Show price" settings is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_ONLINE_ONLY => $this->trans(
+                    'Product "Web only" settings is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_ADDITIONAL_SHIPPING_COST => $this->trans(
+                    'Product additional shipping cost is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_AVAILABLE_DATE => $this->trans(
+                    'Product availability date is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_AVAILABLE_NOW => $this->trans(
+                    'Product availability label when in stock is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_AVAILABLE_LATER => $this->trans(
+                    'Product availability label when out of stock is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_CONDITION => $this->trans(
+                    'Product condition is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_CUSTOMIZABILITY => $this->trans(
+                    'Product customization fields are invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_DELIVERY_TIME_IN_STOCK_NOTES => $this->trans(
+                    'Product delivery time when in stock are invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_ADDITIONAL_DELIVERY_TIME_NOTES_TYPE => $this->trans(
+                    'Product delivery times are invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_ADDITIONAL_TIME_NOTES_TYPE => $this->trans(
+                    'Product delivery times are invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_DELIVERY_TIME_OUT_OF_STOCK_NOTES => $this->trans(
+                    'Product delivery times when out of stock are invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_DEPTH => $this->trans(
+                    'Product depth is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_DESCRIPTION => $this->trans(
+                    'Product description is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_EAN_13 => $this->trans(
+                    'Product EAN13 field is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_ECOTAX => $this->trans(
+                    'Product ecotax is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_LINK_REWRITE => $this->trans(
+                    'Product friendly URL is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_GTIN => $this->trans(
+                    'Product GTIN field is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_HEIGHT => $this->trans(
+                    'Product height is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_ID => $this->trans(
+                    'Product ID is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_ISBN => $this->trans(
+                    'Product ISBN field is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_MANUFACTURER_ID => $this->trans(
+                    'Product manufacturer is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_META_DESCRIPTION => $this->trans(
+                    'Product meta description is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_META_TITLE => $this->trans(
+                    'Product meta title is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_MINIMAL_QUANTITY => $this->trans(
+                    'Product minimum quantity for sale is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_MPN => $this->trans(
+                    'Product MPN field is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_NAME => $this->trans(
+                    'Product name is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_REFERENCE => $this->trans(
+                    'Product reference is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_SHORT_DESCRIPTION => $this->trans(
+                    'Product short description is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_PRODUCT_TYPE => $this->trans(
+                    'Product type is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_VISIBILITY => $this->trans(
+                    'Product visibility settings is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_WEIGHT => $this->trans(
+                    'Product weight is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_WIDTH => $this->trans(
+                    'Product width is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_LOW_STOCK_ALERT => $this->trans(
+                    'Product "Low stock alert" settings is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_LOW_STOCK_THRESHOLD => $this->trans(
+                    'Product low stock alert treshold is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_SEARCH_LIMIT => $this->trans(
+                    'Search phrase limit is not valid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_SEARCH_PHRASE_LENGTH => $this->trans(
+                    'Search phrase length is not valid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_SHOW_CONDITION => $this->trans(
+                    'Product "Show condition" settings is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_STATUS => $this->trans(
+                    'Product status (active/inactive) is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_TAG => $this->trans(
+                    'Product tags are invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_TEXT_FIELDS_COUNT => $this->trans(
+                    'Product text customization fields are invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_UNITY => $this->trans(
+                    'Product unit in "price per unit" is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_UPC => $this->trans(
+                    'Product UPC field is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_UPLOADABLE_FILES_COUNT => $this->trans(
+                    'Product file customization fields is invalid.',
+                    [],
+                    'Admin.Catalog.Notification'
+                ),
+                ProductConstraintException::INVALID_WHOLESALE_PRICE => $this->trans(
+                    'Product wholesale price is invalid.',
                     [],
                     'Admin.Catalog.Notification'
                 ),
