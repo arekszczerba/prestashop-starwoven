@@ -41,3 +41,10 @@ services:
     alias: PrestaShop\PrestaShop\Adapter\ContextStateManager
 
   PrestaShop\PrestaShop\Adapter\Employee\EmployeeRepository: ~
+
+  prestashop.adapter.employee_language_updater:
+    class: PrestaShop\PrestaShop\Adapter\Employee\EmployeeLanguageUpdater
+    arguments:
+      - '@doctrine.dbal.default_connection'
+      - '%database_prefix%'
+      - '@=service("prestashop.adapter.legacy.configuration").get("PS_LANG_DEFAULT")'
