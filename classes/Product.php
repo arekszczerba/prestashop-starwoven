@@ -371,12 +371,9 @@ class ProductCore extends ObjectModel
     public $pack_quantity;
 
     /**
-     * For now default value remains undefined, to keep compatibility with page v1 and former products.
-     * But once the v2 is merged the default value should be ProductType::TYPE_STANDARD
-     *
      * @var string
      */
-    public $product_type = ProductType::TYPE_UNDEFINED;
+    public $product_type = ProductType::TYPE_STANDARD;
 
     /**
      * @var int
@@ -473,7 +470,7 @@ class ProductCore extends ObjectModel
             'product_type' => [
                 'type' => self::TYPE_STRING,
                 'validate' => 'isGenericName',
-                // For now undefined value is still allowed, in 179 we should use ProductType::AVAILABLE_TYPES here
+                // TYPE_UNDEFINED is here to support legacy products that have no type set
                 'values' => [
                     ProductType::TYPE_STANDARD,
                     ProductType::TYPE_PACK,
@@ -481,8 +478,7 @@ class ProductCore extends ObjectModel
                     ProductType::TYPE_COMBINATIONS,
                     ProductType::TYPE_UNDEFINED,
                 ],
-                // This default value should be replaced with ProductType::TYPE_STANDARD in 179 when the v2 page is fully migrated
-                'default' => ProductType::TYPE_UNDEFINED,
+                'default' => ProductType::TYPE_STANDARD,
             ],
 
             /* Shop fields */
