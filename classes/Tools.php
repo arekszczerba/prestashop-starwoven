@@ -3435,13 +3435,33 @@ exit;
         return false;
     }
 
-    public static function unSerialize($serialized, $object = false)
+    /**
+     * Safely unserializes input string with protection against object injection.
+     *
+     * @param string $serialized Serialized string to decode
+     * @param bool $allowObjects Whether to allow object unserialization
+     *
+     * @return mixed|null Unserialized data or false on failure
+     */
+    public static function unSerialize($serialized, $allowObjects = false)
     {
-        if (is_string($serialized) && (strpos($serialized, 'O:') === false || !preg_match('/(^|;|{|})O:[0-9]+:"/', $serialized)) && !$object || $object) {
-            return @unserialize($serialized);
+        // Only allow if it's a string
+        if (!is_string($serialized)) {
+            return false;
         }
 
-        return false;
+        // Check for potentially malicious serialized objects
+        if (!$allowObjects) {
+            if (str_contains($serialized, 'O:') && preg_match('/(^|;|{|})O:[0-9]+:"/', $serialized)) {
+                return false;
+            }
+
+            // Use native protection only if we disallow objects
+            return @unserialize($serialized, ['allowed_classes' => false]);
+        }
+
+        // Otherwise allow objects as usual
+        return @unserialize($serialized);
     }
 
     /**
