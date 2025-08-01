@@ -65,10 +65,6 @@ final class GetOrderProductsForViewingHandler extends AbstractOrderHandler imple
         private Locale $locale,
         private ShipmentRepository $shipmentRepository
     ) {
-        $this->imageTagSourceParser = $imageTagSourceParser;
-        $this->contextLanguageId = $contextLanguageId;
-        $this->locale = $locale;
-        $this->shipmentRepository = $shipmentRepository;
     }
 
     public function handle(GetOrderProductsForViewing $query): OrderProductsForViewing

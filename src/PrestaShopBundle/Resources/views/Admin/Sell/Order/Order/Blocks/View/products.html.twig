@@ -33,7 +33,7 @@
   {% if product.quantityRefunded > 0 %}
     {% set isColumnRefundedDisplayed = true %}
   {% endif %}
-  {% if product.shipmentId is not empty and isMultiShipmentFeatureFlagIsEnabled %}
+  {% if isMultiShipmentFeatureFlagIsEnabled and product.shipmentId is not empty %}
     {% set hasShipment = true %}
   {% endif %}
 {% endfor %}
