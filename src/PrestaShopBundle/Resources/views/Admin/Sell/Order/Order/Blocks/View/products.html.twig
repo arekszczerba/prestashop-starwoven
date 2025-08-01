@@ -33,7 +33,7 @@
   {% if product.quantityRefunded > 0 %}
     {% set isColumnRefundedDisplayed = true %}
   {% endif %}
-  {% if product.shipmentId is not empty %}
+  {% if product.shipmentId is not empty and isMultiShipmentFeatureFlagIsEnabled %}
     {% set hasShipment = true %}
   {% endif %}
 {% endfor %}
@@ -94,7 +94,7 @@
               <p>{{ 'Invoice'|trans({}, 'Admin.Global') }}</p>
             </th>
           {% endif %}
-          {% if isMultiShipmentFeatureFlagIsEnabled and hasShipment %}
+          {% if hasShipment %}
             <th>
               <p>{{ 'Shipment'|trans({}, 'Admin.Global') }}</p>
             </th>
