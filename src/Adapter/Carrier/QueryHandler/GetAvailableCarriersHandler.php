@@ -164,23 +164,28 @@ class GetAvailableCarriersHandler implements GetAvailableCarriersHandlerInterfac
      */
     private function getProductName(Product $product): string
     {
-        if (is_array($product->name)) {
-            $languageId = $this->languageContext->getId();
-            $defaultLanguageId = $this->defaultLanguageContext->getId();
+        $name = $product->name;
 
-            if (!isset($product->name[$languageId])) {
-                throw new RuntimeException(sprintf('Product name not found for product ID %d and language ID %d.', $product->id, $languageId));
-            }
-
-            $productName = $product->name[$languageId];
-
-            if (empty($productName)) {
-                $productName = $product->name[$defaultLanguageId];
-            }
-
-            return $productName;
+        if (!is_array($name)) {
+            return $name;
         }
 
-        return $product->name;
+        $languageId = $this->languageContext->getId();
+        $defaultLanguageId = $this->defaultLanguageContext->getId();
+
+        if (isset($name[$languageId])) {
+            return $name[$languageId];
+        }
+
+        if (isset($name[$defaultLanguageId])) {
+            return $name[$defaultLanguageId];
+        }
+
+        throw new RuntimeException(sprintf(
+            'Product name not found for product ID %d in current (%d) or default (%d) language.',
+            $product->id,
+            $languageId,
+            $defaultLanguageId
+        ));
     }
 }

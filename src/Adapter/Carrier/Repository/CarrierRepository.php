@@ -376,18 +376,22 @@ class CarrierRepository extends AbstractMultiShopObjectModelRepository
      */
     public function findCarriersByProductIds(array $productIds, ShopId $shopId): array
     {
+        // Step 1: Get all active carriers once
+        $allCarriers = $this->getAllActiveCarriers();
+
+        // Step 2: Initialize mapping with all carriers for each product
+        $mapping = [];
+        foreach ($productIds as $productId) {
+            $mapping[$productId] = $allCarriers;
+        }
+
+        // Step 3: Get restricted carriers for certain products
         $productCarriers = $this->getProductCarriers($productIds, $shopId);
-        $mapping = $this->mapProductCarriers($productCarriers);
+        $restricted = $this->mapProductCarriers($productCarriers);
 
-        $foundProductIds = array_keys($mapping);
-        $missingProductIds = array_diff($productIds, $foundProductIds);
-
-        if (!empty($missingProductIds)) {
-            $allCarriers = $this->getAllActiveCarriers();
-
-            foreach ($missingProductIds as $productId) {
-                $mapping[$productId] = $allCarriers;
-            }
+        // Step 4: Override default mapping with restricted carriers where applicable
+        foreach ($restricted as $productId => $carriers) {
+            $mapping[$productId] = $carriers;
         }
 
         return $mapping;
