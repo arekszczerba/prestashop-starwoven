@@ -46,7 +46,15 @@ describe('BO - Catalog - Cart rules : Product selection', async () => {
     code: '4QABV6L3',
     productSelection: true,
     productSelectionNumber: 1,
-    productRestriction: [{quantity: 1, ruleType: 'Products', value: dataProducts.demo_8.id}],
+    productRestriction: [
+      {
+        quantity: 1,
+        ruleType: 'Products',
+        values: [
+          dataProducts.demo_8,
+        ],
+      },
+    ],
     discountType: 'Percent',
     discountPercent: 20,
   });
