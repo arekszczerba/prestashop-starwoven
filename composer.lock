@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "63e461842cac5f5cbb9b0debeeb9bd8d",
+    "content-hash": "0cfe14a7cd72fd747df24fce71e32a75",
     "packages": [
         {
             "name": "api-platform/core",
@@ -5261,16 +5261,16 @@
         },
         {
             "name": "prestashop/ps_apiresources",
-            "version": "v0.1.0",
+            "version": "dev-delete-endpoints-command",
             "source": {
                 "type": "git",
-                "url": "https://github.com/PrestaShop/ps_apiresources.git",
-                "reference": "6aebe14f12e4951285a1946ae9f75a3390aa1803"
+                "url": "https://github.com/jolelievre/ps_apiresources.git",
+                "reference": "0387b2fb74801c2e6011fa84fb207d881b546afa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PrestaShop/ps_apiresources/zipball/6aebe14f12e4951285a1946ae9f75a3390aa1803",
-                "reference": "6aebe14f12e4951285a1946ae9f75a3390aa1803",
+                "url": "https://api.github.com/repos/jolelievre/ps_apiresources/zipball/0387b2fb74801c2e6011fa84fb207d881b546afa",
+                "reference": "0387b2fb74801c2e6011fa84fb207d881b546afa",
                 "shasum": ""
             },
             "require": {
@@ -5291,7 +5291,26 @@
                     "ps_apiresources.php"
                 ]
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "PsApiResourcesTest\\": "tests/"
+                }
+            },
+            "scripts": {
+                "clear-test-cache": [
+                    "PsApiResourcesTest\\EnvironmentBuilder::clearCache"
+                ],
+                "create-test-db": [
+                    "@composer clear-test-cache",
+                    "@composer setup-local-tests -- --build-db"
+                ],
+                "run-module-tests": [
+                    "@php -d date.timezone=UTC ./vendor/bin/phpunit -c tests/Integration/phpunit-local.xml"
+                ],
+                "setup-local-tests": [
+                    "PsApiResourcesTest\\EnvironmentBuilder::setupLocalTests"
+                ]
+            },
             "license": [
                 "AFL-3.0"
             ],
@@ -5304,9 +5323,9 @@
             "description": "PrestaShop - API Resources",
             "homepage": "https://github.com/PrestaShop/ps_apiresources",
             "support": {
-                "source": "https://github.com/PrestaShop/ps_apiresources/tree/v0.1.0"
+                "source": "https://github.com/jolelievre/ps_apiresources/tree/delete-endpoints-command"
             },
-            "time": "2025-06-05T16:18:02+00:00"
+            "time": "2025-08-05T07:33:05+00:00"
         },
         {
             "name": "prestashop/ps_banner",
@@ -18078,7 +18097,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {},
+    "stability-flags": {
+        "prestashop/ps_apiresources": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

@@ -180,21 +180,35 @@ describe('API : PATCH /module/{technicalName}/reset', async () => {
   [
     true,
     false,
-  ].forEach((argKeepData: boolean, index: number) => {
+    null,
+  ].forEach((argKeepData: boolean|null, index: number) => {
     describe(`API : Check Data with keepData = ${argKeepData}`, async () => {
       it('should request the endpoint /module/{technicalName}/reset', async function () {
         await testContext.addContextItem(this, 'testIdentifier', `requestEndpoint${index}`, baseContext);
 
         // keepData == true => trigger onReset method (if exists, else keepData == false)
         // keepData == false => trigger uninstall & install method
-        const apiResponse = await apiContext.patch(`module/${moduleInfo.technicalName}/reset`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-          data: {
-            keepData: argKeepData,
-          },
-        });
+        // keepData === null => Provide no data (equivalent to keepData == true)
+        let apiData;
+
+        if (argKeepData !== null) {
+          apiData = {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+            data: {
+              keepData: argKeepData,
+            },
+          };
+        } else {
+          apiData = {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          };
+        }
+
+        const apiResponse = await apiContext.patch(`module/${moduleInfo.technicalName}/reset`, apiData);
         expect(apiResponse.status()).to.eq(200);
         expect(utilsAPI.hasResponseHeader(apiResponse, 'Content-Type')).to.eq(true);
         expect(utilsAPI.getResponseHeader(apiResponse, 'Content-Type')).to.contains('application/json');

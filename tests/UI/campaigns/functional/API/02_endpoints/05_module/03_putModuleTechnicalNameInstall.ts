@@ -176,7 +176,6 @@ describe('API : PUT /module/{technicalName}/install', async () => {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-        data: {},
       });
       expect(apiResponse.status()).to.eq(200);
       expect(utilsAPI.hasResponseHeader(apiResponse, 'Content-Type')).to.eq(true);

@@ -184,7 +184,6 @@ describe('API : PUT /module/{technicalName}/upgrade', async () => {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-        data: {},
       });
 
       expect(apiResponse.status()).to.eq(200);
