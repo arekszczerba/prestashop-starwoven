@@ -552,18 +552,6 @@ class CQRSOpenApiFactoryTest extends KernelTestCase
                         'type' => 'number',
                         'example' => 42.99,
                     ]),
-                    // Multi-parameters setter
-                    'redirectOption' => new ArrayObject([
-                        'type' => 'object',
-                        'properties' => [
-                            'redirectType' => new ArrayObject([
-                                'type' => 'string',
-                            ]),
-                            'redirectTarget' => new ArrayObject([
-                                'type' => 'integer',
-                            ]),
-                        ],
-                    ]),
                     'deliveryTimeNoteType' => new ArrayObject([
                         'type' => 'integer',
                     ]),
@@ -628,10 +616,6 @@ class CQRSOpenApiFactoryTest extends KernelTestCase
                     // Nullable DateTime
                     'availableDate' => new ArrayObject([
                         'format' => 'date-time',
-                        'type' => 'string',
-                    ]),
-                    // Deprecated setter still present for now
-                    'ean13' => new ArrayObject([
                         'type' => 'string',
                     ]),
                 ],
