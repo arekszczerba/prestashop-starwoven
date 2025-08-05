@@ -174,8 +174,8 @@ describe('API : Internal Auth Server - Resource Endpoint', async () => {
       expect(utilsAPI.getResponseHeader(apiResponse, 'Content-Type')).to.contains('application/json');
 
       const jsonResponse = await apiResponse.json();
-      expect(jsonResponse).to.have.property('id');
-      expect(jsonResponse.id).to.be.a('number');
+      expect(jsonResponse).to.have.property('hookId');
+      expect(jsonResponse.hookId).to.be.a('number');
       expect(jsonResponse).to.have.property('active');
       expect(jsonResponse.active).to.be.a('boolean');
     });
