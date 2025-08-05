@@ -67,9 +67,8 @@ services:
 
   # Decorator of api_platform.state_provider.deserialize DeserializeProvider
   PrestaShopBundle\ApiPlatform\Provider\EmptyBodyDeserializerProvider:
-    decorates: 'api_platform.state_provider.deserialize'
-    arguments:
-      $decorated: '@.inner'
+    autowire: true
+    public: false
 
   # Customer provider for CQRS queries
   PrestaShopBundle\ApiPlatform\Provider\QueryProvider:

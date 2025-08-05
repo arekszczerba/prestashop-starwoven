@@ -28,6 +28,8 @@ namespace PrestaShopBundle\ApiPlatform\Provider;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
+use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireDecorated;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -35,9 +37,11 @@ use Symfony\Component\HttpFoundation\Request;
  * a content-type in this case but the DeserializerProvider forces it, so we decorate it and mimic the
  * expected behaviour.
  */
+#[AsDecorator(decorates: 'api_platform.state_provider.deserialize')]
 class EmptyBodyDeserializerProvider implements ProviderInterface
 {
     public function __construct(
+        #[AutowireDecorated]
         private readonly ProviderInterface $decorated,
     ) {
     }
