@@ -206,14 +206,26 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
                 $conditionsCommand->setProductConditions($productRuleGroups);
             } elseif ($data['conditions']['cart_conditions']['children_selector'] === CartConditionsType::PRODUCT_SEGMENT) {
                 $manufacturer = $data['conditions']['cart_conditions']['product_segment']['manufacturer'] ?? [];
+                $category = $data['conditions']['cart_conditions']['product_segment']['category'] ?? '';
+                $productRuleGroups = [];
                 if (!empty($manufacturer)) {
-                    $productRuleGroups = [];
                     $productRuleGroups[] = new ProductRuleGroup(
                         $data['conditions']['cart_conditions']['product_segment']['quantity'],
                         [
                             new ProductRule(ProductRuleType::MANUFACTURERS, [(int) $manufacturer]),
                         ]
                     );
+                }
+                if (!empty($category)) {
+                    $productRuleGroups[] = new ProductRuleGroup(
+                        $data['conditions']['cart_conditions']['product_segment']['quantity'],
+                        [
+                            new ProductRule(ProductRuleType::CATEGORIES, [(int) $category]),
+                        ]
+                    );
+                }
+
+                if (!empty($productRuleGroups)) {
                     $conditionsCommand->setProductConditions($productRuleGroups);
                 }
             }
