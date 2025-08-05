@@ -51,7 +51,13 @@ final class AdditionalShipmentRowAction extends AbstractRowAction
         $resolver
             ->setRequired([
                 'shipment_id_field',
+                'order_id_field',
+                'items' => 'items',
+                'total_shipments' => 'total_shipments',
             ])
-            ->setAllowedTypes('shipment_id_field', 'string');
+            ->setAllowedTypes('shipment_id_field', 'string')
+            ->setAllowedTypes('items', 'string')
+            ->setAllowedTypes('total_shipments', 'string')
+            ->setAllowedTypes('order_id_field', 'string');
     }
 }
