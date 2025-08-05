@@ -63,7 +63,7 @@ final class ShipmentQueryBuilder extends AbstractDoctrineQueryBuilder
                 'c.name AS carrier',
                 's.tracking_number',
                 'COUNT(sp.id_shipment_product) AS items',
-                's.shipping_cost_tax_incl AS price',
+                's.shipping_cost_tax_incl AS shipping_cost',
                 'SUM(od.product_weight * sp.quantity) AS weight',
             ])
             ->groupBy('s.id_shipment');
