@@ -21,14 +21,14 @@ import {
 
 const baseContext: string = 'functional_API_endpoints_hook_getHooksId';
 
-describe('API : GET /hook/{id}', async () => {
+describe('API : GET /hook/{hookId}', async () => {
   let apiContext: APIRequestContext;
   let browserContext: BrowserContext;
   let page: Page;
   let clientSecret: string;
   let accessToken: string;
   let jsonResponse: any;
-  let idHook: number;
+  let hookId: number;
   let statusHook: boolean;
   let nameHook: string;
   let titleHook: string;
@@ -153,8 +153,8 @@ describe('API : GET /hook/{id}', async () => {
     it('should get the hook informations', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'getHookInformations', baseContext);
 
-      idHook = await boDesignPositionsPage.getHookId(page, 0);
-      expect(idHook).to.be.gt(0);
+      hookId = await boDesignPositionsPage.getHookId(page, 0);
+      expect(hookId).to.be.gt(0);
 
       statusHook = await boDesignPositionsPage.getHookStatus(page, 0);
       expect(statusHook).to.be.equal(true);
@@ -171,10 +171,10 @@ describe('API : GET /hook/{id}', async () => {
   });
 
   describe('API : Check Data', async () => {
-    it('should request the endpoint /hook/{id}', async function () {
+    it('should request the endpoint /hook/{hookId}', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'requestEndpoint', baseContext);
 
-      const apiResponse = await apiContext.get(`hook/${idHook}`, {
+      const apiResponse = await apiContext.get(`hook/${hookId}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -190,7 +190,7 @@ describe('API : GET /hook/{id}', async () => {
       await testContext.addContextItem(this, 'testIdentifier', 'checkResponseKeys', baseContext);
 
       expect(jsonResponse).to.have.all.keys(
-        'id',
+        'hookId',
         'active',
         'name',
         'title',
@@ -198,12 +198,12 @@ describe('API : GET /hook/{id}', async () => {
       );
     });
 
-    it('should check the JSON Response : `id`', async function () {
+    it('should check the JSON Response : `hookId`', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'checkResponseId', baseContext);
 
-      expect(jsonResponse).to.have.property('id');
-      expect(jsonResponse.id).to.be.a('number');
-      expect(jsonResponse.id).to.be.equal(idHook);
+      expect(jsonResponse).to.have.property('hookId');
+      expect(jsonResponse.hookId).to.be.a('number');
+      expect(jsonResponse.hookId).to.be.equal(hookId);
     });
 
     it('should check the JSON Response : `active`', async function () {

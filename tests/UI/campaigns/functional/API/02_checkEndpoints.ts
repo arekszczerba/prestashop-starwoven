@@ -105,10 +105,12 @@ describe('API : Check endpoints', async () => {
         '/customers/group/{customerGroupId}: PUT',
         // tests/UI/campaigns/functional/API/02_endpoints/02_customerGroup/04_postCustomersGroup.ts
         '/customers/group: POST',
+        // todo: add tests
+        '/customers/groups: GET',
         // tests/UI/campaigns/functional/API/02_endpoints/03_hook/01_putHookStatusId.ts
-        '/hook-status: PUT',
+        '/hook-status/{hookId}: PUT',
         // tests/UI/campaigns/functional/API/02_endpoints/03_hook/02_getHooksId.ts
-        '/hook/{id}: GET',
+        '/hook/{hookId}: GET',
         // tests/UI/campaigns/functional/API/02_endpoints/03_hook/03_getHooks.ts
         '/hooks: GET',
         // tests/UI/campaigns/functional/API/02_endpoints/04_language/01_getLanguages.ts
@@ -136,6 +138,8 @@ describe('API : Check endpoints', async () => {
         // tests/UI/campaigns/functional/API/02_endpoints/05_module/11_getModules.ts
         '/modules: GET',
         // tests/UI/campaigns/functional/API/02_endpoints/06_product/01_getProductImageId.ts
+        // todo: add tests for delete and shopIds
+        '/product/image/{imageId}: DELETE',
         '/product/image/{imageId}: GET',
         // tests/UI/campaigns/functional/API/02_endpoints/06_product/02_postProductImageId.ts
         '/product/image/{imageId}: POST',
