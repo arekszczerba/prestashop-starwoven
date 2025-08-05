@@ -208,6 +208,7 @@ describe('API : POST /product/{productId}/image', async () => {
           'legends',
           'cover',
           'position',
+          'shopIds',
         );
       });
 
@@ -230,6 +231,12 @@ describe('API : POST /product/{productId}/image', async () => {
 
         expect(jsonResponse.position).to.be.a('number');
         expect(jsonResponse.position).to.be.equals(1);
+
+        expect(jsonResponse).to.have.property('shopIds');
+        expect(jsonResponse.shopIds).to.be.a('array');
+        expect(jsonResponse.shopIds).to.be.deep.equal([1]);
+        expect(jsonResponse.shopIds[0]).to.be.a('number');
+        expect(jsonResponse.shopIds[0]).to.be.equal(1);
       });
     });
 

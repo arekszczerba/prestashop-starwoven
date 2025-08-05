@@ -906,6 +906,21 @@ class OrderCore extends ObjectModel
 
     public function hasBeenDelivered()
     {
+        $hasBeenDelivered = Hook::exec(
+            'actionOrderHasBeenDelivered',
+            ['order' => $this],
+            null,
+            false,
+            true,
+            false,
+            null,
+            true
+        );
+
+        if (is_bool($hasBeenDelivered)) {
+            return $hasBeenDelivered;
+        }
+
         return count($this->getHistory((int) $this->id_lang, false, false, OrderState::FLAG_DELIVERY));
     }
 
@@ -931,6 +946,21 @@ class OrderCore extends ObjectModel
 
     public function hasBeenShipped()
     {
+        $hasBeenShipped = Hook::exec(
+            'actionOrderHasBeenShipped',
+            ['order' => $this],
+            null,
+            false,
+            true,
+            false,
+            null,
+            true
+        );
+
+        if (is_bool($hasBeenShipped)) {
+            return $hasBeenShipped;
+        }
+
         return count($this->getHistory((int) $this->id_lang, false, false, OrderState::FLAG_SHIPPED));
     }
 
