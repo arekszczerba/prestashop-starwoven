@@ -36,11 +36,13 @@ use PrestaShop\PrestaShop\Core\Domain\AttributeGroup\Attribute\Exception\Attribu
 use PrestaShop\PrestaShop\Core\Domain\Carrier\Exception\CannotAddCarrierException;
 use PrestaShop\PrestaShop\Core\Domain\Carrier\Exception\CannotUpdateCarrierException;
 use PrestaShop\PrestaShop\Core\Domain\Carrier\Exception\CarrierNotFoundException;
+use PrestaShop\PrestaShop\Core\Domain\Carrier\ValueObject\CarrierConstraints;
 use PrestaShop\PrestaShop\Core\Domain\Carrier\ValueObject\CarrierId;
 use PrestaShop\PrestaShop\Core\Domain\Shop\ValueObject\ShopConstraint;
 use PrestaShop\PrestaShop\Core\Domain\Shop\ValueObject\ShopGroupId;
 use PrestaShop\PrestaShop\Core\Domain\Shop\ValueObject\ShopId;
 use PrestaShop\PrestaShop\Core\Domain\TaxRulesGroup\ValueObject\TaxRulesGroupId;
+use PrestaShop\PrestaShop\Core\Domain\Zone\ValueObject\ZoneId;
 use PrestaShop\PrestaShop\Core\Exception\CoreException;
 use PrestaShop\PrestaShop\Core\Repository\AbstractMultiShopObjectModelRepository;
 use RuntimeException;
@@ -362,6 +364,54 @@ class CarrierRepository extends AbstractMultiShopObjectModelRepository
         return $lastPosition !== false ? (int) $lastPosition : null;
     }
 
+    public function getCarrierConstraints(CarrierId $carrierId): CarrierConstraints
+    {
+        $qb = $this->connection->createQueryBuilder();
+
+        $qb
+            ->select('c.max_width', 'c.max_height', 'c.max_depth', 'c.max_weight')
+            ->from($this->prefix . 'carrier', 'c')
+            ->where('c.id_carrier = :carrierId')
+            ->setParameter('carrierId', $carrierId->getValue());
+
+        $result = $qb->executeQuery()->fetchAssociative();
+
+        if (!$result) {
+            throw new RuntimeException("Carrier with ID {$carrierId->getValue()} not found.");
+        }
+
+        return new CarrierConstraints(
+            (float) $result['max_weight'],
+            (float) $result['max_width'],
+            (float) $result['max_height'],
+            (float) $result['max_depth']
+        );
+    }
+
+    /**
+     * Checks if a given carrier is available for a specific zone.
+     *
+     * @return bool True if carrier is available for the zone, false otherwise
+     */
+    public function checkCarrierZone(CarrierId $carrierId, ZoneId $zoneId): bool
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->select('c.id_carrier')
+            ->from($this->prefix . 'carrier', 'c')
+            ->innerJoin('c', $this->prefix . 'carrier_zone', 'cz', 'cz.id_carrier = c.id_carrier')
+            ->innerJoin('cz', $this->prefix . 'zone', 'z', 'z.id_zone = cz.id_zone')
+            ->where('c.id_carrier = :carrierId')
+            ->andWhere('c.deleted = 0')
+            ->andWhere('c.active = 1')
+            ->andWhere('cz.id_zone = :zoneId')
+            ->andWhere('z.active = 1')
+            ->setParameter('carrierId', $carrierId->getValue())
+            ->setParameter('zoneId', $zoneId->getValue());
+
+        return (bool) $qb->executeQuery()->fetchOne();
+    }
+
     /**
      * Returns a mapping of product IDs to their available carriers.
      *
@@ -423,6 +473,7 @@ class CarrierRepository extends AbstractMultiShopObjectModelRepository
             ->select('id_carrier', 'name')
             ->from($this->prefix . 'carrier')
             ->where('deleted = 0')
+            ->andWhere('active = 1')
             ->executeQuery()
             ->fetchAllAssociative();
     }
