@@ -64,12 +64,12 @@
             }) }}
 
             {% if product.product_image_path %}
-              <img class="shipment-form__product-image" src="{{ product.product_image_path.vars.value  }}" alt="{{ product.product_reference.vars.value  }}" />
+              <img class="shipment-form__product-image" src="{{ product.product_image_path.vars.value }}" alt="{{ product.product_reference.vars.value }}" />
             {% endif %}
 
             <div class="shipment-form__product-info">
-              <p class="shipment-form__product-name">{{ product.product_name.vars.value  }}</p>
-              <p class="shipment-form__product-reference">{{ 'Reference: %reference%'|trans({'%reference%': product.product_reference.vars.value }, 'Admin.Global') }}</p>
+              <p class="shipment-form__product-name">{{ product.product_name.vars.value }}</p>
+              <p class="shipment-form__product-reference">{{ 'Reference: %reference%'|trans({'%reference%': product.product_reference.vars.value}, 'Admin.Global') }}</p>
             </div>
           </label>
         </td>
@@ -107,7 +107,6 @@
         id: 'split_shipment_carriers'
       }
     }) }}
-
 
     <a href="{{ path('admin_carriers_index') }}" target="_blank">
       {{ 'Manage carriers'|trans }}
