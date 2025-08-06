@@ -45,6 +45,7 @@ class ProductSplitType extends AbstractType
                 'required' => false,
                 'label' => '',
             ])
+            ->add('product_image_path', HiddenType::class)
             ->add('order_detail_id', HiddenType::class)
             ->add('product_name', HiddenType::class)
             ->add('product_reference', HiddenType::class)

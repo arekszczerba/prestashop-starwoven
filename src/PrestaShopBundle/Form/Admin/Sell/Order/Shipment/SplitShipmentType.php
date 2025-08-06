@@ -33,10 +33,14 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SplitShipmentType extends AbstractType
 {
-    public function __construct(private readonly AvailableCarriersForShipmentChoiceProvider $availableCarriersForShipmentChoiceProvider)
+    public function __construct(
+        private readonly AvailableCarriersForShipmentChoiceProvider $availableCarriersForShipmentChoiceProvider,
+        private readonly TranslatorInterface $translator
+        )
     {
     }
 
@@ -67,7 +71,8 @@ class SplitShipmentType extends AbstractType
             'choices' => $this->availableCarriersForShipmentChoiceProvider->getChoices([
                 'selectedProducts' => $selectedProductsId,
             ]),
-            'autocomplete' => true,
+            'placeholder' => $this->translator->trans('Select a carrier', [], 'Admin.Orderscustomers.Feature'),
+            'required' => true,
         ]);
     }
 

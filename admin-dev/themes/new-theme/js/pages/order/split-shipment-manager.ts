@@ -124,8 +124,7 @@ export default class SplitShipmentManager {
     carrier: number = 0,
   ): Promise<void> {
     try {
-      const modal = document.querySelector(OrderViewPageMap.splitShipmentModal);
-      modal?.classList.add('loading');
+      this.modal.dataset.state = 'loading';
       const html = await this.fetchSplitFormHtml(products, carrier);
       const container = document.querySelector(OrderViewPageMap.splitShipmentFormContainer);
 
@@ -134,7 +133,7 @@ export default class SplitShipmentManager {
       }
 
       container.innerHTML = html;
-      modal?.classList.remove('loading');
+      this.modal.dataset.state = 'loaded';
       this.initializeFormBehaviour();
     } catch (error: unknown) {
       if (error instanceof Error && error.name === 'AbortError') {
@@ -142,6 +141,13 @@ export default class SplitShipmentManager {
       }
       throw new Error('Failed to refresh split shipment form');
     }
+  }
+
+  private get modal(): HTMLDivElement {
+    const modal = document.querySelector(OrderViewPageMap.splitShipmentModal) as HTMLDivElement;
+
+    if (!modal) throw new Error('Split shipment modal not found');
+    return modal;
   }
 
   private get form(): HTMLFormElement {
@@ -161,6 +167,8 @@ export default class SplitShipmentManager {
   }
 
   private initializeFormBehaviour(): void {
+    window.prestaShopUiKit.init();
+
     this.form.removeEventListener('change', this.handleFormChange);
     this.form.addEventListener('change', this.handleFormChange);
 

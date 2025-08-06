@@ -793,7 +793,7 @@ class OrderController extends PrestaShopAdminController
             'order_id' => $orderId,
         ]);
 
-        return $this->render('@PrestaShop/Admin/Sell/Order/Order/Blocks/View/split_shipment.html.twig', [
+        return $this->render('@PrestaShop/Admin/Sell/Order/Order/Blocks/View/split_shipment_form.html.twig', [
             'splitShipmentForm' => $splitShipmentTypeForm->createView(),
             'orderId' => $orderId,
             'shipmentId' => $shipmentId,
