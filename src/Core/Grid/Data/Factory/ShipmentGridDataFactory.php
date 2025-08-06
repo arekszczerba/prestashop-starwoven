@@ -63,7 +63,7 @@ class ShipmentGridDataFactory implements GridDataFactoryInterface
         $updated = [];
 
         foreach ($records as $record) {
-            $record['price'] = $this->locale->formatPrice((float) $record['price'], $this->currencyContext->getIsoCode());
+            $record['shipping_cost'] = $this->locale->formatPrice((float) $record['shipping_cost'], $this->currencyContext->getIsoCode());
             $record['weight'] = sprintf('%.3f %s', $record['weight'], $this->configuration->get('PS_WEIGHT_UNIT'));
             $record['total_shipments'] = $totalRecord;
             $updated[] = $record;
