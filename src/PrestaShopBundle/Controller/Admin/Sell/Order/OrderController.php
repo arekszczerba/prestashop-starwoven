@@ -87,6 +87,7 @@ use PrestaShop\PrestaShop\Core\Domain\Product\Query\SearchProducts;
 use PrestaShop\PrestaShop\Core\Domain\Product\QueryResult\FoundProduct;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\MergeProductsToShipment;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\SplitShipment;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentException;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentProducts;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipment;
@@ -759,6 +760,37 @@ class OrderController extends PrestaShopAdminController
         $productsFromQuery = $request->get('products', []);
         $selectedCarrier = (int) $request->query->get('carrier');
 
+        $orderShipmentProducts = $this->mergeProductsFromQueries($shipmentId, $productsFromQuery, $orderDetailRepository);
+
+        $splitShipmentTypeForm = $this->createForm(SplitShipmentType::class, [
+            'products' => $orderShipmentProducts,
+            'carrier' => $selectedCarrier,
+            'shipment_id' => $shipmentId,
+            'order_id' => $orderId,
+        ]);
+
+        return $this->render('@PrestaShop/Admin/Sell/Order/Order/Blocks/View/split_shipment_form.html.twig', [
+            'splitShipmentForm' => $splitShipmentTypeForm->createView(),
+            'orderId' => $orderId,
+            'shipmentId' => $shipmentId,
+        ]);
+    }
+
+    /**
+     * @param int $shipmentId
+     * @param array $productsFromQuery
+     * @param OrderDetailRepository $orderDetailRepository
+     *
+     * @return OrderShipmentProduct[]
+     *
+     * @throws CoreException
+     * @throws ShipmentException
+     */
+    private function mergeProductsFromQueries(
+        int $shipmentId,
+        array $productsFromQuery,
+        OrderDetailRepository $orderDetailRepository,
+    ): array {
         foreach ($productsFromQuery as &$product) {
             if (isset($product['selected_quantity'])) {
                 $product['selected_quantity'] = (int) $product['selected_quantity'];
@@ -786,18 +818,7 @@ class OrderController extends PrestaShopAdminController
             }
         }
 
-        $splitShipmentTypeForm = $this->createForm(SplitShipmentType::class, [
-            'products' => $orderShipmentProducts,
-            'carrier' => $selectedCarrier,
-            'shipment_id' => $shipmentId,
-            'order_id' => $orderId,
-        ]);
-
-        return $this->render('@PrestaShop/Admin/Sell/Order/Order/Blocks/View/split_shipment_form.html.twig', [
-            'splitShipmentForm' => $splitShipmentTypeForm->createView(),
-            'orderId' => $orderId,
-            'shipmentId' => $shipmentId,
-        ]);
+        return $orderShipmentProducts;
     }
 
     /**
