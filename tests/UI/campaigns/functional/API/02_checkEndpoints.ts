@@ -97,6 +97,18 @@ describe('API : Check endpoints', async () => {
         '/api-client: POST',
         // tests/UI/campaigns/functional/API/02_endpoints/01_apiClient/06_getApiClients.ts
         '/api-clients: GET',
+        // todo: add tests
+        '/attributes/group/{attributeGroupId}: DELETE',
+        // todo: add tests
+        '/attributes/group/{attributeGroupId}: GET',
+        // todo: add tests
+        '/attributes/group/{attributeGroupId}: PATCH',
+        // todo: add tests
+        '/attributes/group: POST',
+        // todo: add tests
+        '/attributes/groups/delete: PUT',
+        // todo: add tests
+        '/attributes/groups: GET',
         // tests/UI/campaigns/functional/API/02_endpoints/02_customerGroup/01_deleteCustomerGroupsId.ts
         '/customers/group/{customerGroupId}: DELETE',
         // tests/UI/campaigns/functional/API/02_endpoints/02_customerGroup/02_getCustomerGroupsId.ts
