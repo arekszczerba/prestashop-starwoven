@@ -1,5 +1,5 @@
 import testContext from '@utils/testContext';
-import {deleteAPIClientTest} from '@commonTests/BO/advancedParameters/authServer';
+import {requestAccessToken} from '@commonTests/BO/advancedParameters/authServer';
 import {createProductTest, deleteProductTest} from '@commonTests/BO/catalog/product';
 import {disableEcoTaxTest, enableEcoTaxTest} from '@commonTests/BO/international/ecoTax';
 import {expect} from 'chai';
@@ -7,8 +7,6 @@ import {expect} from 'chai';
 import {faker} from '@faker-js/faker';
 import {
   type APIRequestContext,
-  boApiClientsPage,
-  boApiClientsCreatePage,
   boDashboardPage,
   boLoginPage,
   boProductsPage,
@@ -25,7 +23,6 @@ import {
   dataCategories,
   dataLanguages,
   dataTaxRules,
-  FakerAPIClient,
   FakerProduct,
   type Page,
   utilsAPI,
@@ -39,17 +36,10 @@ describe('API : PATCH /product/{productId}', async () => {
   let browserContext: BrowserContext;
   let page: Page;
   let accessToken: string;
-  let clientSecret: string;
   let idProduct: number;
   let jsonResponse: any;
 
   const clientScope: string = 'product_write';
-  const clientData: FakerAPIClient = new FakerAPIClient({
-    enabled: true,
-    scopes: [
-      clientScope,
-    ],
-  });
   const createProduct: FakerProduct = new FakerProduct({
     type: 'standard',
     status: true,
@@ -74,6 +64,13 @@ describe('API : PATCH /product/{productId}', async () => {
     });
 
     describe('BackOffice : Fetch the access token', async () => {
+      it(`should request the endpoint /access_token with scope ${clientScope}`, async function () {
+        await testContext.addContextItem(this, 'testIdentifier', 'requestOauth2Token', baseContext);
+        accessToken = await requestAccessToken(clientScope);
+      });
+    });
+
+    describe('BackOffice : Fetch the ID product', async () => {
       it('should login in BO', async function () {
         await testContext.addContextItem(this, 'testIdentifier', 'loginBO', baseContext);
 
@@ -84,78 +81,6 @@ describe('API : PATCH /product/{productId}', async () => {
         expect(pageTitle).to.contains(boDashboardPage.pageTitle);
       });
 
-      it('should go to \'Advanced Parameters > API Client\' page', async function () {
-        await testContext.addContextItem(this, 'testIdentifier', 'goToAdminAPIPage', baseContext);
-
-        await boDashboardPage.goToSubMenu(
-          page,
-          boDashboardPage.advancedParametersLink,
-          boDashboardPage.adminAPILink,
-        );
-
-        const pageTitle = await boApiClientsPage.getPageTitle(page);
-        expect(pageTitle).to.eq(boApiClientsPage.pageTitle);
-      });
-
-      it('should check that no records found', async function () {
-        await testContext.addContextItem(this, 'testIdentifier', 'checkThatNoRecordFound', baseContext);
-
-        const noRecordsFoundText = await boApiClientsPage.getTextForEmptyTable(page);
-        expect(noRecordsFoundText).to.contains('warning No records found');
-      });
-
-      it('should go to add New API Client page', async function () {
-        await testContext.addContextItem(this, 'testIdentifier', 'goToNewAPIClientPage', baseContext);
-
-        await boApiClientsPage.goToNewAPIClientPage(page);
-
-        const pageTitle = await boApiClientsCreatePage.getPageTitle(page);
-        expect(pageTitle).to.eq(boApiClientsCreatePage.pageTitleCreate);
-      });
-
-      it('should create API Client', async function () {
-        await testContext.addContextItem(this, 'testIdentifier', 'createAPIClient', baseContext);
-
-        const textResult = await boApiClientsCreatePage.addAPIClient(page, clientData);
-        expect(textResult).to.contains(boApiClientsCreatePage.successfulCreationMessage);
-
-        const textMessage = await boApiClientsCreatePage.getAlertInfoBlockParagraphContent(page);
-        expect(textMessage).to.contains(boApiClientsCreatePage.apiClientGeneratedMessage);
-      });
-
-      it('should copy client secret', async function () {
-        await testContext.addContextItem(this, 'testIdentifier', 'copyClientSecret', baseContext);
-
-        await boApiClientsCreatePage.copyClientSecret(page);
-
-        clientSecret = await boApiClientsCreatePage.getClipboardText(page);
-        expect(clientSecret.length).to.be.gt(0);
-      });
-
-      it('should request the endpoint /access_token', async function () {
-        await testContext.addContextItem(this, 'testIdentifier', 'requestOauth2Token', baseContext);
-
-        const apiResponse = await apiContext.post('access_token', {
-          form: {
-            client_id: clientData.clientId,
-            client_secret: clientSecret,
-            grant_type: 'client_credentials',
-            scope: clientScope,
-          },
-        });
-        expect(apiResponse.status()).to.eq(200);
-        expect(utilsAPI.hasResponseHeader(apiResponse, 'Content-Type')).to.eq(true);
-        expect(utilsAPI.getResponseHeader(apiResponse, 'Content-Type')).to.contains('application/json');
-
-        const jsonResponse = await apiResponse.json();
-        expect(jsonResponse).to.have.property('access_token');
-        expect(jsonResponse.token_type).to.be.a('string');
-
-        accessToken = jsonResponse.access_token;
-      });
-    });
-
-    describe('BackOffice : Fetch the ID product', async () => {
       it('should go to \'Catalog > Products\' page', async function () {
         await testContext.addContextItem(this, 'testIdentifier', 'goToProductsPage', baseContext);
 
@@ -827,7 +752,4 @@ describe('API : PATCH /product/{productId}', async () => {
 
   // Pre-condition: Delete a product
   disableEcoTaxTest(`${baseContext}_postTest_1`);
-
-  // Pre-condition: Delete an API Client
-  deleteAPIClientTest(`${baseContext}_postTest_2`);
 });

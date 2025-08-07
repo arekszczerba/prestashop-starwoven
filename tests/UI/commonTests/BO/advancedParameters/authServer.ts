@@ -9,7 +9,7 @@ import {
   type BrowserContext,
   type FakerAPIClient,
   type Page,
-  utilsPlaywright,
+  utilsPlaywright, utilsAPI, type APIRequestContext,
 } from '@prestashop-core/ui-testing';
 
 /**
@@ -151,7 +151,34 @@ function deleteAPIClientTest(baseContext: string = 'commonTests-deleteAPIClientT
   });
 }
 
+/**
+ * Function to request an access token with specified scopes (separated by comma)
+ * @param clientScopes {string} List of scopes separated by comma
+ * @return Promise<string> The Bearer access token value
+ */
+async function requestAccessToken(clientScopes: string): Promise<string> {
+  const apiContext: APIRequestContext = await utilsPlaywright.createAPIContext(global.API.URL);
+  const apiResponse = await apiContext.post('access_token', {
+    form: {
+      client_id: global.API.CLIENT_ID,
+      client_secret: global.API.CLIENT_SECRET,
+      grant_type: 'client_credentials',
+      scope: clientScopes,
+    },
+  });
+  expect(apiResponse.status()).to.eq(200, (await apiResponse.json()).message);
+  expect(utilsAPI.hasResponseHeader(apiResponse, 'Content-Type')).to.eq(true);
+  expect(utilsAPI.getResponseHeader(apiResponse, 'Content-Type')).to.contains('application/json');
+
+  const jsonResponse = await apiResponse.json();
+  expect(jsonResponse).to.have.property('access_token');
+  expect(jsonResponse.token_type).to.be.a('string');
+
+  return jsonResponse.access_token;
+}
+
 export {
   createAPIClientTest,
   deleteAPIClientTest,
+  requestAccessToken,
 };
