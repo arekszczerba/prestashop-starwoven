@@ -751,7 +751,7 @@ class OrderController extends PrestaShopAdminController
      * @throws Exception
      */
     #[AdminSecurity("is_granted('update', 'AdminOrders')", message: 'You do not have permission to show this.')]
-    public function getShipmentSplitForm(
+    public function getSplitShipmentForm(
         Request $request,
         #[Autowire(service: 'PrestaShop\PrestaShop\Adapter\Order\Repository\OrderDetailRepository')] OrderDetailRepository $orderDetailRepository,
     ): Response {
@@ -778,7 +778,7 @@ class OrderController extends PrestaShopAdminController
 
     /**
      * @param int $shipmentId
-     * @param array $productsFromQuery
+     * @param array<array{selected: string, selected_quantity: string, order_detail_id: string}> $productsFromQuery
      * @param OrderDetailRepository $orderDetailRepository
      *
      * @return OrderShipmentProduct[]

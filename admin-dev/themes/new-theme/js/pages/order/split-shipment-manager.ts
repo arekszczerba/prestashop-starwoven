@@ -48,7 +48,9 @@ export default class SplitShipmentManager {
   private attachEventListeners(): void {
     const container = document.querySelector(OrderViewPageMap.mainDiv);
 
-    if (!container) throw new Error('Main container not found, split shipment manager can not be initiated.');
+    if (!container) {
+      throw new Error('Main container not found, split shipment manager can not be initiated.');
+    }
     container.addEventListener('click', this.handleSplitButtonClick);
   }
 
@@ -136,33 +138,38 @@ export default class SplitShipmentManager {
       this.modal.dataset.state = 'loaded';
       this.initializeFormBehaviour();
     } catch (error: unknown) {
-      if (error instanceof Error && error.name === 'AbortError') {
-        return;
+      if (!(error instanceof Error && error.name === 'AbortError')) {
+        throw new Error('Failed to refresh split shipment form');
       }
-      throw new Error('Failed to refresh split shipment form');
     }
   }
 
   private get modal(): HTMLDivElement {
     const modal = document.querySelector(OrderViewPageMap.splitShipmentModal) as HTMLDivElement;
 
-    if (!modal) throw new Error('Split shipment modal not found');
+    if (!modal) {
+      throw new Error('Split shipment modal not found');
+    }
     return modal;
   }
 
   private get form(): HTMLFormElement {
-    const form = document.forms.namedItem('split_shipment') as HTMLFormElement;
+    const form = document.forms.namedItem(OrderViewPageMap.splitShipmentFormName) as HTMLFormElement;
 
-    if (!form) throw new Error('Split shipment form not found');
+    if (!form) {
+      throw new Error('Split shipment form not found');
+    }
     return form;
   }
 
   private get submitButton(): HTMLButtonElement {
     const btn = document.querySelector<HTMLButtonElement>(
-      'button[type="submit"][form="split_shipment"]',
+      OrderViewPageMap.splitShipmentFormSubmitButton,
     );
 
-    if (!btn) throw new Error('Submit button not found');
+    if (!btn) {
+      throw new Error('Submit button not found');
+    }
     return btn;
   }
 
@@ -173,7 +180,7 @@ export default class SplitShipmentManager {
     this.form.addEventListener('change', this.handleFormChange);
 
     const carrierSelect = this.form.querySelector(
-      '#split_shipment_carrier',
+      OrderViewPageMap.splitShipmentCarrierSelector,
     ) as HTMLSelectElement;
     this.toggleSubmitButton(!!carrierSelect?.value);
   }

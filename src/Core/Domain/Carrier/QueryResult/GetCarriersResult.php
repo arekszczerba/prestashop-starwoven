@@ -56,7 +56,7 @@ class GetCarriersResult
     }
 
     /**
-     * @return array<array>
+     * @return array<int, array{id: int, name: string}>
      */
     public function getAvailableCarriersToArray(): array
     {

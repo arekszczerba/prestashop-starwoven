@@ -30,7 +30,7 @@ use Exception;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\ValueObject\OrderDetailId;
 
 /**
- * Thrown when order is not found
+ * Thrown when order detail is not found
  */
 class OrderDetailNotFoundException extends OrderException
 {
