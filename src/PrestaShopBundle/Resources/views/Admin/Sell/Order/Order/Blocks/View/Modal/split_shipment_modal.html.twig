@@ -24,52 +24,27 @@
  * #}
 
 <div class="modal fade" id="splitShipmentModal" tabindex="-1" role="dialog">
-  <style>
-      #splitShipmentModal:not([data-state="loading"]) .loader-shipment-modal {
-          display: none;
-      }
-
-      #splitShipmentModal:has(.loader-shipment-modal) .skeleton--shipment-modal {
-        display: none;
-      }
-
-      .loader-shipment-modal {
-          position: absolute;
-          z-index: 999;
-          inset: 0;
-          background: rgba(255 255 255 / 0.65);
-      }
-
-      .loader-shipment-modal::before {
-          content: "";
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          display: block;
-          width: 1.5rem;
-          height: 1.5rem;
-          background-color: #1d1d1b;
-          bacground-repeat: none;
-          transform: translate(-50%, -50%);
-          mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 200 200'%3E%3Cdefs%3E%3ClinearGradient id='a'%3E%3Cstop offset='0%25' stop-color='currentColor'/%3E%3Cstop offset='100%25' stop-color='currentColor' stop-opacity='.5'/%3E%3C/linearGradient%3E%3ClinearGradient id='b'%3E%3Cstop offset='0%25' stop-color='currentColor' stop-opacity='0'/%3E%3Cstop offset='100%25' stop-color='currentColor' stop-opacity='.5'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg stroke-width='24'%3E%3Cpath stroke='url(%23a)' d='M14 100a32 32 0 0 1 170 0'/%3E%3Cpath stroke='url(%23b)' d='M184 100a32 32 0 0 1-170 0'/%3E%3Cpath stroke='currentColor' stroke-linecap='round' d='M14 100h0'/%3E%3C/g%3E%3CanimateTransform attributeName='transform' dur='2000ms' from='360 0 0' repeatCount='indefinite' to='0 0 0' type='rotate'/%3E%3C/svg%3E");
-      }
-  </style>
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">{{ 'Split shipment'|trans({}, 'Admin.Orderscustomers.Feature') }}</h5>
+
         <button type="button" class="close" data-dismiss="modal" aria-label="{{ 'Close'|trans({}, 'Admin.Actions') }}">
           <span aria-hidden="true">×</span>
         </button>
       </div>
+
       <div class="modal-body" id="splitShipmentFormContainer">
         <!-- split shipment form be added with ajax her -->
       </div>
-      <div class="skeleton skeleton--shipment-modal"></div>
-      <div class="modal-footer">
+
+      {{ include('@PrestaShop/Admin/Sell/Order/Order/Blocks/View/Modal/Skeletons/split_shipment_skeleton.html.twig') }}
+
+      <div class="modal-footer shipment-form__footer">
         <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
           {{ 'Cancel'|trans({}, 'Admin.Actions') }}
         </button>
+
         <button type="submit" class="btn btn-primary" id="submitSplitShipment" form="split_shipment" disabled>
           {{ 'Split shipment'|trans({}, 'Admin.Actions') }}
         </button>

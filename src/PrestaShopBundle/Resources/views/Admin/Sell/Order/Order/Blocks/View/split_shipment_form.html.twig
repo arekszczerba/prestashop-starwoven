@@ -30,7 +30,7 @@
     class: 'shipment-form'
   }
 }) }}
-  <div class="loader-shipment-modal"></div>
+  <div class="shipment-form__loader"></div>
   <p class="shipment-form__tooltip-wrapper">
     {{ 'Select the items to send separately'|trans({}, 'Admin.Orderscustomers.Feature') }}
 
@@ -108,9 +108,8 @@
       }
     }) }}
 
-    <a href="{{ path('admin_carriers_index') }}" target="_blank">
-      {{ 'Manage carriers'|trans }}
-      <i class="material-icons">open_in_new</i>
+    <a href="{{ path('admin_carriers_index') }}" class="shipment-form__carriers-link" target="_blank">
+      {{ 'Manage carriers'|trans }} <i class="material-icons">open_in_new</i>
     </a>
   </div>
 
