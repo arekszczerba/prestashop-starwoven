@@ -149,9 +149,9 @@ describe('API : Check endpoints', async () => {
         '/modules/uninstall: PUT',
         // tests/UI/campaigns/functional/API/02_endpoints/05_module/11_getModules.ts
         '/modules: GET',
-        // tests/UI/campaigns/functional/API/02_endpoints/06_product/01_getProductImageId.ts
         // todo: add tests for delete and shopIds
         '/product/image/{imageId}: DELETE',
+        // tests/UI/campaigns/functional/API/02_endpoints/06_product/01_getProductImageId.ts
         '/product/image/{imageId}: GET',
         // tests/UI/campaigns/functional/API/02_endpoints/06_product/02_postProductImageId.ts
         '/product/image/{imageId}: POST',
