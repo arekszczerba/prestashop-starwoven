@@ -201,7 +201,7 @@ admin_orders_split_shipment:
     shipmentId: \d+
 
 admin_orders_shipment_get_split_form:
-  path: /shipment/get-shipment-split-form
+  path: /{orderId}/shipment/split-form
   methods: [ GET ]
   defaults:
     _controller: PrestaShopBundle\Controller\Admin\Sell\Order\OrderController::getSplitShipmentForm

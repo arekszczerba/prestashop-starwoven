@@ -752,10 +752,10 @@ class OrderController extends PrestaShopAdminController
      */
     #[AdminSecurity("is_granted('update', 'AdminOrders')", message: 'You do not have permission to show this.')]
     public function getSplitShipmentForm(
+        int $orderId,
         Request $request,
         #[Autowire(service: 'PrestaShop\PrestaShop\Adapter\Order\Repository\OrderDetailRepository')] OrderDetailRepository $orderDetailRepository,
     ): Response {
-        $orderId = (int) $request->query->get('orderId');
         $shipmentId = (int) $request->query->get('shipmentId');
         $productsFromQuery = $request->get('products', []);
         $selectedCarrier = (int) $request->query->get('carrier');
