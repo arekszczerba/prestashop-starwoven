@@ -45,7 +45,7 @@ class OrderDetailRepository extends AbstractObjectModelRepository
      */
     public function get(OrderDetailId $orderDetailId): OrderDetail
     {
-        /* @var OrderDetail $orderDetail */
+        /** @var OrderDetail $orderDetail */
         $orderDetail = $this->getObjectModel(
             $orderDetailId->getValue(),
             OrderDetail::class,
