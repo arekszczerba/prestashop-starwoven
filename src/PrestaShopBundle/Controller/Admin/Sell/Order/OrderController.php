@@ -756,9 +756,9 @@ class OrderController extends PrestaShopAdminController
         Request $request,
         #[Autowire(service: 'PrestaShop\PrestaShop\Adapter\Order\Repository\OrderDetailRepository')] OrderDetailRepository $orderDetailRepository,
     ): Response {
-        $shipmentId = (int) $request->query->get('shipmentId');
+        $shipmentId = $request->query->getInt('shipmentId');
         $productsFromQuery = $request->get('products', []);
-        $selectedCarrier = (int) $request->query->get('carrier');
+        $selectedCarrier = $request->query->getInt('carrier');
 
         $orderShipmentProducts = $this->mergeProductsFromQueries($shipmentId, $productsFromQuery, $orderDetailRepository);
 
