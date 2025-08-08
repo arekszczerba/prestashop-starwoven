@@ -53,6 +53,7 @@ class DiscountType extends TranslatorAwareType
             ])
             ->add('conditions', DiscountConditionsType::class, [
                 'label' => $this->trans('Product conditions', 'Admin.Catalog.Feature'),
+                'discount_type' => $discountType,
             ])
         ;
 
