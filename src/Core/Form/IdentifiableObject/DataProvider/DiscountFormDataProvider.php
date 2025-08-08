@@ -48,6 +48,8 @@ use PrestaShop\PrestaShop\Core\Domain\Shop\Exception\ShopAssociationNotFound;
 use PrestaShop\PrestaShop\Core\Domain\Shop\Exception\ShopException;
 use PrestaShop\PrestaShop\Core\Domain\Shop\ValueObject\ShopId;
 use PrestaShop\PrestaShop\Core\Product\Combination\NameBuilder\CombinationNameBuilder;
+use PrestaShopBundle\Form\Admin\Sell\Discount\DeliveryConditionsType;
+use PrestaShopBundle\Form\Admin\Sell\Discount\DiscountConditionsType;
 use PrestaShopBundle\Form\Admin\Sell\Discount\DiscountUsabilityModeType;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
@@ -96,18 +98,22 @@ class DiscountFormDataProvider implements FormDataProviderInterface
 
         $selectedCondition = 'none';
         $selectedCartCondition = 'none';
+        $selectedDeliveryCondition = 'none';
         if ($discountForEditing->getMinimumProductQuantity()) {
-            $selectedCondition = 'cart_conditions';
+            $selectedCondition = DiscountConditionsType::CART_CONDITIONS;
             $selectedCartCondition = 'minimum_product_quantity';
         } elseif ($discountForEditing->getMinimumAmount()) {
-            $selectedCondition = 'cart_conditions';
+            $selectedCondition = DiscountConditionsType::CART_CONDITIONS;
             $selectedCartCondition = 'minimum_amount';
         } elseif (!empty($specificProducts)) {
-            $selectedCondition = 'cart_conditions';
+            $selectedCondition = DiscountConditionsType::CART_CONDITIONS;
             $selectedCartCondition = 'specific_products';
         } elseif (!empty($productSegment['manufacturer']) || !empty($productSegment['category'])) {
-            $selectedCondition = 'cart_conditions';
+            $selectedCondition = DiscountConditionsType::CART_CONDITIONS;
             $selectedCartCondition = 'product_segment';
+        } elseif (!empty($discountForEditing->getCarrierIds())) {
+            $selectedCondition = DiscountConditionsType::DELIVERY_CONDITIONS;
+            $selectedDeliveryCondition = DeliveryConditionsType::CARRIERS;
         }
 
         return [
@@ -136,7 +142,7 @@ class DiscountFormDataProvider implements FormDataProviderInterface
             ],
             'conditions' => [
                 'children_selector' => $selectedCondition,
-                'cart_conditions' => [
+                DiscountConditionsType::CART_CONDITIONS => [
                     'children_selector' => $selectedCartCondition,
                     'minimum_product_quantity' => $discountForEditing->getMinimumProductQuantity(),
                     'minimum_amount' => [
@@ -146,6 +152,10 @@ class DiscountFormDataProvider implements FormDataProviderInterface
                     ],
                     'specific_products' => $specificProducts,
                     'product_segment' => $productSegment,
+                ],
+                DiscountConditionsType::DELIVERY_CONDITIONS => [
+                    'children_selector' => $selectedDeliveryCondition,
+                    DeliveryConditionsType::CARRIERS => $discountForEditing->getCarrierIds(),
                 ],
             ],
             'usability' => [

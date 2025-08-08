@@ -43,6 +43,7 @@ use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountType;
 use PrestaShop\PrestaShop\Core\Domain\Exception\DomainConstraintException;
 use PrestaShop\PrestaShop\Core\Domain\Product\Combination\ValueObject\NoCombinationId;
 use PrestaShopBundle\Form\Admin\Sell\Discount\CartConditionsType;
+use PrestaShopBundle\Form\Admin\Sell\Discount\DeliveryConditionsType;
 use PrestaShopBundle\Form\Admin\Sell\Discount\DiscountConditionsType;
 use PrestaShopBundle\Form\Admin\Sell\Discount\DiscountUsabilityModeType;
 use RuntimeException;
@@ -228,6 +229,10 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
                 if (!empty($productRuleGroups)) {
                     $conditionsCommand->setProductConditions($productRuleGroups);
                 }
+            }
+        } elseif ($data['conditions']['children_selector'] === DiscountConditionsType::DELIVERY_CONDITIONS) {
+            if ($data['conditions'][DiscountConditionsType::DELIVERY_CONDITIONS]['children_selector'] === DeliveryConditionsType::CARRIERS) {
+                $conditionsCommand->setCarrierIds($data['conditions'][DiscountConditionsType::DELIVERY_CONDITIONS][DeliveryConditionsType::CARRIERS]);
             }
         }
 
