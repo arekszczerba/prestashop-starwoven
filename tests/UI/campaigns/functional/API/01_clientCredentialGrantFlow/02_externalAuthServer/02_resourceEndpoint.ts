@@ -29,6 +29,7 @@ describe('API : External Auth Server - Resource Endpoint', async () => {
   let accessTokenKeycloak: string;
   let accessTokenExpiredKeycloak: string;
   let dynamicApiClientId: number;
+  let createdApiClientId;
   const allowedIssuers = [
     `${global.keycloakConfig.keycloakExternalUrl}/realms/prestashop`,
     `${global.keycloakConfig.keycloakInternalUrl}/realms/prestashop`,
@@ -176,7 +177,8 @@ describe('API : External Auth Server - Resource Endpoint', async () => {
       expect(jsonResponse).to.have.property('totalItems');
       expect(jsonResponse.totalItems).to.be.a('number');
       expect(jsonResponse.items).to.be.a('array');
-      const apiClient = jsonResponse.items[0];
+      // Get the last element (the first one is the initial API client)
+      const apiClient = jsonResponse.items[jsonResponse.items.length - 1];
       expect(apiClient).to.have.property('apiClientId');
       expect(apiClient.apiClientId).to.be.a('number');
       expect(apiClient).to.have.property('clientId');
@@ -199,6 +201,7 @@ describe('API : External Auth Server - Resource Endpoint', async () => {
 
       // Use dynamic ID because some other data may have been created before and the ID incremented already
       dynamicApiClientId = apiClient.apiClientId;
+      createdApiClientId = apiClient.clientId;
     });
 
     it('should request the endpoint /api-client/{apiClientId} with valid access token', async function () {
@@ -242,6 +245,6 @@ describe('API : External Auth Server - Resource Endpoint', async () => {
     });
   });
 
-  deleteAPIClientTest(`${baseContext}_postTest_0`);
+  deleteAPIClientTest(`${baseContext}_postTest_0`, createdApiClientId);
   uninstallModule(dataModules.keycloak, `${baseContext}_postTest_1`);
 });

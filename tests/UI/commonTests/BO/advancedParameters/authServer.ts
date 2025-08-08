@@ -96,8 +96,9 @@ function createAPIClientTest(apiClient: FakerAPIClient, baseContext: string = 'c
 /**
  * Function to delete API Client
  * @param baseContext {string} String to identify the test
+ * @param clientId {string|null} Client ID of the APi client we want to remove, if empty the first row is used
  */
-function deleteAPIClientTest(baseContext: string = 'commonTests-deleteAPIClientTest'): void {
+function deleteAPIClientTest(baseContext: string = 'commonTests-deleteAPIClientTest', clientId: string|null = null): void {
   let browserContext: BrowserContext;
   let page: Page;
   let numberOfAPIClient: number = 0;
@@ -136,17 +137,28 @@ function deleteAPIClientTest(baseContext: string = 'commonTests-deleteAPIClientT
       expect(pageTitle).to.eq(boApiClientsPage.pageTitle);
 
       numberOfAPIClient = await boApiClientsPage.getNumberOfElementInGrid(page);
-      expect(numberOfAPIClient).to.gte(0);
+      expect(numberOfAPIClient).to.greaterThanOrEqual(0);
     });
 
     it('should delete API Client', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'deleteAPIClient', baseContext);
 
-      const textResult = await boApiClientsPage.deleteAPIClient(page, 1);
+      let row;
+
+      if (clientId) {
+        row = await boApiClientsPage.getNthRowByClientId(page, clientId);
+        expect(row).to.be.a('number');
+        expect(row).to.be.greaterThan(0, `Coudl not find API client with client ID "${clientId}"`);
+      } else {
+        row = 1;
+      }
+
+      // @ts-ignore
+      const textResult = await boApiClientsPage.deleteAPIClient(page, row);
       expect(textResult).to.equal(boApiClientsCreatePage.successfulDeleteMessage);
 
       const numElements = await boApiClientsPage.getNumberOfElementInGrid(page);
-      expect(numElements).to.equal(0);
+      expect(numElements).to.equal(numberOfAPIClient - 1);
     });
   });
 }
