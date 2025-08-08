@@ -67,6 +67,6 @@ class AboutCommand extends BaseAboutCommand
 
         $io->table([], $rows);
 
-        return 0;
+        return self::SUCCESS;
     }
 }
