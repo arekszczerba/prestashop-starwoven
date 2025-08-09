@@ -627,7 +627,7 @@ class ProductController extends PrestaShopAdminController
      *
      * @return Response
      */
-    #[AdminSecurity("is_granted('delete', request.get('_legacy_controller'))", message: 'You do not have permission to delete this.')]
+    #[AdminSecurity("is_granted('delete', request.get('_legacy_controller'))", message: 'You do not have permission to delete this.', jsonResponse: true)]
     public function bulkDeleteFromShopAction(Request $request, int $shopId): Response
     {
         $shopConstraint = ShopConstraint::shop($shopId);
@@ -643,7 +643,7 @@ class ProductController extends PrestaShopAdminController
      *
      * @return Response
      */
-    #[AdminSecurity("is_granted('delete', request.get('_legacy_controller'))", message: 'You do not have permission to delete this.')]
+    #[AdminSecurity("is_granted('delete', request.get('_legacy_controller'))", message: 'You do not have permission to delete this.', jsonResponse: true)]
     public function bulkDeleteFromShopGroupAction(Request $request, int $shopGroupId): Response
     {
         $shopConstraint = ShopConstraint::shopGroup($shopGroupId);
@@ -930,7 +930,7 @@ class ProductController extends PrestaShopAdminController
      *
      * @return JsonResponse
      */
-    #[AdminSecurity("is_granted('update', request.get('_legacy_controller'))", redirectRoute: 'admin_products_index', message: 'You do not have permission to edit this.')]
+    #[AdminSecurity("is_granted('update', request.get('_legacy_controller'))", redirectRoute: 'admin_products_index', message: 'You do not have permission to edit this.', jsonResponse: true)]
     public function bulkEnableAllShopsAction(Request $request): JsonResponse
     {
         $shopConstraint = ShopConstraint::allShops();
@@ -949,7 +949,7 @@ class ProductController extends PrestaShopAdminController
      *
      * @return JsonResponse
      */
-    #[AdminSecurity("is_granted('update', request.get('_legacy_controller'))", redirectRoute: 'admin_products_index', message: 'You do not have permission to edit this.')]
+    #[AdminSecurity("is_granted('update', request.get('_legacy_controller'))", redirectRoute: 'admin_products_index', message: 'You do not have permission to edit this.', jsonResponse: true)]
     public function bulkEnableShopAction(Request $request, int $shopId): JsonResponse
     {
         $shopConstraint = ShopConstraint::shop($shopId);
@@ -968,7 +968,7 @@ class ProductController extends PrestaShopAdminController
      *
      * @return JsonResponse
      */
-    #[AdminSecurity("is_granted('update', request.get('_legacy_controller'))", redirectRoute: 'admin_products_index', message: 'You do not have permission to edit this.')]
+    #[AdminSecurity("is_granted('update', request.get('_legacy_controller'))", redirectRoute: 'admin_products_index', message: 'You do not have permission to edit this.', jsonResponse: true)]
     public function bulkEnableShopGroupAction(Request $request, int $shopGroupId): JsonResponse
     {
         $shopConstraint = ShopConstraint::shopGroup($shopGroupId);
@@ -986,7 +986,7 @@ class ProductController extends PrestaShopAdminController
      *
      * @return JsonResponse
      */
-    #[AdminSecurity("is_granted('update', request.get('_legacy_controller'))", redirectRoute: 'admin_products_index', message: 'You do not have permission to edit this.')]
+    #[AdminSecurity("is_granted('update', request.get('_legacy_controller'))", redirectRoute: 'admin_products_index', message: 'You do not have permission to edit this.', jsonResponse: true)]
     public function bulkDisableAllShopsAction(Request $request): JsonResponse
     {
         $shopConstraint = ShopConstraint::allShops();
@@ -1005,7 +1005,7 @@ class ProductController extends PrestaShopAdminController
      *
      * @return JsonResponse
      */
-    #[AdminSecurity("is_granted('update', request.get('_legacy_controller'))", redirectRoute: 'admin_products_index', message: 'You do not have permission to edit this.')]
+    #[AdminSecurity("is_granted('update', request.get('_legacy_controller'))", redirectRoute: 'admin_products_index', message: 'You do not have permission to edit this.', jsonResponse: true)]
     public function bulkDisableShopAction(Request $request, int $shopId): JsonResponse
     {
         $shopConstraint = ShopConstraint::shop($shopId);
@@ -1024,7 +1024,7 @@ class ProductController extends PrestaShopAdminController
      *
      * @return JsonResponse
      */
-    #[AdminSecurity("is_granted('update', request.get('_legacy_controller'))", redirectRoute: 'admin_products_index', message: 'You do not have permission to edit this.')]
+    #[AdminSecurity("is_granted('update', request.get('_legacy_controller'))", redirectRoute: 'admin_products_index', message: 'You do not have permission to edit this.', jsonResponse: true)]
     public function bulkDisableShopGroupAction(Request $request, int $shopGroupId): JsonResponse
     {
         $shopConstraint = ShopConstraint::shopGroup($shopGroupId);
@@ -1042,7 +1042,7 @@ class ProductController extends PrestaShopAdminController
      *
      * @return JsonResponse
      */
-    #[AdminSecurity("is_granted('create', request.get('_legacy_controller'))", redirectRoute: 'admin_products_index', message: 'You do not have permission to edit this.')]
+    #[AdminSecurity("is_granted('create', request.get('_legacy_controller'))", redirectRoute: 'admin_products_index', message: 'You do not have permission to edit this.', jsonResponse: true)]
     public function bulkDuplicateAllShopsAction(Request $request): JsonResponse
     {
         $shopConstraint = ShopConstraint::allShops();
@@ -1061,7 +1061,7 @@ class ProductController extends PrestaShopAdminController
      *
      * @return JsonResponse
      */
-    #[AdminSecurity("is_granted('create', request.get('_legacy_controller'))", redirectRoute: 'admin_products_index', message: 'You do not have permission to edit this.')]
+    #[AdminSecurity("is_granted('create', request.get('_legacy_controller'))", redirectRoute: 'admin_products_index', message: 'You do not have permission to edit this.', jsonResponse: true)]
     public function bulkDuplicateShopAction(Request $request, int $shopId): JsonResponse
     {
         $shopConstraint = ShopConstraint::shop($shopId);
@@ -1080,7 +1080,7 @@ class ProductController extends PrestaShopAdminController
      *
      * @return JsonResponse
      */
-    #[AdminSecurity("is_granted('create', request.get('_legacy_controller'))", redirectRoute: 'admin_products_index', message: 'You do not have permission to edit this.')]
+    #[AdminSecurity("is_granted('create', request.get('_legacy_controller'))", redirectRoute: 'admin_products_index', message: 'You do not have permission to edit this.', jsonResponse: true)]
     public function bulkDuplicateShopGroupAction(Request $request, int $shopGroupId): JsonResponse
     {
         $shopConstraint = ShopConstraint::shopGroup($shopGroupId);
