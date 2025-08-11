@@ -50,11 +50,11 @@ describe('API : Check endpoints', async () => {
       expect(pageTitle).to.eq(boApiClientsPage.pageTitle);
     });
 
-    it('should check that no records found', async function () {
-      await testContext.addContextItem(this, 'testIdentifier', 'checkThatNoRecordFound', baseContext);
+    it('should check that at least one API client is present', async function () {
+      await testContext.addContextItem(this, 'testIdentifier', 'checkThatOneAPIClientExists', baseContext);
 
-      const noRecordsFoundText = await boApiClientsPage.getTextForEmptyTable(page);
-      expect(noRecordsFoundText).to.contains('warning No records found');
+      const apiClientsNumber = await boApiClientsPage.getNumberOfElementInGrid(page);
+      expect(apiClientsNumber).to.be.greaterThanOrEqual(1);
     });
 
     it('should fetch the documentation in JSON', async function () {
@@ -97,6 +97,18 @@ describe('API : Check endpoints', async () => {
         '/api-client: POST',
         // tests/UI/campaigns/functional/API/02_endpoints/01_apiClient/06_getApiClients.ts
         '/api-clients: GET',
+        // todo: add tests
+        '/attributes/group/{attributeGroupId}: DELETE',
+        // todo: add tests
+        '/attributes/group/{attributeGroupId}: GET',
+        // todo: add tests
+        '/attributes/group/{attributeGroupId}: PATCH',
+        // todo: add tests
+        '/attributes/group: POST',
+        // todo: add tests
+        '/attributes/groups/delete: PUT',
+        // todo: add tests
+        '/attributes/groups: GET',
         // tests/UI/campaigns/functional/API/02_endpoints/02_customerGroup/01_deleteCustomerGroupsId.ts
         '/customers/group/{customerGroupId}: DELETE',
         // tests/UI/campaigns/functional/API/02_endpoints/02_customerGroup/02_getCustomerGroupsId.ts
@@ -145,9 +157,9 @@ describe('API : Check endpoints', async () => {
         '/modules/uninstall: PUT',
         // tests/UI/campaigns/functional/API/02_endpoints/05_module/11_getModules.ts
         '/modules: GET',
-        // tests/UI/campaigns/functional/API/02_endpoints/06_product/01_getProductImageId.ts
         // todo: add tests for delete and shopIds
         '/product/image/{imageId}: DELETE',
+        // tests/UI/campaigns/functional/API/02_endpoints/06_product/01_getProductImageId.ts
         '/product/image/{imageId}: GET',
         // tests/UI/campaigns/functional/API/02_endpoints/06_product/02_postProductImageId.ts
         '/product/image/{imageId}: POST',
