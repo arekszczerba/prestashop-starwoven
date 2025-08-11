@@ -1506,7 +1506,7 @@ class CartCore extends ObjectModel
         }
 
         if (!Validate::isLoadedObject($product)) {
-            die(Tools::displayError(sprintf('Product with ID "%s" could not be loaded.', $id_product)));
+            throw new PrestaShopException(sprintf('Product with ID "%s" could not be loaded.', $id_product));
         }
 
         // Wipe all product-related caches, because something may just change
@@ -1949,7 +1949,7 @@ class CartCore extends ObjectModel
     {
         $cart = new Cart($id_cart);
         if (!Validate::isLoadedObject($cart)) {
-            die(Tools::displayError(sprintf('Cart with ID "%s" could not be loaded.', $id_cart)));
+            throw new PrestaShopException(sprintf('Cart with ID "%s" could not be loaded.', $id_cart));
         }
 
         $with_taxes = $use_tax_display ? $cart->_taxCalculationMethod != PS_TAX_EXC : true;
