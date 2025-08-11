@@ -28,8 +28,8 @@ describe('API : External Auth Server - Resource Endpoint', async () => {
   let apiContext: APIRequestContext;
   let accessTokenKeycloak: string;
   let accessTokenExpiredKeycloak: string;
-  let dynamicApiClientId: number;
-  let createdApiClientId;
+  // Contains the DB dynamic integer ID
+  let databaseDynamicID: number;
   const allowedIssuers = [
     `${global.keycloakConfig.keycloakExternalUrl}/realms/prestashop`,
     `${global.keycloakConfig.keycloakInternalUrl}/realms/prestashop`,
@@ -200,14 +200,13 @@ describe('API : External Auth Server - Resource Endpoint', async () => {
       expect(allowedIssuers).to.include(apiClient.externalIssuer);
 
       // Use dynamic ID because some other data may have been created before and the ID incremented already
-      dynamicApiClientId = apiClient.apiClientId;
-      createdApiClientId = apiClient.clientId;
+      databaseDynamicID = apiClient.apiClientId;
     });
 
     it('should request the endpoint /api-client/{apiClientId} with valid access token', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'requestSingleEndpointWithValidAccessToken', baseContext);
 
-      const apiResponse = await apiContext.get(`api-client/${dynamicApiClientId}`, {
+      const apiResponse = await apiContext.get(`api-client/${databaseDynamicID}`, {
         headers: {
           Authorization: `Bearer ${accessTokenKeycloak}`,
         },
@@ -220,7 +219,7 @@ describe('API : External Auth Server - Resource Endpoint', async () => {
       const jsonResponse = await apiResponse.json();
       expect(jsonResponse).to.have.property('apiClientId');
       expect(jsonResponse.apiClientId).to.be.a('number');
-      expect(jsonResponse.apiClientId).to.eq(dynamicApiClientId);
+      expect(jsonResponse.apiClientId).to.eq(databaseDynamicID);
       expect(jsonResponse).to.have.property('clientId');
       expect(jsonResponse.clientId).to.be.a('string');
       expect(jsonResponse.clientId).to.eq('prestashop-keycloak');
@@ -245,6 +244,6 @@ describe('API : External Auth Server - Resource Endpoint', async () => {
     });
   });
 
-  deleteAPIClientTest(`${baseContext}_postTest_0`, createdApiClientId);
+  deleteAPIClientTest(`${baseContext}_postTest_0`, global.keycloakConfig.keycloakClientId);
   uninstallModule(dataModules.keycloak, `${baseContext}_postTest_1`);
 });

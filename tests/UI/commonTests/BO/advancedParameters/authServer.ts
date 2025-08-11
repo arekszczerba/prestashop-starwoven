@@ -140,12 +140,12 @@ function deleteAPIClientTest(baseContext: string = 'commonTests-deleteAPIClientT
       expect(numberOfAPIClient).to.greaterThanOrEqual(0);
     });
 
-    it('should delete API Client', async function () {
+    it(`should delete API Client by clientId ${clientId}`, async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'deleteAPIClient', baseContext);
 
       const row = await boApiClientsPage.getNthRowByClientId(page, clientId);
-      expect(row).to.be.a('number');
-      expect(row).to.be.greaterThan(0, `Coudl not find API client with client ID "${clientId}"`);
+      expect(row).to.be.a('number', `Could not find API client with client ID "${clientId}"`);
+      expect(row).to.be.greaterThan(0, `Could not find API client with client ID "${clientId}"`);
 
       // @ts-ignore
       const textResult = await boApiClientsPage.deleteAPIClient(page, row);
