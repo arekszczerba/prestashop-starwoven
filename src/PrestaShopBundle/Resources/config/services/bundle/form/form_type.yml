@@ -558,6 +558,10 @@ services:
 
   PrestaShopBundle\Form\Admin\Sell\CustomerService\MerchandiseReturn\MerchandiseReturnOptionsType:
 
+  PrestaShopBundle\Form\Admin\Type\CarrierChoiceType:
+    arguments:
+      $carrierChoiceProvider: '@prestashop.core.form.choice_provider.carrier_by_reference_id'
+
   PrestaShopBundle\Form\Admin\Type\ZoneChoiceType:
     arguments:
       $zonesChoiceProvider: '@prestashop.core.form.choice_provider.zone_by_id'

@@ -139,6 +139,24 @@ class DiscountRepository extends AbstractObjectModelRepository
     }
 
     /**
+     * @param DiscountId $discountId
+     *
+     * @return int[]
+     */
+    public function getCarriers(DiscountId $discountId): array
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->select('*')
+            ->from($this->dbPrefix . 'cart_rule_carrier', 'crc')
+            ->where('crc.id_cart_rule = :discountId')
+            ->setparameter('discountId', $discountId->getValue())
+        ;
+
+        return array_map(fn (array $row) => (int) $row['id_carrier'], $qb->executeQuery()->fetchAllAssociative());
+    }
+
+    /**
      * Returns the ID of a discount by its code.
      * null is returned if the discount does not exist.
      */

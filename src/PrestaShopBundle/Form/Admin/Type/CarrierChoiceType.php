@@ -24,31 +24,35 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 
-namespace PrestaShop\PrestaShop\Adapter\Discount\CommandHandler;
+namespace PrestaShopBundle\Form\Admin\Type;
 
-use PrestaShop\PrestaShop\Adapter\Discount\Update\DiscountConditionsUpdater;
-use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsCommandHandler;
-use PrestaShop\PrestaShop\Core\Domain\Carrier\ValueObject\CarrierId;
-use PrestaShop\PrestaShop\Core\Domain\Discount\Command\UpdateDiscountConditionsCommand;
-use PrestaShop\PrestaShop\Core\Domain\Discount\CommandHandler\UpdateDiscountConditionsHandlerInterface;
+use PrestaShop\PrestaShop\Core\Form\FormChoiceProviderInterface;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
-#[AsCommandHandler]
-class UpdateDiscountConditionsHandler implements UpdateDiscountConditionsHandlerInterface
+class CarrierChoiceType extends AbstractType
 {
     public function __construct(
-        private readonly DiscountConditionsUpdater $updater,
+        private readonly FormChoiceProviderInterface $carrierChoiceProvider,
     ) {
     }
 
-    public function handle(UpdateDiscountConditionsCommand $command): void
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        $this->updater->update(
-            $command->getDiscountId(),
-            $command->getMinimumProductsQuantity(),
-            $command->getProductConditions(),
-            $command->getMinimumAmount(),
-            $command->getMinimumAmountShippingIncluded(),
-            $command->getCarrierIds() ? array_map(fn (CarrierId $carrierId) => $carrierId->getValue(), $command->getCarrierIds()) : null,
-        );
+        $resolver->setDefaults([
+            'choices' => $this->carrierChoiceProvider->getChoices(),
+        ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParent(): string
+    {
+        return ChoiceType::class;
     }
 }

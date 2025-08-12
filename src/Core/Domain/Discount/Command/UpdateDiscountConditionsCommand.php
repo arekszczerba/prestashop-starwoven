@@ -27,6 +27,7 @@
 namespace PrestaShop\PrestaShop\Core\Domain\Discount\Command;
 
 use PrestaShop\Decimal\DecimalNumber;
+use PrestaShop\PrestaShop\Core\Domain\Carrier\ValueObject\CarrierId;
 use PrestaShop\PrestaShop\Core\Domain\Currency\ValueObject\CurrencyId;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Exception\DiscountConstraintException;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ProductRuleGroup;
@@ -44,6 +45,11 @@ class UpdateDiscountConditionsCommand
     private ?Money $minimumAmount = null;
 
     private ?bool $minimumAmountShippingIncluded = null;
+
+    /**
+     * @var CarrierId[]|null
+     */
+    private ?array $carrierIds = null;
 
     public function __construct(int $discountId)
     {
@@ -139,6 +145,26 @@ class UpdateDiscountConditionsCommand
         }
 
         $this->productConditions = $productConditions;
+
+        return $this;
+    }
+
+    /**
+     * @return CarrierId[]|null
+     */
+    public function getCarrierIds(): ?array
+    {
+        return $this->carrierIds;
+    }
+
+    /**
+     * @param int[]|null $carrierIds
+     *
+     * @return $this
+     */
+    public function setCarrierIds(?array $carrierIds): self
+    {
+        $this->carrierIds = array_map(fn (int $carrierId) => new CarrierId($carrierId), $carrierIds);
 
         return $this;
     }

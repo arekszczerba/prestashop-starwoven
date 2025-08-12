@@ -61,6 +61,7 @@ class DiscountForEditing
         private readonly ?int $minimumAmountCurrencyId,
         private readonly ?bool $minimumAmountTaxIncluded,
         private readonly ?bool $minimumAmountShippingIncluded,
+        private readonly array $carrierIds,
     ) {
     }
 
@@ -200,5 +201,13 @@ class DiscountForEditing
     public function getMinimumAmountShippingIncluded(): ?bool
     {
         return $this->minimumAmountShippingIncluded;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getCarrierIds(): array
+    {
+        return $this->carrierIds;
     }
 }

@@ -10,7 +10,6 @@ Feature: Add discount with category trigger on FO
     And language "french" with locale "fr-FR" exists
     Given shop "shop1" with name "test_shop" exists
     And there is a currency named "usd" with iso code "USD" and exchange rate of 0.92
-    And shop configuration for "PS_CART_RULE_FEATURE_ACTIVE" is set to 1
     And category "home" in default language named "Home" exists
     And category "clothes" in default language named "Clothes" exists
     And category "clothes" parent is category "home"

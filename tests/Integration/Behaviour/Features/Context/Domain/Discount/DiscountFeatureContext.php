@@ -407,6 +407,9 @@ class DiscountFeatureContext extends AbstractDomainFeatureContext
         if (isset($expectedData['minimum_amount_shipping_included'])) {
             Assert::assertSame(PrimitiveUtils::castStringBooleanIntoBoolean($expectedData['minimum_amount_shipping_included']), $discountForEditing->getMinimumAmountShippingIncluded(), 'Unexpected minimum amount shipping included');
         }
+        if (isset($expectedData['carriers'])) {
+            Assert::assertSame($this->referencesToIds($expectedData['carriers']), $discountForEditing->getCarrierIds(), 'Unexpected carriers');
+        }
     }
 
     protected function getDiscountForEditing(string $discountReference): DiscountForEditing
