@@ -2,20 +2,17 @@
 import testContext from '@utils/testContext';
 
 // Import commonTests
-import {deleteAPIClientTest} from '@commonTests/BO/advancedParameters/authServer';
+import {requestAccessToken} from '@commonTests/BO/advancedParameters/authServer';
 import {deleteModule} from '@commonTests/BO/modules/moduleManager';
 
 import {expect} from 'chai';
 import {
   type APIRequestContext,
-  boApiClientsPage,
-  boApiClientsCreatePage,
   boDashboardPage,
   boModuleManagerPage,
   boLoginPage,
   type BrowserContext,
   dataModules,
-  FakerAPIClient,
   type Page,
   utilsAPI,
   utilsPlaywright,
@@ -27,17 +24,10 @@ describe('API : POST /module/upload-source', async () => {
   let apiContext: APIRequestContext;
   let browserContext: BrowserContext;
   let page: Page;
-  let clientSecret: string;
   let accessToken: string;
   let jsonResponse: any;
 
   const clientScope: string = 'module_write';
-  const clientData: FakerAPIClient = new FakerAPIClient({
-    enabled: true,
-    scopes: [
-      clientScope,
-    ],
-  });
 
   before(async function () {
     browserContext = await utilsPlaywright.createBrowserContext(this.browser);
@@ -51,6 +41,13 @@ describe('API : POST /module/upload-source', async () => {
   });
 
   describe('BackOffice : Fetch the access token', async () => {
+    it(`should request the endpoint /access_token with scope ${clientScope}`, async function () {
+      await testContext.addContextItem(this, 'testIdentifier', 'requestOauth2Token', baseContext);
+      accessToken = await requestAccessToken(clientScope);
+    });
+  });
+
+  describe('BackOffice : Check the module is not present', async () => {
     it('should login in BO', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'loginBO', baseContext);
 
@@ -61,78 +58,6 @@ describe('API : POST /module/upload-source', async () => {
       expect(pageTitle).to.contains(boDashboardPage.pageTitle);
     });
 
-    it('should go to \'Advanced Parameters > API Client\' page', async function () {
-      await testContext.addContextItem(this, 'testIdentifier', 'goToAdminAPIPage', baseContext);
-
-      await boDashboardPage.goToSubMenu(
-        page,
-        boDashboardPage.advancedParametersLink,
-        boDashboardPage.adminAPILink,
-      );
-
-      const pageTitle = await boApiClientsPage.getPageTitle(page);
-      expect(pageTitle).to.eq(boApiClientsPage.pageTitle);
-    });
-
-    it('should check that no records found', async function () {
-      await testContext.addContextItem(this, 'testIdentifier', 'checkThatNoRecordFound', baseContext);
-
-      const noRecordsFoundText = await boApiClientsPage.getTextForEmptyTable(page);
-      expect(noRecordsFoundText).to.contains('warning No records found');
-    });
-
-    it('should go to add New API Client page', async function () {
-      await testContext.addContextItem(this, 'testIdentifier', 'goToNewAPIClientPage', baseContext);
-
-      await boApiClientsPage.goToNewAPIClientPage(page);
-
-      const pageTitle = await boApiClientsCreatePage.getPageTitle(page);
-      expect(pageTitle).to.eq(boApiClientsCreatePage.pageTitleCreate);
-    });
-
-    it('should create API Client', async function () {
-      await testContext.addContextItem(this, 'testIdentifier', 'createAPIClient', baseContext);
-
-      const textResult = await boApiClientsCreatePage.addAPIClient(page, clientData);
-      expect(textResult).to.contains(boApiClientsCreatePage.successfulCreationMessage);
-
-      const textMessage = await boApiClientsCreatePage.getAlertInfoBlockParagraphContent(page);
-      expect(textMessage).to.contains(boApiClientsCreatePage.apiClientGeneratedMessage);
-    });
-
-    it('should copy client secret', async function () {
-      await testContext.addContextItem(this, 'testIdentifier', 'copyClientSecret', baseContext);
-
-      await boApiClientsCreatePage.copyClientSecret(page);
-
-      clientSecret = await boApiClientsCreatePage.getClipboardText(page);
-      expect(clientSecret.length).to.be.gt(0);
-    });
-
-    it('should request the endpoint /access_token', async function () {
-      await testContext.addContextItem(this, 'testIdentifier', 'requestOauth2Token', baseContext);
-
-      const apiResponse = await apiContext.post('access_token', {
-        form: {
-          client_id: clientData.clientId,
-          client_secret: clientSecret,
-          grant_type: 'client_credentials',
-          scope: clientScope,
-        },
-      });
-      expect(apiResponse.status()).to.eq(200);
-      expect(utilsAPI.hasResponseHeader(apiResponse, 'Content-Type')).to.eq(true);
-      expect(utilsAPI.getResponseHeader(apiResponse, 'Content-Type')).to.contains('application/json');
-
-      const jsonResponse = await apiResponse.json();
-      expect(jsonResponse).to.have.property('access_token');
-      expect(jsonResponse.token_type).to.be.a('string');
-
-      accessToken = jsonResponse.access_token;
-    });
-  });
-
-  describe('BackOffice : Check the module is not present', async () => {
     it('should go to \'Modules > Module Manager\' page', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'goToModulesPage', baseContext);
 
@@ -246,7 +171,4 @@ describe('API : POST /module/upload-source', async () => {
 
   // Pre-condition: Uninstall the module
   deleteModule(dataModules.keycloak, `${baseContext}_postTest_0`);
-
-  // Pre-condition: Create an API Client
-  deleteAPIClientTest(`${baseContext}_postTest_1`);
 });

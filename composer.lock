@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0cfe14a7cd72fd747df24fce71e32a75",
+    "content-hash": "01030ac3c9fe67217e8b7682a6d3b099",
     "packages": [
         {
             "name": "api-platform/core",
@@ -5261,16 +5261,16 @@
         },
         {
             "name": "prestashop/ps_apiresources",
-            "version": "dev-delete-endpoints-command",
+            "version": "dev-dev",
             "source": {
                 "type": "git",
-                "url": "https://github.com/jolelievre/ps_apiresources.git",
-                "reference": "0387b2fb74801c2e6011fa84fb207d881b546afa"
+                "url": "https://github.com/PrestaShop/ps_apiresources.git",
+                "reference": "fbc3508fd0495dc16817a103afccb4d86186a819"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jolelievre/ps_apiresources/zipball/0387b2fb74801c2e6011fa84fb207d881b546afa",
-                "reference": "0387b2fb74801c2e6011fa84fb207d881b546afa",
+                "url": "https://api.github.com/repos/PrestaShop/ps_apiresources/zipball/fbc3508fd0495dc16817a103afccb4d86186a819",
+                "reference": "fbc3508fd0495dc16817a103afccb4d86186a819",
                 "shasum": ""
             },
             "require": {
@@ -5282,6 +5282,7 @@
                 "phpunit/phpunit": "^10",
                 "prestashop/php-dev-tools": "^4.3"
             },
+            "default-branch": true,
             "type": "prestashop-module",
             "autoload": {
                 "psr-4": {
@@ -5323,9 +5324,9 @@
             "description": "PrestaShop - API Resources",
             "homepage": "https://github.com/PrestaShop/ps_apiresources",
             "support": {
-                "source": "https://github.com/jolelievre/ps_apiresources/tree/delete-endpoints-command"
+                "source": "https://github.com/PrestaShop/ps_apiresources/tree/dev"
             },
-            "time": "2025-08-05T07:33:05+00:00"
+            "time": "2025-08-06T11:40:50+00:00"
         },
         {
             "name": "prestashop/ps_banner",
@@ -5908,16 +5909,16 @@
         },
         {
             "name": "prestashop/ps_distributionapiclient",
-            "version": "v2.0.1",
+            "version": "v2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PrestaShop/ps_distributionapiclient.git",
-                "reference": "4ae0d14c5b20b2ca34420f5f6a4ceeb5a0c3655f"
+                "reference": "78260e7092f66e01825fe179c77a5029e344c504"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PrestaShop/ps_distributionapiclient/zipball/4ae0d14c5b20b2ca34420f5f6a4ceeb5a0c3655f",
-                "reference": "4ae0d14c5b20b2ca34420f5f6a4ceeb5a0c3655f",
+                "url": "https://api.github.com/repos/PrestaShop/ps_distributionapiclient/zipball/78260e7092f66e01825fe179c77a5029e344c504",
+                "reference": "78260e7092f66e01825fe179c77a5029e344c504",
                 "shasum": ""
             },
             "require": {
@@ -5954,9 +5955,9 @@
             "homepage": "https://github.com/PrestaShop/ps_distributionapiclient",
             "support": {
                 "issues": "https://github.com/PrestaShop/ps_distributionapiclient/issues",
-                "source": "https://github.com/PrestaShop/ps_distributionapiclient/tree/v2.0.1"
+                "source": "https://github.com/PrestaShop/ps_distributionapiclient/tree/v2.1.0"
             },
-            "time": "2025-05-02T11:41:58+00:00"
+            "time": "2025-08-06T16:39:56+00:00"
         },
         {
             "name": "prestashop/ps_emailalerts",
