@@ -31,6 +31,7 @@ use PrestaShopBundle\Form\Admin\Type\CategoryChoiceTreeType;
 use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Type;
@@ -41,6 +42,8 @@ class DiscountProductSegmentType extends TranslatorAwareType
     public const CATEGORY = 'category';
     public const MANUFACTURER = 'manufacturer';
 
+    public const SUPPLIER = 'supplier';
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -50,6 +53,10 @@ class DiscountProductSegmentType extends TranslatorAwareType
             ])
             ->add(self::CATEGORY, CategoryChoiceTreeType::class, [
                 'label' => $this->trans('Category', 'Admin.Catalog.Feature'),
+                'required' => false,
+            ])
+            ->add(self::SUPPLIER, DiscountSupplierType::class, [
+                'label' => $this->trans('Supplier', 'Admin.Catalog.Feature'),
                 'required' => false,
             ])
             ->add('quantity', IntegerType::class, [
@@ -76,5 +83,14 @@ class DiscountProductSegmentType extends TranslatorAwareType
                 ],
             ])
         ;
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
+
+        $resolver->setDefaults([
+            'error_bubbling' => false,
+        ]);
     }
 }

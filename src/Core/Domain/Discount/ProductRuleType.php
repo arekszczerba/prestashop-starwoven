@@ -35,4 +35,5 @@ enum ProductRuleType: string
     case PRODUCTS = 'products';
     case COMBINATIONS = 'combinations';
     case MANUFACTURERS = 'manufacturers';
+    case SUPPLIERS = 'suppliers';
 }

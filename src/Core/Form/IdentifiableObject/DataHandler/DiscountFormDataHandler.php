@@ -208,6 +208,7 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
             } elseif ($data['conditions']['cart_conditions']['children_selector'] === CartConditionsType::PRODUCT_SEGMENT) {
                 $manufacturer = $data['conditions']['cart_conditions']['product_segment']['manufacturer'] ?? [];
                 $category = $data['conditions']['cart_conditions']['product_segment']['category'] ?? '';
+                $supplier = $data['conditions']['cart_conditions']['product_segment']['supplier'] ?? [];
                 $productRuleGroups = [];
                 if (!empty($manufacturer)) {
                     $productRuleGroups[] = new ProductRuleGroup(
@@ -222,6 +223,14 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
                         $data['conditions']['cart_conditions']['product_segment']['quantity'],
                         [
                             new ProductRule(ProductRuleType::CATEGORIES, [(int) $category]),
+                        ]
+                    );
+                }
+                if (!empty($supplier)) {
+                    $productRuleGroups[] = new ProductRuleGroup(
+                        $data['conditions']['cart_conditions']['product_segment']['quantity'],
+                        [
+                            new ProductRule(ProductRuleType::SUPPLIERS, [(int) $supplier]),
                         ]
                     );
                 }

@@ -108,7 +108,7 @@ class DiscountFormDataProvider implements FormDataProviderInterface
         } elseif (!empty($specificProducts)) {
             $selectedCondition = DiscountConditionsType::CART_CONDITIONS;
             $selectedCartCondition = 'specific_products';
-        } elseif (!empty($productSegment['manufacturer']) || !empty($productSegment['category'])) {
+        } elseif (!empty($productSegment['manufacturer']) || !(empty($productSegment['supplier']) || !empty($productSegment['category']))) {
             $selectedCondition = DiscountConditionsType::CART_CONDITIONS;
             $selectedCartCondition = 'product_segment';
         } elseif (!empty($discountForEditing->getCarrierIds())) {
@@ -279,8 +279,9 @@ class DiscountFormDataProvider implements FormDataProviderInterface
     {
         $productSegment = [
             'manufacturer' => 0,
-            'quantity' => 0,
             'category' => '',
+            'supplier' => 0,
+            'quantity' => 0,
         ];
 
         foreach ($discountForEditing->getProductConditions() as $condition) {
@@ -292,6 +293,11 @@ class DiscountFormDataProvider implements FormDataProviderInterface
                 }
                 if ($rule->getType() === ProductRuleType::CATEGORIES) {
                     $productSegment['category'] = $rule->getItemIds()[0];
+                }
+                if ($rule->getType() === ProductRuleType::SUPPLIERS) {
+                    foreach ($rule->getItemIds() as $supplierId) {
+                        $productSegment['supplier'] = $supplierId;
+                    }
                 }
             }
 
