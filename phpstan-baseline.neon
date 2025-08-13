@@ -161,6 +161,11 @@ parameters:
 			path: src/Core/Cart/CartRuleCalculator.php
 
 		-
+			message: "#^Namespace Hook is forbidden, No legacy calls inside the prestashop bundle\\. Please create an interface and an adapter if you need to\\.$#"
+			count: 2
+			path: src/Core/Cart/CartRuleCalculator.php
+
+		-
 			message: "#^Namespace PrestaShopDatabaseException is forbidden, No legacy calls inside the prestashop bundle\\. Please create an interface and an adapter if you need to\\.$#"
 			count: 1
 			path: src/Core/Cart/CartRuleCalculator.php
@@ -676,13 +681,13 @@ parameters:
 			path: src/Core/Form/ChoiceProvider/ContactTypeChoiceProvider.php
 
 		-
-			message: "#^Namespace Cookie is forbidden, No legacy calls inside the prestashop bundle\\. Please create an interface and an adapter if you need to\\.$#"
-			count: 1
+			message: "#^Class Cookie is forbidden, No legacy calls inside the prestashop bundle\\. Please create an interface and an adapter if you need to\\.$#"
+			count: 2
 			path: src/Core/Form/IdentifiableObject/DataHandler/EmployeeFormDataHandler.php
 
 		-
-			message: "#^Class Cookie is forbidden, No legacy calls inside the prestashop bundle\\. Please create an interface and an adapter if you need to\\.$#"
-			count: 2
+			message: "#^Namespace Cookie is forbidden, No legacy calls inside the prestashop bundle\\. Please create an interface and an adapter if you need to\\.$#"
+			count: 1
 			path: src/Core/Form/IdentifiableObject/DataHandler/EmployeeFormDataHandler.php
 
 		-
@@ -1054,11 +1059,6 @@ parameters:
 			message: "#^Namespace Employee is forbidden, No legacy calls inside the prestashop bundle\\. Please create an interface and an adapter if you need to\\.$#"
 			count: 1
 			path: src/PrestaShopBundle/Command/AppendHooksListForSqlUpgradeFileCommand.php
-
-		-
-			message: "#^Namespace Hook is forbidden, No legacy calls inside the prestashop bundle\\. Please create an interface and an adapter if you need to\\.$#"
-			count: 2
-			path: src/Core/Cart/CartRuleCalculator.php
 
 		-
 			message: "#^Namespace Validate is forbidden, No legacy calls inside the prestashop bundle\\. Please create an interface and an adapter if you need to\\.$#"
@@ -1549,3 +1549,58 @@ parameters:
 			message: "#^Parameter \\#1 \\$className of method Doctrine\\\\ORM\\\\EntityManagerInterface\\:\\:getClassMetadata\\(\\) expects class\\-string\\<\\\\PrestaShop\\\\Module\\\\Banner\\\\Entity\\\\Banner\\>, string given\\.$#"
 			count: 1
 			path: tests/Integration/Adapter/ContainerBuilderTest.php
+
+		-
+			message: "#^Cannot access constant DESCRIPTION on bankwire$#"
+			count: 1
+			path: tests/Unit/Resources/parsed-modules/module-self-const.php
+
+		-
+			message: "#^Cannot access constant DISPLAY_NAME on bankwire$#"
+			count: 1
+			path: tests/Unit/Resources/parsed-modules/module-self-const.php
+
+		-
+			message: "#^Cannot access constant ENGLISH_DISPLAY_NAME on bankwire$#"
+			count: 1
+			path: tests/Unit/Resources/parsed-modules/module-self-const.php
+
+		-
+			message: "#^Cannot access constant NAME on bankwire$#"
+			count: 1
+			path: tests/Unit/Resources/parsed-modules/module-self-const.php
+
+		-
+			message: "#^Cannot access constant VERSION on bankwire$#"
+			count: 1
+			path: tests/Unit/Resources/parsed-modules/module-self-const.php
+
+		-
+			message: "#^Cannot access constant DESCRIPTION on bankwire$#"
+			count: 1
+			path: tests/Unit/Resources/parsed-modules/module-static-const.php
+
+		-
+			message: "#^Cannot access constant DISPLAY_NAME on bankwire$#"
+			count: 1
+			path: tests/Unit/Resources/parsed-modules/module-static-const.php
+
+		-
+			message: "#^Cannot access constant ENGLISH_DISPLAY_NAME on bankwire$#"
+			count: 1
+			path: tests/Unit/Resources/parsed-modules/module-static-const.php
+
+		-
+			message: "#^Cannot access constant NAME on bankwire$#"
+			count: 1
+			path: tests/Unit/Resources/parsed-modules/module-static-const.php
+
+		-
+			message: "#^Cannot access constant VERSION on bankwire$#"
+			count: 1
+			path: tests/Unit/Resources/parsed-modules/module-static-const.php
+
+		-
+			message: "#^Unsafe access to private constant bankwire\\:\\:NAME through static\\:\\:\\.$#"
+			count: 1
+			path: tests/Unit/Resources/parsed-modules/module-static-const.php
