@@ -333,6 +333,8 @@ default:
         - Tests\Integration\Behaviour\Features\Context\Domain\ManufacturerFeatureContext
         - Tests\Integration\Behaviour\Features\Context\Domain\SupplierFeatureContext
         - Tests\Integration\Behaviour\Features\Context\Domain\Product\UpdateProductSuppliersFeatureContext
+        - Tests\Integration\Behaviour\Features\Context\Domain\CountryFeatureContext
+        - Tests\Integration\Behaviour\Features\Context\Domain\AddressFeatureContext
 
     catalog_price_rule:
       paths:

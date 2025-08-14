@@ -565,6 +565,7 @@ services:
   PrestaShopBundle\Form\Admin\Type\CarrierChoiceType:
     arguments:
       $carrierChoiceProvider: '@prestashop.core.form.choice_provider.carrier_by_reference_id'
+      $carrierLogoProvider: '@prestashop.adapter.carrier.carrier_thumbnail_logo_provider'
 
   PrestaShopBundle\Form\Admin\Type\ZoneChoiceType:
     arguments:

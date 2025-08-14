@@ -35,21 +35,62 @@ $(() => {
       'ToggleChildrenChoice',
       'GeneratableInput',
       'ChoiceTree',
+      'EventEmitter',
     ],
   );
 
   new CreateFreeGiftDiscount();
   new SpecificProducts();
 
-  new PriceReductionManager(
-    DiscountMap.reductionTypeSelect,
-    DiscountMap.includeTaxInput,
-    DiscountMap.currencySelect,
-    DiscountMap.reductionValueSymbol,
-    DiscountMap.currencySelectContainer,
-  );
-  toggleCurrency();
-  document.querySelector(DiscountMap.reductionTypeSelect)?.addEventListener('change', toggleCurrency);
+  const reductionTypeSelect = document.querySelector(DiscountMap.reductionTypeSelect);
+
+  if (reductionTypeSelect) {
+    reductionTypeSelect.addEventListener('change', toggleCurrency);
+    new PriceReductionManager(
+      DiscountMap.reductionTypeSelect,
+      DiscountMap.includeTaxInput,
+      DiscountMap.currencySelect,
+      DiscountMap.reductionValueSymbol,
+      DiscountMap.currencySelectContainer,
+    );
+    toggleCurrency();
+  }
+
+  const {eventEmitter} = window.prestashop.instance;
+
+  eventEmitter.on('ToggleChildrenChoice:toggled', (radio: HTMLInputElement) => {
+    // We need to trigger change those select2 elements because the component is not loaded when the page is displayed
+    // if we don't trigger change them, the placeholder cannot be loaded correctly.
+    if (radio.value === 'country') {
+      $(DiscountMap.countriesSelect).trigger('change');
+    }
+    if (radio.value === 'carriers') {
+      $(DiscountMap.carriersSelect).trigger('change');
+    }
+  });
+
+  $(DiscountMap.countriesSelect).select2({
+    templateResult: formatOption,
+    templateSelection: formatOption,
+    theme: 'bootstrap4',
+  });
+
+  $(DiscountMap.carriersSelect).select2({
+    templateResult: formatOption,
+    templateSelection: formatOption,
+    theme: 'bootstrap4',
+  });
+
+  function formatOption(option: any) {
+    if (!option.element || !option.element.dataset.logo) {
+      return option.text;
+    }
+    const imageUrl = option.element.dataset.logo;
+
+    return $(
+      `<span><img src="${imageUrl}"/> ${option.text} </span>`,
+    );
+  }
 
   function toggleCurrency(): void {
     if ($(DiscountMap.reductionTypeSelect).val() === 'percentage') {
@@ -59,5 +100,5 @@ $(() => {
     }
   }
 
-  new window.prestashop.component.ChoiceTree('#discount_conditions_cart_conditions_product_segment_category');
+  new window.prestashop.component.ChoiceTree(DiscountMap.categoryTree);
 });

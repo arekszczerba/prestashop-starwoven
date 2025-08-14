@@ -27,6 +27,7 @@
 namespace PrestaShopBundle\Form\Admin\Sell\Discount;
 
 use PrestaShopBundle\Form\Admin\Type\CarrierChoiceType;
+use PrestaShopBundle\Form\Admin\Type\CountryChoiceType;
 use PrestaShopBundle\Form\Admin\Type\ToggleChildrenChoiceType;
 use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -37,6 +38,7 @@ use Symfony\Component\Validator\Constraints\When;
 class DeliveryConditionsType extends TranslatorAwareType
 {
     public const CARRIERS = 'carriers';
+    public const COUNTRY = 'country';
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -44,13 +46,34 @@ class DeliveryConditionsType extends TranslatorAwareType
             ->add(self::CARRIERS, CarrierChoiceType::class, [
                 'label' => $this->trans('Specific carriers', 'Admin.Catalog.Feature'),
                 'multiple' => true,
-                'expanded' => true,
+                'attr' => [
+                    'data-placeholder' => $this->trans('Select carriers', 'Admin.Catalog.Feature'),
+                ],
                 'constraints' => [
                     new When(
                         expression: sprintf(
                             'this.getParent().getParent().get("children_selector").getData() === "%s" && this.getParent().get("children_selector").getData() === "%s"',
                             DiscountConditionsType::DELIVERY_CONDITIONS,
                             self::CARRIERS
+                        ),
+                        constraints: new NotBlank(),
+                    ),
+                ],
+            ])
+            ->add(self::COUNTRY, CountryChoiceType::class, [
+                'label' => $this->trans('Specific countries', 'Admin.Catalog.Feature'),
+                'multiple' => true,
+                'expanded' => false,
+                'with_logo_attr' => true,
+                'attr' => [
+                    'data-placeholder' => $this->trans('Select countries', 'Admin.Catalog.Feature'),
+                ],
+                'constraints' => [
+                    new When(
+                        expression: sprintf(
+                            'this.getParent().getParent().get("children_selector").getData() === "%s" && this.getParent().get("children_selector").getData() === "%s"',
+                            DiscountConditionsType::DELIVERY_CONDITIONS,
+                            self::COUNTRY
                         ),
                         constraints: new NotBlank(),
                     ),

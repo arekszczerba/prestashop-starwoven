@@ -62,6 +62,7 @@ class DiscountForEditing
         private readonly ?bool $minimumAmountTaxIncluded,
         private readonly ?bool $minimumAmountShippingIncluded,
         private readonly array $carrierIds,
+        private readonly array $countryIds,
     ) {
     }
 
@@ -209,5 +210,10 @@ class DiscountForEditing
     public function getCarrierIds(): array
     {
         return $this->carrierIds;
+    }
+
+    public function getCountryIds(): array
+    {
+        return $this->countryIds;
     }
 }
