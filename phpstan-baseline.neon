@@ -1551,6 +1551,16 @@ parameters:
 			path: tests/Integration/Adapter/ContainerBuilderTest.php
 
 		-
+			message: "#^Parameter \\#1 \\$extractedModuleProperties of class PrestaShop\\\\PrestaShop\\\\Core\\\\Module\\\\Parser\\\\ModuleParser constructor expects array\\<string\\>, array\\<int, int\\> given\\.$#"
+			count: 1
+			path: tests/Unit/Core/Module/Parser/ModuleParserTest.php
+
+		-
+			message: "#^Cannot access constant PRESTASHOP_VERSIONS on bankwire$#"
+			count: 1
+			path: tests/Unit/Resources/parsed-modules/module-const-array.php
+
+		-
 			message: "#^Cannot access constant DESCRIPTION on bankwire$#"
 			count: 1
 			path: tests/Unit/Resources/parsed-modules/module-self-const.php
