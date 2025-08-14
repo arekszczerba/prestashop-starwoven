@@ -1301,11 +1301,34 @@ class ProductCore extends ObjectModel
             || !$this->deleteFromSupplier()
             || !$this->deleteDownload()
             || !$this->deleteFromCartRules()
+            || !$this->deleteRedirections()
         ) {
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * Resets all entries where this product was used as a redirection target
+     *
+     * @return bool
+     */
+    public function deleteRedirections(): bool
+    {
+        $productTableUpdateResult = Db::getInstance()->update(
+            'product',
+            ['redirect_type' => RedirectType::TYPE_DEFAULT, 'id_type_redirected' => 0],
+            '(redirect_type = \'' . RedirectType::TYPE_PRODUCT_TEMPORARY . '\' OR redirect_type = \'' . RedirectType::TYPE_PRODUCT_PERMANENT . '\') AND id_type_redirected = ' . (int) $this->id
+        );
+
+        $productShopTableUpdateResult = Db::getInstance()->update(
+            'product_shop',
+            ['redirect_type' => RedirectType::TYPE_DEFAULT, 'id_type_redirected' => 0],
+            '(redirect_type = \'' . RedirectType::TYPE_PRODUCT_TEMPORARY . '\' OR redirect_type = \'' . RedirectType::TYPE_PRODUCT_PERMANENT . '\') AND id_type_redirected = ' . (int) $this->id
+        );
+
+        return $productTableUpdateResult && $productShopTableUpdateResult;
     }
 
     /**
