@@ -79,7 +79,7 @@ class ConnectionsSourceCore extends ObjectModel
             }
 
             if (
-                ltrim($parsed['host'], 'www.') === ltrim($source->request_uri, 'www.')
+                preg_replace('/^www./', '', $parsed['host']) == preg_replace('/^www./', '', $source->request_uri)
                 && !strncmp($parsed['path'], $parsedHost['path'], strlen(__PS_BASE_URI__))
             ) {
                 return false;
