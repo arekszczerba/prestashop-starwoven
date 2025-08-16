@@ -120,7 +120,7 @@ class CountryCore extends ObjectModel
      */
     public function delete()
     {
-        if ((int) $this->id === (int) Configuration::get('PS_COUNTRY_DEFAULT')){
+        if ((int) $this->id === (int) Configuration::get('PS_COUNTRY_DEFAULT')) {
             throw new PrestaShopException(sprintf('Default country "%s" cannot be deleted.', $this->iso_code));
         }
 
