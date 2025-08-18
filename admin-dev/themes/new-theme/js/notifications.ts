@@ -27,6 +27,9 @@ import GlobalMap from './global-map';
 
 const refreshNotifications = function (): void {
   let timer = null;
+  let nbOrders = 0;
+  let nbCustomers = 0;
+  let nbCustomerMessages = 0;
   const router = new Router();
 
   $.ajax({
@@ -38,11 +41,7 @@ const refreshNotifications = function (): void {
     dataType: 'json',
     success(json) {
       if (json && Object.keys(json).length > 0) {
-        var nbOrders = 0;
-        var nbCustomers = 0;
-        var nbCustomerMessages = 0;
-
-        if (json.hasOwnProperty('order')) {
+        if (Object.prototype.hasOwnProperty.call(json, 'order')) {
           nbOrders = parseInt(json.order.total, 10);
 
           fillTpl(
@@ -54,7 +53,7 @@ const refreshNotifications = function (): void {
           setNotificationsNumber('_nb_new_orders_', nbOrders);
         }
 
-        if (json.hasOwnProperty('customer')) {
+        if (Object.prototype.hasOwnProperty.call(json, 'customer')) {
           nbCustomers = parseInt(json.customer.total, 10);
 
           fillTpl(
@@ -66,7 +65,7 @@ const refreshNotifications = function (): void {
           setNotificationsNumber('_nb_new_customers_', nbCustomers);
         }
 
-        if (json.hasOwnProperty('customer_message')) {
+        if (Object.prototype.hasOwnProperty.call(json, 'customer_message')) {
           nbCustomerMessages = parseInt(json.customer_message.total, 10);
 
           fillTpl(
