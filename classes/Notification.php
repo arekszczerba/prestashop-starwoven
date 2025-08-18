@@ -60,6 +60,39 @@ class NotificationCore
         return $notifications;
     }
 
+    public function getActiveLastElements(): array
+    {
+        $types = array_flip($this->types);
+
+        if (!(bool) Configuration::get('PS_SHOW_NEW_ORDERS')) {
+            unset($types['order']);
+        }
+        if (!(bool) Configuration::get('PS_SHOW_NEW_CUSTOMERS')) {
+            unset($types['customer']);
+        }
+        if (!(bool) Configuration::get('PS_SHOW_NEW_MESSAGES')) {
+            unset($types['customer_message']);
+        }
+
+        if (0 == count($types)) {
+            return [];
+        }
+
+        $notifications = [];
+        $employeeInfos = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow('
+        SELECT id_last_order, id_last_customer_message, id_last_customer
+        FROM `' . _DB_PREFIX_ . 'employee`
+        WHERE `id_employee` = ' . (int) Context::getContext()->employee->id);
+
+        $types = array_flip($types);
+
+        foreach ($types as $type) {
+            $notifications[$type] = Notification::getLastElementsIdsByType($type, $employeeInfos['id_last_' . $type]);
+        }
+
+        return $notifications;
+    }
+
     /**
      * getLastElementsIdsByType return all the element ids to show (order, customer registration, and customer message)
      * Get all the element ids.
