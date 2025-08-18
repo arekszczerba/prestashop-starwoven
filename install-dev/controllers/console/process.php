@@ -339,11 +339,6 @@ class InstallControllerConsoleProcess extends InstallControllerConsole implement
     {
         $this->initializeContext();
 
-        // if admin folder doesn't exist, then there's nothing to do here
-        if (!file_exists(_PS_ROOT_DIR_ . '/admin/')) {
-            return true;
-        }
-
         $result = $this->model_install->finalize();
 
         if (!$result) {
