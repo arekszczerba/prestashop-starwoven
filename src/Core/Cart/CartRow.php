@@ -298,7 +298,7 @@ class CartRow
     {
         $productId = (int) $rowData['id_product'];
         $quantity = (int) $rowData['cart_quantity'];
-        $cartQuantity = (int) $rowData['grouped_quantity'];
+        $cartBaseProductQuantity = (int) $rowData['cart_base_product_quantity'];
 
         $addressId = $cart->getProductAddressId();
         if (!$addressId) {
@@ -367,7 +367,7 @@ class CartRow
                     (int) $cart->id_customer ? (int) $cart->id_customer : null,
                     true,
                     (int) $cart->id,
-                    $cartQuantity,
+                    $cartBaseProductQuantity,
                     (int) $rowData['id_customization']
                 );
             }
