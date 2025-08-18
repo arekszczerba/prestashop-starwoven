@@ -39,27 +39,6 @@ class NotificationCore
         $this->types = ['order', 'customer_message', 'customer'];
     }
 
-    /**
-     * getLastElements return all the notifications (new order, new customer registration, and new customer message)
-     * Get all the notifications.
-     *
-     * @return array containing the notifications
-     */
-    public function getLastElements()
-    {
-        $notifications = [];
-        $employeeInfos = Db::getInstance(_PS_USE_SQL_SLAVE_)->getRow('
-		SELECT id_last_order, id_last_customer_message, id_last_customer
-		FROM `' . _DB_PREFIX_ . 'employee`
-		WHERE `id_employee` = ' . (int) Context::getContext()->employee->id);
-
-        foreach ($this->types as $type) {
-            $notifications[$type] = Notification::getLastElementsIdsByType($type, $employeeInfos['id_last_' . $type]);
-        }
-
-        return $notifications;
-    }
-
     public function getActiveLastElements(): array
     {
         $types = array_flip($this->types);
