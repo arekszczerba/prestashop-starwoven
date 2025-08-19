@@ -90,25 +90,28 @@ class DiscountConditionsFeatureContext extends AbstractDomainFeatureContext
         $command = new UpdateDiscountConditionsCommand($this->referenceToId($discountReference));
 
         $conditions = $tableNode->getColumnsHash();
-        $productRules = [];
+
+        // This matches the current business rule for the new form, a discount can multiple criterias that are more and more
+        // restrictive, since they must match group1 AND group2, ... However, the values for each row are different options
+        // and build the product rule
+        // The quantity is the same for everyone
+
+        // Note: The command is voluntarily loose for now and allows building the groups and rules however we want, depending
+        // on future development it may need to evolve into a stricter interface to reflect the business logic more
+
+        $productRulesGroup = [];
         foreach ($conditions as $condition) {
-            $productRules[] = new ProductRule(
-                ProductRuleType::tryFrom($condition['condition_type']),
-                $this->referencesToIds($condition['items'])
+            $productRulesGroup[] = new ProductRuleGroup(
+                $quantity,
+                [
+                    new ProductRule(
+                        ProductRuleType::tryFrom($condition['condition_type']),
+                        $this->referencesToIds($condition['items'])
+                    ),
+                ]
             );
         }
-
-        // This matches the current business rule for the new form, a discount can only have ONE product rule group
-        // (which represent an AND condition), however they can have multiple product rules (which represent and
-        // OR condition)
-        // If we decide to increase the number of groups later this behat step will need to be refactored but so far
-        // it matches our needs.
-        $command->setProductConditions([
-            new ProductRuleGroup(
-                $quantity,
-                $productRules,
-            ),
-        ]);
+        $command->setProductConditions($productRulesGroup);
         $this->getCommandBus()->handle($command);
     }
 
@@ -159,19 +162,19 @@ class DiscountConditionsFeatureContext extends AbstractDomainFeatureContext
 
         $conditionsData = $tableNode->getColumnsHash();
         $productConditions = $discountForEditing->getProductConditions();
-        Assert::assertEquals(1, count($productConditions), sprintf('We only handle ONE condition group for now, %d groups were found', count($productConditions)));
-
-        $productRuleGroup = $productConditions[0];
-        Assert::assertEquals($quantity, $productRuleGroup->getQuantity(), sprintf('Expected at least %d product quantity but got %d instead', $quantity, $productRuleGroup->getQuantity()));
-
-        $productRules = $productRuleGroup->getRules();
-        Assert::assertEquals(count($conditionsData), count($productRules), sprintf('Expected %d rules but got %d instead', count($conditionsData), count($productRules)));
+        Assert::assertEquals(count($conditionsData), count($productConditions), sprintf('Expected %d groups, %d groups were found', count($conditionsData), count($productConditions)));
 
         foreach ($conditionsData as $index => $conditionData) {
-            $productRule = $productRules[$index];
+            $productRuleGroup = $productConditions[$index];
+            Assert::assertEquals($quantity, $productRuleGroup->getQuantity(), sprintf('Expected at least %d product quantity but got %d instead', $quantity, $productRuleGroup->getQuantity()));
+
+            $productRules = $productRuleGroup->getRules();
+            Assert::assertEquals(1, count($productRules), sprintf('Expected only one product rule but got %d instead', count($productRules)));
+
+            $productRule = $productRules[0];
             Assert::assertEquals($conditionData['condition_type'], $productRule->getType()->value);
             $expectedItemIds = $this->referencesToIds($conditionData['items']);
-            Assert::assertEquals($expectedItemIds, $productRule->getItemIds(), 'The expected items do not match');
+            Assert::assertTrue($expectedItemIds === $productRule->getItemIds(), 'The expected items do not match');
         }
     }
 
