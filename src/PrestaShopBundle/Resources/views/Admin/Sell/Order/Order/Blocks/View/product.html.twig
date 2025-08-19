@@ -52,7 +52,7 @@
         </p>
       {% endif %}
       {% if isMultiShipmentFeatureFlagIsEnabled and product.shipmentId is not empty %}
-        <p class="mb-0 productSupplierReference">
+        <p class="mb-0 productShipmentNumber">
           {{ 'Shipment number:'|trans({}, 'Admin.Orderscustomers.Feature') }}
           {{ product.shipmentId }}
         </p>
