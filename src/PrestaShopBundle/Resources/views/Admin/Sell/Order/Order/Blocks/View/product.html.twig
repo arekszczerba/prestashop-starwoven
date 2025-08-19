@@ -51,6 +51,12 @@
           {{ product.supplierReference }}
         </p>
       {% endif %}
+      {% if isMultiShipmentFeatureFlagIsEnabled and product.shipmentId is not empty %}
+        <p class="mb-0 productSupplierReference">
+          {{ 'Shipment number:'|trans({}, 'Admin.Orderscustomers.Feature') }}
+          {{ product.shipmentId }}
+        </p>
+      {% endif %}
     </a>
     {% if product.type == constant('PrestaShop\\PrestaShop\\Core\\Domain\\Order\\QueryResult\\OrderProductForViewing::TYPE_PACK') and product.customizations is null %}
       <span class="btn-product-pack-modal d-print-none" data-toggle="modal" data-target="#product-pack-modal" data-pack-items="{{ product.packItems|json_encode }}">
@@ -80,9 +86,6 @@
   <td class="cellProductTotalPrice">{{ product.totalPrice }}</td>
   {% if orderForViewing.hasInvoice() %}
     <td>{{ product.orderInvoiceNumber }}</td>
-  {% endif %}
-  {% if hasShipment %}
-    <td class="cellProductShipment">{{ product.shipmentId }}</td>
   {% endif %}
   {% if not orderForViewing.delivered %}
     <td class="text-right cellProductActions">

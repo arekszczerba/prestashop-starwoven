@@ -1818,7 +1818,6 @@ class OrderController extends PrestaShopAdminController
 
         return $this->render('@PrestaShop/Admin/Sell/Order/Order/Blocks/View/product_list.html.twig', [
             'orderForViewing' => $orderForViewing,
-            'isMultiShipmentFeatureFlagIsEnabled' => $this->isFeatureFlagIsEnabledForMultiShipment(),
             'cancelProductForm' => $cancelProductForm->createView(),
             'orderCurrency' => $orderCurrency,
             'paginationNum' => $paginationNum,

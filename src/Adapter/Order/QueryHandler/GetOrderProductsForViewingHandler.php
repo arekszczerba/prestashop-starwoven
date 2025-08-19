@@ -60,10 +60,10 @@ use StockAvailable;
 final class GetOrderProductsForViewingHandler extends AbstractOrderHandler implements GetOrderProductsForViewingHandlerInterface
 {
     public function __construct(
-        private ImageTagSourceParserInterface $imageTagSourceParser,
-        private int $contextLanguageId,
-        private Locale $locale,
-        private ShipmentRepository $shipmentRepository
+        private readonly ImageTagSourceParserInterface $imageTagSourceParser,
+        private readonly int $contextLanguageId,
+        private readonly Locale $locale,
+        private readonly ShipmentRepository $shipmentRepository
     ) {
     }
 

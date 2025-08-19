@@ -23,13 +23,9 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  * #}
 {% for product in orderForViewing.products.products %}
-    {% if isMultiShipmentFeatureFlagIsEnabled and product.shipmentId is not empty %}
-      {% set hasShipment = true %}
-    {% endif %}
     {{ include('@PrestaShop/Admin/Sell/Order/Order/Blocks/View/product.html.twig', {
         product: product,
         productIndex: loop.index,
-        hasShipment: hasShipment,
         paginationNum: paginationNum,
         isColumnLocationDisplayed: isColumnLocationDisplayed,
         isColumnRefundedDisplayed: isColumnRefundedDisplayed,
