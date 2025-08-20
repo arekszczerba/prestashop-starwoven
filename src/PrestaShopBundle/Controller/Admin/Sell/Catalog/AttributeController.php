@@ -183,8 +183,11 @@ class AttributeController extends PrestaShopAdminController
         #[Autowire(service: 'prestashop.core.form.identifiable_object.attribute_form_handler')]
         FormHandlerInterface $attributeFormHandler,
     ): Response {
-        $attributeForm = $attributeFormBuilder->getFormFor($attributeId, [], ['attribute_group' => $attributeGroupId])
-            ->handleRequest($request);
+        $attributeForm = $attributeFormBuilder->getFormFor(
+            $attributeId,
+            [],
+            ['attribute_group' => $attributeGroupId, 'attribute_id' => $attributeId]
+        )->handleRequest($request);
 
         $formData = $attributeForm->getData();
         $attributeName = $formData['name'][$this->getLanguageContext()->getId()] ?? reset($formData['name']);

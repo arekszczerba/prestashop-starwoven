@@ -81,6 +81,8 @@ class EditAttributeHandler implements EditAttributeHandlerInterface
         if (null !== $command->getTextureFilePath()) {
             $this->attributeFileUploader->deleteOldFile($command->getAttributeId()->getValue());
             $this->attributeFileUploader->upload($command->getTextureFilePath(), $command->getAttributeId()->getValue());
+        } elseif(null !== $command->getRemoveTexture()) {
+            $this->attributeFileUploader->deleteOldFile($command->getAttributeId()->getValue());
         }
 
         $this->attributeValidator->validate($attribute);

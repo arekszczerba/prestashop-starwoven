@@ -43,6 +43,7 @@ use PrestaShop\PrestaShop\Core\Feature\FeatureInterface;
 use PrestaShopBundle\Form\Admin\Type\ShopChoiceTreeType;
 use PrestaShopBundle\Form\Admin\Type\TranslatableType;
 use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\ColorType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -122,6 +123,14 @@ class AttributeType extends TranslatorAwareType
                 'required' => false,
             ]);
 
+        if (!empty($options['attribute_id']) && file_exists(_PS_IMG_DIR_ . 'co/' . (int) $options['attribute_id'] . '.jpg')) {
+            $builder
+                ->add('remove_texture', CheckboxType::class, [
+                    'label' => $this->trans('Delete texture file', 'Admin.Global'),
+                    'required' => false,
+                ]);
+        }
+
         if ($this->multistoreFeature->isUsed()) {
             $builder->add('shop_association', ShopChoiceTreeType::class, [
                 'label' => $this->trans('Shop association', 'Admin.Global'),
@@ -141,6 +150,9 @@ class AttributeType extends TranslatorAwareType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setRequired('attribute_group');
+        $resolver->setDefaults([
+            'attribute_id' => null,
+        ]);
         parent::configureOptions($resolver);
     }
 
