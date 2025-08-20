@@ -128,7 +128,9 @@
   overflow: hidden;
   background: $white;
   border: 0;
+
   .mce-edit-area {
+    /* stylelint-enable declaration-no-important */
     max-height: inherit !important;
   }
 }
