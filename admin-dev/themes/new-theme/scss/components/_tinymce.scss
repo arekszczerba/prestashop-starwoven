@@ -130,8 +130,9 @@
   border: 0;
 
   .mce-edit-area {
-    /* stylelint-enable declaration-no-important */
+    /* stylelint-disable declaration-no-important */
     max-height: inherit !important;
+    /* stylelint-enable declaration-no-important */
   }
 }
 
