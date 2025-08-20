@@ -28,21 +28,17 @@ declare(strict_types=1);
 
 namespace PrestaShop\PrestaShop\Adapter\Shipment;
 
-use Configuration;
-use Context;
 use Hook;
 use Module;
+use Context;
+use DeliveryOptionsFinderCore;
 use PrestaShop\PrestaShop\Adapter\Presenter\Object\ObjectPresenter;
 use PrestaShop\PrestaShop\Adapter\Product\PriceFormatter;
-use Product;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class DeliveryOptionsProvider implements DeliveryOptionsInterface
+class DeliveryOptionsProvider extends DeliveryOptionsFinderCore
 {
     private $context;
-    private $objectPresenter;
-    private $translator;
-    private $priceFormatter;
 
     public function __construct(
         Context $context,
@@ -50,73 +46,38 @@ class DeliveryOptionsProvider implements DeliveryOptionsInterface
         ObjectPresenter $objectPresenter,
         PriceFormatter $priceFormatter
     ) {
+        parent::__construct($context, $translator, $objectPresenter, $priceFormatter);
         $this->context = $context;
-        $this->objectPresenter = $objectPresenter;
-        $this->translator = $translator;
-        $this->priceFormatter = $priceFormatter;
-    }
-
-    private function isFreeShipping(array $deliveryOption)
-    {
-        if ($deliveryOption['is_free']) {
-            return true;
-        }
-
-        $cart = $this->context->cart;
-
-        foreach ($cart->getCartRules() as $rule) {
-            if ($rule['free_shipping'] && !$rule['carrier_restriction']) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function getSelectedDeliveryOption()
-    {
-        return current($this->context->cart->getDeliveryOption(null, false, false));
     }
 
     public function getDeliveryOptions()
     {
+        $parentOutput = parent::getDeliveryOptions();
+
         $deliveryOptions = $this->context->cart->getDeliveryOptionList();
         $currentAddressDeliveryOptions = $deliveryOptions[$this->context->cart->id_address_delivery];
 
-        if (empty($deliveryOptions[$this->context->cart->id_address_delivery])) {
-            return [];
-        }
-
-        $formattedDeliveryOptions = [];
-
-        foreach ($currentAddressDeliveryOptions as $deliveryOptionId => $deliveryOption) {
-            $formattedDeliveryOption = end($deliveryOption['carrier_list']);
-            $formattedDeliveryOption = array_merge($formattedDeliveryOption, $this->objectPresenter->present($formattedDeliveryOption['instance']));
-            unset($formattedDeliveryOption['instance']);
-
+        foreach ($currentAddressDeliveryOptions as $deliveryOption) {
+            $carrierIdsAsString = implode(',', array_keys($deliveryOption['carrier_list'])) . ',';
             $carriersDetails = $this->getCarriersDetails($deliveryOption);
-            $formattedDeliveryOption = array_merge($formattedDeliveryOption, $carriersDetails);
 
-            $formattedDeliveryOption['price'] = $this->getPriceToDisplay($deliveryOption);
-            $formattedDeliveryOption['label'] = $formattedDeliveryOption['price'];
-
-            $formattedDeliveryOptions[$deliveryOptionId] = $formattedDeliveryOption;
+            // override parent output to mention all the carrier within the delivery option
+            if (!empty($carriersDetails)) {
+                $parentOutput[$carrierIdsAsString]['name'] = $carriersDetails['name'];
+                $parentOutput[$carrierIdsAsString]['delay'] = $carriersDetails['delay'];
+                $parentOutput[$carrierIdsAsString]['extraContent'] = $carriersDetails['extraContent'];
+            }
         }
 
-        return $formattedDeliveryOptions;
+        return $parentOutput;
     }
 
-    private function getCarriersDetails($deliveryOption)
+    private function getCarriersDetails(array $deliveryOption): array
     {
         $carriers = $deliveryOption['carrier_list'];
 
         if (count($carriers) === 1) {
-            return [
-                'id' => $carriers[0]['instance']->id,
-                'label' => $carriers[0]['label'],
-                'name' => $carriers[0]['instance']->name,
-                'delay' => $carriers[0]['instance']->delay[$this->context->language->id],
-            ];
+            return [];
         }
 
         $names = [];
@@ -134,52 +95,9 @@ class DeliveryOptionsProvider implements DeliveryOptionsInterface
         }
 
         return [
-            'id' => end($carriers)['instance']->id,
             'name' => implode(', ', $names),
             'delay' => implode(', ', $delays),
             'extraContent' => $extraContent,
         ];
-    }
-
-    private function getPriceToDisplay($deliveryOption)
-    {
-        if ($this->isFreeShipping($deliveryOption)) {
-            return $this->translator->trans(
-                'Free',
-                [],
-                'Shop.Theme.Checkout'
-            );
-        }
-
-        if ($this->isPriceDisplayedWithTax()) {
-            $price = $this->priceFormatter->format($deliveryOption['total_price_with_tax']);
-            if ($this->areTaxesLabelIsDisplayed()) {
-                $label = '%price% tax incl.';
-            }
-        } else {
-            $price = $this->priceFormatter->format($deliveryOption['total_price_without_tax']);
-            if ($this->areTaxesLabelIsDisplayed()) {
-                $label = '%price% tax excl.';
-            }
-        }
-
-        return $this->translator->trans(
-            $label ?? '%price%',
-            ['%price%' => $price],
-            'Shop.Theme.Checkout'
-        );
-    }
-
-    private function isPriceDisplayedWithTax()
-    {
-        return !Product::getTaxCalculationMethod((int) $this->context->cart->id_customer)
-            && (int) Configuration::get('PS_TAX');
-    }
-
-    private function areTaxesLabelIsDisplayed()
-    {
-        return Configuration::get('PS_TAX')
-            && $this->context->country->display_tax_label
-            && !Configuration::get('AEUC_LABEL_TAX_INC_EXC');
     }
 }
