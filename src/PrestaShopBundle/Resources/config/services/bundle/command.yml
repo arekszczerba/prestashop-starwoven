@@ -78,3 +78,11 @@ services:
       - '@prestashop.adapter.legacy.configuration'
     tags:
       - 'console.command'
+
+  PrestaShopBundle\Command\ExportModuleTranslationsCommand:
+    arguments:
+      $translationCatalogueExporter: '@prestashop.translation.export.translation_catalogue'
+      $filesystem: '@filesystem'
+      $moduleDir: '%prestashop.module_dir%'
+    tags:
+      - 'console.command'
