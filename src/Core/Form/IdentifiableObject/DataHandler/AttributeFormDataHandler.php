@@ -99,10 +99,6 @@ final class AttributeFormDataHandler implements FormDataHandlerInterface
             );
         }
 
-        if (isset($data['remove_texture'])) {
-            $updateCommand->setRemoveTexture(true);
-        }
-
         $this->commandBus->handle($updateCommand);
     }
 }

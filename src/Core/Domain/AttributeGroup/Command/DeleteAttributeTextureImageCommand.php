@@ -24,58 +24,36 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 
-declare(strict_types=1);
+namespace PrestaShop\PrestaShop\Core\Domain\AttributeGroup\Command;
 
-namespace PrestaShop\PrestaShop\Core\Domain\AttributeGroup\Attribute\QueryResult;
+use PrestaShop\PrestaShop\Core\Domain\AttributeGroup\Attribute\Exception\AttributeConstraintException;
+use PrestaShop\PrestaShop\Core\Domain\AttributeGroup\Attribute\ValueObject\AttributeId;
 
 /**
- * Stores attributes data that's needed for editing.
+ * Deletes attribute group by provided id
  */
-class EditableAttribute
+final class DeleteAttributeTextureImageCommand
 {
-    public function __construct(
-        private readonly int $attributeId,
-        private readonly int $attributeGroupId,
-        private readonly array $localizedNames,
-        private readonly string $color,
-        private readonly array $shopAssociationIds,
-        private readonly ?array $textureImage
-    ) {
+    /**
+     * @var AttributeId
+     */
+    private $attributeId;
+
+    /**
+     * @param int $attributeId
+     *
+     * @throws AttributeConstraintException
+     */
+    public function __construct($attributeId)
+    {
+        $this->attributeId = new AttributeId($attributeId);
     }
 
-    public function getAttributeId(): int
+    /**
+     * @return AttributeId
+     */
+    public function getAttributeId()
     {
         return $this->attributeId;
-    }
-
-    public function getAttributeGroupId(): int
-    {
-        return $this->attributeGroupId;
-    }
-
-    public function getLocalizedNames(): array
-    {
-        return $this->localizedNames;
-    }
-
-    public function getColor(): string
-    {
-        return $this->color;
-    }
-
-    /**
-     * @return int[]
-     */
-    public function getAssociatedShopIds(): array
-    {
-        return $this->shopAssociationIds;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTextureImage()
-    {
-        return $this->textureImage;
     }
 }

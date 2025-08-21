@@ -48,8 +48,6 @@ class EditAttributeCommand
 
     private ?string $pathName;
 
-    private ?bool $removeTexture;
-
     /**
      * @var int[]
      */
@@ -141,20 +139,6 @@ class EditAttributeCommand
     public function getTextureFilePath(): ?string
     {
         return $this->pathName ?? null;
-    }
-
-    public function getRemoveTexture(): ?bool
-    {
-        return $this->removeTexture ?? null;
-    }
-
-    /**
-     * @param bool $removeTexture
-     */
-    public function setRemoveTexture(
-        bool $removeTexture
-    ): void {
-        $this->removeTexture = $removeTexture;
     }
 
     /**

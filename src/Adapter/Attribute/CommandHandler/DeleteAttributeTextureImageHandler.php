@@ -24,58 +24,32 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 
-declare(strict_types=1);
+namespace PrestaShop\PrestaShop\Adapter\Attribute\CommandHandler;
 
-namespace PrestaShop\PrestaShop\Core\Domain\AttributeGroup\Attribute\QueryResult;
+use PrestaShop\PrestaShop\Adapter\Attribute\AbstractAttributeHandler;
+use PrestaShop\PrestaShop\Adapter\File\Uploader\AttributeFileUploader;
+use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsCommandHandler;
+use PrestaShop\PrestaShop\Core\Domain\AttributeGroup\Attribute\CommandHandler\DeleteAttributeTextureImageHandlerInterface;
+use PrestaShop\PrestaShop\Core\Domain\AttributeGroup\Command\DeleteAttributeTextureImageCommand;
 
 /**
- * Stores attributes data that's needed for editing.
+ * Handles command which deletes the Attribute using legacy object model
  */
-class EditableAttribute
+#[AsCommandHandler]
+final class DeleteAttributeTextureImageHandler extends AbstractAttributeHandler implements DeleteAttributeTextureImageHandlerInterface
 {
     public function __construct(
-        private readonly int $attributeId,
-        private readonly int $attributeGroupId,
-        private readonly array $localizedNames,
-        private readonly string $color,
-        private readonly array $shopAssociationIds,
-        private readonly ?array $textureImage
+        private AttributeFileUploader $attributeFileUploader
     ) {
     }
 
-    public function getAttributeId(): int
-    {
-        return $this->attributeId;
-    }
-
-    public function getAttributeGroupId(): int
-    {
-        return $this->attributeGroupId;
-    }
-
-    public function getLocalizedNames(): array
-    {
-        return $this->localizedNames;
-    }
-
-    public function getColor(): string
-    {
-        return $this->color;
-    }
-
     /**
-     * @return int[]
+     * {@inheritdoc}
      */
-    public function getAssociatedShopIds(): array
+    public function handle(DeleteAttributeTextureImageCommand $command)
     {
-        return $this->shopAssociationIds;
-    }
+        $attribute = $this->getAttributeById($command->getAttributeId());
 
-    /**
-     * @return mixed
-     */
-    public function getTextureImage()
-    {
-        return $this->textureImage;
+        $this->attributeFileUploader->deleteOldFile($attribute->id);
     }
 }
