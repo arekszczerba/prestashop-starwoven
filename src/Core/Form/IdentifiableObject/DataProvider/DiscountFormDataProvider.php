@@ -48,8 +48,10 @@ use PrestaShop\PrestaShop\Core\Domain\Shop\Exception\ShopAssociationNotFound;
 use PrestaShop\PrestaShop\Core\Domain\Shop\Exception\ShopException;
 use PrestaShop\PrestaShop\Core\Domain\Shop\ValueObject\ShopId;
 use PrestaShop\PrestaShop\Core\Product\Combination\NameBuilder\CombinationNameBuilder;
+use PrestaShopBundle\Form\Admin\Sell\Discount\CartConditionsType;
 use PrestaShopBundle\Form\Admin\Sell\Discount\DeliveryConditionsType;
 use PrestaShopBundle\Form\Admin\Sell\Discount\DiscountConditionsType;
+use PrestaShopBundle\Form\Admin\Sell\Discount\DiscountProductSegmentType;
 use PrestaShopBundle\Form\Admin\Sell\Discount\DiscountUsabilityModeType;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
@@ -95,22 +97,28 @@ class DiscountFormDataProvider implements FormDataProviderInterface
         $details = $this->getGiftDetails($discountForEditing);
         $specificProducts = $this->getSpecificProducts($discountForEditing);
         $productSegment = $this->getProductSegmentDetails($discountForEditing);
+        $productSegmentDefined =
+            !empty($productSegment[DiscountProductSegmentType::MANUFACTURER])
+            || !empty($productSegment[DiscountProductSegmentType::SUPPLIER])
+            || !empty($productSegment[DiscountProductSegmentType::CATEGORY])
+            || !empty($productSegment[DiscountProductSegmentType::ATTRIBUTES]['item_groups'])
+        ;
 
         $selectedCondition = 'none';
         $selectedCartCondition = 'none';
         $selectedDeliveryCondition = 'none';
         if ($discountForEditing->getMinimumProductQuantity()) {
             $selectedCondition = DiscountConditionsType::CART_CONDITIONS;
-            $selectedCartCondition = 'minimum_product_quantity';
+            $selectedCartCondition = CartConditionsType::MINIMUM_PRODUCT_QUANTITY;
         } elseif ($discountForEditing->getMinimumAmount()) {
             $selectedCondition = DiscountConditionsType::CART_CONDITIONS;
-            $selectedCartCondition = 'minimum_amount';
+            $selectedCartCondition = CartConditionsType::MINIMUM_AMOUNT;
         } elseif (!empty($specificProducts)) {
             $selectedCondition = DiscountConditionsType::CART_CONDITIONS;
-            $selectedCartCondition = 'specific_products';
-        } elseif (!empty($productSegment['manufacturer']) || !(empty($productSegment['supplier']) || !empty($productSegment['category']))) {
+            $selectedCartCondition = CartConditionsType::SPECIFIC_PRODUCTS;
+        } elseif ($productSegmentDefined) {
             $selectedCondition = DiscountConditionsType::CART_CONDITIONS;
-            $selectedCartCondition = 'product_segment';
+            $selectedCartCondition = CartConditionsType::PRODUCT_SEGMENT;
         } elseif (!empty($discountForEditing->getCarrierIds())) {
             $selectedCondition = DiscountConditionsType::DELIVERY_CONDITIONS;
             $selectedDeliveryCondition = DeliveryConditionsType::CARRIERS;
@@ -154,7 +162,7 @@ class DiscountFormDataProvider implements FormDataProviderInterface
                         'include_tax' => $discountForEditing->getMinimumAmountTaxIncluded(),
                     ],
                     'specific_products' => $specificProducts,
-                    'product_segment' => $productSegment,
+                    CartConditionsType::PRODUCT_SEGMENT => $productSegment,
                 ],
                 DiscountConditionsType::DELIVERY_CONDITIONS => [
                     'children_selector' => $selectedDeliveryCondition,
@@ -282,9 +290,12 @@ class DiscountFormDataProvider implements FormDataProviderInterface
     private function getProductSegmentDetails(DiscountForEditing $discountForEditing): array
     {
         $productSegment = [
-            'manufacturer' => 0,
-            'category' => '',
-            'supplier' => 0,
+            DiscountProductSegmentType::MANUFACTURER => 0,
+            DiscountProductSegmentType::CATEGORY => '',
+            DiscountProductSegmentType::SUPPLIER => 0,
+            DiscountProductSegmentType::ATTRIBUTES => [
+                'item_groups' => [],
+            ],
             'quantity' => 0,
         ];
 
@@ -292,15 +303,25 @@ class DiscountFormDataProvider implements FormDataProviderInterface
             foreach ($condition->getRules() as $rule) {
                 if ($rule->getType() === ProductRuleType::MANUFACTURERS) {
                     foreach ($rule->getItemIds() as $manufacturerId) {
-                        $productSegment['manufacturer'] = $manufacturerId;
+                        $productSegment[DiscountProductSegmentType::MANUFACTURER] = $manufacturerId;
                     }
                 }
                 if ($rule->getType() === ProductRuleType::CATEGORIES) {
-                    $productSegment['category'] = $rule->getItemIds()[0];
+                    $productSegment[DiscountProductSegmentType::CATEGORY] = $rule->getItemIds()[0];
                 }
                 if ($rule->getType() === ProductRuleType::SUPPLIERS) {
                     foreach ($rule->getItemIds() as $supplierId) {
-                        $productSegment['supplier'] = $supplierId;
+                        $productSegment[DiscountProductSegmentType::SUPPLIER] = $supplierId;
+                    }
+                }
+                if ($rule->getType() === ProductRuleType::ATTRIBUTES) {
+                    $attributesInfo = $this->attributeRepository->getAttributesInfoByAttributeIds($rule->getItemIds(), $this->languageContext->getId());
+                    foreach ($rule->getItemIds() as $attributeId) {
+                        $attributeInfo = $attributesInfo[$attributeId];
+                        $productSegment[DiscountProductSegmentType::ATTRIBUTES]['item_groups'][$attributeInfo['attribute_group_name']][] = [
+                            'id' => $attributeId,
+                            'name' => $attributeInfo['attribute_name'],
+                        ];
                     }
                 }
             }

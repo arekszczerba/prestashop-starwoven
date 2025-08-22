@@ -27,6 +27,7 @@
 namespace PrestaShop\PrestaShop\Core\ConstraintValidator;
 
 use PrestaShop\PrestaShop\Core\ConstraintValidator\Constraints\DiscountProductSegment;
+use PrestaShopBundle\Form\Admin\Sell\Discount\DiscountProductSegmentType;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -44,11 +45,12 @@ class DiscountProductSegmentValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, DiscountProductSegment::class);
         }
 
-        $manufacturer = $value['manufacturer'] ?? null;
-        $category = $value['category'] ?? null;
-        $supplier = $value['supplier'] ?? null;
+        $manufacturer = $value[DiscountProductSegmentType::MANUFACTURER] ?? null;
+        $category = $value[DiscountProductSegmentType::CATEGORY] ?? null;
+        $supplier = $value[DiscountProductSegmentType::SUPPLIER] ?? null;
+        $attributes = $value[DiscountProductSegmentType::ATTRIBUTES]['item_groups'] ?? null;
 
-        if (empty($manufacturer) && empty($category) && empty($supplier)) {
+        if (empty($manufacturer) && empty($category) && empty($supplier) && empty($attributes)) {
             $this->context->buildViolation($this->translator->trans('At least one product segment must be selected.', [], 'Admin.Notifications.Error'))
                 ->addViolation();
         }

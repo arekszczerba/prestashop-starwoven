@@ -209,6 +209,7 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
                 $manufacturer = $data['conditions']['cart_conditions']['product_segment']['manufacturer'] ?? [];
                 $category = $data['conditions']['cart_conditions']['product_segment']['category'] ?? '';
                 $supplier = $data['conditions']['cart_conditions']['product_segment']['supplier'] ?? [];
+                $attributes = $data['conditions']['cart_conditions']['product_segment']['attributes']['item_groups'] ?? [];
                 $productRuleGroups = [];
                 if (!empty($manufacturer)) {
                     $productRuleGroups[] = new ProductRuleGroup(
@@ -233,6 +234,20 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
                             new ProductRule(ProductRuleType::SUPPLIERS, [(int) $supplier]),
                         ]
                     );
+                }
+                if (!empty($attributes)) {
+                    // We create a ProductRuleGroup for each attribute group, with multiple attribute IDs
+                    foreach ($attributes as $groupName => $attributesByGroup) {
+                        $productRuleGroups[] = new ProductRuleGroup(
+                            $data['conditions']['cart_conditions']['product_segment']['quantity'],
+                            [
+                                new ProductRule(
+                                    ProductRuleType::ATTRIBUTES,
+                                    array_map(fn (array $attribute) => (int) $attribute['id'], $attributesByGroup),
+                                ),
+                            ]
+                        );
+                    }
                 }
 
                 if (!empty($productRuleGroups)) {
