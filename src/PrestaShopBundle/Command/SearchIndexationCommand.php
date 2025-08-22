@@ -32,6 +32,9 @@ use PrestaShop\PrestaShop\Core\CommandBus\CommandBusInterface;
 use PrestaShop\PrestaShop\Core\Domain\Product\Exception\ProductConstraintException;
 use PrestaShop\PrestaShop\Core\Domain\Product\ValueObject\ProductId;
 use PrestaShop\PrestaShop\Core\Domain\Search\Command\SearchIndexationCommand as SearchIndexationCommandBus;
+use PrestaShop\PrestaShop\Core\Domain\Search\Exception\SearchIndexationProductNotFoundException;
+use PrestaShop\PrestaShop\Core\Domain\Search\Exception\SearchIndexationShopGroupNotFoundException;
+use PrestaShop\PrestaShop\Core\Domain\Search\Exception\SearchIndexationShopNotFoundException;
 use PrestaShop\PrestaShop\Core\Domain\Shop\Exception\ShopException;
 use PrestaShop\PrestaShop\Core\Domain\Shop\ValueObject\ShopConstraint;
 use Symfony\Component\Console\Command\Command;
@@ -39,6 +42,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Throwable;
 
 /**
  * CLI command to index search.
@@ -55,10 +59,10 @@ class SearchIndexationCommand extends Command
         $this
             ->setName('prestashop:search:index')
             ->setDescription('Index products for search')
-            ->addOption('full', null, InputOption::VALUE_NONE, 'Rebuild whole index')
-            ->addOption('shop-id', null, InputOption::VALUE_REQUIRED, 'Shop ID to index')
-            ->addOption('shop-group-id', null, InputOption::VALUE_REQUIRED, 'Shop group ID to index')
-            ->addOption('product-id', null, InputOption::VALUE_REQUIRED, 'Product ID to index');
+            ->addOption('full', 'f', InputOption::VALUE_NONE, 'Rebuild whole index')
+            ->addOption('shop-id', 's', InputOption::VALUE_REQUIRED, 'Shop ID to index')
+            ->addOption('shop-group-id', 'g', InputOption::VALUE_REQUIRED, 'Shop group ID to index')
+            ->addOption('product-id', 'p', InputOption::VALUE_REQUIRED, 'Product ID to index');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -98,9 +102,19 @@ class SearchIndexationCommand extends Command
                 return self::FAILURE;
             }
         }
-        $this->commandBus->handle(new SearchIndexationCommandBus($full, $shopConstraint, $productId));
 
-        $io->success('Search indexation complete.');
+        try {
+            $this->commandBus->handle(new SearchIndexationCommandBus($full, $shopConstraint, $productId));
+            $io->success('Search indexation complete.');
+        } catch (SearchIndexationProductNotFoundException $e) {
+            $io->error(sprintf('Product #%s not found', $e->getProductId()->getValue()));
+        } catch (SearchIndexationShopNotFoundException $e) {
+            $io->error(sprintf('Shop #%s not found', $e->getShopId()->getValue()));
+        } catch (SearchIndexationShopGroupNotFoundException $e) {
+            $io->error(sprintf('Shop group #%s not found', $e->getShopGroupId()->getValue()));
+        } catch (Throwable $e) {
+            $io->error($e->getMessage());
+        }
 
         return self::SUCCESS;
     }
