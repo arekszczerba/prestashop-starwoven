@@ -20,6 +20,10 @@ Feature: Add discount with attribute trigger on FO
     And attribute "Camel" named "Camel" in en language exists
     And attribute "Orange" named "Orange" in en language exists
 
+  #
+  # This is an initialisation step, but we do not do it in the background because background steps are repeated
+  # for all scenarios, and we want to keep the same product data for more efficiency
+  #
   Scenario: First create products that will be used in following scenarios
     # One product with multiple attributes but from one group
     Given I add product "metalTshirt" with following information:
@@ -121,7 +125,7 @@ Feature: Add discount with attribute trigger on FO
       | shipping       | $7.00  |
       | total_discount | $0.00  |
       | total          | $19.00 |
-    # Now I re-use the discount and it should work
+    # Now I re-try the discount and it should work
     When I use a voucher "discount_with_two_attributes" on the cart "first_cart"
     And cart "first_cart" total with tax included should be '$16.00'
     And my cart "first_cart" should have the following details:
@@ -138,11 +142,14 @@ Feature: Add discount with attribute trigger on FO
     Then discount "discount_with_two_attributes" should have the following product conditions matching at least 2 products:
       | condition_type | items |
       | attributes     | S,L   |
-    # Create a new cart
+    # Create a new cart (we need to create a new one because the first cart was not updated and still has the discount applied
+    # even if the quantity no longer matches)
     Given I create an empty cart "second_cart" for customer "testCustomer"
+    # One product matching the condition is not enough
     And I add 1 combination "metalTshirtS" from product "metalTshirt" to the cart "second_cart"
     When I use a voucher "discount_with_two_attributes" on the cart "second_cart"
     Then I should get cart rule validation error
+    # If I add a second product matching the other attribute then we're good
     Then I add 1 combination "metalTshirtL" from product "metalTshirt" to the cart "second_cart"
     When I use a voucher "discount_with_two_attributes" on the cart "second_cart"
     Then cart "second_cart" total with tax included should be '$28.00'
@@ -152,6 +159,8 @@ Feature: Add discount with attribute trigger on FO
       | total_discount | -$3.00 |
       | total          | $28.00 |
 
+  # This scenario is not possible with the form right now, but we check its validity for a more generic validation of the feature
+  # This kind of conditions could be created by alternative modules or via the Admin API
   Scenario: Test discount that gives a cart level discount when attributes match but from different groups
     When I create a "cart_level" discount "discount_with_different_groups" with following properties:
       | name[en-US]        | Promotion                      |
@@ -188,13 +197,14 @@ Feature: Add discount with attribute trigger on FO
     Then I delete combination metalTshirtL from product metalTshirt from cart third_cart
     And I add 1 combination "metalTshirtS" from product "metalTshirt" to the cart "third_cart"
     And I add 1 combination "metalSweatMRed" from product "metalSweat" to the cart "third_cart"
-    # Discount has been removed and cart is updated
+    # Discount has been removed (when the initial product was removed) and cart is updated
     And cart "third_cart" total with tax included should be '$37.00'
     And my cart "third_cart" should have the following details:
       | total_products | $30.00 |
       | shipping       | $7.00  |
       | total_discount | $0.00  |
       | total          | $37.00 |
+    # The condition works for two different attributes, even when they are from different groups
     When I use a voucher "discount_with_different_groups" on the cart "third_cart"
     Then cart "third_cart" total with tax included should be '$33.00'
     And my cart "third_cart" should have the following details:
@@ -221,7 +231,7 @@ Feature: Add discount with attribute trigger on FO
       | attributes     | L     |
       | attributes     | Red   |
     Given I create an empty cart "fourth_cart" for customer "testCustomer"
-    # Product with only L is not enough
+    # Product with only L is not enough (tshirt has no color so it can never match with Red)
     When I add 1 combination "metalTshirtL" from product "metalTshirt" to the cart "fourth_cart"
     And cart "fourth_cart" total with tax included should be '$19.00'
     Then my cart "fourth_cart" should have the following details:
@@ -231,7 +241,7 @@ Feature: Add discount with attribute trigger on FO
       | total          | $19.00 |
     When I use a voucher "discount_with_l_and_red" on the cart "fourth_cart"
     Then I should get cart rule validation error
-    # Product with only Red is not enough
+    # Product with only Red (but not L) is not enough
     Then I delete combination metalTshirtL from product metalTshirt from cart fourth_cart
     And I add 1 combination "metalSweatMRed" from product "metalSweat" to the cart "fourth_cart"
     Then cart "fourth_cart" total with tax included should be '$25.00'
@@ -242,8 +252,20 @@ Feature: Add discount with attribute trigger on FO
       | total          | $25.00 |
     When I use a voucher "discount_with_l_and_red" on the cart "fourth_cart"
     Then I should get cart rule validation error
+    # Add another product Orange (so not Red) but L, it should not work because we expect the condition to
+    # be met by one product specifically not by combining the attributes of all products
+    And I add 1 combination "metalSweatLOrange" from product "metalSweat" to the cart "fourth_cart"
+    Then cart "fourth_cart" total with tax included should be '$43.00'
+    And my cart "fourth_cart" should have the following details:
+      | total_products | $36.00 |
+      | shipping       | $7.00  |
+      | total_discount | $0.00  |
+      | total          | $43.00 |
+    When I use a voucher "discount_with_l_and_red" on the cart "fourth_cart"
+    Then I should get cart rule validation error
     # Now let's try with a product L AND Red
     Then I delete combination metalSweatMRed from product metalSweat from cart fourth_cart
+    And I delete combination metalSweatLOrange from product metalSweat from cart fourth_cart
     And I add 1 combination "metalSweatLRed" from product "metalSweat" to the cart "fourth_cart"
     Then cart "fourth_cart" total with tax included should be '$25.00'
     And my cart "fourth_cart" should have the following details:
@@ -263,7 +285,7 @@ Feature: Add discount with attribute trigger on FO
     When I create a "cart_level" discount "discount_with_s_or_l_and_orange_or_red" with following properties:
       | name[en-US]        | Promotion                              |
       | name[fr-FR]        | Promotion                              |
-      | code               | discount_with_s_or_l_and_orange_or_red |
+      | code               | DISCOUNT_WITH_S_OR_L_AND_ORANGE_OR_RED |
       | active             | true                                   |
       | reduction_amount   | 6.0                                    |
       | reduction_currency | usd                                    |
@@ -333,3 +355,50 @@ Feature: Add discount with attribute trigger on FO
       | shipping       | $7.00  |
       | total_discount | -$6.00 |
       | total          | $37.00 |
+
+  Scenario: Test discount that gives a cart level discount with 1 product that must Black and S or L
+    When I create a "cart_level" discount "discount_with_black_and_s_or_l" with following properties:
+      | name[en-US]        | Promotion                      |
+      | name[fr-FR]        | Promotion                      |
+      | code               | DISCOUNT_WITH_BLACK_AND_S_OR_L |
+      | active             | true                           |
+      | reduction_amount   | 7.0                            |
+      | reduction_currency | usd                            |
+      | taxIncluded        | true                           |
+    When I update discount "discount_with_black_and_s_or_l" with following conditions matching at least 1 products:
+      | condition_type | items |
+      | attributes     | S,L   |
+      | attributes     | Black |
+    Then discount "discount_with_black_and_s_or_l" should have the following product conditions matching at least 1 products:
+      | condition_type | items |
+      | attributes     | S,L   |
+      | attributes     | Black |
+    Given I create an empty cart "sixth_cart" for customer "testCustomer"
+    # Two products one with Black the other with S, should not work
+    When I add 1 combination "metalSweatSOrange" from product "metalSweat" to the cart "sixth_cart"
+    And I add 1 combination "metalSweatMBlack" from product "metalSweat" to the cart "sixth_cart"
+    Then cart "sixth_cart" total with tax included should be '$43.00'
+    And my cart "sixth_cart" should have the following details:
+      | total_products | $36.00 |
+      | shipping       | $7.00  |
+      | total_discount | $0.00  |
+      | total          | $43.00 |
+    When I use a voucher "discount_with_black_and_s_or_l" on the cart "sixth_cart"
+    Then I should get cart rule validation error
+    # One product with Black AND L it should work
+    Then I delete combination metalSweatSOrange from product metalSweat from cart sixth_cart
+    And I delete combination metalSweatMBlack from product metalSweat from cart sixth_cart
+    And I add 1 combination "metalSweatLBlack" from product "metalSweat" to the cart "sixth_cart"
+    Then cart "sixth_cart" total with tax included should be '$25.00'
+    And my cart "sixth_cart" should have the following details:
+      | total_products | $18.00 |
+      | shipping       | $7.00  |
+      | total_discount | $0.00  |
+      | total          | $25.00 |
+    When I use a voucher "discount_with_black_and_s_or_l" on the cart "sixth_cart"
+    Then cart "sixth_cart" total with tax included should be '$18.00'
+    And my cart "sixth_cart" should have the following details:
+      | total_products | $18.00 |
+      | shipping       | $7.00  |
+      | total_discount | -$7.00 |
+      | total          | $18.00 |

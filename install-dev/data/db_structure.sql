@@ -264,6 +264,9 @@ CREATE TABLE `PREFIX_cart_rule_product_rule_group` (
   `id_product_rule_group` int(10) unsigned NOT NULL auto_increment,
   `id_cart_rule` int(10) unsigned NOT NULL,
   `quantity` int(10) unsigned NOT NULL DEFAULT 1,
+  `type` ENUM(
+    'at_least_one_product_rule', 'all_product_rules'
+  ) NOT NULL DEFAULT 'at_least_one_product_rule',
   PRIMARY KEY (`id_product_rule_group`)
 ) ENGINE=ENGINE_TYPE DEFAULT CHARSET=utf8mb4 COLLATION;
 

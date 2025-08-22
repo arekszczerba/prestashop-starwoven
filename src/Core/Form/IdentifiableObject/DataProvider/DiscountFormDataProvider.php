@@ -299,6 +299,7 @@ class DiscountFormDataProvider implements FormDataProviderInterface
             'quantity' => 0,
         ];
 
+        // We can loop through all the rule groups but there should be only one anyway
         foreach ($discountForEditing->getProductConditions() as $condition) {
             foreach ($condition->getRules() as $rule) {
                 if ($rule->getType() === ProductRuleType::MANUFACTURERS) {
