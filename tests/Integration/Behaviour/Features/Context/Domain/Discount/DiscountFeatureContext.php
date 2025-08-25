@@ -410,6 +410,9 @@ class DiscountFeatureContext extends AbstractDomainFeatureContext
         if (isset($expectedData['carriers'])) {
             Assert::assertSame($this->referencesToIds($expectedData['carriers']), $discountForEditing->getCarrierIds(), 'Unexpected carriers');
         }
+        if (isset($expectedData['countries'])) {
+            Assert::assertSame($this->referencesToIds($expectedData['countries']), $discountForEditing->getCountryIds(), 'Unexpected countries');
+        }
     }
 
     protected function getDiscountForEditing(string $discountReference): DiscountForEditing

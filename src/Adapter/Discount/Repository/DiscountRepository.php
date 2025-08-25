@@ -156,6 +156,19 @@ class DiscountRepository extends AbstractObjectModelRepository
         return array_map(fn (array $row) => (int) $row['id_carrier'], $qb->executeQuery()->fetchAllAssociative());
     }
 
+    public function getCountries(DiscountId $discountId)
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $qb
+            ->select('*')
+            ->from($this->dbPrefix . 'cart_rule_country', 'crc')
+            ->where('crc.id_cart_rule = :discountId')
+            ->setparameter('discountId', $discountId->getValue())
+        ;
+
+        return array_map(fn (array $row) => (int) $row['id_country'], $qb->executeQuery()->fetchAllAssociative());
+    }
+
     /**
      * Returns the ID of a discount by its code.
      * null is returned if the discount does not exist.

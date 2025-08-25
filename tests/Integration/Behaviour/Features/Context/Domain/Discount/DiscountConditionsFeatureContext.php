@@ -128,6 +128,21 @@ class DiscountConditionsFeatureContext extends AbstractDomainFeatureContext
     }
 
     /**
+     * @When I update discount :discountReference with conditions based on countries :countryReferences
+     *
+     * @param string $discountReference
+     * @param string $countryReferences
+     *
+     * @return void
+     */
+    public function updateDiscountCountryConditions(string $discountReference, string $countryReferences): void
+    {
+        $command = new UpdateDiscountConditionsCommand($this->referenceToId($discountReference));
+        $command->setCountryIds($this->referencesToIds($countryReferences));
+        $this->getCommandBus()->handle($command);
+    }
+
+    /**
      * @Then discount :discountReference should have the following product conditions matching at least :quantity products:
      *
      * @param string $discountReference

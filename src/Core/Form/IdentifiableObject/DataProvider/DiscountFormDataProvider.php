@@ -114,6 +114,9 @@ class DiscountFormDataProvider implements FormDataProviderInterface
         } elseif (!empty($discountForEditing->getCarrierIds())) {
             $selectedCondition = DiscountConditionsType::DELIVERY_CONDITIONS;
             $selectedDeliveryCondition = DeliveryConditionsType::CARRIERS;
+        } elseif (!empty($discountForEditing->getCountryIds())) {
+            $selectedCondition = DiscountConditionsType::DELIVERY_CONDITIONS;
+            $selectedDeliveryCondition = DeliveryConditionsType::COUNTRY;
         }
 
         return [
@@ -156,6 +159,7 @@ class DiscountFormDataProvider implements FormDataProviderInterface
                 DiscountConditionsType::DELIVERY_CONDITIONS => [
                     'children_selector' => $selectedDeliveryCondition,
                     DeliveryConditionsType::CARRIERS => $discountForEditing->getCarrierIds(),
+                    DeliveryConditionsType::COUNTRY => $discountForEditing->getCountryIds(),
                 ],
             ],
             'usability' => [

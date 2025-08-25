@@ -51,6 +51,7 @@ class GetDiscountForEditingHandler implements GetDiscountForEditingHandlerInterf
         $cartRule = $this->discountRepository->get($query->getDiscountId());
         $discountConditions = $this->discountRepository->getProductRulesGroup($query->getDiscountId());
         $carrierIds = $this->discountRepository->getCarriers($query->getDiscountId());
+        $countryIds = $this->discountRepository->getCountries($query->getDiscountId());
 
         return new DiscountForEditing(
             $query->getDiscountId()->getValue(),
@@ -80,7 +81,8 @@ class GetDiscountForEditingHandler implements GetDiscountForEditingHandlerInterf
             $cartRule->minimum_amount_currency,
             $cartRule->minimum_amount_tax,
             $cartRule->minimum_amount_shipping,
-            $carrierIds
+            $carrierIds,
+            $countryIds,
         );
     }
 }

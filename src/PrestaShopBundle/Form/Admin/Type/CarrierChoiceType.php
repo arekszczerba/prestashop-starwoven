@@ -27,6 +27,7 @@
 namespace PrestaShopBundle\Form\Admin\Type;
 
 use PrestaShop\PrestaShop\Core\Form\FormChoiceProviderInterface;
+use PrestaShop\PrestaShop\Core\Image\ImageProviderInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -35,6 +36,7 @@ class CarrierChoiceType extends AbstractType
 {
     public function __construct(
         private readonly FormChoiceProviderInterface $carrierChoiceProvider,
+        private readonly ImageProviderInterface $carrierLogoProvider,
     ) {
     }
 
@@ -43,9 +45,23 @@ class CarrierChoiceType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver): void
     {
+        $carriers = $this->carrierChoiceProvider->getChoices();
         $resolver->setDefaults([
-            'choices' => $this->carrierChoiceProvider->getChoices(),
+            'choices' => $carriers,
+            'choice_attr' => $this->formatChoicesAttr($carriers),
         ]);
+    }
+
+    private function formatChoicesAttr(array $carriers): array
+    {
+        $choicesAttr = [];
+        foreach ($carriers as $name => $id) {
+            $choicesAttr[$name] = [
+                'data-logo' => $this->carrierLogoProvider->getPath($id),
+            ];
+        }
+
+        return $choicesAttr;
     }
 
     /**
