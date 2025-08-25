@@ -28,7 +28,7 @@ namespace PrestaShopBundle\Form\Admin\Sell\Discount;
 
 use PrestaShopBundle\Form\Admin\Sell\Product\Description\ManufacturerType;
 use PrestaShopBundle\Form\Admin\Type\CategoryChoiceTreeType;
-use PrestaShopBundle\Form\Admin\Type\GroupedItemsType;
+use PrestaShopBundle\Form\Admin\Type\GroupedItemCollectionType;
 use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -62,7 +62,7 @@ class DiscountProductSegmentType extends TranslatorAwareType
                 'label' => $this->trans('Supplier', 'Admin.Catalog.Feature'),
                 'required' => false,
             ])
-            ->add(self::ATTRIBUTES, GroupedItemsType::class, [
+            ->add(self::ATTRIBUTES, GroupedItemCollectionType::class, [
                 'label' => $this->trans('Attributes', 'Admin.Catalog.Feature'),
                 'label_tag_name' => 'h3',
                 'select_button_label' => $this->trans('Select attributes', 'Admin.Catalog.Feature'),

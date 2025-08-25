@@ -27,7 +27,7 @@ import PriceReductionManager from '@components/form/price-reduction-manager';
 import DiscountMap from '@pages/discount/discount-map';
 import CreateFreeGiftDiscount from '@pages/discount/form/create-free-gift-discount';
 import SpecificProducts from '@pages/discount/form/specific-products';
-import initGroupedItemSelector from '@PSVue/components/grouped-items-selector';
+import initGroupedItemCollection from '@PSVue/components/grouped-item-collection';
 import {getAllAttributeGroups} from '@pages/discount/form/services';
 
 $(() => {
@@ -104,5 +104,5 @@ $(() => {
 
   new window.prestashop.component.ChoiceTree(DiscountMap.categoryTree);
 
-  initGroupedItemSelector('#discount_conditions_cart_conditions_product_segment_attributes', getAllAttributeGroups);
+  initGroupedItemCollection('#discount_conditions_cart_conditions_product_segment_attributes', getAllAttributeGroups);
 });

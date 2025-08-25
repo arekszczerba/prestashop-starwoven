@@ -23,14 +23,14 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 import Router from '@components/router';
-import {Item, ItemGroup} from '@PSVue/components/grouped-items-selector/types';
+import {Item, ItemGroup} from '@PSVue/components/grouped-item-collection/types';
 
 const router = new Router();
 const {$} = window;
 
 /**
  * Fetch all attribute groups and convert them into ItemGroup/Item expected by the
- * GroupedItemSelector component.
+ * GroupedItemCollection component.
  */
 export const getAllAttributeGroups = async (): Promise<Array<ItemGroup>> => {
   const attributeGroups = await $.get(router.generate('admin_all_attribute_groups'));

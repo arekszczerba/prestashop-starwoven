@@ -101,7 +101,7 @@ class DiscountFormDataProvider implements FormDataProviderInterface
             !empty($productSegment[DiscountProductSegmentType::MANUFACTURER])
             || !empty($productSegment[DiscountProductSegmentType::SUPPLIER])
             || !empty($productSegment[DiscountProductSegmentType::CATEGORY])
-            || !empty($productSegment[DiscountProductSegmentType::ATTRIBUTES]['item_groups'])
+            || !empty($productSegment[DiscountProductSegmentType::ATTRIBUTES]['groups'])
         ;
 
         $selectedCondition = 'none';
@@ -294,7 +294,7 @@ class DiscountFormDataProvider implements FormDataProviderInterface
             DiscountProductSegmentType::CATEGORY => '',
             DiscountProductSegmentType::SUPPLIER => 0,
             DiscountProductSegmentType::ATTRIBUTES => [
-                'item_groups' => [],
+                'groups' => [],
             ],
             'quantity' => 0,
         ];
@@ -319,7 +319,16 @@ class DiscountFormDataProvider implements FormDataProviderInterface
                     $attributesInfo = $this->attributeRepository->getAttributesInfoByAttributeIds($rule->getItemIds(), $this->languageContext->getId());
                     foreach ($rule->getItemIds() as $attributeId) {
                         $attributeInfo = $attributesInfo[$attributeId];
-                        $productSegment[DiscountProductSegmentType::ATTRIBUTES]['item_groups'][$attributeInfo['attribute_group_name']][] = [
+                        $groupId = $attributeInfo['id_attribute_group'];
+                        if (empty($productSegment[DiscountProductSegmentType::ATTRIBUTES]['groups'][$groupId])) {
+                            $productSegment[DiscountProductSegmentType::ATTRIBUTES]['groups'][$groupId] = [
+                                'id' => $groupId,
+                                'name' => $attributeInfo['attribute_group_name'],
+                                'items' => [],
+                            ];
+                        }
+
+                        $productSegment[DiscountProductSegmentType::ATTRIBUTES]['groups'][$groupId]['items'][] = [
                             'id' => $attributeId,
                             'name' => $attributeInfo['attribute_name'],
                         ];
