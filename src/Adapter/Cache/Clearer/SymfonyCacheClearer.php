@@ -93,7 +93,7 @@ final class SymfonyCacheClearer implements CacheClearerInterface
                         $cacheDir = $applicationKernel->getCacheDir();
 
                         if (!file_exists($cacheDir)) {
-                            $this->logger->info('SymfonyCacheClearer: No cache to clear for ' . $applicationKernel->getAppId() . ' env ' . $environment);
+                            $this->logInfo('SymfonyCacheClearer: No cache to clear for ' . $applicationKernel->getAppId() . ' env ' . $environment);
                             continue;
                         }
 
@@ -108,16 +108,16 @@ final class SymfonyCacheClearer implements CacheClearerInterface
                             exec($commandLine, $output, $result);
 
                             if ($result !== 0) {
-                                $this->logger->error('SymfonyCacheClearer: Could not clear cache for ' . $applicationKernel->getAppId() . ' env ' . $environment . ' result: ' . $result . ' output: ' . var_export($output, true));
+                                $this->logError('SymfonyCacheClearer: Could not clear cache for ' . $applicationKernel->getAppId() . ' env ' . $environment . ' result: ' . $result . ' output: ' . var_export($output, true));
                                 $this->manualClearCache($cacheDir);
                                 $this->unlockOtherCache($kernel, $applicationKernel->getEnvironment(), $applicationKernel->getAppId());
                                 continue;
                             } else {
-                                $this->logger->info('SymfonyCacheClearer: Successfully cleared cache for ' . $applicationKernel->getAppId() . ' env ' . $environment);
+                                $this->logInfo('SymfonyCacheClearer: Successfully cleared cache for ' . $applicationKernel->getAppId() . ' env ' . $environment);
                             }
                         } catch (Throwable $e) {
                             // Leave this loop instance since cache warmup is likely to fail as well
-                            $this->logger->error('SymfonyCacheClearer: Error while clearing cache for ' . $applicationKernel->getAppId() . ' env ' . $environment . ': ' . $e->getMessage());
+                            $this->logError('SymfonyCacheClearer: Error while clearing cache for ' . $applicationKernel->getAppId() . ' env ' . $environment . ': ' . $e->getMessage());
                             $this->manualClearCache($cacheDir);
                             $this->unlockOtherCache($kernel, $applicationKernel->getEnvironment(), $applicationKernel->getAppId());
                             continue;
@@ -138,19 +138,19 @@ final class SymfonyCacheClearer implements CacheClearerInterface
                             exec($commandLine, $output, $result);
 
                             if ($result !== 0) {
-                                $this->logger->error('SymfonyCacheClearer: Could not warm up cache for ' . $applicationKernel->getAppId() . ' env ' . $environment . ' result: ' . $result . ' output: ' . var_export($output, true));
+                                $this->logError('SymfonyCacheClearer: Could not warm up cache for ' . $applicationKernel->getAppId() . ' env ' . $environment . ' result: ' . $result . ' output: ' . var_export($output, true));
                             } else {
-                                $this->logger->info('SymfonyCacheClearer: Successfully warmed up cache for ' . $applicationKernel->getAppId() . ' env ' . $environment);
+                                $this->logInfo('SymfonyCacheClearer: Successfully warmed up cache for ' . $applicationKernel->getAppId() . ' env ' . $environment);
                             }
                         } catch (Throwable $e) {
-                            $this->logger->error('SymfonyCacheClearer: Error while warming up cache for ' . $applicationKernel->getAppId() . ' env ' . $environment . ': ' . $e->getMessage());
+                            $this->logError('SymfonyCacheClearer: Error while warming up cache for ' . $applicationKernel->getAppId() . ' env ' . $environment . ': ' . $e->getMessage());
                         }
 
                         $this->unlockOtherCache($kernel, $applicationKernel->getEnvironment(), $applicationKernel->getAppId());
                     }
                 }
             } catch (Throwable $e) {
-                $this->logger->error('SymfonyCacheClearer: Something went wrong while clearing cache: ' . $e->getMessage());
+                $this->logError('SymfonyCacheClearer: Something went wrong while clearing cache: ' . $e->getMessage());
             } finally {
                 Hook::exec('actionClearSf2Cache');
                 CacheClearLocker::unlock($kernel->getEnvironment(), $kernel->getAppId());
@@ -158,24 +158,42 @@ final class SymfonyCacheClearer implements CacheClearerInterface
         });
     }
 
+    protected function logError(string $message): void
+    {
+        try {
+            $this->logger->error($message);
+        } catch (Throwable) {
+            // Prevent the logger from raising an exception and breaking the cache clear
+        }
+    }
+
+    protected function logInfo(string $message): void
+    {
+        try {
+            $this->logger->info($message);
+        } catch (Throwable) {
+            // Prevent the logger from raising an exception and breaking the cache clear
+        }
+    }
+
     protected function manualClearCache(string $cacheDir): void
     {
         for ($i = 0; $i < self::MANUAL_REMOVAL_TRIALS; ++$i) {
             try {
-                $this->logger->info(sprintf('SymfonyCacheClearer: Trying manual removal %d/%d of cache folder %s', $i + 1, self::MANUAL_REMOVAL_TRIALS, $cacheDir));
+                $this->logInfo(sprintf('SymfonyCacheClearer: Trying manual removal %d/%d of cache folder %s', $i + 1, self::MANUAL_REMOVAL_TRIALS, $cacheDir));
                 $this->filesystem->remove($cacheDir);
                 if (!is_dir($cacheDir)) {
                     break;
                 }
             } catch (Throwable $e) {
-                $this->logger->error(sprintf('Error while removing cache folder: %s', $e->getMessage()));
+                $this->logError(sprintf('Error while removing cache folder: %s', $e->getMessage()));
             }
         }
 
         if (is_dir($cacheDir)) {
-            $this->logger->error(sprintf('Folder cache %s still present even after %d manual removals', $cacheDir, self::MANUAL_REMOVAL_TRIALS));
+            $this->logError(sprintf('Folder cache %s still present even after %d manual removals', $cacheDir, self::MANUAL_REMOVAL_TRIALS));
         } else {
-            $this->logger->info(sprintf('Cache folder %s successfully cleared manually', $cacheDir));
+            $this->logInfo(sprintf('Cache folder %s successfully cleared manually', $cacheDir));
         }
     }
 
