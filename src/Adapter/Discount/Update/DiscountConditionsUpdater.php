@@ -131,8 +131,14 @@ class DiscountConditionsUpdater
             $this->connection->createQueryBuilder()
                 ->insert($this->dbPrefix . 'cart_rule_product_rule_group')
                 ->values([
-                    'id_cart_rule' => (int) $discount->id,
+                    'id_cart_rule' => ':discountId',
+                    'quantity' => ':quantity',
+                    'type' => ':type',
+                ])
+                ->setParameters([
+                    'discountId' => (int) $discount->id,
                     'quantity' => $productRuleGroup->getQuantity(),
+                    'type' => $productRuleGroup->getType()->value,
                 ])
                 ->executeStatement()
             ;

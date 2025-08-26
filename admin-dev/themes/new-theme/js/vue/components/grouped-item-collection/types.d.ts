@@ -1,4 +1,3 @@
-<?php
 /**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
@@ -23,18 +22,36 @@
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
+import {AutoCompleteSearchConfig} from '@components/auto-complete-search';
+import PerfectScrollbar from '@node_modules/perfect-scrollbar';
+// @ts-ignore
+import Bloodhound from 'typeahead.js';
 
-namespace PrestaShop\PrestaShop\Core\Domain\Discount;
+interface GroupedItemCollectionModalStates {
+  itemGroups: Array<ItemGroup>,
+  isModalShown: boolean,
+  loading: boolean,
+}
 
-/**
- * Product rules target a type of entities, which are identified via this enum.
- */
-enum ProductRuleType: string
-{
-    case CATEGORIES = 'categories';
-    case PRODUCTS = 'products';
-    case COMBINATIONS = 'combinations';
-    case MANUFACTURERS = 'manufacturers';
-    case SUPPLIERS = 'suppliers';
-    case ATTRIBUTES = 'attributes';
+export interface GroupedItemsSelectorStates {
+  dataSetConfig: AutoCompleteSearchConfig | Record<string, any>;
+  searchSource: Bloodhound | null;
+  scrollbar: PerfectScrollbar | null;
+  searchableItems: Item[];
+}
+
+export interface ItemGroup {
+  id: number;
+  name: string;
+  items: Array<Item>;
+}
+
+export interface Item {
+  id: number;
+  name: string;
+  selected: boolean;
+  groupId: number;
+  groupName: string;
+  color: string|null;
+  texture: string|null;
 }

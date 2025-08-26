@@ -37,6 +37,7 @@ use PrestaShop\PrestaShop\Core\Domain\Discount\DiscountSettings;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Exception\DiscountConstraintException;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ProductRule;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ProductRuleGroup;
+use PrestaShop\PrestaShop\Core\Domain\Discount\ProductRuleGroupType;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ProductRuleType;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountId;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountType;
@@ -209,34 +210,39 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
                 $manufacturer = $data['conditions']['cart_conditions']['product_segment']['manufacturer'] ?? [];
                 $category = $data['conditions']['cart_conditions']['product_segment']['category'] ?? '';
                 $supplier = $data['conditions']['cart_conditions']['product_segment']['supplier'] ?? [];
-                $productRuleGroups = [];
+                $attributes = $data['conditions']['cart_conditions']['product_segment']['attributes']['groups'] ?? [];
+
+                $productRules = [];
                 if (!empty($manufacturer)) {
-                    $productRuleGroups[] = new ProductRuleGroup(
-                        $data['conditions']['cart_conditions']['product_segment']['quantity'],
-                        [
-                            new ProductRule(ProductRuleType::MANUFACTURERS, [(int) $manufacturer]),
-                        ]
-                    );
+                    $productRules[] = new ProductRule(ProductRuleType::MANUFACTURERS, [(int) $manufacturer]);
                 }
                 if (!empty($category)) {
-                    $productRuleGroups[] = new ProductRuleGroup(
-                        $data['conditions']['cart_conditions']['product_segment']['quantity'],
-                        [
-                            new ProductRule(ProductRuleType::CATEGORIES, [(int) $category]),
-                        ]
-                    );
+                    $productRules[] = new ProductRule(ProductRuleType::CATEGORIES, [(int) $category]);
                 }
                 if (!empty($supplier)) {
-                    $productRuleGroups[] = new ProductRuleGroup(
-                        $data['conditions']['cart_conditions']['product_segment']['quantity'],
-                        [
-                            new ProductRule(ProductRuleType::SUPPLIERS, [(int) $supplier]),
-                        ]
-                    );
+                    $productRules[] = new ProductRule(ProductRuleType::SUPPLIERS, [(int) $supplier]);
+                }
+                if (!empty($attributes)) {
+                    // We create a ProductRule for each attribute group, thus building more and more restrictive conditions
+                    // The values of each product rule is a range of possibility though
+                    foreach ($attributes as $attributesByGroup) {
+                        $productRules[] = new ProductRule(
+                            ProductRuleType::ATTRIBUTES,
+                            array_map(fn (array $attribute) => (int) $attribute['id'], $attributesByGroup['items']),
+                        );
+                    }
                 }
 
-                if (!empty($productRuleGroups)) {
-                    $conditionsCommand->setProductConditions($productRuleGroups);
+                if (!empty($productRules)) {
+                    $conditionsCommand->setProductConditions([
+                        new ProductRuleGroup(
+                            $data['conditions']['cart_conditions']['product_segment']['quantity'],
+                            $productRules,
+                            // CRITICAL: this is what makes the whole product rules cumulative and more and more restricting,
+                            // they must all be valid for the global rule group to be valid
+                            ProductRuleGroupType::ALL_PRODUCT_RULES,
+                        ),
+                    ]);
                 }
             }
         } elseif ($data['conditions']['children_selector'] === DiscountConditionsType::DELIVERY_CONDITIONS) {

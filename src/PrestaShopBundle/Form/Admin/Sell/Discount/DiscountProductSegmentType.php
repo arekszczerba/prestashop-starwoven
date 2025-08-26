@@ -28,6 +28,7 @@ namespace PrestaShopBundle\Form\Admin\Sell\Discount;
 
 use PrestaShopBundle\Form\Admin\Sell\Product\Description\ManufacturerType;
 use PrestaShopBundle\Form\Admin\Type\CategoryChoiceTreeType;
+use PrestaShopBundle\Form\Admin\Type\GroupedItemCollectionType;
 use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -43,6 +44,7 @@ class DiscountProductSegmentType extends TranslatorAwareType
     public const MANUFACTURER = 'manufacturer';
 
     public const SUPPLIER = 'supplier';
+    public const ATTRIBUTES = 'attributes';
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -53,10 +55,21 @@ class DiscountProductSegmentType extends TranslatorAwareType
             ])
             ->add(self::CATEGORY, CategoryChoiceTreeType::class, [
                 'label' => $this->trans('Category', 'Admin.Catalog.Feature'),
+                'label_tag_name' => 'h3',
                 'required' => false,
             ])
             ->add(self::SUPPLIER, DiscountSupplierType::class, [
                 'label' => $this->trans('Supplier', 'Admin.Catalog.Feature'),
+                'required' => false,
+            ])
+            ->add(self::ATTRIBUTES, GroupedItemCollectionType::class, [
+                'label' => $this->trans('Attributes', 'Admin.Catalog.Feature'),
+                'label_tag_name' => 'h3',
+                'select_button_label' => $this->trans('Select attributes', 'Admin.Catalog.Feature'),
+                'modal_search_placeholder' => $this->trans('Search for attribute...', 'Admin.Catalog.Feature'),
+                'modal_title' => $this->trans('Select attributes', 'Admin.Catalog.Feature'),
+                'modal_select_label' => $this->trans('Select {selectedItemsNb} attribute(s)', 'Admin.Catalog.Feature'),
+                'modal_loading' => $this->trans('Loading attributes', 'Admin.Catalog.Feature'),
                 'required' => false,
             ])
             ->add('quantity', IntegerType::class, [
@@ -67,7 +80,8 @@ class DiscountProductSegmentType extends TranslatorAwareType
                 'constraints' => [
                     new When(
                         expression: sprintf(
-                            'this.getParent().getParent().get("children_selector").getData() === "%s"',
+                            'this.getParent().getParent().getParent().get("children_selector").getData() === "%s" && this.getParent().getParent().get("children_selector").getData() === "%s"',
+                            DiscountConditionsType::CART_CONDITIONS,
                             CartConditionsType::PRODUCT_SEGMENT,
                         ),
                         constraints: [

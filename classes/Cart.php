@@ -3870,6 +3870,9 @@ class CartCore extends ObjectModel
             'invoice' => AddressFormat::getFormattedLayoutData($invoice),
         ];
 
+        // Get products before the total, this way if refresh was asked the total will be up-to-date
+        $products = $this->getProducts($refresh);
+
         $base_total_tax_inc = $this->getOrderTotal(true);
         $base_total_tax_exc = $this->getOrderTotal(false);
 
@@ -3878,8 +3881,6 @@ class CartCore extends ObjectModel
         if ($total_tax < 0) {
             $total_tax = 0;
         }
-
-        $products = $this->getProducts($refresh);
 
         foreach ($products as $key => &$product) {
             $product['price_without_quantity_discount'] = Product::getPriceStatic(
