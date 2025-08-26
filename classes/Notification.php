@@ -60,6 +60,12 @@ class NotificationCore
         return $notifications;
     }
 
+    /**
+     * getActiveLastElements returns all allowed notifications in the backoffice
+     * Get allowed notifications.
+     *
+     * @return array containing the notifications
+     */
     public function getActiveLastElements(): array
     {
         $types = array_flip($this->types);
