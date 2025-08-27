@@ -130,8 +130,9 @@ class CarrierController extends PrestaShopAdminController
         #[Autowire(service: 'prestashop.core.form.identifiable_object.handler.carrier_form_handler')]
         FormHandlerInterface $formHandler,
     ): Response {
+        $form = $formBuilder->getForm();
+
         try {
-            $form = $formBuilder->getForm();
             $form->handleRequest($request);
             $result = $formHandler->handle($form);
 
@@ -159,8 +160,9 @@ class CarrierController extends PrestaShopAdminController
         #[Autowire(service: 'prestashop.core.form.identifiable_object.handler.carrier_form_handler')]
         FormHandlerInterface $formHandler,
     ): Response {
+        $form = $formBuilder->getFormFor($carrierId);
+
         try {
-            $form = $formBuilder->getFormFor($carrierId);
             $form->handleRequest($request);
             $result = $formHandler->handleFor($carrierId, $form);
 
