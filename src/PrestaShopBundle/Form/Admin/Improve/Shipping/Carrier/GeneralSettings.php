@@ -40,6 +40,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Url;
+use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class GeneralSettings extends TranslatorAwareType
@@ -88,6 +89,13 @@ class GeneralSettings extends TranslatorAwareType
                 'attr' => [
                     'min' => 0,
                     'max' => 9,
+                ],
+                'constraints' => [
+                    new Range([
+                        'min' => 0,
+                        'max' => 9,
+                        'notInRangeMessage' => $this->trans('The grade must be between 0 and 9.', 'Admin.Shipping.Notification'),
+                    ]),
                 ],
             ])
             ->add('logo_preview', ImagePreviewType::class, [
