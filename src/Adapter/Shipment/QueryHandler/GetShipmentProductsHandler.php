@@ -37,7 +37,10 @@ use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentNotFoundExcepti
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentProducts;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryHandler\GetShipmentProductsHandlerInterface;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipmentProduct;
+use PrestaShop\PrestaShop\Core\Domain\Shop\ValueObject\ShopId;
 use PrestaShopBundle\Entity\Repository\ShipmentRepository;
+use Product;
+use RuntimeException;
 use Throwable;
 
 #[AsQueryHandler]
@@ -92,5 +95,25 @@ class GetShipmentProductsHandler implements GetShipmentProductsHandlerInterface
         }
 
         return $shipmentProducts;
+    }
+
+    /**
+     * Retrieve the product name for the current language. Throws exception if not found.
+     *
+     * @throws RuntimeException
+     */
+    private function getProductName(Product $product): string
+    {
+        if (is_array($product->name)) {
+            $languageId = $this->languageContext->getId();
+
+            if (!isset($product->name[$languageId])) {
+                throw new RuntimeException(sprintf('Product name not found for product ID %d and language ID %d.', $product->id, $languageId));
+            }
+
+            return $product->name[$languageId];
+        }
+
+        return $product->name;
     }
 }
