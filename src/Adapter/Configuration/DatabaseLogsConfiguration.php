@@ -24,47 +24,54 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 
-declare(strict_types=1);
+namespace PrestaShop\PrestaShop\Adapter\Configuration;
 
-namespace PrestaShopBundle\Form\Admin\Type;
-
-use PrestaShopLogger;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use PrestaShop\PrestaShop\Core\Configuration\DataConfigurationInterface;
+use PrestaShop\PrestaShop\Core\ConfigurationInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class LogSeverityChoiceType.
+ * This class will manage Logs configuration for a Shop.
  */
-class LogSeverityChoiceType extends TranslatorAwareType
+class DatabaseLogsConfiguration implements DataConfigurationInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults([
-            'choices' => $this->getSeveritysChoices(),
-            'required' => false,
-            'choice_translation_domain' => false,
-        ]);
+    public function __construct(
+        private ConfigurationInterface $configuration
+    ) {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getParent()
-    {
-        return ChoiceType::class;
-    }
-
-    private function getSeveritysChoices()
+    public function getConfiguration()
     {
         return [
-            $this->trans('Debug', 'Admin.Advparameters.Help') => PrestaShopLogger::LOG_SEVERITY_LEVEL_DEBUG,
-            $this->trans('Informative only', 'Admin.Advparameters.Help') => PrestaShopLogger::LOG_SEVERITY_LEVEL_INFORMATIVE,
-            $this->trans('Warning', 'Admin.Advparameters.Help') => PrestaShopLogger::LOG_SEVERITY_LEVEL_WARNING,
-            $this->trans('Error', 'Admin.Advparameters.Help') => PrestaShopLogger::LOG_SEVERITY_LEVEL_ERROR,
-            $this->trans('Major issue (crash)!', 'Admin.Advparameters.Help') => PrestaShopLogger::LOG_SEVERITY_LEVEL_MAJOR,
+            'database_min_logger_level' => (int) $this->configuration->get('PS_MIN_LOGGER_LEVEL_IN_DB'),
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function updateConfiguration(array $configuration)
+    {
+        if ($this->validateConfiguration($configuration)) {
+            $this->configuration->set('PS_MIN_LOGGER_LEVEL_IN_DB', (int) $configuration['database_min_logger_level']);
+        }
+
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function validateConfiguration(array $configuration)
+    {
+        $resolver = new OptionsResolver();
+        $resolver
+            ->setRequired(['database_min_logger_level'])
+            ->resolve($configuration);
+
+        return true;
     }
 }
