@@ -64,12 +64,16 @@ use Symfony\Component\HttpKernel\CacheClearer\CacheClearerInterface;
 class LegacyCacheClearer implements CacheClearerInterface
 {
     public function __construct(
-        private string $legacyCacheDir
+        protected readonly string $legacyCacheDir,
     ) {
     }
 
     public function clear(string $cacheDir)
     {
+        if (!is_dir($this->legacyCacheDir)) {
+            return;
+        }
+
         // We do not use the $cacheDir because it points to the Symfony cache folder, we use the
         // legacy path of the cache instead
         $kernelAppIds = [AdminKernel::APP_ID, AdminAPIKernel::APP_ID, FrontKernel::APP_ID];
