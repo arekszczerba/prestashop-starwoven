@@ -54,7 +54,7 @@
       {% if isMultiShipmentFeatureFlagIsEnabled and product.shipmentId is not empty %}
         <p class="mb-0 productShipmentNumber">
           {{ 'Shipment number: %shipment_id%'|trans({
-            '%shipment_id%' => product.shipmentId,
+              '%shipment_id%': product.shipmentId
           }, 'Admin.Orderscustomers.Feature') }}
         </p>
       {% endif %}
