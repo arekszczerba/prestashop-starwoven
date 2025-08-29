@@ -211,6 +211,9 @@ class CartCore extends ObjectModel
      */
     public function __construct($id = null, $idLang = null)
     {
+        $this->configuration = ServiceLocator::get('\\PrestaShop\\PrestaShop\\Core\\ConfigurationInterface');
+        $this->addressFactory = ServiceLocator::get('\\PrestaShop\\PrestaShop\\Adapter\\AddressFactory');
+        
         parent::__construct($id);
 
         if (null !== $idLang) {
@@ -233,9 +236,6 @@ class CartCore extends ObjectModel
         }
 
         $this->setTaxCalculationMethod();
-
-        $this->configuration = ServiceLocator::get('\\PrestaShop\\PrestaShop\\Core\\ConfigurationInterface');
-        $this->addressFactory = ServiceLocator::get('\\PrestaShop\\PrestaShop\\Adapter\\AddressFactory');
     }
 
     public static function resetStaticCache()
