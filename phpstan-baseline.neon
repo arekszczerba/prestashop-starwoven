@@ -1565,7 +1565,7 @@ parameters:
 			count: 1
 			path: src/PrestaShopBundle/Command/AboutCommand.php
 
-    -
+		-
 			message: "#^Parameter \\#1 \\$extractedModuleProperties of class PrestaShop\\\\PrestaShop\\\\Core\\\\Module\\\\Parser\\\\ModuleParser constructor expects array\\<string\\>, array\\<int, int\\> given\\.$#"
 			count: 1
 			path: tests/Unit/Core/Module/Parser/ModuleParserTest.php
