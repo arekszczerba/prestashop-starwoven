@@ -13,6 +13,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWD:-prestashop}
       MYSQL_DATABASE: ${DB_NAME:-prestashop}
+    command: --require_secure_transport=OFF
     restart: unless-stopped
     networks:
       - prestashop-network
@@ -56,7 +57,16 @@ services:
     depends_on:
       - mysql
     volumes:
-      - ./:/var/www/html:delegated
+      - ./:/var/www/html
+      # If you develop on Mac or Windows you can remove the vendor/ directory
+      # from the bind-mount for better performance by enabling the next line:
+      # - /var/www/html/vendor  
+      # - /var/www/html/var
+      # - /var/www/html/admin-dev/themes/default/node_modules
+      # - /var/www/html/admin-dev/themes/new-theme/node_modules
+      # - /var/www/html/themes/node_modules
+      # - /var/www/html/themes/classic/_dev/node_modules
+      # - /var/www/html/themes/hummingbird/node_modules
     networks:
       - prestashop-network
 

@@ -66,7 +66,7 @@ if [ "${DISABLE_MAKE}" != "1" ]; then
   chown -R www-data:www-data vendor modules themes
 
   echo "\n* Build assets ...";
-  runuser -g www-data -u www-data -- /usr/bin/make assets
+  runuser -g www-data -u www-data -- /var/www/html/tools/assets/build.sh
 
   echo "\n* Wait for assets built...";
   /usr/bin/make wait-assets
@@ -115,14 +115,14 @@ if [ ! -f ./app/config/parameters.php ]; then
             echo "\n* Drop & recreate mysql database...";
             if [ $DB_PASSWD = "" ]; then
                 echo "\n* Dropping existing database $DB_NAME..."
-                mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -e "drop database if exists $DB_NAME;"
+                mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER --ssl=0 -e "drop database if exists $DB_NAME;"
                 echo "\n* Creating database $DB_NAME..."
-                mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER create $DB_NAME --force;
+                mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER --ssl=0 create $DB_NAME --force;
             else
                 echo "\n* Dropping existing database $DB_NAME..."
-                mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD -e "drop database if exists $DB_NAME;"
+                mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD --ssl=0 -e "drop database if exists $DB_NAME;"
                 echo "\n* Creating database $DB_NAME..."
-                mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD create $DB_NAME --force;
+                mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD --ssl=0 create $DB_NAME --force;
             fi
         fi
 
