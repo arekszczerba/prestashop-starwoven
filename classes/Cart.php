@@ -213,7 +213,7 @@ class CartCore extends ObjectModel
     {
         $this->configuration = ServiceLocator::get('\\PrestaShop\\PrestaShop\\Core\\ConfigurationInterface');
         $this->addressFactory = ServiceLocator::get('\\PrestaShop\\PrestaShop\\Adapter\\AddressFactory');
-        
+
         parent::__construct($id);
 
         if (null !== $idLang) {
