@@ -45,11 +45,9 @@ Scenario: Get available carriers for existing order
     | s0_pickup_carrier   |
   Then the products "s0_product1, s0_product2, s0_product3" should have the following carriers with address "address1":
     | carrier           | state     | products                          |
-    | Click and collect | filtered  | bottle of whiskey                 |
     | s0_express        | filtered  | bottle of beer, bottle of whiskey |
+    | Click and collect | filtered  | bottle of whiskey                 |
     | My carrier        | filtered  | bottle of whiskey                 |
-    | My cheap carrier  | filtered  | bottle of whiskey                 |
-    | My light carrier  | filtered  | bottle of whiskey                 |
     | s0_standard       | available |                                   |
     | s0_pickup         | available |                                   |
 
