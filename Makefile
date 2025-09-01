@@ -32,11 +32,11 @@ docker-down: ## Stop the docker hub
 docker-logs: ## Show live logs
 	@$(DOCKER_COMP) logs --follow
 
-docker-sh: ## Connect to the PHP container
-	@$(PHP_CONT) sh
+docker-sh: ## Connect to the PHP container as www-data:www-data
+	@$(PHP_CONT) runuser -u www-data -g www-data -- sh
 
-docker-bash: ## Connect to the PHP container via bash so up and down arrows go to previous commands
-	@$(PHP_CONT) bash
+docker-bash: ## Connect to the PHP container via bash as www-data:www-data so up and down arrows go to previous commands
+	@$(PHP_CONT) runuser -u www-data -g www-data -- bash
 
 ## —— PrestaShop 🛒 ———————————————————————————————————————————————————————————
 install: composer assets  ## Install PHP dependencies and build the static assets
