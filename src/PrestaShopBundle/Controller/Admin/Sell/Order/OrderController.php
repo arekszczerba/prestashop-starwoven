@@ -841,25 +841,22 @@ class OrderController extends PrestaShopAdminController
         /** @var OrderShipmentProduct[] $orderShipmentProducts */
         $orderShipmentProducts = $this->dispatchQuery(new GetShipmentProducts($shipmentId));
 
-        foreach ($orderShipmentProducts as &$product) {
-            /** @var array{
-             * selected?: bool,
-             * selected_quantity?: int,
-             * order_detail_id: int,
-             * quantity: int,
-             * product_name: string,
-             * product_reference: string,
-             * product_image_path: string
-             * } $product */
-            $product = $product->toArray();
-            $id = $product['order_detail_id'] ?? null;
+        $mergedProducts = [];
+
+        foreach ($orderShipmentProducts as $product) {
+            $productArray = $product->toArray();
+            $id = $productArray['order_detail_id'] ?? null;
             if ($id !== null && isset($productsQueryMap[$id])) {
-                $product['product_id'] = $orderDetailRepository->get(new OrderDetailId($product['order_detail_id']))->product_id;
-                $product = array_merge($productsQueryMap[$id], $product);
+                $productArray['product_id'] = $orderDetailRepository
+                    ->get(new OrderDetailId($productArray['order_detail_id']))
+                    ->product_id;
+                $productArray = array_merge($productsQueryMap[$id], $productArray);
             }
+
+            $mergedProducts[] = $productArray;
         }
 
-        return $orderShipmentProducts;
+        return $mergedProducts;
     }
 
     /**
