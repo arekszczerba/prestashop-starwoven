@@ -96,17 +96,17 @@ test-unit: ## Run unit tests only
 	@$(COMPOSER) run unit-tests
 
 test-integration: ## Run integration tests only
-	composer run integration-tests
+	@$(COMPOSER) run integration-tests
 
 ## -- Code quality 🧹 ——————————————————————————————————————————————————————————
 cs-fixer: ## Run php-cs-fixer
-	./vendor/bin/php-cs-fixer fix
+	@$(COMPOSER) run php-cs-fixer
 
 cs-fixer-dry: ## Run php-cs-fixer with dry-run
-	./vendor/bin/php-cs-fixer fix --dry-run --diff
+	@$(COMPOSER) php-cs-fixer:dry
 
 phpstan: ## Run phpstan analysis
-	@./vendor/bin/phpstan analyse -c phpstan.neon.dist
+	@$(COMPOSER) run phpstan
 
 scss-fixer: ## Run scss-fix
 	cd admin-dev/themes/new-theme && npm run scss-fix

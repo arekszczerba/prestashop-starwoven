@@ -25,7 +25,7 @@ Complete guide for setting up and working with PrestaShop development environmen
 ```bash
 git clone https://github.com/PrestaShop/PrestaShop.git
 cd PrestaShop
-make start
+make docker-start
 ```
 
 ### 2. Access Your Installation
@@ -278,9 +278,9 @@ make admin-default
 
 2. **Reset database:**
    ```bash
-   make down
+   make docker-down
    docker volume rm prestashop_db-data
-   make up
+   make docker-up
    ```
 
 3. **Check database credentials:**
@@ -308,8 +308,8 @@ If your database is corrupted / data is lost, you can reset your data by running
 
 2. **Restart Docker containers:**
    ```bash
-   make down
-   make up
+   make docker-down
+   make docker-up
    ```
 
 #### Asset Build Fails
@@ -397,12 +397,12 @@ If your database is corrupted / data is lost, you can reset your data by running
 1. **Enable Xdebug:**
    ```bash
    export INSTALL_XDEBUG=true
-   make start
+   make docker-start
    ```
 
 2. **Check Xdebug configuration:**
    ```bash
-   make sh
+   make docker-sh
    php -i | grep xdebug
    ```
 
@@ -418,7 +418,7 @@ If your database is corrupted / data is lost, you can reset your data by running
 
 2. **Check test database:**
    ```bash
-   make sh
+   make docker-sh
    php bin/console doctrine:database:create --env=test
    ```
 
