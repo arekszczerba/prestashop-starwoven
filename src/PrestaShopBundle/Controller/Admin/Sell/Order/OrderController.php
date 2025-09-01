@@ -794,13 +794,8 @@ class OrderController extends PrestaShopAdminController
      */
     private function checkFormValidity(array $products): bool
     {
-//        dump($products);
         $allSelected = array_reduce($products, fn ($carry, $product) => $carry && ($product['selected'] ?? false), true);
         $allQuantitiesMatch = array_reduce($products, fn ($carry, $product) => $carry && (($product['selected_quantity'] ?? 0) === $product['quantity']), true);
-
-//        dump($allSelected);
-//        dump($allQuantitiesMatch);
-//        die();
 
         return !($allSelected && $allQuantitiesMatch);
     }
@@ -847,6 +842,15 @@ class OrderController extends PrestaShopAdminController
         $orderShipmentProducts = $this->dispatchQuery(new GetShipmentProducts($shipmentId));
 
         foreach ($orderShipmentProducts as &$product) {
+            /** @var array{
+             * selected?: bool,
+             * selected_quantity?: int,
+             * order_detail_id: int,
+             * quantity: int,
+             * product_name: string,
+             * product_reference: string,
+             * product_image_path: string
+             * } $product */
             $product = $product->toArray();
             $id = $product['order_detail_id'] ?? null;
             if ($id !== null && isset($productsQueryMap[$id])) {
