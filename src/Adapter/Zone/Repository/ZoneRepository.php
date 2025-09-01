@@ -46,10 +46,6 @@ class ZoneRepository extends AbstractObjectModelRepository
     }
 
     /**
-     * @param ZoneId $zoneId
-     *
-     * @return Zone
-     *
      * @throws ZoneNotFoundException
      */
     public function get(ZoneId $zoneId): Zone
@@ -65,10 +61,6 @@ class ZoneRepository extends AbstractObjectModelRepository
     }
 
     /**
-     * @param CountryId $countryId
-     *
-     * @return ZoneId
-     *
      * @throws ZoneNotFoundException
      */
     public function getZoneIdByCountryId(CountryId $countryId): ZoneId

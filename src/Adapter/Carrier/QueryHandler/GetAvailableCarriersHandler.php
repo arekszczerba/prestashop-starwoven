@@ -35,7 +35,6 @@ use PrestaShop\PrestaShop\Adapter\Zone\Repository\ZoneRepository;
 use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsQueryHandler;
 use PrestaShop\PrestaShop\Core\Context\LanguageContext;
 use PrestaShop\PrestaShop\Core\Context\ShopContext;
-use PrestaShop\PrestaShop\Core\Domain\Address\ValueObject\AddressId;
 use PrestaShop\PrestaShop\Core\Domain\Carrier\Query\GetAvailableCarriers;
 use PrestaShop\PrestaShop\Core\Domain\Carrier\QueryHandler\GetAvailableCarriersHandlerInterface;
 use PrestaShop\PrestaShop\Core\Domain\Carrier\QueryResult\CarrierSummary;
@@ -69,10 +68,6 @@ class GetAvailableCarriersHandler implements GetAvailableCarriersHandlerInterfac
 
     /**
      * Handle the query to retrieve available and filtered carriers based on products, delivery address and constraints.
-     *
-     * @param GetAvailableCarriers $query
-     *
-     * @return GetCarriersResult
      */
     public function handle(GetAvailableCarriers $query): GetCarriersResult
     {
@@ -84,10 +79,10 @@ class GetAvailableCarriersHandler implements GetAvailableCarriersHandlerInterfac
         $products = $this->loadProducts($productQuantities);
 
         // Validate and resolve address
-        $address = $this->getAddress($query->getAddressId());
+        $address = $this->addressRepository->get($query->getAddressId());
         $countryId = new CountryId($address->id_country);
-        $this->assertCountryIsActive($countryId);
-        $zoneId = $this->getZoneFromAddress($countryId);
+        $this->ensureCountryIsActive($countryId);
+        $zoneId = $this->zoneRepository->getZoneIdByCountryId($countryId);
 
         // Load carriers mapped per product
         $carriersMapping = $this->carrierRepository->findCarriersByProductIds($productIds, $shopId);
@@ -141,8 +136,8 @@ class GetAvailableCarriersHandler implements GetAvailableCarriersHandlerInterfac
     private function loadProducts(array $productQuantities): array
     {
         $products = [];
-        foreach ($productQuantities as $pq) {
-            $productId = $pq->getProductId();
+        foreach ($productQuantities as $productQuantity) {
+            $productId = $productQuantity->getProductId();
             $products[$productId->getValue()] = $this->productRepository->get(
                 $productId,
                 new ShopId($this->shopContext->getId())
@@ -155,32 +150,12 @@ class GetAvailableCarriersHandler implements GetAvailableCarriersHandlerInterfac
     /**
      * Ensures country is active.
      */
-    private function assertCountryIsActive(CountryId $countryId): void
+    private function ensureCountryIsActive(CountryId $countryId): void
     {
         $country = $this->countryRepository->get($countryId);
         if (!$country->active) {
             throw new RuntimeException('Country is not active for address.');
         }
-    }
-
-    /**
-     * Retrieves address from address ID.
-     */
-    private function getAddress(?AddressId $addressId): Address
-    {
-        if (!$addressId) {
-            throw new RuntimeException('No delivery address provided.');
-        }
-
-        return $this->addressRepository->get($addressId);
-    }
-
-    /**
-     * Retrieves shipping zone from country ID.
-     */
-    private function getZoneFromAddress(CountryId $countryId): ZoneId
-    {
-        return $this->zoneRepository->getZoneIdByCountryId($countryId);
     }
 
     /**
@@ -245,11 +220,8 @@ class GetAvailableCarriersHandler implements GetAvailableCarriersHandlerInterfac
      * Checks if a carrier is eligible for the current zone and constraints.
      *
      * @param array{id_carrier: int, name: string} $carrier
-     * @param ZoneId $zoneId
      * @param Product[] $products
      * @param ProductQuantity[] $quantities
-     *
-     * @return bool
      */
     private function isCarrierEligible(array $carrier, ZoneId $zoneId, array $products, array $quantities): bool
     {
@@ -260,24 +232,24 @@ class GetAvailableCarriersHandler implements GetAvailableCarriersHandlerInterfac
 
         // Compute total weight and max dimensions
         $totalWeight = 0;
-        $maxW = $maxH = $maxD = 0;
+        $maxWidth = $maxHeight = $maxDepth = 0;
 
-        foreach ($quantities as $pq) {
-            $product = $products[$pq->getProductId()->getValue()];
-            $qty = $pq->getQuantity();
+        foreach ($quantities as $productQuantity) {
+            $product = $products[$productQuantity->getProductId()->getValue()];
+            $quantity = $productQuantity->getQuantity();
 
-            $totalWeight += $product->weight * $qty;
-            $maxW = max($maxW, $product->width);
-            $maxH = max($maxH, $product->height);
-            $maxD = max($maxD, $product->depth);
+            $totalWeight += $product->weight * $quantity;
+            $maxWidth = max($maxWidth, $product->width);
+            $maxHeight = max($maxHeight, $product->height);
+            $maxDepth = max($maxDepth, $product->depth);
         }
 
         $limits = $this->carrierRepository->getCarrierConstraints(new CarrierId($carrier['id_carrier']));
 
         return $totalWeight <= $limits->maxWeight
-            && $maxW <= $limits->maxWidth
-            && $maxH <= $limits->maxHeight
-            && $maxD <= $limits->maxDepth;
+            && $maxWidth <= $limits->maxWidth
+            && $maxHeight <= $limits->maxHeight
+            && $maxDepth <= $limits->maxDepth;
     }
 
     /**
