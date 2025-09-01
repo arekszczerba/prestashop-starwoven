@@ -182,7 +182,9 @@ export default class SplitShipmentManager {
     const carrierSelect = this.form.querySelector(
       OrderViewPageMap.splitShipmentCarrierSelector,
     ) as HTMLSelectElement;
-    this.toggleSubmitButton(!!carrierSelect?.value);
+    const formIsValid = this.form.dataset.isValid;
+
+    this.toggleSubmitButton(!!carrierSelect?.value && !!formIsValid);
   }
 
   private handleFormChange = (): void => {

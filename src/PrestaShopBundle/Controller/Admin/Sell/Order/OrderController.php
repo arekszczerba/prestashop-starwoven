@@ -762,6 +762,8 @@ class OrderController extends PrestaShopAdminController
 
         $orderShipmentProducts = $this->mergeProductsFromQueries($shipmentId, $productsFromQuery, $orderDetailRepository);
 
+        $formIsValid = $this->checkFormValidity($orderShipmentProducts);
+
         $splitShipmentTypeForm = $this->createForm(SplitShipmentType::class, [
             'products' => $orderShipmentProducts,
             'carrier' => $selectedCarrier,
@@ -773,7 +775,34 @@ class OrderController extends PrestaShopAdminController
             'splitShipmentForm' => $splitShipmentTypeForm->createView(),
             'orderId' => $orderId,
             'shipmentId' => $shipmentId,
+            'formIsValid' => $formIsValid,
         ]);
+    }
+
+    /**
+     * @param array<array{
+     *      selected?: bool,
+     *      selected_quantity?: int,
+     *      order_detail_id: int,
+     *      quantity: int,
+     *      product_name: string,
+     *      product_reference: string,
+     *      product_image_path: string
+     *  }> $products
+     *
+     * @return bool
+     */
+    private function checkFormValidity(array $products): bool
+    {
+//        dump($products);
+        $allSelected = array_reduce($products, fn ($carry, $product) => $carry && ($product['selected'] ?? false), true);
+        $allQuantitiesMatch = array_reduce($products, fn ($carry, $product) => $carry && (($product['selected_quantity'] ?? 0) === $product['quantity']), true);
+
+//        dump($allSelected);
+//        dump($allQuantitiesMatch);
+//        die();
+
+        return !($allSelected && $allQuantitiesMatch);
     }
 
     /**
@@ -781,7 +810,15 @@ class OrderController extends PrestaShopAdminController
      * @param array<array{selected: string, selected_quantity: string, order_detail_id: string}> $productsFromQuery
      * @param OrderDetailRepository $orderDetailRepository
      *
-     * @return OrderShipmentProduct[]
+     * @return array<array{
+     *     selected?: bool,
+     *     selected_quantity?: int,
+     *     order_detail_id: int,
+     *     quantity: int,
+     *     product_name: string,
+     *     product_reference: string,
+     *     product_image_path: string
+     * }>
      *
      * @throws CoreException
      * @throws ShipmentException
@@ -814,7 +851,7 @@ class OrderController extends PrestaShopAdminController
             $id = $product['order_detail_id'] ?? null;
             if ($id !== null && isset($productsQueryMap[$id])) {
                 $product['product_id'] = $orderDetailRepository->get(new OrderDetailId($product['order_detail_id']))->product_id;
-                $product = array_merge($product, $productsQueryMap[$id]);
+                $product = array_merge($productsQueryMap[$id], $product);
             }
         }
 
