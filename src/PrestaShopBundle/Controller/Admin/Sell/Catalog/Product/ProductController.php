@@ -1881,7 +1881,13 @@ class ProductController extends PrestaShopAdminController
     }
 
     /**
-     * Displays a category tree.
+     * Displays a category tree (legacy).
+     *
+     * This action is kept for backward compatibility with pages
+     * that still rely on HelperTreeCategories.
+     *
+     * @todo Remove this method once all pages depending on
+     *       HelperTreeCategories have been migrated to Symfony.
      *
      * @param Request $request
      *
