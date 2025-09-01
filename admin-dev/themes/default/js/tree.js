@@ -194,7 +194,7 @@ Tree.prototype = {
       }
 
       $.get(
-        admin_category_tree,
+        'index.php',
         data,
         (content) => {
           targetTree.html(content);

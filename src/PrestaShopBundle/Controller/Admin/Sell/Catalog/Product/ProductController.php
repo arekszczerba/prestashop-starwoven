@@ -1888,7 +1888,7 @@ class ProductController extends PrestaShopAdminController
      * @return Response
      */
     #[AdminSecurity("is_granted('create', request.get('_legacy_controller')) || is_granted('update', request.get('_legacy_controller')) || is_granted('read', request.get('_legacy_controller'))")]
-    public function categoryTreeAction(
+    public function legacyCategoryTreeAction(
         Request $request,
     ): Response {
         $contextAdapter = $this->container->get(LegacyContext::class);
