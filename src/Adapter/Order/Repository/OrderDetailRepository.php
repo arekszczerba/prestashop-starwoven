@@ -24,40 +24,34 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 
-namespace PrestaShop\PrestaShop\Core\Domain\Carrier\QueryResult;
+namespace PrestaShop\PrestaShop\Adapter\Order\Repository;
 
-class CarrierSummary
+use OrderDetail;
+use PrestaShop\PrestaShop\Core\Domain\Order\Exception\OrderDetailNotFoundException;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\ValueObject\OrderDetailId;
+use PrestaShop\PrestaShop\Core\Exception\CoreException;
+use PrestaShop\PrestaShop\Core\Repository\AbstractObjectModelRepository;
+
+class OrderDetailRepository extends AbstractObjectModelRepository
 {
-    private int $id;
-    private string $name;
-
-    public function __construct(int $id, string $name)
-    {
-        $this->id = $id;
-        $this->name = $name;
-    }
-
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
     /**
-     * @return array{
-     *     id: int,
-     *     name: string
-     * }
+     * Gets legacy Order detail
+     *
+     * @param OrderDetailId $orderDetailId
+     *
+     * @return OrderDetail
+     *
+     * @throws CoreException
      */
-    public function toArray(): array
+    public function get(OrderDetailId $orderDetailId): OrderDetail
     {
-        return [
-            'id' => $this->getId(),
-            'name' => $this->getName(),
-        ];
+        /** @var OrderDetail $orderDetail */
+        $orderDetail = $this->getObjectModel(
+            $orderDetailId->getValue(),
+            OrderDetail::class,
+            OrderDetailNotFoundException::class
+        );
+
+        return $orderDetail;
     }
 }

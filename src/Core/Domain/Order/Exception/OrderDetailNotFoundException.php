@@ -24,40 +24,27 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 
-namespace PrestaShop\PrestaShop\Core\Domain\Carrier\QueryResult;
+namespace PrestaShop\PrestaShop\Core\Domain\Order\Exception;
 
-class CarrierSummary
+use Exception;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\ValueObject\OrderDetailId;
+
+/**
+ * Thrown when order detail is not found
+ */
+class OrderDetailNotFoundException extends OrderException
 {
-    private int $id;
-    private string $name;
-
-    public function __construct(int $id, string $name)
-    {
-        $this->id = $id;
-        $this->name = $name;
+    public function __construct(
+        private readonly ?OrderDetailId $orderDetailId = null,
+        string $message = '',
+        int $code = 0,
+        ?Exception $previous = null
+    ) {
+        parent::__construct($message, $code, $previous);
     }
 
-    public function getId(): int
+    public function getOrderDetailId(): ?OrderDetailId
     {
-        return $this->id;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return array{
-     *     id: int,
-     *     name: string
-     * }
-     */
-    public function toArray(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'name' => $this->getName(),
-        ];
+        return $this->orderDetailId;
     }
 }

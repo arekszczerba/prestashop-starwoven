@@ -697,3 +697,5 @@ services:
   PrestaShopBundle\Form\Admin\Sell\Order\Shipment\MergeShipmentType:
     arguments:
       $translator: '@translator'
+
+  PrestaShopBundle\Form\Admin\Sell\Order\Shipment\SplitShipmentType: ~

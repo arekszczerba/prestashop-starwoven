@@ -29,6 +29,7 @@ import InvoiceNoteManager from '@pages/order/invoice-note-manager';
 import OrderViewPage from '@pages/order/view/order-view-page';
 import OrderProductAutocomplete from '@pages/order/view/order-product-add-autocomplete';
 import OrderProductAdd from '@pages/order/view/order-product-add';
+import SplitShipmentManager from '@pages/order/split-shipment-manager';
 import OrderViewPageMessagesHandler from './message/order-view-page-messages-handler';
 import MergeShipmentManager from './merge-shipment-manager';
 
@@ -39,6 +40,7 @@ $(() => {
   const DISCOUNT_TYPE_PERCENT = 'percent';
   const DISCOUNT_TYPE_FREE_SHIPPING = 'free_shipping';
 
+  new SplitShipmentManager();
   new MergeShipmentManager();
   new OrderShippingManager();
 

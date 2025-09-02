@@ -191,6 +191,26 @@ admin_orders_update_invoice_note:
     orderId: \d+
     orderInvoiceId: \d+
 
+admin_orders_split_shipment:
+  path: /{orderId}/shipment/{shipmentId}/split
+  methods: [ POST ]
+  defaults:
+    _controller: PrestaShopBundle\Controller\Admin\Sell\Order\OrderController::splitShipmentAction
+  requirements:
+    orderId: \d+
+    shipmentId: \d+
+
+admin_orders_shipment_get_split_form:
+  path: /{orderId}/shipment/split-form
+  methods: [ GET ]
+  defaults:
+    _controller: PrestaShopBundle\Controller\Admin\Sell\Order\OrderController::getSplitShipmentForm
+  requirements:
+    orderId: \d+
+    shipmentId: \d+
+  options:
+    expose: true
+
 admin_orders_generate_invoice:
   path: /{orderId}/invoice
   methods: [ POST ]

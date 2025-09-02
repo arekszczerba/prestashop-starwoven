@@ -31,6 +31,7 @@ use Exception;
 use InvalidArgumentException;
 use PrestaShop\PrestaShop\Adapter\Currency\CurrencyDataProvider;
 use PrestaShop\PrestaShop\Adapter\LegacyContext;
+use PrestaShop\PrestaShop\Adapter\Order\Repository\OrderDetailRepository;
 use PrestaShop\PrestaShop\Adapter\PDF\OrderInvoicePdfGenerator;
 use PrestaShop\PrestaShop\Adapter\Tools;
 use PrestaShop\PrestaShop\Core\Action\ActionsBarButtonsCollection;
@@ -85,11 +86,15 @@ use PrestaShop\PrestaShop\Core\Domain\Product\Exception\ProductSearchEmptyPhrase
 use PrestaShop\PrestaShop\Core\Domain\Product\Query\SearchProducts;
 use PrestaShop\PrestaShop\Core\Domain\Product\QueryResult\FoundProduct;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\MergeProductsToShipment;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\SplitShipment;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentException;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentProducts;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipment;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipmentProduct;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\ValueObject\OrderDetailId;
 use PrestaShop\PrestaShop\Core\Domain\ValueObject\QuerySorting;
+use PrestaShop\PrestaShop\Core\Exception\CoreException;
 use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagSettings;
 use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagStateCheckerInterface;
 use PrestaShop\PrestaShop\Core\Form\ChoiceProvider\LanguageByIdChoiceProvider;
@@ -120,6 +125,7 @@ use PrestaShopBundle\Form\Admin\Sell\Order\InternalNoteType;
 use PrestaShopBundle\Form\Admin\Sell\Order\OrderMessageType;
 use PrestaShopBundle\Form\Admin\Sell\Order\OrderPaymentType;
 use PrestaShopBundle\Form\Admin\Sell\Order\Shipment\MergeShipmentType;
+use PrestaShopBundle\Form\Admin\Sell\Order\Shipment\SplitShipmentType;
 use PrestaShopBundle\Form\Admin\Sell\Order\UpdateOrderShippingType;
 use PrestaShopBundle\Form\Admin\Sell\Order\UpdateOrderStatusType;
 use PrestaShopBundle\Security\Attribute\AdminSecurity;
@@ -712,6 +718,145 @@ class OrderController extends PrestaShopAdminController
             'products' => $products,
             'shipments' => $shipments,
         ];
+    }
+
+    #[AdminSecurity("is_granted('update', 'AdminOrders')", redirectRoute: 'admin_orders_view', redirectQueryParamsToKeep: ['orderId'], message: 'You do not have permission to edit this.')]
+    public function splitShipmentAction(int $orderId, int $shipmentId, Request $request): RedirectResponse
+    {
+        $data = $request->get('split_shipment', []);
+        $carrier = isset($data['carrier']) ? (int) $data['carrier'] : null;
+
+        $productsRaw = $data['products'] ?? [];
+        $products = [];
+
+        foreach ($productsRaw as $prod) {
+            if (isset($prod['selected']) && (int) $prod['selected'] === 1) {
+                $products[] = [
+                    'id_order_detail' => (int) $prod['order_detail_id'],
+                    'quantity' => (int) $prod['selected_quantity'],
+                ];
+            }
+        }
+
+        $this->dispatchQuery(new SplitShipment($shipmentId, $products, $carrier));
+
+        return $this->redirectToRoute('admin_orders_view', [
+            'orderId' => $orderId,
+            'shipmentId' => $shipmentId,
+        ]);
+    }
+
+    /**
+     * @throws CoreException
+     * @throws Exception
+     */
+    #[AdminSecurity("is_granted('update', 'AdminOrders')", message: 'You do not have permission to show this.')]
+    public function getSplitShipmentForm(
+        int $orderId,
+        Request $request,
+        #[Autowire(service: 'PrestaShop\PrestaShop\Adapter\Order\Repository\OrderDetailRepository')] OrderDetailRepository $orderDetailRepository,
+    ): Response {
+        $shipmentId = $request->query->getInt('shipmentId');
+        $productsFromQuery = $request->get('products', []);
+        $selectedCarrier = $request->query->getInt('carrier');
+
+        $orderShipmentProducts = $this->mergeProductsFromQueries($shipmentId, $productsFromQuery, $orderDetailRepository);
+
+        $formIsValid = $this->checkFormValidity($orderShipmentProducts);
+
+        $splitShipmentTypeForm = $this->createForm(SplitShipmentType::class, [
+            'products' => $orderShipmentProducts,
+            'carrier' => $selectedCarrier,
+            'shipment_id' => $shipmentId,
+            'order_id' => $orderId,
+        ]);
+
+        return $this->render('@PrestaShop/Admin/Sell/Order/Order/Blocks/View/split_shipment_form.html.twig', [
+            'splitShipmentForm' => $splitShipmentTypeForm->createView(),
+            'orderId' => $orderId,
+            'shipmentId' => $shipmentId,
+            'formIsValid' => $formIsValid,
+        ]);
+    }
+
+    /**
+     * @param array<array{
+     *      selected?: bool,
+     *      selected_quantity?: int,
+     *      order_detail_id: int,
+     *      quantity: int,
+     *      product_name: string,
+     *      product_reference: string,
+     *      product_image_path: string
+     *  }> $products
+     *
+     * @return bool
+     */
+    private function checkFormValidity(array $products): bool
+    {
+        $allSelected = array_reduce($products, fn ($carry, $product) => $carry && ($product['selected'] ?? false), true);
+        $allQuantitiesMatch = array_reduce($products, fn ($carry, $product) => $carry && (($product['selected_quantity'] ?? 0) === $product['quantity']), true);
+
+        return !($allSelected && $allQuantitiesMatch);
+    }
+
+    /**
+     * @param int $shipmentId
+     * @param array<array{selected: string, selected_quantity: string, order_detail_id: string}> $productsFromQuery
+     * @param OrderDetailRepository $orderDetailRepository
+     *
+     * @return array<array{
+     *     selected?: bool,
+     *     selected_quantity?: int,
+     *     order_detail_id: int,
+     *     quantity: int,
+     *     product_name: string,
+     *     product_reference: string,
+     *     product_image_path: string
+     * }>
+     *
+     * @throws CoreException
+     * @throws ShipmentException
+     */
+    private function mergeProductsFromQueries(
+        int $shipmentId,
+        array $productsFromQuery,
+        OrderDetailRepository $orderDetailRepository,
+    ): array {
+        foreach ($productsFromQuery as &$product) {
+            if (isset($product['selected_quantity'])) {
+                $product['selected_quantity'] = (int) $product['selected_quantity'];
+            }
+            if (isset($product['selected'])) {
+                $product['selected'] = (bool) filter_var((int) $product['selected'], FILTER_VALIDATE_BOOLEAN);
+            }
+        }
+
+        $productsQueryMap = array_column(
+            $productsFromQuery,
+            null,
+            'order_detail_id'
+        );
+
+        /** @var OrderShipmentProduct[] $orderShipmentProducts */
+        $orderShipmentProducts = $this->dispatchQuery(new GetShipmentProducts($shipmentId));
+
+        $mergedProducts = [];
+
+        foreach ($orderShipmentProducts as $product) {
+            $productArray = $product->toArray();
+            $id = $productArray['order_detail_id'] ?? null;
+            if ($id !== null && isset($productsQueryMap[$id])) {
+                $productArray['product_id'] = $orderDetailRepository
+                    ->get(new OrderDetailId($productArray['order_detail_id']))
+                    ->product_id;
+                $productArray = array_merge($productsQueryMap[$id], $productArray);
+            }
+
+            $mergedProducts[] = $productArray;
+        }
+
+        return $mergedProducts;
     }
 
     /**
