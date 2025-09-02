@@ -25,7 +25,7 @@
 import Router from '@js/components/router';
 import OrderViewPageMap from './OrderViewPageMap';
 
-export default class MergeShipmentManager {
+export default class EditShipmentManager {
   private formRoute = 'admin_orders_shipment_get_edit_form';
 
   private shipmentId: number|null = null;
@@ -35,71 +35,54 @@ export default class MergeShipmentManager {
   private router = new Router();
 
   constructor() {
-    this.initMergeShipmentEventHandler();
+    this.initEditShipmentEventHandler();
   }
 
-  initMergeShipmentEventHandler(): void {
+  initEditShipmentEventHandler(): void {
     const mainDiv = document.querySelector(OrderViewPageMap.mainDiv);
 
     if (!mainDiv) {
       throw new Error(
         `Initialization failed: main container not found for selector "${
           OrderViewPageMap.mainDiv
-        }". The shipment merge feature cannot be initialized.`,
+        }". The shipment edit feature cannot be initialized.`,
       );
     }
-    mainDiv.addEventListener('click', this.onMergeShipmentClick);
+    console.log(mainDiv);
+    mainDiv.addEventListener('click', this.onEditShipmentClick);
   }
 
-  initSubmitMergeShipmentStateHandler(): void {
-    const submitBtnEl = document.querySelector(OrderViewPageMap.submitMergeShipment);
-    const shipmentSelectEl = document.querySelector(OrderViewPageMap.selectMergeShipment);
-    const checkboxes = document.querySelectorAll('.form-check-input');
+  initSubmitEditShipmentStateHandler(): void {
+    const submitBtnEl = document.querySelector(OrderViewPageMap.submitEditShipment);
 
-    if (!(submitBtnEl instanceof HTMLButtonElement)
-      || !(shipmentSelectEl instanceof HTMLSelectElement)
-      || checkboxes.length === 0) {
+    if (!(submitBtnEl instanceof HTMLButtonElement)) {
+      return;
+    }
+  }
+
+  onEditShipmentClick = (event: Event): void => {
+    const link = (event.target as HTMLElement).closest<HTMLAnchorElement>(OrderViewPageMap.showEditShipmentModalBtn);
+
+    if (!link) {
       return;
     }
 
-    const submitBtn = submitBtnEl;
-    const shipmentSelect = shipmentSelectEl;
-
-    function toggleSubmit() {
-      const atLeastOneChecked = Array.from(checkboxes).some((cb) => cb instanceof HTMLInputElement && cb.checked);
-
-      const shipmentSelected = shipmentSelect.value !== '';
-      submitBtn.disabled = !(atLeastOneChecked && shipmentSelected);
+    const { orderId, shipmentId } = link.dataset;
+    if (!orderId || !shipmentId) {
+      throw new Error('error while gettint orderId or shipmentId');
     }
 
-    checkboxes.forEach((cb) => cb.addEventListener('change', toggleSubmit));
-    shipmentSelect.addEventListener('change', toggleSubmit);
-    toggleSubmit();
-  }
+    this.orderId = Number(orderId);
+    this.shipmentId = Number(shipmentId);
 
-  onMergeShipmentClick = (event: Event): void => {
-    const target = event.target as HTMLElement;
-
-    if (target && target.matches(OrderViewPageMap.showMergeShipmentModalBtn)) {
-      if (!target.dataset.orderId) {
-        throw new Error('impossible to retrieve order id');
-      }
-      this.orderId = Number(target.dataset.orderId);
-
-      if (!target.dataset.shipmentId) {
-        throw new Error('impossible to retrieve shipment id');
-      }
-      this.shipmentId = Number(target.dataset.shipmentId);
-
-      this.refreshMergeShipmentForm();
-    }
+    this.refreshEditShipmentForm();
   };
 
-  async refreshMergeShipmentForm(): Promise<void> {
-    const modal = document.querySelector(OrderViewPageMap.mergeShipmentModal) as HTMLElement;
+  async refreshEditShipmentForm(): Promise<void> {
+    const modal = document.querySelector(OrderViewPageMap.editShipmentModal) as HTMLElement;
 
     if (!modal) {
-      throw new Error('Merge shipment modal not found.');
+      throw new Error('Edit shipment modal not found.');
     }
 
     modal.dataset.state = 'loading';
@@ -118,15 +101,14 @@ export default class MergeShipmentManager {
       if (!response.ok) {
         throw new Error(await response.text());
       }
-      const formContainer = document.querySelector(OrderViewPageMap.mergeShipmentModalContainer) as HTMLElement;
+      const formContainer = document.querySelector(OrderViewPageMap.editShipmentModalContainer) as HTMLElement;
       formContainer!.innerHTML = await response.text();
 
       modal.dataset.state = 'loaded';
 
       window.prestaShopUiKit.init();
-      this.initSubmitMergeShipmentStateHandler();
     } catch (error) {
-      console.error('Error while loading merge shipment form:', error);
+      console.error('Error while loading edit shipment form:', error);
     }
   }
 }

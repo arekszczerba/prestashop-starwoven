@@ -29,12 +29,14 @@ namespace PrestaShopBundle\Controller\Admin\Sell\Order;
 use Currency;
 use Exception;
 use InvalidArgumentException;
+use OrderDetail;
 use PrestaShop\PrestaShop\Adapter\Currency\CurrencyDataProvider;
 use PrestaShop\PrestaShop\Adapter\LegacyContext;
 use PrestaShop\PrestaShop\Adapter\Order\Repository\OrderDetailRepository;
 use PrestaShop\PrestaShop\Adapter\PDF\OrderInvoicePdfGenerator;
 use PrestaShop\PrestaShop\Adapter\Tools;
 use PrestaShop\PrestaShop\Core\Action\ActionsBarButtonsCollection;
+use PrestaShop\PrestaShop\Core\Domain\Carrier\Query\GetAvailableCarriers;
 use PrestaShop\PrestaShop\Core\Domain\Cart\Query\GetCartForOrderCreation;
 use PrestaShop\PrestaShop\Core\Domain\CartRule\Exception\InvalidCartRuleDiscountValueException;
 use PrestaShop\PrestaShop\Core\Domain\CustomerMessage\Command\AddOrderCustomerMessageCommand;
@@ -126,6 +128,7 @@ use PrestaShopBundle\Form\Admin\Sell\Order\OrderMessageType;
 use PrestaShopBundle\Form\Admin\Sell\Order\OrderPaymentType;
 use PrestaShopBundle\Form\Admin\Sell\Order\Shipment\MergeShipmentType;
 use PrestaShopBundle\Form\Admin\Sell\Order\Shipment\SplitShipmentType;
+use PrestaShopBundle\Form\Admin\Sell\Order\Shipment\EditShipmentType;
 use PrestaShopBundle\Form\Admin\Sell\Order\UpdateOrderShippingType;
 use PrestaShopBundle\Form\Admin\Sell\Order\UpdateOrderStatusType;
 use PrestaShopBundle\Security\Attribute\AdminSecurity;
@@ -649,6 +652,21 @@ class OrderController extends PrestaShopAdminController
         ]);
     }
 
+    #[AdminSecurity("is_granted('update', 'AdminOrders')", redirectRoute: 'admin_orders_view', redirectQueryParamsToKeep: ['orderId'], message: 'You do not have permission to edit this.')]
+    public function getEditShipmentForm(int $orderId, Request $request): Response
+    {
+        $shipmentId = (int) $request->query->get('shipmentId');
+        $formData = $this->getEditForm($orderId, $shipmentId);
+        $form = $this->createForm(EditShipmentType::class, $formData, ['order_id' => $orderId, 'shipment_id' => $shipmentId]);
+
+        return $this->render('@PrestaShop/Admin/Sell/Order/Order/Blocks/View/edit_shipment_form.html.twig', [
+            'editShipmentForm' => $form->createView(),
+            'shipmentInformation' => $form->getData(),
+            'orderId' => $orderId,
+            'shipmentId' => $shipmentId,
+        ]);
+    }
+
     /**
      * @param int $orderId
      * @param Request $request
@@ -695,6 +713,34 @@ class OrderController extends PrestaShopAdminController
             $selectedProducts
         );
         $this->dispatchCommand($command);
+
+        return $this->redirectToRoute('admin_orders_view', [
+            'orderId' => $orderId,
+        ]);
+    }
+
+    /**
+     * @param int $orderId
+     * @param Request $request
+     *
+     * @return RedirectResponse
+     */
+    #[AdminSecurity("is_granted('update', 'AdminOrders')", redirectRoute: 'admin_orders_view', redirectQueryParamsToKeep: ['orderId'], message: 'You do not have permission to edit this.')]
+    public function editShipmentAction(int $orderId, Request $request): RedirectResponse
+    {
+        $shipmentId = (int) $request->query->get('shipmentId');
+        $formData = $this->getEditForm($orderId, $shipmentId);
+
+        $form = $this->createForm(EditShipmentType::class, $formData, ['order_id' => $orderId, 'shipment_id' => $shipmentId]);
+        $form->handleRequest($request);
+
+
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            $this->addFlash('error', 'An error occurend while editing shipment');
+
+            return $this->redirectToRoute('admin_orders_view', ['orderId' => $orderId]);
+        }
+
 
         return $this->redirectToRoute('admin_orders_view', [
             'orderId' => $orderId,
@@ -858,6 +904,28 @@ class OrderController extends PrestaShopAdminController
         }
 
         return $mergedProducts;
+    }
+
+    private function getEditForm(int $orderId, int $shipmentId): array
+    {
+        /** @var OrderShipment[] $shipments */
+        $shipments = $this->dispatchQuery(new GetOrderShipments($orderId));
+
+        $shipment = array_filter($shipments, fn (OrderShipment $s) => $s->getId() === $shipmentId);
+        $firstShipment = reset($shipment);
+
+        if ($firstShipment) {
+            $shipmentProducts = $this->dispatchQuery(new GetShipmentProducts($firstShipment->getId()));
+            $productsIds = [];
+            foreach ($shipmentProducts as $p) {
+                $productsIds[] = (new OrderDetail($p->getOrderDetailId()))->product_id;
+            };
+        }
+
+        return [
+            'tracking_number' => $firstShipment->getTrackingNumber(),
+            'products_ids' => $productsIds,
+        ];
     }
 
     /**

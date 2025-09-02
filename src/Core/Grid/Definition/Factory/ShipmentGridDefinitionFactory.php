@@ -30,6 +30,7 @@ use PrestaShop\PrestaShop\Core\Context\LanguageContext;
 use PrestaShop\PrestaShop\Core\Grid\Action\Row\RowActionCollection;
 use PrestaShop\PrestaShop\Core\Grid\Action\Row\RowActionCollectionInterface;
 use PrestaShop\PrestaShop\Core\Grid\Action\Row\Type\Shipment\AdditionalShipmentRowAction;
+use PrestaShop\PrestaShop\Core\Grid\Action\Row\Type\LinkRowAction;
 use PrestaShop\PrestaShop\Core\Grid\Column\ColumnCollection;
 use PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\ActionColumn;
 use PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\DataColumn;
@@ -151,7 +152,8 @@ final class ShipmentGridDefinitionFactory extends AbstractFilterableGridDefiniti
      */
     private function getRowActions()
     {
-        return (new RowActionCollection())
+        $rowActions = new RowActionCollection();
+        $rowActions
             ->add(
                 (new AdditionalShipmentRowAction('More'))
                     ->setName($this->trans('More', [], 'Admin.Actions'))
@@ -161,6 +163,11 @@ final class ShipmentGridDefinitionFactory extends AbstractFilterableGridDefiniti
                         'order_id_field' => 'order_id',
                         'items' => 'items',
                         'total_shipments' => 'total_shipments',
-                    ]));
+                        'tracking_number' => 'tracking_number',
+                        'carrier' => 'carrier',
+                    ])
+                );
+
+        return $rowActions;
     }
 }

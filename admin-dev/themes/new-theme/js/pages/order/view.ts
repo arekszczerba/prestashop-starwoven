@@ -32,6 +32,7 @@ import OrderProductAdd from '@pages/order/view/order-product-add';
 import SplitShipmentManager from '@pages/order/split-shipment-manager';
 import OrderViewPageMessagesHandler from './message/order-view-page-messages-handler';
 import MergeShipmentManager from './merge-shipment-manager';
+import EditShipmentManager from './edit-shipment-manager';
 
 const {$} = window;
 
@@ -42,6 +43,7 @@ $(() => {
 
   new SplitShipmentManager();
   new MergeShipmentManager();
+  new EditShipmentManager();
   new OrderShippingManager();
 
   window.prestashop.component.initComponents([
