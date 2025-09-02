@@ -26,34 +26,14 @@
 
 declare(strict_types=1);
 
-namespace PrestaShop\PrestaShop\Core\Grid\Action\Row\Type\Shipment;
+namespace PrestaShop\PrestaShop\Core\Domain\Shipment\CommandHandler;
 
-use PrestaShop\PrestaShop\Core\Grid\Action\Row\AbstractRowAction;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\EditShipment;
 
-final class EditShipmentRowAction extends AbstractRowAction
+interface EditShipmentHandlerInterface
 {
     /**
-     * {@inheritdoc}
+     * @param EditShipment $command
      */
-    public function getType()
-    {
-        return 'edit_shipment_row_action';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function configureOptions(OptionsResolver $resolver)
-    {
-        parent::configureOptions($resolver);
-
-        $resolver
-            ->setRequired([
-                'tracking_number',
-                'carrier',
-            ])
-            ->setAllowedTypes('tracking_number', 'string')
-            ->setAllowedTypes('carrier', 'string');
-    }
+    public function handle(EditShipment $command): void;
 }

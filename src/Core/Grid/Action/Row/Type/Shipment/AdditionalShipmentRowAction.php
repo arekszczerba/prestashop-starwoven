@@ -55,7 +55,7 @@ final class AdditionalShipmentRowAction extends AbstractRowAction
                 'items' => 'items',
                 'total_shipments' => 'total_shipments',
                 'tracking_number' => 'tracking_number',
-                'carrier' => 'carrier'
+                'carrier' => 'carrier',
             ])
             ->setAllowedTypes('shipment_id_field', 'string')
             ->setAllowedTypes('items', 'string')

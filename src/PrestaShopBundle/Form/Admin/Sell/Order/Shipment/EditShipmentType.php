@@ -63,9 +63,9 @@ class EditShipmentType extends AbstractType
     {
         $resolver->setRequired([
             'order_id',
-            'shipment_id'
+            'shipment_id',
         ])
-        ->setAllowedTypes('order_id', 'int')
-        ->setAllowedTypes('shipment_id', 'int');
+            ->setAllowedTypes('order_id', 'int')
+            ->setAllowedTypes('shipment_id', 'int');
     }
 }

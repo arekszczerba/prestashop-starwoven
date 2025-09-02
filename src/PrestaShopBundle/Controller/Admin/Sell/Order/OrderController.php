@@ -36,7 +36,6 @@ use PrestaShop\PrestaShop\Adapter\Order\Repository\OrderDetailRepository;
 use PrestaShop\PrestaShop\Adapter\PDF\OrderInvoicePdfGenerator;
 use PrestaShop\PrestaShop\Adapter\Tools;
 use PrestaShop\PrestaShop\Core\Action\ActionsBarButtonsCollection;
-use PrestaShop\PrestaShop\Core\Domain\Carrier\Query\GetAvailableCarriers;
 use PrestaShop\PrestaShop\Core\Domain\Cart\Query\GetCartForOrderCreation;
 use PrestaShop\PrestaShop\Core\Domain\CartRule\Exception\InvalidCartRuleDiscountValueException;
 use PrestaShop\PrestaShop\Core\Domain\CustomerMessage\Command\AddOrderCustomerMessageCommand;
@@ -87,6 +86,7 @@ use PrestaShop\PrestaShop\Core\Domain\Product\Exception\ProductOutOfStockExcepti
 use PrestaShop\PrestaShop\Core\Domain\Product\Exception\ProductSearchEmptyPhraseException;
 use PrestaShop\PrestaShop\Core\Domain\Product\Query\SearchProducts;
 use PrestaShop\PrestaShop\Core\Domain\Product\QueryResult\FoundProduct;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\EditShipment;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\MergeProductsToShipment;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\SplitShipment;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentException;
@@ -126,9 +126,9 @@ use PrestaShopBundle\Form\Admin\Sell\Order\EditProductRowType;
 use PrestaShopBundle\Form\Admin\Sell\Order\InternalNoteType;
 use PrestaShopBundle\Form\Admin\Sell\Order\OrderMessageType;
 use PrestaShopBundle\Form\Admin\Sell\Order\OrderPaymentType;
-use PrestaShopBundle\Form\Admin\Sell\Order\Shipment\MergeShipmentType;
 use PrestaShopBundle\Form\Admin\Sell\Order\Shipment\SplitShipmentType;
 use PrestaShopBundle\Form\Admin\Sell\Order\Shipment\EditShipmentType;
+use PrestaShopBundle\Form\Admin\Sell\Order\Shipment\MergeShipmentType;
 use PrestaShopBundle\Form\Admin\Sell\Order\UpdateOrderShippingType;
 use PrestaShopBundle\Form\Admin\Sell\Order\UpdateOrderStatusType;
 use PrestaShopBundle\Security\Attribute\AdminSecurity;
@@ -733,7 +733,7 @@ class OrderController extends PrestaShopAdminController
 
         $form = $this->createForm(EditShipmentType::class, $formData, ['order_id' => $orderId, 'shipment_id' => $shipmentId]);
         $form->handleRequest($request);
-
+        $submittedData = $request->request->all('edit_shipment');
 
         if (!$form->isSubmitted() || !$form->isValid()) {
             $this->addFlash('error', 'An error occurend while editing shipment');
@@ -741,6 +741,13 @@ class OrderController extends PrestaShopAdminController
             return $this->redirectToRoute('admin_orders_view', ['orderId' => $orderId]);
         }
 
+        $command = new EditShipment(
+            $shipmentId,
+            $submittedData['tracking_number'],
+            $submittedData['carrier']
+        );
+
+        $this->dispatchCommand($command);
 
         return $this->redirectToRoute('admin_orders_view', [
             'orderId' => $orderId,
@@ -919,11 +926,12 @@ class OrderController extends PrestaShopAdminController
             $productsIds = [];
             foreach ($shipmentProducts as $p) {
                 $productsIds[] = (new OrderDetail($p->getOrderDetailId()))->product_id;
-            };
+            }
         }
 
         return [
             'tracking_number' => $firstShipment->getTrackingNumber(),
+            'carrier' => $firstShipment->getCarrierSummary()->getId(),
             'products_ids' => $productsIds,
         ];
     }
