@@ -41,6 +41,7 @@ use PrestaShop\PrestaShop\Core\Domain\Product\ValueObject\ProductId;
 use PrestaShop\PrestaShop\Core\Domain\Shop\ValueObject\ShopId;
 use Product;
 use RuntimeException;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 #[AsQueryHandler]
 class GetAvailableCarriersHandler implements GetAvailableCarriersHandlerInterface
@@ -49,6 +50,8 @@ class GetAvailableCarriersHandler implements GetAvailableCarriersHandlerInterfac
         private readonly CarrierRepository $carrierRepository,
         private readonly ProductRepository $productRepository,
         private readonly LanguageContext $languageContext,
+        #[Autowire(service: 'prestashop.default.language.context')]
+        private readonly LanguageContext $defaultLanguageContext,
         private readonly ShopContext $shopContext,
     ) {
     }
@@ -161,16 +164,28 @@ class GetAvailableCarriersHandler implements GetAvailableCarriersHandlerInterfac
      */
     private function getProductName(Product $product): string
     {
-        if (is_array($product->name)) {
-            $languageId = $this->languageContext->getId();
+        $name = $product->name;
 
-            if (!isset($product->name[$languageId])) {
-                throw new RuntimeException(sprintf('Product name not found for product ID %d and language ID %d.', $product->id, $languageId));
-            }
-
-            return $product->name[$languageId];
+        if (!is_array($name)) {
+            return $name;
         }
 
-        return $product->name;
+        $languageId = $this->languageContext->getId();
+        $defaultLanguageId = $this->defaultLanguageContext->getId();
+
+        if (isset($name[$languageId])) {
+            return $name[$languageId];
+        }
+
+        if (isset($name[$defaultLanguageId])) {
+            return $name[$defaultLanguageId];
+        }
+
+        throw new RuntimeException(sprintf(
+            'Product name not found for product ID %d in current (%d) or default (%d) language.',
+            $product->id,
+            $languageId,
+            $defaultLanguageId
+        ));
     }
 }

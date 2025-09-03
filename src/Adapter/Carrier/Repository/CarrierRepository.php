@@ -376,19 +376,62 @@ class CarrierRepository extends AbstractMultiShopObjectModelRepository
      */
     public function findCarriersByProductIds(array $productIds, ShopId $shopId): array
     {
+        // Step 1: Get all active carriers once
+        $allCarriers = $this->getAllActiveCarriers();
+
+        // Step 2: Initialize mapping with all carriers for each product
+        $mapping = [];
+        foreach ($productIds as $productId) {
+            $mapping[$productId] = $allCarriers;
+        }
+
+        // Step 3: Get restricted carriers for certain products
+        $productCarriers = $this->getProductCarriers($productIds, $shopId);
+        $restricted = $this->mapProductCarriers($productCarriers);
+
+        // Step 4: Override default mapping with restricted carriers where applicable
+        foreach ($restricted as $productId => $carriers) {
+            $mapping[$productId] = $carriers;
+        }
+
+        return $mapping;
+    }
+
+    private function getProductCarriers(array $productIds, ShopId $shopId): array
+    {
         $qb = $this->connection->createQueryBuilder();
-        $qb->select('pc.id_product as product_id, c.id_carrier AS id_carrier, c.name')
+
+        return $qb->select('pc.id_product as product_id', 'c.id_carrier', 'c.name')
             ->from($this->prefix . 'product_carrier', 'pc')
-            ->innerJoin('pc', $this->prefix . 'carrier', 'c', 'c.id_reference = pc.id_carrier_reference AND c.deleted = 0')
+            ->innerJoin(
+                'pc',
+                $this->prefix . 'carrier',
+                'c',
+                'c.id_reference = pc.id_carrier_reference AND c.deleted = 0'
+            )
             ->where($qb->expr()->in('pc.id_product', ':product_ids'))
             ->andWhere('pc.id_shop = :shop_id')
             ->setParameter('product_ids', $productIds, ArrayParameterType::INTEGER)
-            ->setParameter('shop_id', $shopId->getValue());
+            ->setParameter('shop_id', $shopId->getValue())
+            ->executeQuery()
+            ->fetchAllAssociative();
+    }
 
-        $results = $qb->executeQuery()->fetchAllAssociative();
+    private function getAllActiveCarriers(): array
+    {
+        return $this->connection->createQueryBuilder()
+            ->select('id_carrier', 'name')
+            ->from($this->prefix . 'carrier')
+            ->where('deleted = 0')
+            ->executeQuery()
+            ->fetchAllAssociative();
+    }
 
+    private function mapProductCarriers(array $rows): array
+    {
         $mapping = [];
-        foreach ($results as $row) {
+
+        foreach ($rows as $row) {
             $mapping[$row['product_id']][] = [
                 'id_carrier' => $row['id_carrier'],
                 'name' => $row['name'],
