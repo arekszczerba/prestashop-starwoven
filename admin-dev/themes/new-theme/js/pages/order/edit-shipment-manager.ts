@@ -48,16 +48,7 @@ export default class EditShipmentManager {
         }". The shipment edit feature cannot be initialized.`,
       );
     }
-    console.log(mainDiv);
     mainDiv.addEventListener('click', this.onEditShipmentClick);
-  }
-
-  initSubmitEditShipmentStateHandler(): void {
-    const submitBtnEl = document.querySelector(OrderViewPageMap.submitEditShipment);
-
-    if (!(submitBtnEl instanceof HTMLButtonElement)) {
-      return;
-    }
   }
 
   onEditShipmentClick = (event: Event): void => {
@@ -67,7 +58,8 @@ export default class EditShipmentManager {
       return;
     }
 
-    const { orderId, shipmentId } = link.dataset;
+    const {orderId, shipmentId} = link.dataset;
+
     if (!orderId || !shipmentId) {
       throw new Error('error while gettint orderId or shipmentId');
     }

@@ -48,7 +48,7 @@ class EditShipmentType extends AbstractType
         $builder
             ->add('carrier', ChoiceType::class, [
                 'choices' => $this->availableCarriersForShipmentChoiceProvider->getChoices([
-                    'product_id' => $options['data']['products_ids'],
+                    'selectedProducts' => $options['data']['selectedProducts'],
                 ]),
                 'placeholder' => $this->translator->trans('Select a carrier', [], 'Admin.Orderscustomers.Feature'),
                 'required' => true,

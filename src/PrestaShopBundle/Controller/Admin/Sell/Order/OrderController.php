@@ -932,7 +932,7 @@ class OrderController extends PrestaShopAdminController
         return [
             'tracking_number' => $firstShipment->getTrackingNumber(),
             'carrier' => $firstShipment->getCarrierSummary()->getId(),
-            'products_ids' => $productsIds,
+            'selectedProducts' => $productsIds,
         ];
     }
 

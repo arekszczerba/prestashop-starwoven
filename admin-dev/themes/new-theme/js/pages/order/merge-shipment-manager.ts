@@ -26,7 +26,7 @@ import Router from '@js/components/router';
 import OrderViewPageMap from './OrderViewPageMap';
 
 export default class MergeShipmentManager {
-  private formRoute = 'admin_orders_shipment_get_edit_form';
+  private formRoute = 'admin_orders_shipment_get_merge_form';
 
   private shipmentId: number|null = null;
 

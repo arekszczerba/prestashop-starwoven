@@ -33,7 +33,9 @@
         </button>
       </div>
       <div class="modal-body" id="editShipmentFormContainer"></div>
-      {# <div class="skeleton skeleton--shipment-modal"></div> #}
+
+      {{ include('@PrestaShop/Admin/Sell/Order/Order/Blocks/View/Modal/Skeletons/edit_shipment_skeleton.html.twig') }}
+
       <div class="modal-footer shipment-form__footer">
         <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
           {{ 'Cancel'|trans({}, 'Admin.Actions') }}
