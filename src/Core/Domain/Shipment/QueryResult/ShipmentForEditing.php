@@ -1,4 +1,5 @@
-{# **
+<?php
+/**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
  *
@@ -21,30 +22,49 @@
  * @author    PrestaShop SA and Contributors <contact@prestashop.com>
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
- * #}
+ */
 
-<div class="skeleton-shipment-modal">
-  <div class="skeleton-shipment-modal__label skeleton skeleton--line skeleton--1/4"></div>
+namespace PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult;
 
-  <div class="skeleton-shipment-modal__table">
-    <div class="skeleton-shipment-modal__head">
-      <div class="skeleton skeleton--line skeleton--1/2"></div>
-      <div class="skeleton skeleton--line skeleton--2/3 skeleton--self-right"></div>
-    </div>
+class ShipmentForEditing
+{
+    public function __construct(
+        private int $carrierId,
+        private string $trackingNumber,
+        private array $selectedProducts,
+    ) {
+    }
 
-    <div class="skeleton-shipment-modal__rows">
-      {% for i in 1..3 %}
-        <div class="skeleton-shipment-modal__row">
-          <div class="skeleton skeleton--checkbox"></div>
-          <div class="skeleton skeleton--img-square"></div>
-          <div class="skeleton skeleton--cell skeleton--xl"></div>
-          <div class="skeleton skeleton--line skeleton--xl"></div>
-        </div>
-      {% endfor %}
-    </div>
-  </div>
+    /**
+     * @return int
+     */
+    public function getCarrierId(): int
+    {
+        return $this->carrierId;
+    }
 
-  <div class="skeleton-shipment-modal__label skeleton skeleton--1/3 skeleton--sm"></div>
+    /**
+     * @return string
+     */
+    public function getTrackingNumber(): string
+    {
+        return $this->trackingNumber;
+    }
 
-  <div class="skeleton-shipment-modal__select skeleton skeleton--line skeleton--lg mb-0"></div>
-</div>
+    /**
+     * @return int[]
+     */
+    public function getProductsIds()
+    {
+        return $this->selectedProducts;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'tracking_number' => $this->getTrackingNumber(),
+            'carrier' => $this->getCarrierId(),
+            'selectedProducts' => $this->getProductsIds(),
+        ];
+    }
+}

@@ -29,7 +29,6 @@ namespace PrestaShopBundle\Controller\Admin\Sell\Order;
 use Currency;
 use Exception;
 use InvalidArgumentException;
-use OrderDetail;
 use PrestaShop\PrestaShop\Adapter\Currency\CurrencyDataProvider;
 use PrestaShop\PrestaShop\Adapter\LegacyContext;
 use PrestaShop\PrestaShop\Adapter\Order\Repository\OrderDetailRepository;
@@ -91,6 +90,7 @@ use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\MergeProductsToShipment;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\SplitShipment;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentException;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentForEditing;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentProducts;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipment;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipmentProduct;
@@ -126,9 +126,9 @@ use PrestaShopBundle\Form\Admin\Sell\Order\EditProductRowType;
 use PrestaShopBundle\Form\Admin\Sell\Order\InternalNoteType;
 use PrestaShopBundle\Form\Admin\Sell\Order\OrderMessageType;
 use PrestaShopBundle\Form\Admin\Sell\Order\OrderPaymentType;
-use PrestaShopBundle\Form\Admin\Sell\Order\Shipment\SplitShipmentType;
 use PrestaShopBundle\Form\Admin\Sell\Order\Shipment\EditShipmentType;
 use PrestaShopBundle\Form\Admin\Sell\Order\Shipment\MergeShipmentType;
+use PrestaShopBundle\Form\Admin\Sell\Order\Shipment\SplitShipmentType;
 use PrestaShopBundle\Form\Admin\Sell\Order\UpdateOrderShippingType;
 use PrestaShopBundle\Form\Admin\Sell\Order\UpdateOrderStatusType;
 use PrestaShopBundle\Security\Attribute\AdminSecurity;
@@ -656,7 +656,7 @@ class OrderController extends PrestaShopAdminController
     public function getEditShipmentForm(int $orderId, Request $request): Response
     {
         $shipmentId = (int) $request->query->get('shipmentId');
-        $formData = $this->getEditForm($orderId, $shipmentId);
+        $formData = $this->dispatchQuery(new GetShipmentForEditing($orderId, $shipmentId))->toArray();
         $form = $this->createForm(EditShipmentType::class, $formData, ['order_id' => $orderId, 'shipment_id' => $shipmentId]);
 
         return $this->render('@PrestaShop/Admin/Sell/Order/Order/Blocks/View/edit_shipment_form.html.twig', [
@@ -729,7 +729,7 @@ class OrderController extends PrestaShopAdminController
     public function editShipmentAction(int $orderId, Request $request): RedirectResponse
     {
         $shipmentId = (int) $request->query->get('shipmentId');
-        $formData = $this->getEditForm($orderId, $shipmentId);
+        $formData = $this->dispatchQuery(new GetShipmentForEditing($orderId, $shipmentId))->toArray();
 
         $form = $this->createForm(EditShipmentType::class, $formData, ['order_id' => $orderId, 'shipment_id' => $shipmentId]);
         $form->handleRequest($request);
@@ -911,29 +911,6 @@ class OrderController extends PrestaShopAdminController
         }
 
         return $mergedProducts;
-    }
-
-    private function getEditForm(int $orderId, int $shipmentId): array
-    {
-        /** @var OrderShipment[] $shipments */
-        $shipments = $this->dispatchQuery(new GetOrderShipments($orderId));
-
-        $shipment = array_filter($shipments, fn (OrderShipment $s) => $s->getId() === $shipmentId);
-        $firstShipment = reset($shipment);
-
-        if ($firstShipment) {
-            $shipmentProducts = $this->dispatchQuery(new GetShipmentProducts($firstShipment->getId()));
-            $productsIds = [];
-            foreach ($shipmentProducts as $p) {
-                $productsIds[] = (new OrderDetail($p->getOrderDetailId()))->product_id;
-            }
-        }
-
-        return [
-            'tracking_number' => $firstShipment->getTrackingNumber(),
-            'carrier' => $firstShipment->getCarrierSummary()->getId(),
-            'selectedProducts' => $productsIds,
-        ];
     }
 
     /**
