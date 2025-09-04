@@ -24,33 +24,39 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 
-declare(strict_types=1);
+namespace PrestaShop\PrestaShop\Adapter\Cache\Clearer;
 
-namespace PrestaShopBundle\Cache;
+use Psr\Log\LoggerInterface;
+use Throwable;
 
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpKernel\CacheClearer\CacheClearerInterface;
-
-/**
- * Dedicated cache clearer service for our custom translation folder, it implements
- * the Symfony CacheClearerInterface and is autoconfigured so that it is automatically
- * used by the cache:clear command.
- */
-class TranslationCacheClearer implements CacheClearerInterface
+trait SafeLoggerTrait
 {
-    public function __construct(
-        private string $legacyCacheDir
-    ) {
+    protected readonly LoggerInterface $logger;
+
+    protected function logError(string $message): void
+    {
+        try {
+            $this->logger->error($message);
+        } catch (Throwable) {
+            // Prevent the logger from raising an exception and breaking the cache clear
+        }
     }
 
-    public function clear(string $cacheDir)
+    protected function logInfo(string $message): void
     {
-        $fs = new Filesystem();
+        try {
+            $this->logger->info($message);
+        } catch (Throwable) {
+            // Prevent the logger from raising an exception and breaking the cache clear
+        }
+    }
 
-        // The translation cache folder is common to all applications (var/cache/{env}/translations)
-        $translationCacheDir = $this->legacyCacheDir . '/translations';
-        if (is_dir($translationCacheDir)) {
-            $fs->remove($translationCacheDir);
+    protected function logDebug(string $message): void
+    {
+        try {
+            $this->logger->debug($message);
+        } catch (Throwable) {
+            // Prevent the logger from raising an exception and breaking the cache clear
         }
     }
 }

@@ -24,47 +24,53 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 
-declare(strict_types=1);
+namespace PrestaShopBundle\Form\Admin\Configure\AdvancedParameters\Logs;
 
-namespace PrestaShopBundle\Form\Admin\Type;
-
-use PrestaShopLogger;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use PrestaShopBundle\Form\Admin\Type\LogSeverityChoiceType;
+use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class LogSeverityChoiceType.
+ * This form class generates the "Database" form in Logs page.
  */
-class LogSeverityChoiceType extends TranslatorAwareType
+final class DatabaseLogsType extends TranslatorAwareType
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('database_min_logger_level', LogSeverityChoiceType::class, [
+                'required' => true,
+                'label' => $this->trans(
+                    'Minimum severity level',
+                    'Admin.Advparameters.Feature'
+                ),
+                'help' => $this->trans(
+                    'Indicate the minimum log levels that will be saved in database.',
+                    'Admin.Advparameters.Help'
+                ),
+            ])
+        ;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'choices' => $this->getSeveritysChoices(),
-            'required' => false,
-            'choice_translation_domain' => false,
+            'translation_domain' => 'Admin.Advparameters.Feature',
         ]);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getParent()
+    public function getBlockPrefix()
     {
-        return ChoiceType::class;
-    }
-
-    private function getSeveritysChoices()
-    {
-        return [
-            $this->trans('Debug', 'Admin.Advparameters.Help') => PrestaShopLogger::LOG_SEVERITY_LEVEL_DEBUG,
-            $this->trans('Informative only', 'Admin.Advparameters.Help') => PrestaShopLogger::LOG_SEVERITY_LEVEL_INFORMATIVE,
-            $this->trans('Warning', 'Admin.Advparameters.Help') => PrestaShopLogger::LOG_SEVERITY_LEVEL_WARNING,
-            $this->trans('Error', 'Admin.Advparameters.Help') => PrestaShopLogger::LOG_SEVERITY_LEVEL_ERROR,
-            $this->trans('Major issue (crash)!', 'Admin.Advparameters.Help') => PrestaShopLogger::LOG_SEVERITY_LEVEL_MAJOR,
-        ];
+        return 'database_logs_block';
     }
 }
