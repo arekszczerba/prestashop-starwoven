@@ -603,6 +603,7 @@ class OrderController extends PrestaShopAdminController
             'meta_title' => $metatitle,
             'help_link' => $this->generateSidebarLink($request->attributes->get('_legacy_controller')),
             'orderForViewing' => $orderForViewing,
+            'isMultiShipmentFeatureFlagIsEnabled' => $this->isFeatureFlagIsEnabledForMultiShipment(),
             'addOrderCartRuleForm' => $addOrderCartRuleForm->createView(),
             'updateOrderStatusForm' => $updateOrderStatusForm->createView(),
             'updateOrderStatusActionBarForm' => $updateOrderStatusActionBarForm->createView(),
@@ -2345,5 +2346,13 @@ class OrderController extends PrestaShopAdminController
                 ),
             ],
         ];
+    }
+
+    private function isFeatureFlagIsEnabledForMultiShipment(): bool
+    {
+        /** @var FeatureFlagStateCheckerInterface $featureFlagManager */
+        $featureFlagManager = $this->getFeatureFlagStateChecker();
+
+        return $featureFlagManager->isEnabled(FeatureFlagSettings::FEATURE_FLAG_IMPROVED_SHIPMENT);
     }
 }
