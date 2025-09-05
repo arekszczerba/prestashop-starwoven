@@ -29,7 +29,6 @@ namespace PrestaShop\PrestaShop\Adapter\Carrier\QueryHandler;
 use Address;
 use PrestaShop\PrestaShop\Adapter\Address\Repository\AddressRepository;
 use PrestaShop\PrestaShop\Adapter\Carrier\Repository\CarrierRepository;
-use PrestaShop\PrestaShop\Adapter\Country\Repository\CountryRepository;
 use PrestaShop\PrestaShop\Adapter\Product\Repository\ProductRepository;
 use PrestaShop\PrestaShop\Adapter\Zone\Repository\ZoneRepository;
 use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsQueryHandler;
@@ -57,7 +56,6 @@ class GetAvailableCarriersHandler implements GetAvailableCarriersHandlerInterfac
         private readonly CarrierRepository $carrierRepository,
         private readonly ProductRepository $productRepository,
         private readonly AddressRepository $addressRepository,
-        private readonly CountryRepository $countryRepository,
         private readonly ZoneRepository $zoneRepository,
         private readonly LanguageContext $languageContext,
         #[Autowire(service: 'prestashop.default.language.context')]
@@ -81,7 +79,6 @@ class GetAvailableCarriersHandler implements GetAvailableCarriersHandlerInterfac
         // Validate and resolve address
         $address = $this->addressRepository->get($query->getAddressId());
         $countryId = new CountryId($address->id_country);
-        $this->ensureCountryIsActive($countryId);
         $zoneId = $this->zoneRepository->getZoneIdByCountryId($countryId);
 
         // Load carriers mapped per product
@@ -145,17 +142,6 @@ class GetAvailableCarriersHandler implements GetAvailableCarriersHandlerInterfac
         }
 
         return $products;
-    }
-
-    /**
-     * Ensures country is active.
-     */
-    private function ensureCountryIsActive(CountryId $countryId): void
-    {
-        $country = $this->countryRepository->get($countryId);
-        if (!$country->active) {
-            throw new RuntimeException('Country is not active for address.');
-        }
     }
 
     /**
