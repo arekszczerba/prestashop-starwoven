@@ -196,7 +196,7 @@ class OrderProductForViewing implements JsonSerializable
      * @param array $packItems
      * @param OrderProductCustomizationsForViewing|null $customizations
      * @param string $mpn
-     * @param int[] $shipmentIdss
+     * @param int[] $shipmentIds
      */
     public function __construct(
         ?int $orderDetailId,
