@@ -699,3 +699,5 @@ services:
       $translator: '@translator'
 
   PrestaShopBundle\Form\Admin\Sell\Order\Shipment\SplitShipmentType: ~
+
+  PrestaShopBundle\Form\Admin\Sell\Order\Shipment\EditShipmentType: ~

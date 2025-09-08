@@ -23,28 +23,27 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  * #}
 
-<div class="skeleton-shipment-modal">
-  <div class="skeleton-shipment-modal__label skeleton skeleton--line skeleton--1/4"></div>
+<div class="modal fade" id="editShipmentModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ 'Edit shipment'|trans({}, 'Admin.Orderscustomers.Feature') }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="{{ 'Close'|trans({}, 'Admin.Actions') }}">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body" id="editShipmentFormContainer"></div>
 
-  <div class="skeleton-shipment-modal__table">
-    <div class="skeleton-shipment-modal__head">
-      <div class="skeleton skeleton--line skeleton--1/2"></div>
-      <div class="skeleton skeleton--line skeleton--2/3 skeleton--self-right"></div>
-    </div>
+      {{ include('@PrestaShop/Admin/Sell/Order/Order/Blocks/View/Modal/Skeletons/edit_shipment_skeleton.html.twig') }}
 
-    <div class="skeleton-shipment-modal__rows">
-      {% for i in 1..3 %}
-        <div class="skeleton-shipment-modal__row">
-          <div class="skeleton skeleton--checkbox"></div>
-          <div class="skeleton skeleton--img-square"></div>
-          <div class="skeleton skeleton--cell skeleton--xl"></div>
-          <div class="skeleton skeleton--line skeleton--xl"></div>
-        </div>
-      {% endfor %}
+      <div class="modal-footer shipment-form__footer">
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+          {{ 'Cancel'|trans({}, 'Admin.Actions') }}
+        </button>
+        <button type="submit" class="btn btn-primary" id="submitEditShipment" form="edit_shipment">
+          {{ 'Update'|trans({}, 'Admin.Actions') }}
+        </button>
+      </div>
     </div>
   </div>
-
-  <div class="skeleton-shipment-modal__label skeleton skeleton--1/3 skeleton--sm"></div>
-
-  <div class="skeleton-shipment-modal__select skeleton skeleton--line skeleton--lg mb-0"></div>
 </div>

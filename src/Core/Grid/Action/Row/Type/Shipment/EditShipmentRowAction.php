@@ -1,4 +1,5 @@
-{# **
+<?php
+/**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
  *
@@ -21,30 +22,38 @@
  * @author    PrestaShop SA and Contributors <contact@prestashop.com>
  * @copyright Since 2007 PrestaShop SA and Contributors
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
- * #}
+ */
 
-<div class="skeleton-shipment-modal">
-  <div class="skeleton-shipment-modal__label skeleton skeleton--line skeleton--1/4"></div>
+declare(strict_types=1);
 
-  <div class="skeleton-shipment-modal__table">
-    <div class="skeleton-shipment-modal__head">
-      <div class="skeleton skeleton--line skeleton--1/2"></div>
-      <div class="skeleton skeleton--line skeleton--2/3 skeleton--self-right"></div>
-    </div>
+namespace PrestaShop\PrestaShop\Core\Grid\Action\Row\Type\Shipment;
 
-    <div class="skeleton-shipment-modal__rows">
-      {% for i in 1..3 %}
-        <div class="skeleton-shipment-modal__row">
-          <div class="skeleton skeleton--checkbox"></div>
-          <div class="skeleton skeleton--img-square"></div>
-          <div class="skeleton skeleton--cell skeleton--xl"></div>
-          <div class="skeleton skeleton--line skeleton--xl"></div>
-        </div>
-      {% endfor %}
-    </div>
-  </div>
+use PrestaShop\PrestaShop\Core\Grid\Action\Row\AbstractRowAction;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
-  <div class="skeleton-shipment-modal__label skeleton skeleton--1/3 skeleton--sm"></div>
+final class EditShipmentRowAction extends AbstractRowAction
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return 'edit_shipment_row_action';
+    }
 
-  <div class="skeleton-shipment-modal__select skeleton skeleton--line skeleton--lg mb-0"></div>
-</div>
+    /**
+     * {@inheritdoc}
+     */
+    protected function configureOptions(OptionsResolver $resolver)
+    {
+        parent::configureOptions($resolver);
+
+        $resolver
+            ->setRequired([
+                'tracking_number',
+                'carrier',
+            ])
+            ->setAllowedTypes('tracking_number', 'string')
+            ->setAllowedTypes('carrier', 'string');
+    }
+}
