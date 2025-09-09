@@ -82,7 +82,7 @@ elif [ "$DB_SERVER" != "<to be defined>" -a $PS_INSTALL_AUTO = 1 ]; then
     RET=1
     while [ $RET -ne 0 ]; do
         echo "\n* Checking if $DB_SERVER is available..."
-        mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD --ssl=0 -e "status" > /dev/null 2>&1
+        mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD -e "status" > /dev/null 2>&1
         RET=$?
 
         if [ $RET -ne 0 ]; then
@@ -115,14 +115,14 @@ if [ ! -f ./app/config/parameters.php ]; then
             echo "\n* Drop & recreate mysql database...";
             if [ $DB_PASSWD = "" ]; then
                 echo "\n* Dropping existing database $DB_NAME..."
-                mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER --ssl=0 -e "drop database if exists $DB_NAME;"
+                mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -e "drop database if exists $DB_NAME;"
                 echo "\n* Creating database $DB_NAME..."
-                mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER --ssl=0 create $DB_NAME --force;
+                mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER create $DB_NAME --force;
             else
                 echo "\n* Dropping existing database $DB_NAME..."
-                mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD --ssl=0 -e "drop database if exists $DB_NAME;"
+                mysql -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD -e "drop database if exists $DB_NAME;"
                 echo "\n* Creating database $DB_NAME..."
-                mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD --ssl=0 create $DB_NAME --force;
+                mysqladmin -h $DB_SERVER -P $DB_PORT -u $DB_USER -p$DB_PASSWD create $DB_NAME --force;
             fi
         fi
 
