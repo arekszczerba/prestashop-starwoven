@@ -657,6 +657,7 @@ class OrderController extends PrestaShopAdminController
     {
         $shipmentId = (int) $request->query->get('shipmentId');
         $formData = $this->dispatchQuery(new GetShipmentForEditing($orderId, $shipmentId))->toArray();
+        $formData['shipment_id'] = $shipmentId;
         $form = $this->createForm(EditShipmentType::class, $formData, ['order_id' => $orderId, 'shipment_id' => $shipmentId]);
 
         return $this->render('@PrestaShop/Admin/Sell/Order/Order/Blocks/View/edit_shipment_form.html.twig', [
@@ -730,7 +731,7 @@ class OrderController extends PrestaShopAdminController
     {
         $shipmentId = (int) $request->query->get('shipmentId');
         $formData = $this->dispatchQuery(new GetShipmentForEditing($orderId, $shipmentId))->toArray();
-
+        $formData['shipment_id'] = $shipmentId;
         $form = $this->createForm(EditShipmentType::class, $formData, ['order_id' => $orderId, 'shipment_id' => $shipmentId]);
         $form->handleRequest($request);
         $submittedData = $request->request->all('edit_shipment');
@@ -813,8 +814,8 @@ class OrderController extends PrestaShopAdminController
         $shipmentId = $request->query->getInt('shipmentId');
         $productsFromQuery = $request->get('products', []);
         $selectedCarrier = $request->query->getInt('carrier');
-
         $orderShipmentProducts = $this->mergeProductsFromQueries($shipmentId, $productsFromQuery, $orderDetailRepository);
+        var_dump($shipmentId);
 
         $formIsValid = $this->checkFormValidity($orderShipmentProducts);
 

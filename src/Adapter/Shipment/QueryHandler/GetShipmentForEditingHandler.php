@@ -60,7 +60,7 @@ class GetShipmentForEditingHandler implements GetShipmentForEditingHandlerInterf
             $shipmentDetails['tracking_number'] = $result->getTrackingNumber();
             $shipmentDetails['carrier'] = $result->getCarrierId();
             foreach ($shipmentProducts as $shipmentProduct) {
-                $shipmentDetails['selectedProducts'][] = (new OrderDetail($shipmentProduct->getOrderDetailId()))->product_id;
+                $shipmentDetails['selectedProducts'][(new OrderDetail($shipmentProduct->getOrderDetailId()))->product_id] = 0;
             }
         } catch (Throwable $e) {
             throw new ShipmentNotFoundException(sprintf('Could not find shipment for order with id "%s"', $orderId), 0, $e);
