@@ -815,7 +815,6 @@ class OrderController extends PrestaShopAdminController
         $productsFromQuery = $request->get('products', []);
         $selectedCarrier = $request->query->getInt('carrier');
         $orderShipmentProducts = $this->mergeProductsFromQueries($shipmentId, $productsFromQuery, $orderDetailRepository);
-        var_dump($shipmentId);
 
         $formIsValid = $this->checkFormValidity($orderShipmentProducts);
 
