@@ -606,7 +606,6 @@ class OrderController extends PrestaShopAdminController
             'meta_title' => $metatitle,
             'help_link' => $this->generateSidebarLink($request->attributes->get('_legacy_controller')),
             'orderForViewing' => $orderForViewing,
-            'isMultiShipmentFeatureFlagIsEnabled' => $this->isFeatureFlagIsEnabledForMultiShipment(),
             'addOrderCartRuleForm' => $addOrderCartRuleForm->createView(),
             'updateOrderStatusForm' => $updateOrderStatusForm->createView(),
             'updateOrderStatusActionBarForm' => $updateOrderStatusActionBarForm->createView(),
@@ -630,6 +629,7 @@ class OrderController extends PrestaShopAdminController
             'isAvailableQuantityDisplayed' => (bool) $this->getConfiguration()->get('PS_STOCK_MANAGEMENT'),
             'internalNoteForm' => $internalNoteForm->createView(),
             'isImprovedShipmentFeatureFlagEnabled' => $featureFlagStateChecker->isEnabled(FeatureFlagSettings::FEATURE_FLAG_IMPROVED_SHIPMENT),
+            'orderHasShipment' => $this->orderHasShipment($orderForViewing->getId()),
             'shipmentsGrid' => $this->presentGrid($shipmentsGrid),
             'shipmentsLabel' => $tools->purifyHTML($shipmentsLabel),
             'carriersLabel' => $tools->purifyHTML($carriersLabel),
@@ -2401,11 +2401,11 @@ class OrderController extends PrestaShopAdminController
         ];
     }
 
-    private function isFeatureFlagIsEnabledForMultiShipment(): bool
+    private function orderHasShipment(int $orderId): bool
     {
-        /** @var FeatureFlagStateCheckerInterface $featureFlagManager */
-        $featureFlagManager = $this->getFeatureFlagStateChecker();
+        /** @var OrderShipment[] $shipments */
+        $shipments = $this->dispatchQuery(new GetOrderShipments($orderId));
 
-        return $featureFlagManager->isEnabled(FeatureFlagSettings::FEATURE_FLAG_IMPROVED_SHIPMENT);
+        return (bool) count($shipments) > 0;
     }
 }
