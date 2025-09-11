@@ -801,8 +801,10 @@ class CartCore extends ObjectModel
                 }
             }
 
-            foreach ($products as &$product) {
-                $product['cart_base_product_quantity'] = isset($cart_base_product_quantity[$product['id_product']]) ? $cart_base_product_quantity[$product['id_product']] : 0;
+            foreach ($products as $key => $product) {
+                $products[$key]['cart_base_product_quantity'] = isset($cart_base_product_quantity[$product['id_product']])
+                    ? $cart_base_product_quantity[$product['id_product']]
+                    : 0;
             }
         }
 
