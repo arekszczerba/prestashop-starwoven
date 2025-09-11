@@ -184,15 +184,14 @@ final class GetOrderProductsForViewingHandler extends AbstractOrderHandler imple
 
             $orderInvoice = new OrderInvoice($product['id_order_invoice']);
             $shipments = $this->shipmentRepository->findByOrderId($order->id);
-            $shipmentId = null;
+            $shipmentIds = [];
 
             if ($shipments) {
                 foreach ($shipments as $shipment) {
                     $shipmentProducts = $shipment->getProducts();
                     foreach ($shipmentProducts as $shipmentProduct) {
                         if ($shipmentProduct->getOrderDetailId() == $product['id_order_detail']) {
-                            $shipmentId = $shipment->getId();
-                            break 2;
+                            $shipmentIds[] = $shipment->getId();
                         }
                     }
                 }
@@ -264,7 +263,7 @@ final class GetOrderProductsForViewingHandler extends AbstractOrderHandler imple
                 $packItems,
                 $product['customizations'],
                 $product['product_mpn'],
-                $shipmentId
+                $shipmentIds
             );
         }
 
