@@ -6899,7 +6899,7 @@ class ProductCore extends ObjectModel
             'WHERE `id_category` = ' . (int) $this->id_category_default . '  ' .
             'ORDER BY `position`'
         );
-        
+
         $sizeResult = count($result);
 
         if ($position > $sizeResult && $sizeResult > 0) {
