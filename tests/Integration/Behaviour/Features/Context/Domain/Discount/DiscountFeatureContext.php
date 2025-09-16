@@ -57,6 +57,7 @@ class DiscountFeatureContext extends AbstractDomainFeatureContext
     {
         $errorCode = match ($field) {
             'name' => DiscountConstraintException::INVALID_NAME,
+            'gift_product' => DiscountConstraintException::INVALID_GIFT_PRODUCT,
             default => null,
         };
 
