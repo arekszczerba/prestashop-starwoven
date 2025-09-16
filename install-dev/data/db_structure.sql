@@ -276,7 +276,7 @@ CREATE TABLE `PREFIX_cart_rule_product_rule` (
   `id_product_rule_group` int(10) unsigned NOT NULL,
   `type` ENUM(
     'products', 'categories', 'attributes',
-    'manufacturers', 'suppliers', 'combinations'
+    'manufacturers', 'suppliers', 'combinations', 'features'
   ) NOT NULL,
   PRIMARY KEY (`id_product_rule`)
 ) ENGINE=ENGINE_TYPE DEFAULT CHARSET=utf8mb4 COLLATION;

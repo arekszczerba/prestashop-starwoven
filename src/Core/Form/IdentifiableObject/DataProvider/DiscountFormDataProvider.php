@@ -27,6 +27,7 @@
 namespace PrestaShop\PrestaShop\Core\Form\IdentifiableObject\DataProvider;
 
 use PrestaShop\PrestaShop\Adapter\Attribute\Repository\AttributeRepository;
+use PrestaShop\PrestaShop\Adapter\Feature\Repository\FeatureValueRepository;
 use PrestaShop\PrestaShop\Adapter\Product\Combination\Repository\CombinationRepository;
 use PrestaShop\PrestaShop\Adapter\Product\Repository\ProductRepository;
 use PrestaShop\PrestaShop\Core\CommandBus\CommandBusInterface;
@@ -66,6 +67,7 @@ class DiscountFormDataProvider implements FormDataProviderInterface
         private readonly ProductImageProviderInterface $productImageProvider,
         private readonly LanguageContext $languageContext,
         private readonly AttributeRepository $attributeRepository,
+        private readonly FeatureValueRepository $featureValueRepository,
         private readonly ShopContext $shopContext,
         private readonly RequestStack $requestStack,
     ) {
@@ -102,6 +104,7 @@ class DiscountFormDataProvider implements FormDataProviderInterface
             || !empty($productSegment[DiscountProductSegmentType::SUPPLIER])
             || !empty($productSegment[DiscountProductSegmentType::CATEGORY])
             || !empty($productSegment[DiscountProductSegmentType::ATTRIBUTES]['groups'])
+            || !empty($productSegment[DiscountProductSegmentType::FEATURES]['groups'])
         ;
 
         $selectedCondition = 'none';
@@ -125,6 +128,11 @@ class DiscountFormDataProvider implements FormDataProviderInterface
         } elseif (!empty($discountForEditing->getCountryIds())) {
             $selectedCondition = DiscountConditionsType::DELIVERY_CONDITIONS;
             $selectedDeliveryCondition = DeliveryConditionsType::COUNTRY;
+            $selectedCondition = 'cart_conditions';
+            $selectedCartCondition = 'specific_products';
+        } elseif (!empty($productSegment['manufacturer']) || !empty($productSegment['category']) || !empty($productSegment['features'])) {
+            $selectedCondition = 'cart_conditions';
+            $selectedCartCondition = 'product_segment';
         }
 
         return [
@@ -296,6 +304,9 @@ class DiscountFormDataProvider implements FormDataProviderInterface
             DiscountProductSegmentType::ATTRIBUTES => [
                 'groups' => [],
             ],
+            DiscountProductSegmentType::FEATURES => [
+                'groups' => [],
+            ],
             'quantity' => 0,
         ];
 
@@ -331,6 +342,25 @@ class DiscountFormDataProvider implements FormDataProviderInterface
                         $productSegment[DiscountProductSegmentType::ATTRIBUTES]['groups'][$groupId]['items'][] = [
                             'id' => $attributeId,
                             'name' => $attributeInfo['attribute_name'],
+                        ];
+                    }
+                }
+                if ($rule->getType() === ProductRuleType::FEATURES) {
+                    $featuresInfo = $this->featureValueRepository->getFeaturesInfoByFeatureValueIds($rule->getItemIds(), $this->languageContext->getId());
+                    foreach ($rule->getItemIds() as $featureValueId) {
+                        $featureInfo = $featuresInfo[$featureValueId];
+                        $featureId = $featureInfo['id_feature'];
+                        if (empty($productSegment[DiscountProductSegmentType::FEATURES]['groups'][$featureId])) {
+                            $productSegment[DiscountProductSegmentType::FEATURES]['groups'][$featureId] = [
+                                'id' => $featureId,
+                                'name' => $featureInfo['feature_name'],
+                                'items' => [],
+                            ];
+                        }
+
+                        $productSegment[DiscountProductSegmentType::FEATURES]['groups'][$featureId]['items'][] = [
+                            'id' => $featureValueId,
+                            'name' => $featureInfo['feature_value_name'],
                         ];
                     }
                 }
