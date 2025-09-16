@@ -97,17 +97,17 @@ describe('API : Check endpoints', async () => {
         '/api-client: POST',
         // tests/UI/campaigns/functional/API/02_endpoints/01_apiClient/06_getApiClients.ts
         '/api-clients: GET',
-        // todo: add tests
+        // @todo: add tests
         '/attributes/group/{attributeGroupId}: DELETE',
-        // todo: add tests
+        // @todo: add tests
         '/attributes/group/{attributeGroupId}: GET',
-        // todo: add tests
+        // @todo: add tests
         '/attributes/group/{attributeGroupId}: PATCH',
-        // todo: add tests
+        // @todo: add tests
         '/attributes/group: POST',
-        // todo: add tests
+        // @todo: add tests
         '/attributes/groups/delete: PUT',
-        // todo: add tests
+        // @todo: add tests
         '/attributes/groups: GET',
         // tests/UI/campaigns/functional/API/02_endpoints/02_customerGroup/01_deleteCustomerGroupsId.ts
         '/customers/group/{customerGroupId}: DELETE',
@@ -117,7 +117,7 @@ describe('API : Check endpoints', async () => {
         '/customers/group/{customerGroupId}: PUT',
         // tests/UI/campaigns/functional/API/02_endpoints/02_customerGroup/04_postCustomersGroup.ts
         '/customers/group: POST',
-        // todo: add tests
+        // tests/UI/campaigns/functional/API/02_endpoints/02_customerGroup/05_getCustomersGroups.ts
         '/customers/groups: GET',
         // tests/UI/campaigns/functional/API/02_endpoints/03_hook/01_putHookStatusId.ts
         '/hook-status/{hookId}: PUT',
@@ -149,7 +149,7 @@ describe('API : Check endpoints', async () => {
         '/modules/uninstall: PUT',
         // tests/UI/campaigns/functional/API/02_endpoints/05_module/11_getModules.ts
         '/modules: GET',
-        // todo: add tests for delete and shopIds
+        // @todo: add tests for delete and shopIds
         '/product/image/{imageId}: DELETE',
         // tests/UI/campaigns/functional/API/02_endpoints/06_product/01_getProductImageId.ts
         '/product/image/{imageId}: GET',
@@ -173,6 +173,14 @@ describe('API : Check endpoints', async () => {
         '/products/search/{phrase}/{resultsLimit}/{isoCode}: GET',
         // tests/UI/campaigns/functional/API/02_endpoints/06_product/11_getProducts.ts
         '/products: GET',
+        // @todo: add tests
+        '/webservice-key/{webserviceKeyId}: GET',
+        // @todo: add tests
+        '/webservice-key/{webserviceKeyId}: PATCH',
+        // @todo: add tests
+        '/webservice-key: POST',
+        // @todo: add tests
+        '/webservice-keys: GET',
       ]);
     });
   });
