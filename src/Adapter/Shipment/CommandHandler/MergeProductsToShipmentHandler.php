@@ -61,7 +61,7 @@ class MergeProductsToShipmentHandler implements MergeProductsToShipmentHandlerIn
         }
 
         if (!empty($sourceShipment->getTrackingNumber())) {
-            throw new CannotEditShipmentShippedException(sprintf('Cannot split the shipment "%s" because is already shipped', $sourceId));
+            throw new CannotEditShipmentShippedException(sprintf('Cannot merge the shipment "%s" because is already shipped', $sourceId));
         }
 
         if (!$targetShipment) {
