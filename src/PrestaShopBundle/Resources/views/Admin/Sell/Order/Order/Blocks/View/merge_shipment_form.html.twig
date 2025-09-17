@@ -30,7 +30,8 @@
   }),
   attr: {
     id: 'merge_shipment',
-    class: 'shipment-form'
+    class: 'shipment-form',
+    'data-is-valid': isShipped,
   },
 }) }}
 
@@ -47,6 +48,12 @@
     <i class="material-icons">help_outline</i>
   </a>
 </p>
+
+  {% if isShipped is defined and isShipped == true %}
+    <div class="alert alert-warning" role="alert">
+      <p class="alert-text">{{ 'This shipment can’t be modified because a tracking number has already been assigned, indicating that it has already been shipped.'|trans({}, 'Admin.Orderscustomers.Notification') }}</p>
+    </div>
+  {% endif %}
 
 <table class="table shipment-form__table">
   <thead>

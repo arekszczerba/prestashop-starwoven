@@ -29,6 +29,7 @@ namespace PrestaShop\PrestaShop\Adapter\Shipment\CommandHandler;
 use PrestaShop\PrestaShop\Core\CommandBus\Attributes\AsCommandHandler;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\MergeProductsToShipment;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\CommandHandler\MergeProductsToShipmentHandlerInterface;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\CannotEditShipmentShippedException;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\CannotMergeProductToShipmentException;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentNotFoundException;
 use PrestaShopBundle\Entity\Repository\ShipmentRepository;
@@ -57,6 +58,10 @@ class MergeProductsToShipmentHandler implements MergeProductsToShipmentHandlerIn
 
         if (!$sourceShipment) {
             throw new ShipmentNotFoundException(sprintf('Shipment with id "%s" was not found', $sourceId));
+        }
+
+        if (!empty($sourceShipment->getTrackingNumber())) {
+            throw new CannotEditShipmentShippedException(sprintf('Cannot split the shipment "%s" because is already shipped', $sourceId));
         }
 
         if (!$targetShipment) {

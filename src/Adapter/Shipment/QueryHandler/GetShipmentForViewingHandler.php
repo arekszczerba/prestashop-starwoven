@@ -76,7 +76,7 @@ class GetShipmentForViewingHandler implements GetShipmentForViewingHandlerInterf
         $order = $this->orderRepository->get(new OrderId($shipment->getOrderId()));
         $carrier = $this->carrierRepository->get(new CarrierId($shipment->getCarrierId()));
         $address = $this->addressRepository->get(new AddressId($shipment->getAddressId()));
-        $state = $this->stateRepository->get(new StateId($address->id_state));
+        $state = $this->stateRepository->get(new StateId(1));
         $country = $this->countryRepository->get(new CountryId($address->id_country));
 
         $carrierSummary = new CarrierSummary($carrier->id, $carrier->name);

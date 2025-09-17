@@ -29,6 +29,7 @@
     id: 'split_shipment',
     class: 'shipment-form',
     'data-is-valid': formIsValid,
+    'data-is-valid': isShipped,
   }
 }) }}
   <div class="shipment-form__loader"></div>
@@ -49,6 +50,11 @@
   {% if formIsValid is defined and formIsValid == false %}
     <div class="alert alert-warning" role="alert">
       <p class="alert-text">{{ 'You can’t select all items to split the shipment. At least one item must remain in the original package to proceed.'|trans({}, 'Admin.Orderscustomers.Notification') }}</p>
+    </div>
+  {% endif %}
+  {% if isShipped is defined and isShipped == true %}
+    <div class="alert alert-warning" role="alert">
+      <p class="alert-text">{{ 'This shipment can’t be modified because a tracking number has already been assigned, indicating that it has already been shipped.'|trans({}, 'Admin.Orderscustomers.Notification') }}</p>
     </div>
   {% endif %}
 
