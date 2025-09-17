@@ -88,6 +88,7 @@ use PrestaShop\PrestaShop\Core\Domain\Product\QueryResult\FoundProduct;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\EditShipment;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\MergeProductsToShipment;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Command\SplitShipment;
+use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\CannotEditShipmentShippedException;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentException;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentForEditing;
@@ -645,7 +646,7 @@ class OrderController extends PrestaShopAdminController
         $formData = $this->getMergeFormData($orderId, $shipmentId);
 
         $form = $this->createForm(MergeShipmentType::class, null, $formData);
-        $isShipped = $this->verifyIsShipmentIsShipped($shipmentId);
+        $isShipped = $this->isShipmentShipped($shipmentId);
 
         return $this->render('@PrestaShop/Admin/Sell/Order/Order/Blocks/View/merge_shipment_form.html.twig', [
             'mergeShipmentForm' => $form->createView(),
@@ -720,8 +721,10 @@ class OrderController extends PrestaShopAdminController
             );
             $this->dispatchCommand($command);
         } catch (Exception $e) {
-            if ((new ReflectionClass($e))->getShortName() === 'CannotEditShipmentShippedException') {
+            if ((new ReflectionClass($e))->getName() === CannotEditShipmentShippedException::class) {
                 $this->addFlash('error', $this->trans('You cannot split shipment when is already shipped.', [], 'Admin.Orderscustomers.Notification'));
+            } else {
+                throw $e;
             }
         }
 
@@ -806,8 +809,10 @@ class OrderController extends PrestaShopAdminController
 
             $this->dispatchQuery(new SplitShipment($shipmentId, $products, $carrier));
         } catch (Exception $e) {
-            if ((new ReflectionClass($e))->getShortName() === 'CannotEditShipmentShippedException') {
+            if ((new ReflectionClass($e))->getName() === CannotEditShipmentShippedException::class) {
                 $this->addFlash('error', $this->trans('You cannot split shipment when is already shipped.', [], 'Admin.Orderscustomers.Notification'));
+            } else {
+                throw $e;
             }
         }
 
@@ -832,7 +837,7 @@ class OrderController extends PrestaShopAdminController
         $productsFromQuery = $request->get('products', []);
         $selectedCarrier = $request->query->getInt('carrier');
         $orderShipmentProducts = $this->mergeProductsFromQueries($shipmentId, $productsFromQuery, $orderDetailRepository);
-        $canSplitShipment = $this->verifyIsShipmentIsShipped($shipmentId);
+        $canSplitShipment = $this->isShipmentShipped($shipmentId);
 
         $formIsValid = $this->checkFormValidity($orderShipmentProducts);
 
@@ -873,7 +878,7 @@ class OrderController extends PrestaShopAdminController
         return !($allSelected && $allQuantitiesMatch);
     }
 
-    private function verifyIsShipmentIsShipped(int $shipmentId): bool
+    private function isShipmentShipped(int $shipmentId): bool
     {
         /** @var OrderShipment $shipment */
         $shipment = $this->dispatchQuery(new GetShipmentForViewing($shipmentId));
