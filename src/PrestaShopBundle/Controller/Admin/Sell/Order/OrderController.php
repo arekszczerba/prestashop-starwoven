@@ -778,22 +778,26 @@ class OrderController extends PrestaShopAdminController
     #[AdminSecurity("is_granted('update', 'AdminOrders')", redirectRoute: 'admin_orders_view', redirectQueryParamsToKeep: ['orderId'], message: 'You do not have permission to edit this.')]
     public function splitShipmentAction(int $orderId, int $shipmentId, Request $request): RedirectResponse
     {
-        $data = $request->get('split_shipment', []);
-        $carrier = isset($data['carrier']) ? (int) $data['carrier'] : null;
+        try {
+            $data = $request->get('split_shipment', []);
+            $carrier = isset($data['carrier']) ? (int) $data['carrier'] : null;
 
-        $productsRaw = $data['products'] ?? [];
-        $products = [];
+            $productsRaw = $data['products'] ?? [];
+            $products = [];
 
-        foreach ($productsRaw as $prod) {
-            if (isset($prod['selected']) && (int) $prod['selected'] === 1) {
-                $products[] = [
-                    'id_order_detail' => (int) $prod['order_detail_id'],
-                    'quantity' => (int) $prod['selected_quantity'],
-                ];
+            foreach ($productsRaw as $prod) {
+                if (isset($prod['selected']) && (int) $prod['selected'] === 1) {
+                    $products[] = [
+                        'id_order_detail' => (int) $prod['order_detail_id'],
+                        'quantity' => (int) $prod['selected_quantity'],
+                    ];
+                }
             }
-        }
 
-        $this->dispatchQuery(new SplitShipment($shipmentId, $products, $carrier));
+            $this->dispatchQuery(new SplitShipment($shipmentId, $products, $carrier));
+        } catch(Exception $e) {
+            $this->addFlash('error', $this->getErrorMessageForException($e, $this->getErrorMessages($e)));
+        }
 
         return $this->redirectToRoute('admin_orders_view', [
             'orderId' => $orderId,
