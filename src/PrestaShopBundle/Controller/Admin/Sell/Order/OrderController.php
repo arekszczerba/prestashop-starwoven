@@ -722,7 +722,7 @@ class OrderController extends PrestaShopAdminController
             $this->dispatchCommand($command);
         } catch (Exception $e) {
             if ((new ReflectionClass($e))->getName() === CannotEditShipmentShippedException::class) {
-                $this->addFlash('error', $this->trans('You cannot split shipment when is already shipped.', [], 'Admin.Orderscustomers.Notification'));
+                $this->addFlash('error', $this->trans('You cannot merge shipment when is already shipped.', [], 'Admin.Orderscustomers.Notification'));
             } else {
                 throw $e;
             }
