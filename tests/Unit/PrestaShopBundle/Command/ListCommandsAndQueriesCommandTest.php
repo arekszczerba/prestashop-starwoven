@@ -36,8 +36,8 @@ use ApiPlatform\Metadata\Resource\ResourceNameCollection;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use PrestaShop\PrestaShop\Core\CommandBus\Parser\CommandDefinitionParser;
+use PrestaShopBundle\ApiPlatform\Scopes\ApiResourceScopesExtractorInterface;
 use PrestaShopBundle\Command\ListCommandsAndQueriesCommand;
-use PrestaShopBundle\Exception\DomainClassNameMalformedException;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class ListCommandsAndQueriesCommandTest extends TestCase
@@ -55,16 +55,23 @@ class ListCommandsAndQueriesCommandTest extends TestCase
      */
     private $resourceMetadataCollectionMock;
 
+    /**
+     * @var ApiResourceScopesExtractorInterface|MockObject
+     */
+    private $apiResourceScopesExtractorMock;
+
     public function setUp(): void
     {
         $this->resourceNameCollectionMock = $this->createMock(ResourceNameCollectionFactoryInterface::class);
         $this->resourceMetadataCollectionMock = $this->createMock(ResourceMetadataCollectionFactoryInterface::class);
+        $this->apiResourceScopesExtractorMock = $this->createMock(ApiResourceScopesExtractorInterface::class);
 
         $command = new ListCommandsAndQueriesCommand(
             new CommandDefinitionParser(),
             $this->getListOfCQRSCommands(),
             $this->resourceNameCollectionMock,
-            $this->resourceMetadataCollectionMock
+            $this->resourceMetadataCollectionMock,
+            $this->apiResourceScopesExtractorMock
         );
 
         $this->commandTester = new CommandTester($command);
@@ -78,8 +85,8 @@ class ListCommandsAndQueriesCommandTest extends TestCase
     public function testExecute(array $options, string $result): void
     {
         $this->resourceNameCollectionMock->method('create')->willReturn(new ResourceNameCollection());
-
         $this->resourceMetadataCollectionMock->method('create')->willReturn(new ResourceMetadataCollection(''));
+        $this->apiResourceScopesExtractorMock->method('getAllApiResourceScopes')->willReturn([]);
 
         $this->commandTester->execute($options);
 
@@ -88,36 +95,18 @@ class ListCommandsAndQueriesCommandTest extends TestCase
         );
     }
 
-    public function testExecuteWithWrongClass(): void
-    {
-        $this->resourceNameCollectionMock->method('create')->willReturn(new ResourceNameCollection());
-        $this->resourceMetadataCollectionMock->method('create')->willReturn(new ResourceMetadataCollection(''));
-
-        $command = new ListCommandsAndQueriesCommand(
-            new CommandDefinitionParser(),
-            ["PrestaShop\PrestaShop\Adapter\HookManager"],
-            $this->resourceNameCollectionMock,
-            $this->resourceMetadataCollectionMock
-        );
-
-        $commandTester = new CommandTester($command);
-
-        $this->expectException(DomainClassNameMalformedException::class);
-        $commandTester->execute([]);
-    }
-
     public function optionsProvider(): array
     {
         return [
             [
                 [],
-                "1.\nClass: PrestaShop\PrestaShop\Core\Domain\CustomerService\Command\DeleteCustomerThreadCommand\nType: Command\nAPI: \n\n\n2.\nClass: PrestaShop\PrestaShop\Core\Domain\CustomerService\Command\BulkDeleteCustomerThreadCommand\nType: Command\nAPI: \n\n\n3.\nClass: PrestaShop\PrestaShop\Core\Domain\CustomerMessage\Command\AddOrderCustomerMessageCommand\nType: Command\nAPI: \nThis command adds/sends message to the customer related with the order.\n\n4.\nClass: PrestaShop\PrestaShop\Core\Domain\CustomerService\Query\GetCustomerThreadForViewing\nType: Query\nAPI: \nGets customer thread for viewing\n\n",
+                "1.\nClass: PrestaShop\PrestaShop\Core\Domain\CustomerService\Command\DeleteCustomerThreadCommand\nType: Command\n\n\n2.\nClass: PrestaShop\PrestaShop\Core\Domain\CustomerService\Command\BulkDeleteCustomerThreadCommand\nType: Command\n\n\n3.\nClass: PrestaShop\PrestaShop\Core\Domain\CustomerMessage\Command\AddOrderCustomerMessageCommand\nType: Command\nThis command adds/sends message to the customer related with the order.\n\n4.\nClass: PrestaShop\PrestaShop\Core\Domain\CustomerService\Query\GetCustomerThreadForViewing\nType: Query\nGets customer thread for viewing\n\n",
             ],
             [
                 [
                     '--domain' => ['CustomerMessage'],
                 ],
-                "3.\nClass: PrestaShop\PrestaShop\Core\Domain\CustomerMessage\Command\AddOrderCustomerMessageCommand\nType: Command\nAPI: \nThis command adds/sends message to the customer related with the order.\n\n",
+                "3.\nClass: PrestaShop\PrestaShop\Core\Domain\CustomerMessage\Command\AddOrderCustomerMessageCommand\nType: Command\nThis command adds/sends message to the customer related with the order.\n\n",
             ],
             [
                 [
