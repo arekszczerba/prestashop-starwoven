@@ -339,7 +339,7 @@ class CustomerCore extends ObjectModel
          * Customer birthday is stored as a single date (YYYY-MM-DD) in the database,
          * but the object model uses three different fields (years, months, days).
          * If it's being updated, we must rebuild the date from these three fields.
-         */    
+         */
         $this->birthday = (empty($this->years) ? $this->birthday : (int) $this->years . '-' . (int) $this->months . '-' . (int) $this->days);
 
         // If subscribed to the newsletter, set the date of subscription to now, if not set
