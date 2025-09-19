@@ -29,6 +29,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit\PrestaShopBundle\Command;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Operations;
 use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
 use ApiPlatform\Metadata\Resource\Factory\ResourceNameCollectionFactoryInterface;
 use ApiPlatform\Metadata\Resource\ResourceMetadataCollection;
@@ -136,5 +139,57 @@ class ListCommandsAndQueriesCommandTest extends TestCase
             "PrestaShop\PrestaShop\Core\Domain\CustomerMessage\Command\AddOrderCustomerMessageCommand",
             "PrestaShop\PrestaShop\Core\Domain\CustomerService\Query\GetCustomerThreadForViewing",
         ];
+    }
+
+    public function testExecuteWithCoreApiClientResource(): void
+    {
+        // Create a real core ApiClient GET operation
+        $getCoreOperation = new Get(
+            uriTemplate: '/api-client/infos',
+            extraProperties: [
+                'CQRSQuery' => 'PrestaShop\PrestaShop\Core\Domain\ApiClient\Query\GetApiClientForEditing',
+            ]
+        );
+
+        // Mock core API resource with the operation
+        $coreApiResource = $this->createMock(ApiResource::class);
+        $coreApiResource->method('getOperations')->willReturn(new Operations([$getCoreOperation]));
+
+        // Create a real ResourceMetadataCollection since it's final
+        $resourceMetadataCollection = new ResourceMetadataCollection('ApiClient', [$coreApiResource]);
+
+        // Mock the factory to return our collection
+        $resourceMetadataCollectionFactory = $this->createMock(ResourceMetadataCollectionFactoryInterface::class);
+        $resourceMetadataCollectionFactory->method('create')->willReturn($resourceMetadataCollection);
+
+        // Mock resource name collection
+        $resourceNameCollection = new ResourceNameCollection(['ApiClient']);
+        $resourceNameCollectionFactory = $this->createMock(ResourceNameCollectionFactoryInterface::class);
+        $resourceNameCollectionFactory->method('create')->willReturn($resourceNameCollection);
+
+        // Mock API resource scopes extractor to return no module scopes
+        $apiResourceScopesExtractor = $this->createMock(ApiResourceScopesExtractorInterface::class);
+        $apiResourceScopesExtractor->method('getAllApiResourceScopes')->willReturn([]);
+
+        $command = new ListCommandsAndQueriesCommand(
+            new CommandDefinitionParser(),
+            [
+                'PrestaShop\PrestaShop\Core\Domain\ApiClient\Query\GetApiClientForEditing',
+            ],
+            $resourceNameCollectionFactory,
+            $resourceMetadataCollectionFactory,
+            $apiResourceScopesExtractor,
+            '/test/modules/'
+        );
+
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(['--hasApiEndpoint' => 'true']);
+
+        $output = $commandTester->getDisplay();
+
+        // Verify the core ApiClient endpoint is correctly detected
+        $this->assertStringContainsString('GET /api-client/infos', $output);
+        $this->assertStringContainsString('GetApiClientForEditing', $output);
+        $this->assertStringContainsString('PrestaShop\PrestaShop\Core\Domain\ApiClient\Query\GetApiClientForEditing', $output);
     }
 }
