@@ -141,6 +141,40 @@ class CQRSOpenApiFactoryTest extends KernelTestCase
         ];
     }
 
+    public function testMultishopParametersAreDocumentedWhenFeatureActive(): void
+    {
+        $configuration = $this->getContainer()->get('prestashop.adapter.legacy.configuration');
+        $configuration->set('PS_MULTISHOP_FEATURE_ACTIVE', 1);
+
+        /** @var OpenApiFactoryInterface $openApiFactory */
+        $openApiFactory = $this->getContainer()->get(OpenApiFactoryInterface::class);
+        /** @var OpenApi $openApi */
+        $openApi = $openApiFactory->__invoke();
+        $operation = $openApi->getPaths()->getPath('/products')->getGet();
+        $parameterNames = array_map(static fn ($parameter) => $parameter->getName(), $operation->getParameters());
+        $this->assertContains('shopId', $parameterNames);
+        $this->assertContains('shopGroupId', $parameterNames);
+        $this->assertContains('shopIds', $parameterNames);
+        $this->assertContains('allShops', $parameterNames);
+    }
+
+    public function testMultishopParametersAreNotDocumentedWhenFeatureInactive(): void
+    {
+        $configuration = $this->getContainer()->get('prestashop.adapter.legacy.configuration');
+        $configuration->set('PS_MULTISHOP_FEATURE_ACTIVE', 0);
+
+        /** @var OpenApiFactoryInterface $openApiFactory */
+        $openApiFactory = $this->getContainer()->get(OpenApiFactoryInterface::class);
+        /** @var OpenApi $openApi */
+        $openApi = $openApiFactory->__invoke();
+        $operation = $openApi->getPaths()->getPath('/products')->getGet();
+        $parameterNames = array_map(static fn ($parameter) => $parameter->getName(), $operation->getParameters());
+        $this->assertNotContains('shopId', $parameterNames);
+        $this->assertNotContains('shopGroupId', $parameterNames);
+        $this->assertNotContains('shopIds', $parameterNames);
+        $this->assertNotContains('allShops', $parameterNames);
+    }
+
     /**
      * @dataProvider provideJsonSchemaFactoryCases
      */

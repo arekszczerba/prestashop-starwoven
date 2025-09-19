@@ -35,6 +35,7 @@ use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInter
 use ApiPlatform\Metadata\Resource\Factory\ResourceNameCollectionFactoryInterface;
 use ApiPlatform\OpenApi\Factory\OpenApiFactoryInterface;
 use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
+use ApiPlatform\OpenApi\Model\Parameter;
 use ApiPlatform\OpenApi\Model\PathItem;
 use ApiPlatform\OpenApi\Model\Paths;
 use ApiPlatform\OpenApi\Model\Server;
@@ -43,6 +44,7 @@ use ArrayObject;
 use DateTimeInterface;
 use Exception;
 use PrestaShop\Decimal\DecimalNumber;
+use PrestaShop\PrestaShop\Adapter\Feature\MultistoreFeature;
 use PrestaShopBundle\ApiPlatform\DomainObjectDetector;
 use PrestaShopBundle\ApiPlatform\Metadata\LocalizedValue;
 use ReflectionClass;
@@ -79,6 +81,7 @@ class CQRSOpenApiFactory implements OpenApiFactoryInterface
         protected readonly ClassMetadataFactoryInterface $classMetadataFactory,
         protected readonly DomainObjectDetector $domainObjectDetector,
         protected readonly PropertyInfoExtractorInterface $propertyInfoExtractor,
+        protected readonly MultistoreFeature $multistoreFeature,
         // No property promotion for this one since it's already defined in the ResourceMetadataTrait
         ResourceMetadataCollectionFactoryInterface $resourceMetadataFactory,
     ) {
@@ -164,6 +167,12 @@ class CQRSOpenApiFactory implements OpenApiFactoryInterface
                     // Add security scopes
                     if (!empty($scopesByUri[$path][$httpMethod])) {
                         $updatedOperation = $updatedOperation->withSecurity([['oauth' => $scopesByUri[$path][$httpMethod]]]);
+                    }
+
+                    // Add multishop context parameters if needed
+                    if ($this->multistoreFeature->isActive()) {
+                        $existingParameters = $updatedOperation->getParameters() ?? [];
+                        $updatedOperation = $updatedOperation->withParameters(array_merge($existingParameters, $this->getMultiShopParameters()));
                     }
 
                     $setterMethod = 'with' . ucfirst($httpMethod);
@@ -281,6 +290,21 @@ class CQRSOpenApiFactory implements OpenApiFactoryInterface
         } catch (Exception $e) {
             return [];
         }
+    }
+
+    /**
+     * Returns the list of multishop context parameters added to each operation.
+     *
+     * @return Parameter[]
+     */
+    protected function getMultiShopParameters(): array
+    {
+        return [
+            new Parameter('shopId', 'query', 'Shop identifier for multistore context', false, false, false, ['type' => 'integer']),
+            new Parameter('shopGroupId', 'query', 'Shop group identifier for multistore context', false, false, false, ['type' => 'integer']),
+            new Parameter('shopIds', 'query', 'Comma separated list of shop identifiers for multistore context', false, false, false, ['type' => 'string']),
+            new Parameter('allShops', 'query', 'Use all shops context', false, false, false, ['type' => 'integer', 'enum' => ['1']]),
+        ];
     }
 
     protected function getSchemaDefinition(OpenApi $openApi, Operation $operation): ?ArrayObject
