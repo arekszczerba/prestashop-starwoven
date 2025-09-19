@@ -45,6 +45,7 @@ services:
       - '@api_platform.metadata.resource.name_collection_factory.attributes'
       - '@api_platform.metadata.resource.metadata_collection_factory.attributes'
       - '@PrestaShopBundle\ApiPlatform\Scopes\ApiResourceScopesExtractorInterface'
+      - '%prestashop.module_dir%'
     tags:
       - 'console.command'
 

@@ -57,7 +57,8 @@ class ListCommandsAndQueriesCommand extends Command
         private array $commandAndQueries,
         private ResourceNameCollectionFactoryInterface $resourceNameCollectionFactory,
         private ResourceMetadataCollectionFactoryInterface $resourceMetadataFactory,
-        private ApiResourceScopesExtractorInterface $apiResourceScopesExtractor
+        private ApiResourceScopesExtractorInterface $apiResourceScopesExtractor,
+        private string $moduleDir
     ) {
         parent::__construct();
         $this->isFormatSimple = false;
@@ -216,7 +217,7 @@ class ListCommandsAndQueriesCommand extends Command
     private function getModuleResourcePaths(string $moduleName): array
     {
         $paths = [];
-        $modulePath = _PS_MODULE_DIR_ . $moduleName;
+        $modulePath = $this->moduleDir . $moduleName;
 
         // Folder containing ApiPlatform resources classes
         $moduleResourcesPath = sprintf('%s/src/ApiPlatform/Resources', $modulePath);

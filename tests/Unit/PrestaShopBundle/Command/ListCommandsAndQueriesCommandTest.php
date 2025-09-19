@@ -71,7 +71,8 @@ class ListCommandsAndQueriesCommandTest extends TestCase
             $this->getListOfCQRSCommands(),
             $this->resourceNameCollectionMock,
             $this->resourceMetadataCollectionMock,
-            $this->apiResourceScopesExtractorMock
+            $this->apiResourceScopesExtractorMock,
+            '/test/modules/'
         );
 
         $this->commandTester = new CommandTester($command);
