@@ -97,7 +97,7 @@ describe('API : Check endpoints', async () => {
         '/api-client: POST',
         // tests/UI/campaigns/functional/API/02_endpoints/01_apiClient/06_getApiClients.ts
         '/api-clients: GET',
-        // @todo: add tests
+        // tests/UI/campaigns/functional/API/02_endpoints/02_attributesGroup/01_deleteAttributesGroupId.ts
         '/attributes/group/{attributeGroupId}: DELETE',
         // @todo: add tests
         '/attributes/group/{attributeGroupId}: GET',
@@ -109,69 +109,69 @@ describe('API : Check endpoints', async () => {
         '/attributes/groups/delete: PUT',
         // @todo: add tests
         '/attributes/groups: GET',
-        // tests/UI/campaigns/functional/API/02_endpoints/02_customerGroup/01_deleteCustomerGroupsId.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/03_customerGroup/01_deleteCustomerGroupsId.ts
         '/customers/group/{customerGroupId}: DELETE',
-        // tests/UI/campaigns/functional/API/02_endpoints/02_customerGroup/02_getCustomerGroupsId.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/03_customerGroup/02_getCustomerGroupsId.ts
         '/customers/group/{customerGroupId}: GET',
-        // tests/UI/campaigns/functional/API/02_endpoints/02_customerGroup/03_putCustomerGroupsId.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/03_customerGroup/03_putCustomerGroupsId.ts
         '/customers/group/{customerGroupId}: PUT',
-        // tests/UI/campaigns/functional/API/02_endpoints/02_customerGroup/04_postCustomersGroup.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/03_customerGroup/04_postCustomersGroup.ts
         '/customers/group: POST',
-        // tests/UI/campaigns/functional/API/02_endpoints/02_customerGroup/05_getCustomersGroups.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/03_customerGroup/05_getCustomersGroups.ts
         '/customers/groups: GET',
-        // tests/UI/campaigns/functional/API/02_endpoints/03_hook/01_putHookStatusId.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/04_hook/01_putHookStatusId.ts
         '/hook-status/{hookId}: PUT',
-        // tests/UI/campaigns/functional/API/02_endpoints/03_hook/02_getHooksId.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/04_hook/02_getHooksId.ts
         '/hook/{hookId}: GET',
-        // tests/UI/campaigns/functional/API/02_endpoints/03_hook/03_getHooks.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/04_hook/03_getHooks.ts
         '/hooks: GET',
-        // tests/UI/campaigns/functional/API/02_endpoints/04_language/01_getLanguages.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/05_language/01_getLanguages.ts
         '/languages: GET',
-        // tests/UI/campaigns/functional/API/02_endpoints/05_module/01_postModuleUploadArchive.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/06_module/01_postModuleUploadArchive.ts
         '/module/upload-archive: POST',
-        // tests/UI/campaigns/functional/API/02_endpoints/05_module/02_postModuleUploadSource.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/06_module/02_postModuleUploadSource.ts
         '/module/upload-source: POST',
-        // tests/UI/campaigns/functional/API/02_endpoints/05_module/03_putModuleTechnicalNameInstall.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/06_module/03_putModuleTechnicalNameInstall.ts
         '/module/{technicalName}/install: PUT',
-        // tests/UI/campaigns/functional/API/02_endpoints/05_module/04_patchModuleTechnicalNameReset.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/06_module/04_patchModuleTechnicalNameReset.ts
         '/module/{technicalName}/reset: PATCH',
-        // tests/UI/campaigns/functional/API/02_endpoints/05_module/05_putModuleTechnicalNameStatus.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/06_module/05_putModuleTechnicalNameStatus.ts
         '/module/{technicalName}/status: PUT',
-        // tests/UI/campaigns/functional/API/02_endpoints/05_module/06_putModuleTechnicalNameUninstall.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/06_module/06_putModuleTechnicalNameUninstall.ts
         '/module/{technicalName}/uninstall: PUT',
-        // tests/UI/campaigns/functional/API/02_endpoints/05_module/07_putModuleTechnicalNameUpgrade.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/06_module/07_putModuleTechnicalNameUpgrade.ts
         '/module/{technicalName}/upgrade: PUT',
-        // tests/UI/campaigns/functional/API/02_endpoints/05_module/08_getModuleTechnicalName.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/06_module/08_getModuleTechnicalName.ts
         '/module/{technicalName}: GET',
-        // tests/UI/campaigns/functional/API/02_endpoints/05_module/09_putModulesToggleStatus.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/06_module/09_putModulesToggleStatus.ts
         '/modules/toggle-status: PUT',
-        // tests/UI/campaigns/functional/API/02_endpoints/05_module/10_putModulesUninstall.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/06_module/10_putModulesUninstall.ts
         '/modules/uninstall: PUT',
-        // tests/UI/campaigns/functional/API/02_endpoints/05_module/11_getModules.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/06_module/11_getModules.ts
         '/modules: GET',
         // @todo: add tests for delete and shopIds
         '/product/image/{imageId}: DELETE',
-        // tests/UI/campaigns/functional/API/02_endpoints/06_product/01_getProductImageId.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/07_product/01_getProductImageId.ts
         '/product/image/{imageId}: GET',
-        // tests/UI/campaigns/functional/API/02_endpoints/06_product/02_postProductImageId.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/07_product/02_postProductImageId.ts
         '/product/image/{imageId}: POST',
-        // tests/UI/campaigns/functional/API/02_endpoints/06_product/03_postProductIdImage.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/07_product/03_postProductIdImage.ts
         '/product/{productId}/image: POST',
-        // tests/UI/campaigns/functional/API/02_endpoints/06_product/04_getProductIdImages.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/07_product/04_getProductIdImages.ts
         '/product/{productId}/images: GET',
-        // tests/UI/campaigns/functional/API/02_endpoints/06_product/05_patchProductIdShops.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/07_product/05_patchProductIdShops.ts
         '/product/{productId}/shops: PATCH',
-        // tests/UI/campaigns/functional/API/02_endpoints/06_product/06_deleteProductId.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/07_product/06_deleteProductId.ts
         '/product/{productId}: DELETE',
-        // tests/UI/campaigns/functional/API/02_endpoints/06_product/07_getProductId.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/07_product/07_getProductId.ts
         '/product/{productId}: GET',
-        // tests/UI/campaigns/functional/API/02_endpoints/06_product/08_patchProductId.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/07_product/08_patchProductId.ts
         '/product/{productId}: PATCH',
-        // tests/UI/campaigns/functional/API/02_endpoints/06_product/09_postProduct.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/07_product/09_postProduct.ts
         '/product: POST',
-        // tests/UI/campaigns/functional/API/02_endpoints/06_product/10_getProductsSearch.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/07_product/10_getProductsSearch.ts
         '/products/search/{phrase}/{resultsLimit}/{isoCode}: GET',
-        // tests/UI/campaigns/functional/API/02_endpoints/06_product/11_getProducts.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/07_product/11_getProducts.ts
         '/products: GET',
         // @todo: add tests
         '/webservice-key/{webserviceKeyId}: GET',
