@@ -100,7 +100,7 @@ class CookieCore
     /**
      * Get data if the cookie exists and else initialize an new one.
      *
-     * @param string $name Cookie name before encrypting                                                                                               
+     * @param string $name Cookie name before encrypting
      * @param string $path Cookie path
      * @param int|null $expire Cookie expiration time (default: 20 days from now)
      * @param array|null $shared_urls Array of shared URLs for domain calculation
@@ -135,7 +135,7 @@ class CookieCore
 
         $this->update();
     }
-    
+
     /**
      * Disable cookie writing.
      * Prevents the cookie from being written to the browser.
@@ -301,7 +301,7 @@ class CookieCore
     /**
      * Create a new guest log entry.
      * Removes current customer and guest IDs and creates a new guest session.
-     */ 
+     */
     public function makeNewLog()
     {
         unset(
@@ -313,7 +313,7 @@ class CookieCore
     }
 
     /**
-     * Get cookie content and update internal data. 
+     * Get cookie content and update internal data.
      * Decrypts and validates the cookie content, handles checksum verification.
      *
      * @param bool $nullValues Whether to handle null values
@@ -488,7 +488,7 @@ class CookieCore
      * Get all cookie content.
      *
      * @return array All cookie data as key-value pairs
-     */ 
+     */
     public function getAll()
     {
         return $this->_content;
@@ -515,7 +515,7 @@ class CookieCore
     /**
      * Register a new session for the current user.
      *
-     * @param SessionInterface $session  The session object to register
+     * @param SessionInterface $session The session object to register
      *
      * @throws CoreException If no valid user ID is found
      */
