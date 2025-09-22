@@ -29,7 +29,7 @@
     id: 'split_shipment',
     class: 'shipment-form',
     'data-is-valid': formIsValid,
-    'data-is-valid': canSplit,
+    'data-is-valid': not isShipped,
   }
 }) }}
   <div class="shipment-form__loader"></div>

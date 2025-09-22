@@ -653,7 +653,6 @@ class OrderController extends PrestaShopAdminController
             'shipmentId' => $shipmentId,
             'products' => $formData['products'],
             'isShipped' => $isShipped,
-            'canMerge' => !$isShipped
         ]);
     }
 
@@ -853,7 +852,6 @@ class OrderController extends PrestaShopAdminController
             'shipmentId' => $shipmentId,
             'formIsValid' => $formIsValid,
             'isShipped' => $canSplitShipment,
-            'canSplit' => !$canSplitShipment,
         ]);
     }
 
