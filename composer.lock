@@ -5214,12 +5214,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PrestaShop/ps_apiresources.git",
-                "reference": "fbc3508fd0495dc16817a103afccb4d86186a819"
+                "reference": "1a4b4094ae3956b62ee59509aacce610fd68ef99"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PrestaShop/ps_apiresources/zipball/fbc3508fd0495dc16817a103afccb4d86186a819",
-                "reference": "fbc3508fd0495dc16817a103afccb4d86186a819",
+                "url": "https://api.github.com/repos/PrestaShop/ps_apiresources/zipball/1a4b4094ae3956b62ee59509aacce610fd68ef99",
+                "reference": "1a4b4094ae3956b62ee59509aacce610fd68ef99",
                 "shasum": ""
             },
             "require": {
@@ -5275,7 +5275,7 @@
             "support": {
                 "source": "https://github.com/PrestaShop/ps_apiresources/tree/dev"
             },
-            "time": "2025-08-06T11:40:50+00:00"
+            "time": "2025-09-19T09:42:28+00:00"
         },
         {
             "name": "prestashop/ps_banner",
@@ -18381,9 +18381,9 @@
         "ext-simplexml": "*",
         "ext-zip": "*"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "platform-overrides": {
         "php": "8.1.0"
     },
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.2.0"
 }
