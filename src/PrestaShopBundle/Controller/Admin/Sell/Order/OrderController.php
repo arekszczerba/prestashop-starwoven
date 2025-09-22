@@ -92,7 +92,6 @@ use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\CannotEditShipmentShipp
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Exception\ShipmentException;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetOrderShipments;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentForEditing;
-use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentForViewing;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\Query\GetShipmentProducts;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipment;
 use PrestaShop\PrestaShop\Core\Domain\Shipment\QueryResult\OrderShipmentProduct;
@@ -646,7 +645,7 @@ class OrderController extends PrestaShopAdminController
         $formData = $this->getMergeFormData($orderId, $shipmentId);
 
         $form = $this->createForm(MergeShipmentType::class, null, $formData);
-        $isShipped = $this->isShipmentShipped($shipmentId);
+        $isShipped = $this->isShipmentShipped($orderId, $shipmentId);
 
         return $this->render('@PrestaShop/Admin/Sell/Order/Order/Blocks/View/merge_shipment_form.html.twig', [
             'mergeShipmentForm' => $form->createView(),
@@ -837,7 +836,7 @@ class OrderController extends PrestaShopAdminController
         $productsFromQuery = $request->get('products', []);
         $selectedCarrier = $request->query->getInt('carrier');
         $orderShipmentProducts = $this->mergeProductsFromQueries($shipmentId, $productsFromQuery, $orderDetailRepository);
-        $canSplitShipment = $this->isShipmentShipped($shipmentId);
+        $canSplitShipment = $this->isShipmentShipped($orderId, $shipmentId);
 
         $formIsValid = $this->checkFormValidity($orderShipmentProducts);
 
@@ -878,10 +877,10 @@ class OrderController extends PrestaShopAdminController
         return !($allSelected && $allQuantitiesMatch);
     }
 
-    private function isShipmentShipped(int $shipmentId): bool
+    private function isShipmentShipped(int $orderId, int $shipmentId): bool
     {
-        /** @var OrderShipment $shipment */
-        $shipment = $this->dispatchQuery(new GetShipmentForViewing($shipmentId));
+        /** @var ShipmentForEditing $shipment */
+        $shipment = $this->dispatchQuery(new GetShipmentForEditing($orderId, $shipmentId));
 
         return !empty($shipment->getTrackingNumber());
     }
