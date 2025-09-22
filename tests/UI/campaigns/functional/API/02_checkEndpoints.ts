@@ -181,6 +181,22 @@ describe('API : Check endpoints', async () => {
         '/webservice-key: POST',
         // @todo: add tests
         '/webservice-keys: GET',
+        // @todo: add tests
+        '/zone/{zoneId}/toggle-status: PUT',
+        // @todo: add tests
+        '/zone/{zoneId}: DELETE',
+        // @todo: add tests
+        '/zone/{zoneId}: GET',
+        // @todo: add tests
+        '/zone/{zoneId}: PUT',
+        // @todo: add tests
+        '/zone: POST',
+        // @todo: add tests
+        '/zones/delete: PUT',
+        // @todo: add tests
+        '/zones/toggle-status: PUT',
+        // @todo: add tests
+        '/zones: GET',
       ]);
     });
   });
