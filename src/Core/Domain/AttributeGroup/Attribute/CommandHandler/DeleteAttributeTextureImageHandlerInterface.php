@@ -1,3 +1,4 @@
+<?php
 /**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
@@ -23,29 +24,17 @@
  * @license   https://opensource.org/licenses/OSL-3.0 Open Software License (OSL 3.0)
  */
 
-import TitleMap from './title-map';
+namespace PrestaShop\PrestaShop\Core\Domain\AttributeGroup\Attribute\CommandHandler;
 
-$(() => {
-  window.prestashop.component.initComponents(
-    [
-      'TranslatableInput',
-    ],
-  );
+use PrestaShop\PrestaShop\Core\Domain\AttributeGroup\Command\DeleteAttributeTextureImageCommand;
 
-  function onChangeImageInput() {
-    $(TitleMap.supplierImageHeight).prop('disabled', true);
-    $(TitleMap.supplierImageWidth).prop('disabled', true);
-    const inputfiles = $(TitleMap.supplierImage).prop('files');
-
-    if (inputfiles && inputfiles[0]) {
-      $(TitleMap.supplierImageHeight).prop('disabled', false);
-      $(TitleMap.supplierImageWidth).prop('disabled', false);
-    }
-  }
-
-  // On loading
-  onChangeImageInput();
-
-  // On events
-  $(TitleMap.supplierImage).on('change', () => onChangeImageInput());
-});
+/**
+ * Interface for handling command which deletes Attribute
+ */
+interface DeleteAttributeTextureImageHandlerInterface
+{
+    /**
+     * @param DeleteAttributeTextureImageCommand $command
+     */
+    public function handle(DeleteAttributeTextureImageCommand $command);
+}

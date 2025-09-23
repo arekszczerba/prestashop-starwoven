@@ -182,11 +182,6 @@ describe('API : PATCH /product/{productId}', async () => {
           [dataLanguages.french.locale]: faker.lorem.sentence(),
         },
       },
-      // @todo : https://github.com/PrestaShop/PrestaShop/issues/38788
-      /*{
-        propertyName: 'ean13',
-        propertyValue: '3700436072813',
-      },*/
       {
         propertyName: 'ecotaxTaxExcluded',
         propertyValue: faker.number.float({fractionDigits: 2}),
@@ -543,11 +538,6 @@ describe('API : PATCH /product/{productId}', async () => {
               [dataLanguages.english.locale]: valuePropertyEN,
               [dataLanguages.french.locale]: valuePropertyFR,
             }).to.deep.equal(data.propertyValue);
-          } else if (data.propertyName === 'ean13') {
-            await boProductsCreatePage.goToTab(page, 'details');
-
-            const valueProperty = await boProductsCreateTabDetailsPage.getValue(page, 'ean13');
-            expect(valueProperty).to.equal(data.propertyValue);
           } else if (data.propertyName === 'ecotaxTaxExcluded') {
             await boProductsCreatePage.goToTab(page, 'pricing');
 
