@@ -28,8 +28,7 @@
   attr: {
     id: 'split_shipment',
     class: 'shipment-form',
-    'data-is-valid': formIsValid,
-    'data-is-valid': not isShipped,
+    'data-is-valid': formIsValid and not isShipped,
   }
 }) }}
   <div class="shipment-form__loader"></div>
