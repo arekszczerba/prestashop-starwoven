@@ -333,27 +333,6 @@ If your database is corrupted / data is lost, you can reset your data by running
    make docker-up
    ```
 
-### Performance Issues
-
-#### Slow File Operations
-
-**Solutions:**
-
-1. **For better performance on macOS/Windows**, you can exclude directories from the bind mount by uncommenting lines in `docker-compose.yml`:
-
-   ```yaml
-   volumes:
-     - ./:/var/www/html
-     # Uncomment the following lines for better performance:
-     # - /var/www/html/vendor  
-     # - /var/www/html/var
-     # - /var/www/html/admin-dev/themes/default/node_modules
-     # - /var/www/html/admin-dev/themes/new-theme/node_modules
-     # - /var/www/html/themes/node_modules
-     # - /var/www/html/themes/classic/_dev/node_modules
-     # - /var/www/html/themes/hummingbird/node_modules
-   ```
-
 ### Permission Issues
 
 #### File Permission Errors
