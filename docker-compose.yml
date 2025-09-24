@@ -11,7 +11,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWD:-prestashop}
       MYSQL_DATABASE: ${DB_NAME:-prestashop}
-    command: --require_secure_transport=OFF
     restart: unless-stopped
     networks:
       - prestashop-network
