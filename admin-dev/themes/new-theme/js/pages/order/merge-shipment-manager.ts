@@ -135,7 +135,7 @@ export default class MergeShipmentManager {
     const form = document.forms.namedItem(OrderViewPageMap.mergeShipmentFormName) as HTMLFormElement;
 
     if (!form) {
-      throw new Error('Split shipment form not found');
+      throw new Error('Merge shipment form not found');
     }
     return form;
   }
