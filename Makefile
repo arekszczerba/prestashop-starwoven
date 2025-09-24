@@ -48,9 +48,6 @@ install-prestashop: ## Install fresh PrestaShop database (requires containers to
 assets: admin front ## Build all assets
 	./tools/assets/build.sh all --force
 
-assets-dev: ## Run dev-server for assets
-	npx concurrently -c "#93c5fd,#c4b5fd,#fb7185,#fdba74" "cd admin-dev/themes/default && npm run watch" "cd admin-dev/themes/new-theme && npm run watch" "cd themes/classic/_dev && npm run watch" "cd themes/hummingbird && npm run watch" --names=admin-default,admin-new-theme,front-classic,front-hummingbird --kill-others
-
 wait-assets: ## Wait for assets to be built
 	./tools/assets/wait-build.sh
 
