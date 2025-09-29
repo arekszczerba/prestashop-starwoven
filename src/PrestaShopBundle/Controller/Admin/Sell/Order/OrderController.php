@@ -699,6 +699,12 @@ class OrderController extends PrestaShopAdminController
             $targetShipment = $form->get('merge_to_shipment')->getData();
             $targetShipmentId = $targetShipment->getId();
 
+            if ($this->isShipmentShipped($orderId, $targetShipmentId)) {
+                $this->addFlash('error', 'This shipment can\'t be merged because a tracking number has already been assigned, indicating that it has already been shipped.');
+
+                return $this->redirectToRoute('admin_orders_view', ['orderId' => $orderId]);
+            }
+
             $submittedData = $request->request->all('merge_shipment');
             $selectedProducts = [];
 

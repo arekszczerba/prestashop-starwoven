@@ -51,7 +51,7 @@
 
   {% if isShipped is defined and isShipped == true %}
     <div class="alert alert-warning" role="alert">
-      <p class="alert-text">{{ 'This shipment can\'t be modified because a tracking number has already been assigned, indicating that it has already been shipped.'|trans({}, 'Admin.Orderscustomers.Notification') }}</p>
+      <p class="alert-text">{{ 'This shipment can\'t be merged because a tracking number has already been assigned, indicating that it has already been shipped.'|trans({}, 'Admin.Orderscustomers.Notification') }}</p>
     </div>
   {% endif %}
 

@@ -68,6 +68,10 @@ class MergeProductsToShipmentHandler implements MergeProductsToShipmentHandlerIn
             throw new ShipmentNotFoundException(sprintf('Shipment with id "%s" was not found', $targetId));
         }
 
+        if (!empty($targetShipment->getTrackingNumber())) {
+            throw new CannotEditShipmentShippedException(sprintf('Cannot merge into the shipment "%s" because is already shipped', $targetId));
+        }
+
         $shipmentProducts = array_map(function ($product) {
             $shipmentProduct = new ShipmentProduct();
             $shipmentProduct->setOrderDetailId($product['id_order_detail']);
