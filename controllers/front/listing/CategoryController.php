@@ -80,13 +80,13 @@ class CategoryControllerCore extends ProductListingFrontController
      */
     public function init(): void
     {
-        parent::init();
-
         // Get proper IDs
         $id_category = (int) Tools::getValue('id_category');
 
         // Try to load category object
         $this->category = new Category($id_category, $this->context->language->id);
+
+        parent::init();
 
         // Otherwise immediately show 404
         if (!Validate::isLoadedObject($this->category)) {
