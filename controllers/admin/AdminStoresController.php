@@ -606,7 +606,7 @@ class AdminStoresControllerCore extends AdminController
      *
      * @return array
      */
-    protected function adaptHoursFormat(array $value)
+    protected function adaptHoursFormat(?array $value)
     {
         if (null === $value) {
             return [];
