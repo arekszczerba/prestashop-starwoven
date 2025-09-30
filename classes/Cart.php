@@ -1365,6 +1365,12 @@ class CartCore extends ObjectModel
             return false;
         }
 
+        // Check compatibility with existing cart rules
+        $compatibility = $this->checkCartRuleCompatibility($id_cart_rule);
+        if ($compatibility !== true) {
+            return $compatibility;
+        }
+
         // Add the cart rule to the cart
         if (!Db::getInstance()->insert('cart_cart_rule', [
             'id_cart_rule' => (int) $id_cart_rule,
@@ -1401,6 +1407,97 @@ class CartCore extends ObjectModel
         }
 
         return true;
+    }
+
+    /**
+     * Check if a cart rule is compatible with existing cart rules
+     *
+     * @param int $cartRuleId The cart rule ID to check
+     *
+     * @return bool|string True if compatible, error if not compatible
+     */
+    protected function checkCartRuleCompatibility($cartRuleId)
+    {
+        $existingCartRules = $this->getCartRules(CartRule::FILTER_ACTION_ALL, false);
+        $existingCartRuleIds = array_filter(
+            array_column($existingCartRules, 'id_cart_rule'),
+            function ($id) use ($cartRuleId) {
+                return $id != $cartRuleId;  // Exclude the discount being added
+            }
+        );
+
+        if (empty($existingCartRuleIds)) {
+            return true;
+        }
+
+        $compatibilityService = $this->getDiscountCompatibilityService();
+        if (!$compatibilityService) {
+            // Service not available, skip compatibility check for backward compatibility
+            return true;
+        }
+
+        $result = $compatibilityService->validateCompatibility($cartRuleId, $existingCartRuleIds);
+
+        if (!$result->canApply()) {
+            return Context::getContext()->getTranslator()->trans(
+                'This voucher is not combinable with other vouchers in your cart',
+                [],
+                'Shop.Notifications.Error'
+            );
+        }
+
+        // Remove cart rules which are not compatible
+        foreach ($result->getRulesToRemove() as $ruleIdToRemove) {
+            $this->removeCartRule($ruleIdToRemove);
+        }
+
+        return true;
+    }
+
+    /**
+     * Get the cart rule compatibility service
+     *
+     * @return PrestaShop\PrestaShop\Adapter\Discount\Compatibility\DiscountCompatibilityService|null
+     */
+    protected function getDiscountCompatibilityService()
+    {
+        static $service = null;
+
+        // @todo as seen during peer programming, I have to clean this (very) ugly code
+        if ($service === null) {
+            try {
+                // Try to get from container first
+                $containerFinder = new PrestaShop\PrestaShop\Adapter\ContainerFinder(Context::getContext());
+                $container = $containerFinder->getContainer();
+                
+                try {
+                    $service = $container->get('PrestaShop\\PrestaShop\\Adapter\\Discount\\Compatibility\\DiscountCompatibilityService');
+                } catch (Exception $e) {
+                    // Service not in container yet, instantiate directly
+                    $connection = Db::getInstance();
+                    $dbPrefix = _DB_PREFIX_;
+                    
+                    // Get the DiscountTypeRepository from container or create it
+                    try {
+                        $discountTypeRepo = $container->get('PrestaShop\\PrestaShop\\Adapter\\Discount\\Repository\\DiscountTypeRepository');
+                    } catch (Exception $e2) {
+                        $connection = $container->get('doctrine.dbal.default_connection');
+                        $discountTypeRepo = new PrestaShop\PrestaShop\Adapter\Discount\Repository\DiscountTypeRepository(
+                            $connection,
+                            $dbPrefix
+                        );
+                    }
+                    
+                    $service = new PrestaShop\PrestaShop\Adapter\Discount\Compatibility\DiscountCompatibilityService(
+                        $discountTypeRepo
+                    );
+                }
+            } catch (Exception $e) {
+                $service = false;
+            }
+        }
+
+        return $service ?: null;
     }
 
     /**
