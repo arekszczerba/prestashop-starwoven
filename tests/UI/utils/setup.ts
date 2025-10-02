@@ -1,5 +1,6 @@
 import {
   type Browser,
+  type BrowserContext,
   type Page,
   utilsCore,
   utilsPlaywright,
@@ -29,14 +30,32 @@ after(async function () {
 });
 
 const takeScreenShotAfterStep = async (browser: Browser, screenshotPath: string) => {
-  const pages: Page[] = browser.contexts()[0].pages();
+  const currentTab = await utilsPlaywright.getLastOpenedTab(browser);
 
-  for (let incPage = 0; incPage < pages.length; incPage++) {
-    await pages[incPage].bringToFront();
-    await pages[incPage].screenshot({
-      path: screenshotPath.replace('%d', incPage < 10 ? `0${incPage.toString()}` : incPage.toString()),
-      fullPage: true,
-    });
+  // Take a screenshot
+  if (currentTab !== null) {
+    await currentTab.screenshot(
+      {
+        path: screenshotPath.replace('%d', ''),
+        fullPage: true,
+      },
+    );
+  }
+
+  // Take screenshots all contexts
+  const contexts: BrowserContext[] = browser.contexts();
+
+  for (let incContext = 0; incContext < contexts.length; incContext++) {
+    const pathContext: string = incContext < 10 ? `0${incContext.toString()}` : incContext.toString();
+    const pages: Page[] = contexts[incContext].pages();
+
+    for (let incPage = 0; incPage < pages.length; incPage++) {
+      const pathPage: string = incPage < 10 ? `0${incPage.toString()}` : incPage.toString();
+      await pages[incPage].screenshot({
+        path: screenshotPath.replace('%d', `_${pathContext}_${pathPage}`),
+        fullPage: true,
+      });
+    }
   }
 };
 
@@ -47,7 +66,7 @@ const takeScreenShotAfterStep = async (browser: Browser, screenshotPath: string)
 afterEach(async function () {
   // Take screenshot if demanded after failed step
   if (global.SCREENSHOT.AFTER_FAIL && this.currentTest?.state === 'failed') {
-    await takeScreenShotAfterStep(this.browser, `${global.SCREENSHOT.FOLDER}/fail_test_${screenshotNumber}_%d.png`);
+    await takeScreenShotAfterStep(this.browser, `${global.SCREENSHOT.FOLDER}/fail_test_${screenshotNumber}%d.png`);
     screenshotNumber += 1;
   }
   if (global.SCREENSHOT.EACH_STEP) {
@@ -60,7 +79,7 @@ afterEach(async function () {
       stepId = `${screenshotNumber}-${this.currentTest?.title}`;
     }
 
-    const screenshotPath = `${global.SCREENSHOT.FOLDER}${folderPath}/${utilsCore.slugify(stepId)}_%d.png`;
+    const screenshotPath = `${global.SCREENSHOT.FOLDER}${folderPath}/${utilsCore.slugify(stepId)}%d.png`;
     await takeScreenShotAfterStep(this.browser, screenshotPath).catch((err) => {
       console.log(`screenshot for ${this.currentTest?.title} failed`, err);
     });
