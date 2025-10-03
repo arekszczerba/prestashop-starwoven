@@ -61,7 +61,7 @@ class MergeProductsToShipmentHandler implements MergeProductsToShipmentHandlerIn
         }
 
         if (!empty($sourceShipment->getTrackingNumber())) {
-            throw new CannotEditShipmentShippedException(sprintf('Cannot merge shipment "%s" it has already been shipped.', $sourceId));
+            throw new CannotEditShipmentShippedException(sprintf('Cannot merge shipment "%s" because it has already been shipped.', $sourceId));
         }
 
         if (!$targetShipment) {
@@ -69,7 +69,7 @@ class MergeProductsToShipmentHandler implements MergeProductsToShipmentHandlerIn
         }
 
         if (!empty($targetShipment->getTrackingNumber())) {
-            throw new CannotEditShipmentShippedException(sprintf('Cannot merge into shipment "%s" it has already been shipped.', $targetId));
+            throw new CannotEditShipmentShippedException(sprintf('Cannot merge into shipment "%s" because it has already been shipped.', $targetId));
         }
 
         $shipmentProducts = array_map(function ($product) {
