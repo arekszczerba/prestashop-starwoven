@@ -107,9 +107,9 @@ class DiscountFormDataProvider implements FormDataProviderInterface
             || !empty($productSegment[DiscountProductSegmentType::FEATURES]['groups'])
         ;
 
-        $selectedCondition = 'none';
-        $selectedCartCondition = 'none';
-        $selectedDeliveryCondition = 'none';
+        $selectedCondition = null;
+        $selectedCartCondition = null;
+        $selectedDeliveryCondition = null;
         if ($discountForEditing->getMinimumProductQuantity()) {
             $selectedCondition = DiscountConditionsType::CART_CONDITIONS;
             $selectedCartCondition = CartConditionsType::MINIMUM_PRODUCT_QUANTITY;
@@ -128,11 +128,6 @@ class DiscountFormDataProvider implements FormDataProviderInterface
         } elseif (!empty($discountForEditing->getCountryIds())) {
             $selectedCondition = DiscountConditionsType::DELIVERY_CONDITIONS;
             $selectedDeliveryCondition = DeliveryConditionsType::COUNTRY;
-            $selectedCondition = 'cart_conditions';
-            $selectedCartCondition = 'specific_products';
-        } elseif (!empty($productSegment['manufacturer']) || !empty($productSegment['category']) || !empty($productSegment['features'])) {
-            $selectedCondition = 'cart_conditions';
-            $selectedCartCondition = 'product_segment';
         }
 
         return [
