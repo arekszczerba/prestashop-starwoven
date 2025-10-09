@@ -58,7 +58,7 @@ class CartRuleBuilder
         $cartRule->date_to = $validTo->format(DateTimeUtil::DEFAULT_DATETIME_FORMAT);
         $cartRule->quantity = $command->getTotalQuantity();
         $cartRule->quantity_per_user = $command->getQuantityPerUser();
-        
+
         $discountType = $command->getDiscountType()->getValue();
         $cartRule->id_cart_rule_type = $this->discountTypeRepository->getTypeIdByString($discountType);
         $cartRule->free_shipping = $discountType === DiscountType::FREE_SHIPPING;

@@ -26,7 +26,6 @@
 
 namespace PrestaShop\PrestaShop\Adapter\Discount\Compatibility;
 
-use CartRule;
 use PrestaShop\PrestaShop\Adapter\Discount\Repository\DiscountTypeRepository;
 
 /**

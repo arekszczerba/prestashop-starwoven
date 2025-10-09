@@ -78,7 +78,7 @@ class DiscountTypeRepository
             return;
         }
 
-        // @todo we have to move this section 
+        // @todo we have to move this section
         $defaultTypes = [
             ['type' => DiscountType::FREE_SHIPPING, 'name' => 'Free shipping', 'description' => 'Discount that provides free shipping to the order'],
             ['type' => DiscountType::CART_LEVEL, 'name' => 'Cart level', 'description' => 'Discount applied to cart'],
@@ -194,8 +194,8 @@ class DiscountTypeRepository
     /**
      * Check if two discounts are compatible
      *
-     * @param int $discountId1
-     * @param int $discountId2
+     * @param int $firstDiscount
+     * @param int $secondDiscount
      *
      * @return bool
      */

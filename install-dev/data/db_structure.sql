@@ -216,7 +216,6 @@ CREATE TABLE `PREFIX_cart_rule` (
   ),
   KEY `date_from` (`date_from`),
   KEY `date_to` (`date_to`),
-  KEY `type` (`type`),
   KEY `id_cart_rule_type` (`id_cart_rule_type`)
 ) ENGINE=ENGINE_TYPE DEFAULT CHARSET=utf8mb4 COLLATION;
 

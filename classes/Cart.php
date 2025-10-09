@@ -1467,16 +1467,16 @@ class CartCore extends ObjectModel
         if ($service === null) {
             try {
                 // Try to get from container first
-                $containerFinder = new PrestaShop\PrestaShop\Adapter\ContainerFinder(Context::getContext());
+                $containerFinder = new ContainerFinder(Context::getContext());
                 $container = $containerFinder->getContainer();
-                
+
                 try {
                     $service = $container->get('PrestaShop\\PrestaShop\\Adapter\\Discount\\Compatibility\\DiscountCompatibilityService');
                 } catch (Exception $e) {
                     // Service not in container yet, instantiate directly
                     $connection = Db::getInstance();
                     $dbPrefix = _DB_PREFIX_;
-                    
+
                     // Get the DiscountTypeRepository from container or create it
                     try {
                         $discountTypeRepo = $container->get('PrestaShop\\PrestaShop\\Adapter\\Discount\\Repository\\DiscountTypeRepository');
@@ -1487,7 +1487,7 @@ class CartCore extends ObjectModel
                             $dbPrefix
                         );
                     }
-                    
+
                     $service = new PrestaShop\PrestaShop\Adapter\Discount\Compatibility\DiscountCompatibilityService(
                         $discountTypeRepo
                     );
