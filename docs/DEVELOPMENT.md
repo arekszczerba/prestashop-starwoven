@@ -64,10 +64,8 @@ Makefile                         # Development commands
 ### Quick Reference
 
 ```bash
-make help          # Show all available commands
-make docker-start  # Build and start containers
-make docker-up     # Start containers (no rebuild)
-make docker-down   # Stop containers
+make help # Show all available commands
+
 ```
 
 ### Docker Commands
@@ -77,9 +75,9 @@ make docker-down   # Stop containers
 | `make docker-build` | Build Docker images from scratch |
 | `make docker-up` | Start containers in detached mode |
 | `make docker-start` | Build and start containers |
+| `make docker-restart` | Restart the docker hub |
 | `make docker-down` | Stop and remove containers |
 | `make docker-logs` | Show live container logs |
-| `make docker-sh` | Connect to PHP container shell |
 | `make docker-bash` | Connect to PHP container via bash |
 
 ### Asset Management
@@ -109,8 +107,6 @@ make docker-down   # Stop containers
 | Command | Description |
 |---------|-------------|
 | `make composer` | Install PHP dependencies |
-| `make sf` | List all Symfony commands |
-| `make sf c='about'` | Run specific Symfony command |
 | `make cc` | Clear Symfony cache |
 
 ### Testing
@@ -118,8 +114,10 @@ make docker-down   # Stop containers
 | Command | Description |
 |---------|-------------|
 | `make test` | Run all tests (unit + integration) |
-| `make test-unit` | Run unit tests only |
-| `make test-integration` | Run integration tests only |
+| `make test-unit` | Run unit tests |
+| `make test-integration` | Run integration tests |
+| `make test-integration-behaviour` | Run integration behaviour tests |
+| `make test-api-module` | Run API module tests |
 
 ### Code Quality
 
@@ -174,7 +172,7 @@ make docker-start       # Build, start containers and install assets and databas
 
 ```bash
 make docker-up          # Start containers
-make assets-dev         # Start asset watchers (separate terminal)
+make cc                 # Clear Symfony's cache
 make test               # Run tests
 make cs-fixer           # Fix code style
 ```
@@ -207,12 +205,8 @@ make admin-default
 
 ### Performance Tips
 
-- Use `make assets-dev` for development to avoid rebuilding assets
-- Use `make cc` frequently to clear cache during development
 - Use `make test-unit` for faster test runs during development
 - Use `make cs-fixer-dry` to check code style without modifying files
-- For better performance on macOS/Windows, uncomment volume exclusions in `docker-compose.yml`
-- Use `composer run unit-tests` directly for more test options
 
 ## Troubleshooting
 
@@ -232,8 +226,7 @@ make admin-default
    ```bash
    make docker-down
    docker system prune -af
-   make docker-build
-   make docker-up
+   make docker-start
    ```
 
 #### Port Already in Use
@@ -308,8 +301,7 @@ If your database is corrupted / data is lost, you can reset your data by running
 
 2. **Restart Docker containers:**
    ```bash
-   make docker-down
-   make docker-up
+   make docker-restart
    ```
 
 #### Asset Build Fails
@@ -318,7 +310,7 @@ If your database is corrupted / data is lost, you can reset your data by running
 
 1. **Check for syntax errors:**
    ```bash
-   make assets-dev
+   make assets
    ```
 
 2. **Rebuild specific assets:**
@@ -329,8 +321,7 @@ If your database is corrupted / data is lost, you can reset your data by running
 
 3. **Restart Docker containers:**
    ```bash
-   make docker-down
-   make docker-up
+   make docker-restart
    ```
 
 ### Permission Issues
@@ -430,15 +421,3 @@ If you're still experiencing issues:
 3. **Ask for help:**
    - [PrestaShop Slack](https://www.prestashop-project.org/slack/)
    - [GitHub Discussions](https://github.com/PrestaShop/PrestaShop/discussions)
-
-## Advanced Configuration
-
-### Reset Everything
-
-```bash
-# Clean everything
-make docker-down
-docker system prune -af
-docker volume prune -f
-make docker-start
-```

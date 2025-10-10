@@ -14,7 +14,7 @@ SYMFONY  = $(PHP_CONT) bin/console
 
 # Misc
 .DEFAULT_GOAL = install
-.PHONY        : help docker-build docker-up docker-start docker-down docker-logs docker-sh composer test test-unit test-integration test-integration-behaviour test-api-module assets wait-assets admin front admin-default admin-new-theme front-core front-classic front-hummingbird install install-prestashop cs-fixer cs-fixer-dry phpstan scss-fixer es-linter
+.PHONY        : help docker-build docker-up docker-start docker-restart docker-down docker-logs docker-sh composer cc test test-unit test-integration test-integration-behaviour test-api-module assets wait-assets admin front admin-default admin-new-theme front-core front-classic front-hummingbird install install-prestashop cs-fixer cs-fixer-dry phpstan scss-fixer es-linter
 
 ## —— 🎵 🐳 PrestaShop Docker Makefile 🐳 🎵 ———————————————————————————————————
 help: ## Outputs this help screen
@@ -29,6 +29,8 @@ docker-up: ## Start the docker hub in detached mode (no logs)
 
 docker-start: docker-build docker-up ## Build and start the containers
 
+docker-restart: docker-down docker-start ## Restart the docker hub
+
 docker-down: ## Stop the docker hub
 	$(DOCKER_COMP) down --remove-orphans
 
@@ -39,7 +41,7 @@ docker-sh: ## Connect to the PHP container via bash so up and down arrows go to 
 	@$(PHP_CONT) bash
 
 ## —— PrestaShop 🛒 ———————————————————————————————————————————————————————————
-install: composer assets  ## Install PHP dependencies and build the static assets
+install: composer cc assets  ## Install PHP dependencies and build the static assets
 
 install-prestashop: ## Install fresh PrestaShop database (requires containers to be running)
 	$(PHP_CONT) .docker/install/database.sh
@@ -72,25 +74,27 @@ front-classic: ## Build assets for classic theme
 front-hummingbird: ## Build assets for hummingbird theme
 	$(PHP_CONT) ./tools/assets/build.sh front-hummingbird --force
 
-## —— Composer 🧙 ——————————————————————————————————————————————————————————————
+## —— Composer & Symfony 🧙 ————————————————————————————————————————————————————
 composer: ## Install PHP dependencies
-	COMPOSER_PROCESS_TIMEOUT=600 $(COMPOSER) install --no-interaction
+	$(COMPOSER) install --no-interaction
+
+cc: ## Clear Symfony cache
 	$(SYMFONY) cache:clear --no-warmup
 
 ## —— Tests 🧪 —————————————————————————————————————————————————————————————————
 test: ## Run all tests
 	$(COMPOSER) run test-all
 
-test-unit: ## Run unit tests only
+test-unit: ## Run unit tests
 	$(COMPOSER) run unit-tests
 
-test-integration: ## Run integration tests only
+test-integration: ## Run integration tests
 	$(COMPOSER) run integration-tests
 
-test-integration-behaviour: ## Run integration behaviour tests only
+test-integration-behaviour: ## Run integration behaviour tests
 	$(COMPOSER) run integration-behaviour-tests
 
-test-api-module: ## Run api module tests only
+test-api-module: ## Run api module tests
 	$(COMPOSER) run api-module-tests
 
 ## -- Code quality 🧹 ——————————————————————————————————————————————————————————
