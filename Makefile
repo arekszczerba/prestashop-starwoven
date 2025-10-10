@@ -3,7 +3,7 @@ DOCKER_COMP = docker compose
 
 # Determine if we are using docker
 DOCKER_RUNNING := $(shell docker compose ps -q)
-ifneq ($(DOCKER_RUNNING),0)
+ifneq ($(strip $(DOCKER_RUNNING)),)
 	PHP_CONT = $(DOCKER_COMP) exec prestashop-git runuser -u www-data -g www-data --
 endif
 
