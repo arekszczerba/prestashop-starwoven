@@ -41,7 +41,7 @@ if [ "${DISABLE_MAKE}" != "1" ]; then
   echo "\n* Install node $NODE_VERSION...";
   export NVM_DIR=/usr/local/nvm
   mkdir -p $NVM_DIR \
-      && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash \
+      && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash \
       && . $NVM_DIR/nvm.sh \
       && nvm install $NODE_VERSION \
       && nvm alias default $NODE_VERSION \
