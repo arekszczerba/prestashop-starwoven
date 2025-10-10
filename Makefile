@@ -54,10 +54,13 @@ wait-assets: ## Wait for assets to be built
 	$(PHP_CONT) ./tools/assets/wait-build.sh
 
 admin: ## Build admin assets
-	$(PHP_CONT) ./tools/assets/build.sh admin-default --force & $(PHP_CONT) ./tools/assets/build.sh admin-new-theme --force
+	$(PHP_CONT) ./tools/assets/build.sh admin-default --force
+	$(PHP_CONT) ./tools/assets/build.sh admin-new-theme --force
 
 front: ## Build front assets
-	$(PHP_CONT) ./tools/assets/build.sh front-core --force & $(PHP_CONT) ./tools/assets/build.sh front-classic --force & $(PHP_CONT) ./tools/assets/build.sh front-hummingbird --force
+	$(PHP_CONT) ./tools/assets/build.sh front-core --force
+	$(PHP_CONT) ./tools/assets/build.sh front-classic --force
+	$(PHP_CONT) ./tools/assets/build.sh front-hummingbird --force
 
 admin-default: ## Build assets for default admin theme
 	$(PHP_CONT) ./tools/assets/build.sh admin-default --force
