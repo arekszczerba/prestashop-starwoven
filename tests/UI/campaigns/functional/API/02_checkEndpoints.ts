@@ -129,9 +129,9 @@ describe('API : Check endpoints', async () => {
         '/customers/group: POST',
         // tests/UI/campaigns/functional/API/02_endpoints/03_customerGroup/05_getCustomersGroups.ts
         '/customers/groups: GET',
-        // tests/UI/campaigns/functional/API/02_endpoints/04_hook/01_putHookStatusId.ts
-        '/hook-status/{hookId}: PUT',
-        // tests/UI/campaigns/functional/API/02_endpoints/04_hook/02_getHooksId.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/04_hook/01_putHookIdStatus.ts
+        '/hook/{hookId}/status: PUT',
+        // tests/UI/campaigns/functional/API/02_endpoints/04_hook/02_getHookId.ts
         '/hook/{hookId}: GET',
         // tests/UI/campaigns/functional/API/02_endpoints/04_hook/03_getHooks.ts
         '/hooks: GET',
@@ -185,6 +185,18 @@ describe('API : Check endpoints', async () => {
         '/products: GET',
         // @todo: add tests
         '/tab/{className}: PUT',
+        // @todo: add tests
+        '/title/{titleId}: DELETE',
+        // @todo: add tests
+        '/title/{titleId}: GET',
+        // @todo: add tests
+        '/title/{titleId}: PATCH',
+        // @todo: add tests
+        '/title: POST',
+        // @todo: add tests
+        '/titles/delete: PUT',
+        // @todo: add tests
+        '/titles: GET',
         // @todo: add tests
         '/webservice-key/{webserviceKeyId}: GET',
         // @todo: add tests
