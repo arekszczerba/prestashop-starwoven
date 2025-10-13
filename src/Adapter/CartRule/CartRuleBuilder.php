@@ -31,15 +31,12 @@ use DateTimeImmutable;
 use PrestaShop\PrestaShop\Adapter\Discount\Repository\DiscountTypeRepository;
 use PrestaShop\PrestaShop\Core\Domain\Discount\Command\AddDiscountCommand;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountType;
-use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagSettings;
-use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagStateCheckerInterface;
 use PrestaShop\PrestaShop\Core\Util\DateTime\DateTime as DateTimeUtil;
 
 class CartRuleBuilder
 {
     public function __construct(
-        private readonly DiscountTypeRepository $discountTypeRepository,
-        private readonly FeatureFlagStateCheckerInterface $featureFlagManager
+        private readonly DiscountTypeRepository $discountTypeRepository
     ) {
     }
 
@@ -63,9 +60,7 @@ class CartRuleBuilder
         $cartRule->quantity_per_user = $command->getQuantityPerUser();
 
         $discountType = $command->getDiscountType()->getValue();
-        if ($this->featureFlagManager->isEnabled(FeatureFlagSettings::FEATURE_FLAG_DISCOUNT)) {
-            $cartRule->id_cart_rule_type = $this->discountTypeRepository->getTypeIdByString($discountType);
-        }
+        $cartRule->id_cart_rule_type = $this->discountTypeRepository->getTypeIdByString($discountType);
         $cartRule->free_shipping = $discountType === DiscountType::FREE_SHIPPING;
 
         if ($command->getDiscountType()->getValue() === DiscountType::CART_LEVEL || $command->getDiscountType()->getValue() === DiscountType::ORDER_LEVEL) {
