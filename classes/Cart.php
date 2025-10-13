@@ -34,6 +34,7 @@ use PrestaShop\PrestaShop\Adapter\ServiceLocator;
 use PrestaShop\PrestaShop\Core\Cart\Calculator;
 use PrestaShop\PrestaShop\Core\Cart\CartRow;
 use PrestaShop\PrestaShop\Core\Cart\CartRuleData;
+use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagSettings;
 use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagStateCheckerInterface;
 use PrestaShop\PrestaShop\Core\Localization\Exception\LocalizationException;
 use PrestaShopBundle\Form\Admin\Type\FormattedTextareaType;
@@ -1366,9 +1367,15 @@ class CartCore extends ObjectModel
         }
 
         // Check compatibility with existing cart rules
-        $compatibility = $this->checkCartRuleCompatibility($id_cart_rule);
-        if ($compatibility !== true) {
-            return $compatibility;
+        $containerFinder = new ContainerFinder(Context::getContext());
+        $container = $containerFinder->getContainer();
+        $featureFlagManager = $container->get(FeatureFlagStateCheckerInterface::class);
+
+        if ($featureFlagManager !== null && $featureFlagManager->isEnabled(FeatureFlagSettings::FEATURE_FLAG_DISCOUNT)) {
+            $compatibility = $this->checkCartRuleCompatibility($id_cart_rule);
+            if ($compatibility !== true) {
+                return $compatibility;
+            }
         }
 
         // Add the cart rule to the cart

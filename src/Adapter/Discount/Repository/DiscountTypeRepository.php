@@ -201,9 +201,14 @@ class DiscountTypeRepository
      */
     public function areDiscountsCompatible(int $firstDiscount, int $secondDiscount): bool
     {
+        $firstDiscountType = $this->getDiscountTypeForDiscount($firstDiscount);
         $secondDiscountType = $this->getDiscountTypeForDiscount($secondDiscount);
 
-        // Check if first discount is compatible with second disconut
+        if (empty($firstDiscountType) || empty($secondDiscountType)) {
+            return true;
+        }
+
+        // Check if first discount is compatible with second discount
         $qb = $this->connection->createQueryBuilder();
         $qb
             ->select('COUNT(*) as count')
