@@ -111,12 +111,12 @@ phpstan: ## Run phpstan analysis
 	$(COMPOSER) run phpstan
 
 scss-fixer: ## Run scss-fix
-	$(PHP_CONT) bash -c ". /usr/local/nvm/nvm.sh && cd admin-dev/themes/new-theme && npm run scss-fix"
-	$(PHP_CONT) bash -c ". /usr/local/nvm/nvm.sh && cd admin-dev/themes/default && npm run scss-fix"
-	$(PHP_CONT) bash -c ". /usr/local/nvm/nvm.sh && cd themes/classic/_dev && npm run scss-fix"
+	$(PHP_CONT) bash -l -c "cd admin-dev/themes/new-theme && npm run scss-fix"
+	$(PHP_CONT) bash -l -c "cd admin-dev/themes/default && npm run scss-fix"
+	$(PHP_CONT) bash -l -c "cd themes/classic/_dev && npm run scss-fix"
 
 es-linter: ## Run lint-fix
-	$(PHP_CONT) bash -c ". /usr/local/nvm/nvm.sh && cd admin-dev/themes/new-theme && npm run lint-fix"
-	$(PHP_CONT) bash -c ". /usr/local/nvm/nvm.sh && cd admin-dev/themes/default && npm run lint-fix"
-	$(PHP_CONT) bash -c ". /usr/local/nvm/nvm.sh && cd themes/classic/_dev && npm run lint-fix"
-	$(PHP_CONT) bash -c ". /usr/local/nvm/nvm.sh && cd themes && npm run lint-fix"
+	$(PHP_CONT) bash -l -c "cd admin-dev/themes/new-theme && npm run lint-fix"
+	$(PHP_CONT) bash -l -c "cd admin-dev/themes/default && npm run lint-fix"
+	$(PHP_CONT) bash -l -c "cd themes/classic/_dev && npm run lint-fix"
+	$(PHP_CONT) bash -l -c "cd themes && npm run lint-fix"

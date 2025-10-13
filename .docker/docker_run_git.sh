@@ -50,6 +50,15 @@ if [ "${DISABLE_MAKE}" != "1" ]; then
   export NODE_PATH=$NVM_DIR/versions/node/v$NODE_VERSION/bin
   export PATH=$PATH:$NODE_PATH
 
+  # Make nvm available by default for all users
+  echo 'export NVM_DIR="/usr/local/nvm"' >> /etc/bash.bashrc
+  echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> /etc/bash.bashrc
+  echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> /etc/bash.bashrc
+
+  # Also add Node.js binaries to system PATH for all users
+  echo "export PATH=\$PATH:$NODE_PATH" >> /etc/bash.bashrc
+  echo "export PATH=\$PATH:$NODE_PATH" >> /etc/profile
+
   echo "\n* Install composer ...";
   mkdir -p /var/www/.composer
   chown -R www-data:www-data /var/www/.composer
