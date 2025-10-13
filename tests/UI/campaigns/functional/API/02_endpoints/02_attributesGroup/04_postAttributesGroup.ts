@@ -49,7 +49,7 @@ describe('API : POST /attributes/group', async () => {
     await utilsPlaywright.closeBrowserContext(browserContext);
   });
 
-  describe('BackOffice : Fetch the access token', async () => {
+  describe('API : Fetch the access token', async () => {
     it(`should request the endpoint /access_token with scope ${clientScope}`, async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'requestOauth2Token', baseContext);
       accessToken = await requestAccessToken(clientScope);
@@ -119,7 +119,7 @@ describe('API : POST /attributes/group', async () => {
     });
   });
 
-  describe('BackOffice : Check the Attribute is created', async () => {
+  describe('BackOffice : Check the Attribute Group is created', async () => {
     it('should login in BO', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'loginBO', baseContext);
 
@@ -205,6 +205,7 @@ describe('API : POST /attributes/group', async () => {
       expect(valueProperty).to.equal(jsonResponse.type);
     });
   });
+
   describe('BackOffice : Delete the Attribute Group', async () => {
     it('should go to \'Catalog > Attributes & Features\' page', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'returnToAttributesPage', baseContext);
