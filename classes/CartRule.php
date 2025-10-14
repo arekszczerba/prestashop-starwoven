@@ -25,6 +25,7 @@
  */
 
 use PrestaShop\PrestaShop\Adapter\ContainerFinder;
+use PrestaShop\PrestaShop\Adapter\Discount\Compatibility\DiscountCompatibilityService;
 use PrestaShop\PrestaShop\Core\Domain\CartRule\CartRuleSettings;
 use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountType;
 use PrestaShop\PrestaShop\Core\FeatureFlag\FeatureFlagSettings;
@@ -185,8 +186,8 @@ class CartRuleCore extends ObjectModel
 
         if (!isset($typeCache[$this->id_cart_rule_type])) {
             $result = Db::getInstance()->getValue('
-                SELECT type 
-                FROM ' . _DB_PREFIX_ . 'cart_rule_type 
+                SELECT type
+                FROM ' . _DB_PREFIX_ . 'cart_rule_type
                 WHERE id_cart_rule_type = ' . (int) $this->id_cart_rule_type
             );
             $typeCache[$this->id_cart_rule_type] = $result ?: null;
@@ -1071,8 +1072,7 @@ class CartRuleCore extends ObjectModel
                 );
 
                 try {
-                    // @todo as seen during peer programming, I have to clean this (very) ugly code
-                    $compatibilityService = $container->get('PrestaShop\\PrestaShop\\Adapter\\Discount\\Compatibility\\DiscountCompatibilityService');
+                    $compatibilityService = $container->get(DiscountCompatibilityService::class);
                     $result = $compatibilityService->validateCompatibility($this->id, $existingCartRuleIds);
 
                     if (!$result->canApply()) {

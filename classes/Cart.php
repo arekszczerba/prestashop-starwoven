@@ -28,6 +28,8 @@ use PrestaShop\PrestaShop\Adapter\Cache\CacheAdapter;
 use PrestaShop\PrestaShop\Adapter\ContainerFinder;
 use PrestaShop\PrestaShop\Adapter\Customer\CustomerDataProvider;
 use PrestaShop\PrestaShop\Adapter\Database;
+use PrestaShop\PrestaShop\Adapter\Discount\Compatibility\DiscountCompatibilityService;
+use PrestaShop\PrestaShop\Adapter\Discount\Repository\DiscountTypeRepository;
 use PrestaShop\PrestaShop\Adapter\Group\GroupDataProvider;
 use PrestaShop\PrestaShop\Adapter\Product\PriceCalculator;
 use PrestaShop\PrestaShop\Adapter\ServiceLocator;
@@ -1464,13 +1466,12 @@ class CartCore extends ObjectModel
     /**
      * Get the cart rule compatibility service
      *
-     * @return PrestaShop\PrestaShop\Adapter\Discount\Compatibility\DiscountCompatibilityService|null
+     * @return DiscountCompatibilityService|null
      */
     protected function getDiscountCompatibilityService()
     {
         static $service = null;
 
-        // @todo as seen during peer programming, I have to clean this (very) ugly code
         if ($service === null) {
             try {
                 // Try to get from container first
@@ -1478,24 +1479,23 @@ class CartCore extends ObjectModel
                 $container = $containerFinder->getContainer();
 
                 try {
-                    $service = $container->get('PrestaShop\\PrestaShop\\Adapter\\Discount\\Compatibility\\DiscountCompatibilityService');
+                    $service = $container->get(DiscountCompatibilityService::class);
                 } catch (Exception $e) {
                     // Service not in container yet, instantiate directly
-                    $connection = Db::getInstance();
                     $dbPrefix = _DB_PREFIX_;
 
                     // Get the DiscountTypeRepository from container or create it
                     try {
-                        $discountTypeRepo = $container->get('PrestaShop\\PrestaShop\\Adapter\\Discount\\Repository\\DiscountTypeRepository');
+                        $discountTypeRepo = $container->get(DiscountTypeRepository::class);
                     } catch (Exception $e2) {
                         $connection = $container->get('doctrine.dbal.default_connection');
-                        $discountTypeRepo = new PrestaShop\PrestaShop\Adapter\Discount\Repository\DiscountTypeRepository(
+                        $discountTypeRepo = new DiscountTypeRepository(
                             $connection,
                             $dbPrefix
                         );
                     }
 
-                    $service = new PrestaShop\PrestaShop\Adapter\Discount\Compatibility\DiscountCompatibilityService(
+                    $service = new DiscountCompatibilityService(
                         $discountTypeRepo
                     );
                 }
