@@ -168,9 +168,7 @@ class ProductLazyArray extends AbstractLazyArray
 
         $product = new Product((int) $this->product['id_product']);
 
-        if (!empty($product)) {
-            $this->product['carriers'] = array_column($product->getCarriers(), 'id_carrier');
-        }
+        $this->product['carriers'] = array_column($product->getCarriers(), 'id_carrier');
 
         return $this->product['carriers'];
     }
@@ -331,7 +329,6 @@ class ProductLazyArray extends AbstractLazyArray
                 return false;
         }
     }
-
 
     /**
      * @return string|null

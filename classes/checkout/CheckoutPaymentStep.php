@@ -122,11 +122,11 @@ class CheckoutPaymentStepCore extends AbstractCheckoutStep
         $carriers = [];
         $langId = $this->getCheckoutSession()->getContext()->language->id;
 
-        foreach($carriersId as $id) {
+        foreach ($carriersId as $id) {
             $carrier = new Carrier($id);
             $carriers[$id] = [
                 'name' => $carrier->name,
-                'delay' => $carrier->delay[$langId]
+                'delay' => $carrier->delay[$langId],
             ];
         }
 
