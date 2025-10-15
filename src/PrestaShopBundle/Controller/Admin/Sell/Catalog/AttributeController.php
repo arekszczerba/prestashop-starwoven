@@ -145,7 +145,7 @@ class AttributeController extends PrestaShopAdminController
         $attributeGroupChoices = $attributeGroupChoiceProvider->getChoices();
 
         if (empty($attributeGroupChoices)) {
-            $this->addFlash('error', $this->trans('Before adding a new value a new attribute must be created.', [], 'Admin.Notifications.Success'));
+            $this->addFlash('error', $this->trans('Before adding a new value a new attribute must be created.', [], 'Admin.Notifications.Error'));
 
             return $this->redirectToRoute('admin_attribute_groups_index');
         }
@@ -198,7 +198,7 @@ class AttributeController extends PrestaShopAdminController
         $attributeGroupChoices = $attributeGroupChoiceProvider->getChoices();
 
         if (empty($attributeGroupChoices)) {
-            $this->addFlash('error', $this->trans('The attribute assinged to this value no longer exists.', [], 'Admin.Notifications.Success'));
+            $this->addFlash('error', $this->trans('The attribute assinged to this value no longer exists.', [], 'Admin.Notifications.Error'));
 
             return $this->redirectToRoute('admin_attribute_groups_index');
         }
