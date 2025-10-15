@@ -25,6 +25,7 @@
  */
 
 use PrestaShop\PrestaShop\Adapter\Shipment\DeliveryOptionsInterface;
+use PrestaShop\PrestaShop\Adapter\Shipment\DeliveryOptionsProvider;
 
 class CheckoutSessionCore
 {
@@ -49,14 +50,6 @@ class CheckoutSessionCore
     public function customerHasLoggedIn()
     {
         return $this->context->customer->isLogged();
-    }
-
-    /**
-     * @return Context
-     */
-    public function getContext()
-    {
-        return $this->context;
     }
 
     /**
@@ -162,6 +155,15 @@ class CheckoutSessionCore
     public function getSelectedDeliveryOption()
     {
         return $this->deliveryOptions->getSelectedDeliveryOption();
+    }
+
+    public function getCarriersDetails()
+    {
+        if ($this->deliveryOptions instanceof DeliveryOptionsProvider) {
+            return $this->deliveryOptions->getCarriers();
+        }
+
+        return [];
     }
 
     public function getDeliveryOptions()

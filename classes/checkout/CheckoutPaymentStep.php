@@ -43,7 +43,7 @@ class CheckoutPaymentStepCore extends AbstractCheckoutStep
     /**
      * @var bool
      */
-    public $multiShipmentIsEnabled;
+    public $isMultiShipmentFeatureFlagEnabled;
 
     /**
      * @param Context $context
@@ -56,12 +56,12 @@ class CheckoutPaymentStepCore extends AbstractCheckoutStep
         TranslatorInterface $translator,
         PaymentOptionsFinder $paymentOptionsFinder,
         ConditionsToApproveFinder $conditionsToApproveFinder,
-        bool $multiShipmentIsEnabled,
+        bool $isMultiShipmentFeatureFlagEnabled,
     ) {
         parent::__construct($context, $translator);
         $this->paymentOptionsFinder = $paymentOptionsFinder;
         $this->conditionsToApproveFinder = $conditionsToApproveFinder;
-        $this->multiShipmentIsEnabled = $multiShipmentIsEnabled;
+        $this->isMultiShipmentFeatureFlagEnabled = $isMultiShipmentFeatureFlagEnabled;
     }
 
     public function handleRequest(array $requestParams = [])
@@ -109,27 +109,11 @@ class CheckoutPaymentStepCore extends AbstractCheckoutStep
             'selected_payment_option' => $this->selected_payment_option,
             'selected_delivery_option' => $selectedDeliveryOption,
             'show_final_summary' => Configuration::get('PS_FINAL_SUMMARY_ENABLED'),
-            'multishipment_is_enabled' => $this->multiShipmentIsEnabled,
-            'selected_carriers' => $this->getCarriersDetails(array_filter(explode(',', trim($deliveryOptionKey)))),
+            'multishipment_is_enabled' => $this->isMultiShipmentFeatureFlagEnabled,
+            'selected_carriers' => $this->getCheckoutSession()->getCarriersDetails(),
             'is_recyclable_packaging' => $this->getCheckoutSession()->isRecyclable(),
         ];
 
         return $this->renderTemplate($this->getTemplate(), $extraParams, $assignedVars);
-    }
-
-    private function getCarriersDetails(array $carriersId)
-    {
-        $carriers = [];
-        $langId = $this->getCheckoutSession()->getContext()->language->id;
-
-        foreach ($carriersId as $id) {
-            $carrier = new Carrier($id);
-            $carriers[$id] = [
-                'name' => $carrier->name,
-                'delay' => $carrier->delay[$langId],
-            ];
-        }
-
-        return $carriers;
     }
 }

@@ -28,6 +28,7 @@ declare(strict_types=1);
 
 namespace PrestaShop\PrestaShop\Adapter\Shipment;
 
+use Carrier;
 use Context;
 use DeliveryOptionsFinderCore;
 use Hook;
@@ -72,7 +73,30 @@ class DeliveryOptionsProvider extends DeliveryOptionsFinderCore
         return $parentOutput;
     }
 
-    private function getCarriersDetails(array $deliveryOption): array
+    /**
+     * @return array
+     */
+    public function getCarriers()
+    {
+        $deliveryOptions = $this->context->cart->getDeliveryOptionList();
+        $currentAddressDeliveryOptions = $deliveryOptions[$this->context->cart->id_address_delivery];
+        $carriers = [];
+
+        foreach ($currentAddressDeliveryOptions as $deliveryOption) {
+            foreach ($deliveryOption['carrier_list'] as $carrier) {
+                $carriers[$carrier['instance']->id] = [
+                    'name' => $carrier['instance']->name,
+                    'delay' => $carrier['instance']->delay[$this->context->language->id],
+                ];
+                $names[] = $carrier['instance']->name;
+                $delays[] = $carrier['instance']->delay[$this->context->language->id];
+            }
+        }
+
+        return $carriers;
+    }
+
+    public function getCarriersDetails(array $deliveryOption): array
     {
         $carriers = $deliveryOption['carrier_list'];
 
