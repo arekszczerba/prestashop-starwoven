@@ -339,7 +339,7 @@ describe('BO - Orders - Create order : Multi Carrier', async () => {
     });
 
     it('should go to shipping tab and edit package dimension', async function () {
-      await testContext.addContextItem(this, 'testIdentifier', 'editPackageDimension', baseContext);
+      await testContext.addContextItem(this, 'testIdentifier', 'editPackageDimension2', baseContext);
 
       await boProductsCreateTabShippingPage.setPackageDimension(page, secondProductData);
 
@@ -348,7 +348,7 @@ describe('BO - Orders - Create order : Multi Carrier', async () => {
     });
 
     it('should select the second created carrier', async function () {
-      await testContext.addContextItem(this, 'testIdentifier', 'selectSecondCarrier', baseContext);
+      await testContext.addContextItem(this, 'testIdentifier', 'selectSecondCarrier2', baseContext);
 
       await boProductsCreateTabShippingPage.clearChoiceCarrier(page);
       await boProductsCreateTabShippingPage.selectAvailableCarrier(page, 6);
@@ -540,7 +540,7 @@ describe('BO - Orders - Create order : Multi Carrier', async () => {
     it('should choose the first product and the second carrier in the list', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'chooseProductAnCarrier', baseContext);
 
-      await boOrdersViewBlockTabListPage.selectProductInMergeShipment(page);
+      await boOrdersViewBlockTabListPage.selectProductInMergeShipment(page, 1);
 
       const isButtonNotDisabled = await boOrdersViewBlockTabListPage
         .selectCarrierInMergeShipment(page, `Shipment ${thirdShipmentNumber} - carrier ${secondCarrierData.name}`);
@@ -637,7 +637,7 @@ describe('BO - Orders - Create order : Multi Carrier', async () => {
     it('should select the first product and check that the list of carriers is enabled', async function () {
       await testContext.addContextItem(this, 'testIdentifier', 'checkListCarriersEnabled', baseContext);
 
-      await boOrdersViewBlockTabListPage.selectProductInMergeShipment(page);
+      await boOrdersViewBlockTabListPage.selectProductInMergeShipment(page, 1);
 
       const isCarrierDisabled = await boOrdersViewBlockTabListPage.checkCarrierStatusInMergeModal(page);
       expect(isCarrierDisabled).to.equal(0);
@@ -697,7 +697,7 @@ describe('BO - Orders - Create order : Multi Carrier', async () => {
   // 3 - Post-condition: Delete created carriers
   describe('Post-condition: Delete created carriers', async () => {
     it('should go to \'Shipping > Carriers\' page', async function () {
-      await testContext.addContextItem(this, 'testIdentifier', 'goToCarriersPage2', baseContext);
+      await testContext.addContextItem(this, 'testIdentifier', 'goToCarriersPage3', baseContext);
 
       await boDashboardPage.goToSubMenu(
         page,
