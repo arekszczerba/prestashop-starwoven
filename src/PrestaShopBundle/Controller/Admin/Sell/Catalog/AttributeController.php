@@ -194,7 +194,6 @@ class AttributeController extends PrestaShopAdminController
         FormHandlerInterface $attributeFormHandler,
         AttributeGroupChoiceProvider $attributeGroupChoiceProvider,
     ): Response {
-
         $attributeGroupChoices = $attributeGroupChoiceProvider->getChoices();
 
         if (empty($attributeGroupChoices)) {
