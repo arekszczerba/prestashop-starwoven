@@ -35,6 +35,7 @@ use PrestaShop\PrestaShop\Core\Domain\AttributeGroup\Attribute\Exception\Attribu
 use PrestaShop\PrestaShop\Core\Domain\AttributeGroup\Attribute\Exception\DeleteAttributeException;
 use PrestaShop\PrestaShop\Core\Domain\AttributeGroup\Exception\AttributeGroupNotFoundException;
 use PrestaShop\PrestaShop\Core\Exception\TranslatableCoreException;
+use PrestaShop\PrestaShop\Core\Form\ChoiceProvider\AttributeGroupChoiceProvider;
 use PrestaShop\PrestaShop\Core\Form\IdentifiableObject\Builder\FormBuilderInterface;
 use PrestaShop\PrestaShop\Core\Form\IdentifiableObject\Handler\FormHandlerInterface;
 use PrestaShop\PrestaShop\Core\Grid\GridFactoryInterface;
@@ -70,7 +71,8 @@ class AttributeController extends PrestaShopAdminController
      */
     #[AdminSecurity("is_granted('read', request.get('_legacy_controller'))", redirectRoute: 'admin_attributes_index', redirectQueryParamsToKeep: ['attributeGroupId'])]
     public function indexAction(
-        Request $request, $attributeGroupId,
+        Request $request,
+        int $attributeGroupId,
         AttributeFilters $attributeFilters,
         #[Autowire(service: 'prestashop.core.grid.factory.attribute')]
         GridFactoryInterface $attributeGridFactory,
@@ -138,8 +140,17 @@ class AttributeController extends PrestaShopAdminController
         #[Autowire(service: 'prestashop.core.form.identifiable_object.builder.attribute_form_builder')]
         FormBuilderInterface $attributeFormBuilder,
         #[Autowire(service: 'prestashop.core.form.identifiable_object.attribute_form_handler')]
-        FormHandlerInterface $attributeFormHandler
+        FormHandlerInterface $attributeFormHandler,
+        AttributeGroupChoiceProvider $attributeGroupChoiceProvider,
     ): Response {
+        $attributeGroupChoices = $attributeGroupChoiceProvider->getChoices();
+
+        if (empty($attributeGroupChoices)) {
+            $this->addFlash('error', $this->trans('Before adding a new value a new attribute must be created.', [], 'Admin.Notifications.Success'));
+
+            return $this->redirectToRoute('admin_attribute_groups_index');
+        }
+
         $attributeGroupId = (int) $request->query->get('attributeGroupId');
 
         $attributeForm = $attributeFormBuilder->getForm([], ['attribute_group' => $attributeGroupId]);
@@ -182,7 +193,17 @@ class AttributeController extends PrestaShopAdminController
         FormBuilderInterface $attributeFormBuilder,
         #[Autowire(service: 'prestashop.core.form.identifiable_object.attribute_form_handler')]
         FormHandlerInterface $attributeFormHandler,
+        AttributeGroupChoiceProvider $attributeGroupChoiceProvider,
     ): Response {
+
+        $attributeGroupChoices = $attributeGroupChoiceProvider->getChoices();
+
+        if (empty($attributeGroupChoices)) {
+            $this->addFlash('error', $this->trans('The attribute assinged to this value no longer exists.', [], 'Admin.Notifications.Success'));
+
+            return $this->redirectToRoute('admin_attribute_groups_index');
+        }
+
         $attributeForm = $attributeFormBuilder->getFormFor($attributeId, [], ['attribute_group' => $attributeGroupId])
             ->handleRequest($request);
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright since 2007 PrestaShop SA and Contributors
  * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
@@ -26,6 +27,9 @@
 
 namespace PrestaShopBundle\Entity\Repository;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Query\Parameter;
+
 /**
  * AttributeGroupRepository.
  *
@@ -34,4 +38,34 @@ namespace PrestaShopBundle\Entity\Repository;
  */
 class AttributeGroupRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findByLangAndShop($idLang, $idShop)
+    {
+        $attributeGroups = [];
+
+        $qb = $this->createQueryBuilder('ag')
+            ->select([
+                'ag.id AS attributeGroupId',
+                'ag.position AS attributeGroupPosition',
+                'ag.isColorGroup AS attributeGroupisColorGroup',
+                'agl.name AS attributeGroupName',
+                'agl.publicName AS attributeGroupPublicName',
+            ])
+            ->join('ag.shops', 's')
+            ->join('ag.attributeGroupLangs', 'agl')
+            ->andWhere('agl.lang = :idLang')
+            ->andWhere('s.id = :idShop')
+            ->orderBy('attributeGroupPosition')
+            ->setParameters(new ArrayCollection([
+                new Parameter('idShop', $idShop),
+                new Parameter('idLang', $idLang),
+            ]));
+
+        $result = $qb->getQuery()->getArrayResult();
+
+        foreach ($result as $attribute) {
+            $attributeGroups[$attribute['attributeGroupId']] = $attribute;
+        }
+
+        return $attributeGroups;
+    }
 }
