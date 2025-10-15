@@ -88,6 +88,20 @@ class DiscountTypeRepository
         ];
 
         foreach ($defaultTypes as $typeData) {
+            // Check if this specific type already exists to avoid duplicates
+            $qb = $this->connection->createQueryBuilder();
+            $qb
+                ->select('COUNT(*) as count')
+                ->from($this->dbPrefix . 'cart_rule_type')
+                ->where('type = :type')
+                ->setParameter('type', $typeData['type'])
+            ;
+            $exists = $qb->executeQuery()->fetchAssociative();
+            
+            if ($exists['count'] > 0) {
+                continue;
+            }
+
             $qb = $this->connection->createQueryBuilder();
             $qb
                 ->insert($this->dbPrefix . 'cart_rule_type')

@@ -1427,17 +1427,21 @@ class CartCore extends ObjectModel
      */
     protected function checkCartRuleCompatibility($cartRuleId)
     {
-        $existingCartRules = $this->getCartRules(CartRule::FILTER_ACTION_ALL, false);
-        $existingCartRuleIds = array_filter(
-            array_column($existingCartRules, 'id_cart_rule'),
-            function ($id) use ($cartRuleId) {
-                return $id != $cartRuleId;  // Exclude the discount being added
-            }
+        // Get existing cart rule IDs directly from database without triggering calculations
+        // to avoid infinite loop: getCartRules() -> getOrderTotal() -> getCartRules()
+        $existingCartRuleIds = Db::getInstance()->executeS(
+            'SELECT id_cart_rule 
+            FROM ' . _DB_PREFIX_ . 'cart_cart_rule 
+            WHERE id_cart = ' . (int) $this->id . '
+            AND id_cart_rule != ' . (int) $cartRuleId
         );
 
         if (empty($existingCartRuleIds)) {
             return true;
         }
+
+        // Extract just the IDs
+        $existingCartRuleIds = array_column($existingCartRuleIds, 'id_cart_rule');
 
         $compatibilityService = $this->getDiscountCompatibilityService();
         if (!$compatibilityService) {
