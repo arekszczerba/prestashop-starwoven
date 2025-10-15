@@ -106,9 +106,6 @@ final class AttributeGroupChoiceProvider implements FormChoiceProviderInterface,
             $this->attributeGroups = $this->attributeGroupRepository->findByLangAndShop($this->langId, $this->shopId);
         }
 
-        if (empty($this->attributeGroups)) {
-            throw new \RuntimeException('No attribute groups available.');
-        }
         return $this->attributeGroups;
     }
 }
