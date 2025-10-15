@@ -220,6 +220,110 @@ class OrderLazyArray extends AbstractLazyArray
     }
 
     /**
+     * Retrieve detailed carrier information for the carriers actually used in the order.
+     *
+     * @return array
+     */
+    #[LazyArrayAttribute(arrayAccess: true)]
+    public function getCarriersProducts(): array
+    {
+        $order = $this->order;
+        $carrierIds = $order->getOrderCarrierIds();
+
+        if (empty($carrierIds)) {
+            return [];
+        }
+
+        $cart = new Cart($order->id_cart);
+        $cartLazyArray = $this->cartPresenter->present($cart);
+        $deliveryOptions = $cart->getDeliveryOptionList();
+
+        if (empty($deliveryOptions)) {
+            return [];
+        }
+
+        $languageId = Context::getContext()->language->id;
+        $cartProductsById = $this->indexCartProductsById($cartLazyArray['products'] ?? []);
+
+        $carriersProductsMapping = [];
+
+        foreach ($deliveryOptions as $optionsForAddress) {
+            foreach ($optionsForAddress as $deliveryOption) {
+                $optionCarrierIds = array_keys($deliveryOption['carrier_list']);
+                if ($this->matchesCarrierIds($carrierIds, $optionCarrierIds)) {
+                    foreach ($carrierIds as $idCarrier) {
+                        $carrierInfo = $deliveryOption['carrier_list'][$idCarrier] ?? null;
+                        if (!$carrierInfo) {
+                            continue;
+                        }
+
+                        $mappedProducts = $this->mapProductsToCartDetails(
+                            $carrierInfo['product_list'],
+                            $cartProductsById
+                        );
+
+                        $carrierInstance = $carrierInfo['instance'];
+                        $carriersProductsMapping[] = [
+                            'carrier' => [
+                                'name' => $carrierInstance->name,
+                                'delay' => $carrierInstance->delay[$languageId] ?? '',
+                            ],
+                            'products' => $mappedProducts,
+                        ];
+                    }
+
+                    // Found the matching option
+                    break 2;
+                }
+            }
+        }
+
+        return $carriersProductsMapping;
+    }
+
+    /**
+     * Create a quick lookup of products by ID for easy mapping.
+     */
+    private function indexCartProductsById(array $cartProducts): array
+    {
+        $indexed = [];
+        foreach ($cartProducts as $product) {
+            $indexed[$product['id_product']] = $product;
+        }
+
+        return $indexed;
+    }
+
+    /**
+     * Check if delivery option matches all carriers in the order.
+     *
+     * @param int[] $orderCarrierIds
+     * @param int[] $optionCarrierIds
+     *
+     * @return bool
+     */
+    private function matchesCarrierIds(array $orderCarrierIds, array $optionCarrierIds): bool
+    {
+        return empty(array_diff($orderCarrierIds, $optionCarrierIds));
+    }
+
+    /**
+     * Map product list to detailed cart product info.
+     */
+    private function mapProductsToCartDetails(array $productList, array $cartProductsById): array
+    {
+        $mapped = [];
+        foreach ($productList as $productData) {
+            $idProduct = $productData['id_product'] ?? null;
+            $mapped[] = $idProduct && isset($cartProductsById[$idProduct])
+                ? $cartProductsById[$idProduct]
+                : $productData;
+        }
+
+        return $mapped;
+    }
+
+    /**
      * @return array
      */
     #[LazyArrayAttribute(arrayAccess: true)]
