@@ -28,7 +28,6 @@ declare(strict_types=1);
 
 namespace PrestaShop\PrestaShop\Adapter\Shipment;
 
-use Carrier;
 use Context;
 use DeliveryOptionsFinderCore;
 use Hook;
@@ -96,7 +95,7 @@ class DeliveryOptionsProvider extends DeliveryOptionsFinderCore
         return $carriers;
     }
 
-    public function getCarriersDetails(array $deliveryOption): array
+    private function getCarriersDetails(array $deliveryOption): array
     {
         $carriers = $deliveryOption['carrier_list'];
 
