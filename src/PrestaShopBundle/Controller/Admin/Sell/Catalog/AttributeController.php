@@ -71,8 +71,7 @@ class AttributeController extends PrestaShopAdminController
      */
     #[AdminSecurity("is_granted('read', request.get('_legacy_controller'))", redirectRoute: 'admin_attributes_index', redirectQueryParamsToKeep: ['attributeGroupId'])]
     public function indexAction(
-        Request $request,
-        int $attributeGroupId,
+        Request $request, $attributeGroupId,
         AttributeFilters $attributeFilters,
         #[Autowire(service: 'prestashop.core.grid.factory.attribute')]
         GridFactoryInterface $attributeGridFactory,
