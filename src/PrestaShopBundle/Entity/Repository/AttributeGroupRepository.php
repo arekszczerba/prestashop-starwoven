@@ -38,6 +38,13 @@ use Doctrine\ORM\Query\Parameter;
  */
 class AttributeGroupRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * Finds attribute groups by language and shop.
+     *
+     * @param mixed $idLang Language ID.
+     * @param mixed $idShop Shop ID.
+     * @return array
+     */
     public function findByLangAndShop($idLang, $idShop)
     {
         $attributeGroups = [];
