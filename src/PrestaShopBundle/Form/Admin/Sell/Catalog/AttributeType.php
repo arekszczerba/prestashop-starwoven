@@ -33,12 +33,12 @@ use PrestaShop\PrestaShop\Core\ConstraintValidator\Constraints\TypedRegex;
 use PrestaShop\PrestaShop\Core\ConstraintValidator\TypedRegexValidator;
 use PrestaShop\PrestaShop\Core\Feature\FeatureInterface;
 use PrestaShop\PrestaShop\Core\Form\ChoiceProvider\AttributeGroupChoiceProvider;
+use PrestaShopBundle\Form\Admin\Type\ImageWithPreviewType;
 use PrestaShopBundle\Form\Admin\Type\ShopChoiceTreeType;
 use PrestaShopBundle\Form\Admin\Type\TranslatableType;
 use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\ColorType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -95,12 +95,14 @@ class AttributeType extends TranslatorAwareType
                 ],
                 'required' => false,
             ])
-            ->add('texture', FileType::class, [
+            ->add('texture', ImageWithPreviewType::class, [
                 'label' => $this->trans('Texture', 'Admin.Global'),
                 'row_attr' => [
                     'class' => 'js-attribute-type-texture-form-row',
                 ],
                 'required' => false,
+                'can_be_deleted' => true,
+                'show_size' => true,
             ]);
 
         if ($this->multistoreFeature->isUsed()) {
