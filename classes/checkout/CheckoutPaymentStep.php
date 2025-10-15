@@ -41,6 +41,11 @@ class CheckoutPaymentStepCore extends AbstractCheckoutStep
     public $paymentOptionsFinder;
 
     /**
+     * @var bool
+     */
+    public $multiShipmentIsEnabled;
+
+    /**
      * @param Context $context
      * @param TranslatorInterface $translator
      * @param PaymentOptionsFinder $paymentOptionsFinder
@@ -50,11 +55,13 @@ class CheckoutPaymentStepCore extends AbstractCheckoutStep
         Context $context,
         TranslatorInterface $translator,
         PaymentOptionsFinder $paymentOptionsFinder,
-        ConditionsToApproveFinder $conditionsToApproveFinder
+        ConditionsToApproveFinder $conditionsToApproveFinder,
+        bool $multiShipmentIsEnabled,
     ) {
         parent::__construct($context, $translator);
         $this->paymentOptionsFinder = $paymentOptionsFinder;
         $this->conditionsToApproveFinder = $conditionsToApproveFinder;
+        $this->multiShipmentIsEnabled = $multiShipmentIsEnabled;
     }
 
     public function handleRequest(array $requestParams = [])
@@ -102,9 +109,27 @@ class CheckoutPaymentStepCore extends AbstractCheckoutStep
             'selected_payment_option' => $this->selected_payment_option,
             'selected_delivery_option' => $selectedDeliveryOption,
             'show_final_summary' => Configuration::get('PS_FINAL_SUMMARY_ENABLED'),
+            'multishipment_is_enabled' => $this->multiShipmentIsEnabled,
+            'selected_carriers' => $this->getCarriersDetails(array_filter(explode(',', trim($deliveryOptionKey)))),
             'is_recyclable_packaging' => $this->getCheckoutSession()->isRecyclable(),
         ];
 
         return $this->renderTemplate($this->getTemplate(), $extraParams, $assignedVars);
+    }
+
+    private function getCarriersDetails(array $carriersId)
+    {
+        $carriers = [];
+        $langId = $this->getCheckoutSession()->getContext()->language->id;
+
+        foreach($carriersId as $id) {
+            $carrier = new Carrier($id);
+            $carriers[$id] = [
+                'name' => $carrier->name,
+                'delay' => $carrier->delay[$langId]
+            ];
+        }
+
+        return $carriers;
     }
 }

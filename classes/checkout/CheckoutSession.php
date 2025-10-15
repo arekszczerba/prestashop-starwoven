@@ -52,6 +52,14 @@ class CheckoutSessionCore
     }
 
     /**
+     * @return Context
+     */
+    public function getContext()
+    {
+        return $this->context;
+    }
+
+    /**
      * @return Customer
      */
     public function getCustomer()
