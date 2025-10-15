@@ -52,7 +52,9 @@ class DiscountCompatibilityService
         $isIncompatible = false;
 
         foreach ($existingDiscountIds as $existingDiscountId) {
-            if (!$this->discountTypeRepository->areDiscountsCompatible($newDiscountId, $existingDiscountId)) {
+            // Check compatibility in both directions
+            if (!$this->discountTypeRepository->areDiscountsCompatible($newDiscountId, $existingDiscountId)
+            || !$this->discountTypeRepository->areDiscountsCompatible($existingDiscountId, $newDiscountId)) {
                 $isIncompatible = true;
             }
         }
