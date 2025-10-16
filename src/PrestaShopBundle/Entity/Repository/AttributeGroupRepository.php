@@ -44,17 +44,21 @@ class AttributeGroupRepository extends \Doctrine\ORM\EntityRepository
      * @param mixed $idLang Language ID
      * @param mixed $idShop Shop ID
      *
-     * @return array
+     * @return array<int, array{
+     *     attributeGroupId: int|null,
+     *     attributeGroupPosition: int|null,
+     *     attributeGroupIsColorGroup: bool|null,
+     *     attributeGroupName: string|null,
+     *     attributeGroupPublicName: string|null
+     * }>
      */
-    public function findByLangAndShop($idLang, $idShop)
+    public function findByLangAndShop($idLang, $idShop): array
     {
-        $attributeGroups = [];
-
         $qb = $this->createQueryBuilder('ag')
             ->select([
                 'ag.id AS attributeGroupId',
                 'ag.position AS attributeGroupPosition',
-                'ag.isColorGroup AS attributeGroupisColorGroup',
+                'ag.isColorGroup AS attributeGroupIsColorGroup',
                 'agl.name AS attributeGroupName',
                 'agl.publicName AS attributeGroupPublicName',
             ])
@@ -68,12 +72,6 @@ class AttributeGroupRepository extends \Doctrine\ORM\EntityRepository
                 new Parameter('idLang', $idLang),
             ]));
 
-        $result = $qb->getQuery()->getArrayResult();
-
-        foreach ($result as $attribute) {
-            $attributeGroups[$attribute['attributeGroupId']] = $attribute;
-        }
-
-        return $attributeGroups;
+        return $qb->getQuery()->getArrayResult();
     }
 }

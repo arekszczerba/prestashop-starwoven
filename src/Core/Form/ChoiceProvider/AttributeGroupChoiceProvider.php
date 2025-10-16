@@ -28,7 +28,6 @@
 namespace PrestaShop\PrestaShop\Core\Form\ChoiceProvider;
 
 use PrestaShop\PrestaShop\Core\Form\FormChoiceAttributeProviderInterface;
-use PrestaShop\PrestaShop\Core\Form\FormChoiceFormatter;
 use PrestaShop\PrestaShop\Core\Form\FormChoiceProviderInterface;
 use PrestaShopBundle\Entity\Repository\AttributeGroupRepository;
 
@@ -45,7 +44,12 @@ final class AttributeGroupChoiceProvider implements FormChoiceProviderInterface,
     /**
      * @var array
      */
-    private $attributeGroupsChoiceAttributes;
+    private $attributeGroupsChoices;
+
+    /**
+     * @var array
+     */
+    private $attributeGroupsChoicesAttributes;
 
     /**
      * @param AttributeGroupRepository $attributeGroupRepository
@@ -54,58 +58,65 @@ final class AttributeGroupChoiceProvider implements FormChoiceProviderInterface,
      */
     public function __construct(
         private readonly AttributeGroupRepository $attributeGroupRepository,
-        private int $langId,
-        private int $shopId,
+        private readonly int $langId,
+        private readonly int $shopId,
     ) {
     }
 
     /**
-     * Get attribute groups choices.
+     * Get attribute groups choices
      *
      * @return array
      */
-    public function getChoices()
+    public function getChoices(): array
     {
-        return FormChoiceFormatter::formatFormChoices(
-            $this->getAttributeGroups(),
-            'attributeGroupId',
-            'attributeGroupName'
-        );
+        $this->setAttributeGroups();
+
+        return $this->attributeGroupsChoices;
     }
 
     /**
-     * Get attribute groups choices attributes.
+     * Get attribute groups choices attributes
      *
      * @return array
      */
-    public function getChoicesAttributes()
+    public function getChoicesAttributes(): array
     {
-        if (null === $this->attributeGroupsChoiceAttributes) {
-            $attributeGroups = $this->getAttributeGroups();
+        $this->setAttributeGroups();
 
-            $this->attributeGroupsChoiceAttributes = [];
+        return $this->attributeGroupsChoicesAttributes;
+    }
 
-            foreach ($attributeGroups as $attributeGroup) {
-                if ($attributeGroup['attributeGroupisColorGroup']) {
-                    $this->attributeGroupsChoiceAttributes[$attributeGroup['attributeGroupId']]['data-isColorGroup'] = $attributeGroup['attributeGroupId'];
+    /**
+     * Set attribute groups to return in getChoices() and getChoicesAttributes()
+     *
+     * @return void
+     */
+    private function setAttributeGroups(): void
+    {
+        if (null === $this->attributeGroupsChoicesAttributes || null === $this->attributeGroupsChoices) {
+            if (null === $this->attributeGroups) {
+                $this->attributeGroups = $this->attributeGroupRepository->findByLangAndShop($this->langId, $this->shopId);
+            }
+
+            $this->attributeGroupsChoices = [];
+            $this->attributeGroupsChoicesAttributes = [];
+
+            foreach ($this->attributeGroups as $attributeGroup) {
+                /*
+                 * No need to filter duplicates like FormChoiceFormatter::formatFormChoices
+                 * does since attributeGroupId has a PRIMARY key.
+                */
+                $attributeGroupFormattedName = sprintf('%s (#%d)', $attributeGroup['attributeGroupName'], $attributeGroup['attributeGroupId']);
+
+                $this->attributeGroupsChoices[$attributeGroupFormattedName] = $attributeGroup['attributeGroupId'];
+
+                if ($attributeGroup['attributeGroupIsColorGroup']) {
+                    $this->attributeGroupsChoicesAttributes[$attributeGroupFormattedName]['data-iscolorgroup'] = $attributeGroup['attributeGroupId'];
                 }
             }
+
+            ksort($this->attributeGroupsChoices);
         }
-
-        return $this->attributeGroupsChoiceAttributes;
-    }
-
-    /**
-     * Get attribute groups.
-     *
-     * @return array
-     */
-    private function getAttributeGroups()
-    {
-        if (null === $this->attributeGroups) {
-            $this->attributeGroups = $this->attributeGroupRepository->findByLangAndShop($this->langId, $this->shopId);
-        }
-
-        return $this->attributeGroups;
     }
 }
