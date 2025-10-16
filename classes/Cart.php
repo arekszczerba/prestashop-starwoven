@@ -1453,7 +1453,7 @@ class CartCore extends ObjectModel
 
         if (!$result->canApply()) {
             return Context::getContext()->getTranslator()->trans(
-                'This voucher is not combinable with other vouchers in your cart',
+                'This voucher can not be combined with other vouchers in your cart',
                 [],
                 'Shop.Notifications.Error'
             );

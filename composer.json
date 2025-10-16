@@ -281,7 +281,7 @@
         "git-hook-uninstall": "@php .github/contrib/uninstall.php",
         "integration-behaviour-tests": [
             "@composer create-test-db",
-            "@php -d date.timezone=UTC ./vendor/bin/behat -c tests/Integration/Behaviour/behat.yml --stop-on-failure --format progress --no-snippets --strict"
+            "@php -d date.timezone=UTC ./vendor/bin/behat -c tests/Integration/Behaviour/behat.yml --format progress --no-snippets --strict"
         ],
         "integration-tests": [
             "@composer create-test-db",

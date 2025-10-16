@@ -234,6 +234,32 @@ Feature: Discount compatibility in cart
     And I use a voucher "cart_with_gift" on the cart "dummy_cart8"
     Then cart "dummy_cart8" should have 2 cart rules applied
 
+  Scenario: Apply product discount with incompatible order level discount
+    Given I create an empty cart "dummy_cart9" for customer "testCustomer"
+    When I create a "order_level" discount "order_20" with following properties:
+      | name[en-US]        | Order 20% Off       |
+      | active             | true                |
+      | valid_from         | 2025-01-01 00:00:00 |
+      | valid_to           | 2025-12-31 23:59:59 |
+      | code               | ORDER20             |
+      | reduction_percent  | 20.0                |
+    And I set compatible types for discount "order_20" to:
+      | cart_level |
+    When I create a "product_level" discount "product_25" with following properties:
+      | name[en-US]        | Product 25% Off     |
+      | active             | true                |
+      | valid_from         | 2025-01-01 00:00:00 |
+      | valid_to           | 2025-12-31 23:59:59 |
+      | code               | PROD25              |
+      | reduction_percent  | 25.0                |
+      | reduction_product  | product1            |
+    And I set compatible types for discount "product_25" to:
+      | free_shipping |
+    And I add 1 product "product1" to the cart "dummy_cart9"
+    And I use a voucher "product_25" on the cart "dummy_cart9"
+    When I use a voucher "order_20" on the cart "dummy_cart9"
+    Then I should get an error that the discount is invalid
+
   Scenario: Apply amount-based discount with compatible percentage discount
     Given I create an empty cart "dummy_cart10" for customer "testCustomer"
     When I create a "cart_level" discount "amount_discount" with following properties:

@@ -78,13 +78,12 @@ class DiscountTypeRepository
             return;
         }
 
-        // @todo we have to move this section
         $defaultTypes = [
-            ['type' => DiscountType::FREE_SHIPPING, 'name' => 'Free shipping', 'description' => 'Discount that provides free shipping to the order'],
-            ['type' => DiscountType::CART_LEVEL, 'name' => 'Cart level', 'description' => 'Discount applied to cart'],
-            ['type' => DiscountType::ORDER_LEVEL, 'name' => 'Order level', 'description' => 'Discount applied to the order'],
-            ['type' => DiscountType::PRODUCT_LEVEL, 'name' => 'Product level', 'description' => 'Discount applied to specific products'],
-            ['type' => DiscountType::FREE_GIFT, 'name' => 'Free gift', 'description' => 'Discount that provides a free gift product'],
+            ['type' => DiscountType::FREE_SHIPPING, 'name' => 'On free shipping', 'description' => 'Discount that provides free shipping to the order'],
+            ['type' => DiscountType::CART_LEVEL, 'name' => 'On cart amount', 'description' => 'Discount applied to cart'],
+            ['type' => DiscountType::ORDER_LEVEL, 'name' => 'On total order', 'description' => 'Discount applied to the order'],
+            ['type' => DiscountType::PRODUCT_LEVEL, 'name' => 'On catalog products', 'description' => 'Discount applied to specific products'],
+            ['type' => DiscountType::FREE_GIFT, 'name' => 'On free gift', 'description' => 'Discount that provides a free gift product'],
         ];
 
         foreach ($defaultTypes as $typeData) {
@@ -97,7 +96,7 @@ class DiscountTypeRepository
                 ->setParameter('type', $typeData['type'])
             ;
             $exists = $qb->executeQuery()->fetchAssociative();
-            
+
             if ($exists['count'] > 0) {
                 continue;
             }

@@ -26,6 +26,7 @@
 
 namespace PrestaShopBundle\Form\Admin\Sell\Discount;
 
+use PrestaShop\PrestaShop\Core\Domain\Discount\ValueObject\DiscountType;
 use PrestaShopBundle\Form\Admin\Type\CardType;
 use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -39,6 +40,12 @@ class DiscountCompatibilityType extends TranslatorAwareType
         $availableTypes = $options['available_types'] ?? [];
 
         foreach ($availableTypes as $type) {
+            // Skip "On total order" discount type
+            // (Disabled temporarily, because of infinite loop issue with this kind of discount. See issue #39419)
+            if ($type['type'] === DiscountType::ORDER_LEVEL) {
+                continue;
+            }
+
             $builder->add('compatible_type_' . $type['id_cart_rule_type'], CheckboxType::class, [
                 'label' => $type['name'],
                 'label_help_box' => $type['description'],
@@ -55,7 +62,7 @@ class DiscountCompatibilityType extends TranslatorAwareType
     {
         parent::configureOptions($resolver);
         $resolver->setDefaults([
-            'label' => $this->trans('Discount compatibility', 'Admin.Catalog.Feature'),
+            'label' => $this->trans('Compatible with discounts', 'Admin.Catalog.Feature'),
             'label_help_box' => $this->trans('Select which discount types this discount is compatible with.', 'Admin.Catalog.Help'),
             'available_types' => [],
         ]);
