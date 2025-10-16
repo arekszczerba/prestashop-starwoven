@@ -421,7 +421,8 @@ describe('BO - Orders - Create order : Multi Carrier', async () => {
 
       for (let i = 0; i < orderToMake.products.length; i++) {
         await boOrdersCreatePage.addProductToCart(
-          page, orderToMake.products[i].product, orderToMake.products[i].product.name, orderToMake.products[i].quantity);
+          page, orderToMake.products[i].product, `${orderToMake.products[i].product.name
+          } - €${orderToMake.products[i].product.price}`, orderToMake.products[i].quantity);
       }
 
       const deliveryOptions = await boOrdersCreatePage.getDeliveryOptions(page);
