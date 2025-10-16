@@ -157,10 +157,10 @@ class CheckoutSessionCore
         return $this->deliveryOptions->getSelectedDeliveryOption();
     }
 
-    public function getCarriersDetails()
+    public function getProductsByCarrier()
     {
         if ($this->deliveryOptions instanceof DeliveryOptionsProvider) {
-            return $this->deliveryOptions->getCarriers();
+            return $this->deliveryOptions->getProductsByCarrier();
         }
 
         return [];

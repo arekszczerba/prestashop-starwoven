@@ -110,7 +110,7 @@ class CheckoutPaymentStepCore extends AbstractCheckoutStep
             'selected_delivery_option' => $selectedDeliveryOption,
             'show_final_summary' => Configuration::get('PS_FINAL_SUMMARY_ENABLED'),
             'multishipment_is_enabled' => $this->isMultiShipmentFeatureFlagEnabled,
-            'selected_carriers' => $this->getCheckoutSession()->getCarriersDetails(),
+            'products_carrier_mapping' => $this->getCheckoutSession()->getProductsByCarrier(),
             'is_recyclable_packaging' => $this->getCheckoutSession()->isRecyclable(),
         ];
 

@@ -159,21 +159,6 @@ class ProductLazyArray extends AbstractLazyArray
     }
 
     /**
-     * @return array
-     */
-    #[LazyArrayAttribute(arrayAccess: true)]
-    public function getCarriers()
-    {
-        $this->product['carriers'] = [];
-
-        $product = new Product((int) $this->product['id_product']);
-
-        $this->product['carriers'] = array_column($product->getCarriers(), 'id_carrier');
-
-        return $this->product['carriers'];
-    }
-
-    /**
      * @return array|mixed
      */
     #[LazyArrayAttribute(arrayAccess: true)]

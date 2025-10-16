@@ -32,6 +32,7 @@ use Context;
 use DeliveryOptionsFinderCore;
 use Hook;
 use Module;
+use PrestaShop\PrestaShop\Adapter\Presenter\Cart\CartPresenter;
 use PrestaShop\PrestaShop\Adapter\Presenter\Object\ObjectPresenter;
 use PrestaShop\PrestaShop\Adapter\Product\PriceFormatter;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -40,14 +41,19 @@ class DeliveryOptionsProvider extends DeliveryOptionsFinderCore
 {
     private $context;
 
+    /** @var CartPresenter */
+    private $cartPresenter;
+
     public function __construct(
         Context $context,
         TranslatorInterface $translator,
         ObjectPresenter $objectPresenter,
-        PriceFormatter $priceFormatter
+        PriceFormatter $priceFormatter,
+        CartPresenter $cartPresenter
     ) {
         parent::__construct($context, $translator, $objectPresenter, $priceFormatter);
         $this->context = $context;
+        $this->cartPresenter = $cartPresenter;
     }
 
     public function getDeliveryOptions()
@@ -75,7 +81,7 @@ class DeliveryOptionsProvider extends DeliveryOptionsFinderCore
     /**
      * @return array
      */
-    public function getCarriers()
+    public function getProductsByCarrier()
     {
         $deliveryOptions = $this->context->cart->getDeliveryOptionList();
         $currentAddressDeliveryOptions = $deliveryOptions[$this->context->cart->id_address_delivery];
@@ -83,16 +89,31 @@ class DeliveryOptionsProvider extends DeliveryOptionsFinderCore
 
         foreach ($currentAddressDeliveryOptions as $deliveryOption) {
             foreach ($deliveryOption['carrier_list'] as $carrier) {
-                $carriers[$carrier['instance']->id] = [
-                    'name' => $carrier['instance']->name,
-                    'delay' => $carrier['instance']->delay[$this->context->language->id],
-                ];
-                $names[] = $carrier['instance']->name;
-                $delays[] = $carrier['instance']->delay[$this->context->language->id];
+                $carriers[] = $this->formatCarrierWithProducts($carrier);
             }
         }
 
         return $carriers;
+    }
+
+    public function formatCarrierWithProducts(array $carrierData): array
+    {
+        $carrierProductIds = array_map(function ($product) {
+            return $product['id_product'];
+        }, $carrierData['product_list']);
+
+        $cartProducts = $this->cartPresenter->present($this->context->cart);
+        $filteredProducts = array_filter($cartProducts->getProducts(), function ($product) use ($carrierProductIds) {
+            return in_array($product['id_product'], $carrierProductIds);
+        });
+
+        return [
+            'carrier' => [
+                'name' => $carrierData['instance']->name,
+                'delay' => $carrierData['instance']->delay[$this->context->language->id] ?? $carrierData['instance']->delay,
+            ],
+            'products' => $filteredProducts,
+        ];
     }
 
     private function getCarriersDetails(array $deliveryOption): array
