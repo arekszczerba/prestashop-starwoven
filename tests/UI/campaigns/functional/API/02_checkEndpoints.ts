@@ -155,9 +155,6 @@ describe('API : Check endpoints', async () => {
         '/discount: POST',
         // @todo : https://github.com/PrestaShop/PrestaShop/issues/38784
         '/discounts: GET',
-        // tests/UI/campaigns/functional/API/02_endpoints/04_hook/01_putHookStatusId.ts
-        '/hook-status/{hookId}: PUT',
-        // tests/UI/campaigns/functional/API/02_endpoints/04_hook/02_getHooksId.ts
         // tests/UI/campaigns/functional/API/02_endpoints/04_hook/01_putHookIdStatus.ts
         '/hook/{hookId}/status: PUT',
         // tests/UI/campaigns/functional/API/02_endpoints/04_hook/02_getHookId.ts
