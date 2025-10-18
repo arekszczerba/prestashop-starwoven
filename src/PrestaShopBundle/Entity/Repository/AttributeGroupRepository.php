@@ -27,9 +27,6 @@
 
 namespace PrestaShopBundle\Entity\Repository;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Query\Parameter;
-
 /**
  * AttributeGroupRepository.
  *
@@ -41,37 +38,23 @@ class AttributeGroupRepository extends \Doctrine\ORM\EntityRepository
     /**
      * Finds attribute groups by language and shop.
      *
-     * @param mixed $idLang Language ID
-     * @param mixed $idShop Shop ID
+     * @param int $idLang Language ID
+     * @param int $idShop Shop ID
      *
-     * @return array<int, array{
-     *     attributeGroupId: int|null,
-     *     attributeGroupPosition: int|null,
-     *     attributeGroupIsColorGroup: bool|null,
-     *     attributeGroupName: string|null,
-     *     attributeGroupPublicName: string|null
-     * }>
+     * @return \PrestaShopBundle\Entity\AttributeGroup[]
      */
-    public function findByLangAndShop($idLang, $idShop): array
+    public function findByLangAndShop(int $idLang, int $idShop): array
     {
-        $qb = $this->createQueryBuilder('ag')
-            ->select([
-                'ag.id AS attributeGroupId',
-                'ag.position AS attributeGroupPosition',
-                'ag.isColorGroup AS attributeGroupIsColorGroup',
-                'agl.name AS attributeGroupName',
-                'agl.publicName AS attributeGroupPublicName',
-            ])
-            ->join('ag.shops', 's')
+        return $this->createQueryBuilder('ag')
+            ->addSelect('agl')
+            ->join('ag.shops', 'ags')
             ->join('ag.attributeGroupLangs', 'agl')
             ->andWhere('agl.lang = :idLang')
-            ->andWhere('s.id = :idShop')
-            ->orderBy('attributeGroupPosition')
-            ->setParameters(new ArrayCollection([
-                new Parameter('idShop', $idShop),
-                new Parameter('idLang', $idLang),
-            ]));
-
-        return $qb->getQuery()->getArrayResult();
+            ->andWhere('ags.id = :idShop')
+            ->orderBy('ag.position', 'ASC')
+            ->setParameters([
+                'idShop' => $idShop,
+                'idLang' => $idLang,
+            ])->getQuery()->getResult();
     }
 }

@@ -37,7 +37,7 @@ use PrestaShopBundle\Entity\Repository\AttributeGroupRepository;
 final class AttributeGroupChoiceProvider implements FormChoiceProviderInterface, FormChoiceAttributeProviderInterface
 {
     /**
-     * @var array
+     * @var \PrestaShopBundle\Entity\AttributeGroup[]
      */
     private $attributeGroups;
 
@@ -107,12 +107,14 @@ final class AttributeGroupChoiceProvider implements FormChoiceProviderInterface,
                  * No need to filter duplicates like FormChoiceFormatter::formatFormChoices
                  * does since attributeGroupId has a PRIMARY key.
                 */
-                $attributeGroupFormattedName = sprintf('%s (#%d)', $attributeGroup['attributeGroupName'], $attributeGroup['attributeGroupId']);
+                /** @var \Doctrine\Common\Collections\Collection<\PrestaShopBundle\Entity\AttributeGroupLang> $attributeGroupLang */
+                $attributeGroupLang = $attributeGroup->getAttributeGroupLangs();
+                $attributeGroupFormattedName = sprintf('%s (#%d)', $attributeGroupLang->first()?->getName(), $attributeGroup->getId());
 
-                $this->attributeGroupsChoices[$attributeGroupFormattedName] = $attributeGroup['attributeGroupId'];
+                $this->attributeGroupsChoices[$attributeGroupFormattedName] = $attributeGroup->getId();
 
-                if ($attributeGroup['attributeGroupIsColorGroup']) {
-                    $this->attributeGroupsChoicesAttributes[$attributeGroupFormattedName]['data-iscolorgroup'] = $attributeGroup['attributeGroupId'];
+                if (true === $attributeGroup->getIsColorGroup()) {
+                    $this->attributeGroupsChoicesAttributes[$attributeGroupFormattedName]['data-iscolorgroup'] = $attributeGroup->getId();
                 }
             }
 
