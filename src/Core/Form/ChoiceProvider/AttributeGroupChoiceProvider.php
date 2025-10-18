@@ -47,7 +47,7 @@ final class AttributeGroupChoiceProvider implements FormChoiceProviderInterface,
     private $attributeGroupsChoices;
 
     /**
-     * @var array
+     * @var array<string, array{data-iscolorgroup: int}>
      */
     private $attributeGroupsChoicesAttributes;
 
@@ -66,7 +66,7 @@ final class AttributeGroupChoiceProvider implements FormChoiceProviderInterface,
     /**
      * Get attribute groups choices
      *
-     * @return array
+     * @return array<string, int>
      */
     public function getChoices(): array
     {
@@ -78,7 +78,7 @@ final class AttributeGroupChoiceProvider implements FormChoiceProviderInterface,
     /**
      * Get attribute groups choices attributes
      *
-     * @return array
+     * @return array<string, array{data-iscolorgroup: int}>
      */
     public function getChoicesAttributes(): array
     {
