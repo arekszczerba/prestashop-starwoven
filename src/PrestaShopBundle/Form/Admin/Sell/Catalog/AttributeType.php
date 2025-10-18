@@ -53,8 +53,8 @@ class AttributeType extends TranslatorAwareType
     public function __construct(
         TranslatorInterface $translator,
         array $locales,
-        private readonly AttributeGroupChoiceProvider $attributeGroupChoiceProvider,
-        protected FeatureInterface $multistoreFeature
+        protected readonly AttributeGroupChoiceProvider $attributeGroupChoiceProvider,
+        protected readonly FeatureInterface $multistoreFeature
     ) {
         parent::__construct($translator, $locales);
     }
@@ -64,7 +64,7 @@ class AttributeType extends TranslatorAwareType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $hasAttributeGroupId = $options['attribute_group'] > 0;
+        $attributeGroupId = (is_int($options['attribute_group']) && $options['attribute_group'] > 0) ? $options['attribute_group'] : '';
 
         $builder
             ->add('attribute_group', ChoiceType::class, [
@@ -72,7 +72,7 @@ class AttributeType extends TranslatorAwareType
                 'help' => $this->trans('The way the attribute\'s values will be presented to the customers in the product\'s page.', 'Admin.Catalog.Help'),
                 'choices' => $this->attributeGroupChoiceProvider->getChoices(),
                 'choice_attr' => $this->attributeGroupChoiceProvider->getChoicesAttributes(),
-                'data' => $hasAttributeGroupId ? $options['attribute_group'] : '',
+                'data' => $attributeGroupId,
             ])
             ->add('name', TranslatableType::class, [
                 'type' => TextType::class,
