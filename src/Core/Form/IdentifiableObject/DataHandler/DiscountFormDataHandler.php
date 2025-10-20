@@ -285,7 +285,7 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
         $compatibleTypeIds = [];
         foreach ($data['compatibility'] as $fieldName => $isChecked) {
             if ($isChecked && str_starts_with($fieldName, 'compatible_type_')) {
-                $typeId = (int)str_replace('compatible_type_', '', $fieldName);
+                $typeId = (int) str_replace('compatible_type_', '', $fieldName);
                 $compatibleTypeIds[] = $typeId;
             }
         }
