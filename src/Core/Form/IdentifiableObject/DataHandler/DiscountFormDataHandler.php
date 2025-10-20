@@ -47,6 +47,7 @@ use PrestaShop\PrestaShop\Core\Domain\Product\Combination\ValueObject\NoCombinat
 use PrestaShopBundle\Form\Admin\Sell\Discount\CartConditionsType;
 use PrestaShopBundle\Form\Admin\Sell\Discount\DeliveryConditionsType;
 use PrestaShopBundle\Form\Admin\Sell\Discount\DiscountConditionsType;
+use PrestaShopBundle\Form\Admin\Sell\Discount\DiscountCustomerEligibilityType;
 use PrestaShopBundle\Form\Admin\Sell\Discount\DiscountUsabilityModeType;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -110,6 +111,7 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
             $command->setCode('');
         }
 
+        $this->handleCustomerEligibility($command, $data);
         $command->setTotalQuantity(100);
 
         /** @var DiscountId $discountId */
@@ -161,6 +163,8 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
         } else {
             $command->setCode('');
         }
+
+        $this->handleCustomerEligibility($command, $data);
 
         $this->commandBus->handle($command);
         $this->updateDiscountConditions($id, $data);
@@ -281,11 +285,34 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
         $compatibleTypeIds = [];
         foreach ($data['compatibility'] as $fieldName => $isChecked) {
             if ($isChecked && str_starts_with($fieldName, 'compatible_type_')) {
-                $typeId = (int) str_replace('compatible_type_', '', $fieldName);
+                $typeId = (int)str_replace('compatible_type_', '', $fieldName);
                 $compatibleTypeIds[] = $typeId;
             }
         }
 
         $this->discountTypeRepository->setCompatibleTypesForDiscount($discountId, $compatibleTypeIds);
+    }
+
+    /**
+     * Handle customer eligibility and set customer ID on the command if needed.
+     *
+     * @param AddDiscountCommand|UpdateDiscountCommand $command
+     * @param array $data
+     */
+    private function handleCustomerEligibility($command, array $data): void
+    {
+        if (!isset($data['usability']['customer_eligibility'])) {
+            return;
+        }
+
+        $customerEligibility = $data['usability']['customer_eligibility'];
+        $selectedOption = $customerEligibility['children_selector'] ?? DiscountCustomerEligibilityType::ALL_CUSTOMERS;
+
+        if ($selectedOption === DiscountCustomerEligibilityType::SINGLE_CUSTOMER) {
+            $customerData = $customerEligibility[DiscountCustomerEligibilityType::SINGLE_CUSTOMER] ?? [];
+            if (!empty($customerData) && isset($customerData[0]['id_customer'])) {
+                $command->setCustomerId((int) $customerData[0]['id_customer']);
+            }
+        }
     }
 }
