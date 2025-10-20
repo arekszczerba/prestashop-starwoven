@@ -285,8 +285,12 @@ class OrderControllerCore extends FrontController
         // Check that products are still orderable, at any point in checkout
         if ($this->context->cart->isAllProductsInStock() !== true
             || $this->context->cart->checkAllProductsAreStillAvailableInThisState() !== true
-            || $this->context->cart->checkAllProductsHaveMinimalQuantities() !== true
-            || $this->context->cart->checkCountriesAreEnabled() !== true) {
+            || $this->context->cart->checkAllProductsHaveMinimalQuantities() !== true) {
+            $shouldRedirectToCart = true;
+        }
+
+        // Additionally, check that the addresses are valid
+        if ($this->context->cart->checkCountriesAreEnabled() !== true) {
             $shouldRedirectToCart = true;
         }
 
