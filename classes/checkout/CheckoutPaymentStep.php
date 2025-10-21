@@ -56,7 +56,7 @@ class CheckoutPaymentStepCore extends AbstractCheckoutStep
         TranslatorInterface $translator,
         PaymentOptionsFinder $paymentOptionsFinder,
         ConditionsToApproveFinder $conditionsToApproveFinder,
-        bool $isMultiShipmentFeatureFlagEnabled,
+        bool $isMultiShipmentFeatureFlagEnabled = false,
     ) {
         parent::__construct($context, $translator);
         $this->paymentOptionsFinder = $paymentOptionsFinder;
