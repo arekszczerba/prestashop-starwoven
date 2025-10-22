@@ -36,13 +36,16 @@ use Currency;
 use CustomerMessage;
 use Doctrine\Common\Annotations\AnnotationException;
 use Order;
+use OrderDetail;
 use OrderReturn;
+use PrestaShop\PrestaShop\Adapter\ContainerFinder;
 use PrestaShop\PrestaShop\Adapter\Presenter\AbstractLazyArray;
 use PrestaShop\PrestaShop\Adapter\Presenter\Cart\CartPresenter;
 use PrestaShop\PrestaShop\Adapter\Presenter\LazyArrayAttribute;
 use PrestaShop\PrestaShop\Adapter\Presenter\Object\ObjectPresenter;
 use PrestaShop\PrestaShop\Adapter\Product\PriceFormatter;
 use PrestaShop\PrestaShop\Core\Util\ColorBrightnessCalculator;
+use PrestaShopBundle\Entity\Repository\ShipmentRepository;
 use PrestaShopBundle\Translation\TranslatorComponent;
 use PrestaShopException;
 use ProductDownload;
@@ -73,6 +76,9 @@ class OrderLazyArray extends AbstractLazyArray
     /** @var OrderSubtotalLazyArray */
     private $subTotals;
 
+    /** @var ShipmentRepository */
+    private $shipmentRepository;
+
     /**
      * OrderArray constructor.
      *
@@ -88,6 +94,10 @@ class OrderLazyArray extends AbstractLazyArray
         $this->translator = Context::getContext()->getTranslator();
         $this->taxConfiguration = new TaxConfiguration();
         $this->subTotals = new OrderSubtotalLazyArray($this->order);
+        $containerFinder = new ContainerFinder(Context::getContext());
+        /* @var ShipmentRepository $shipmentRepository */
+        $this->shipmentRepository = $containerFinder->getContainer()->get(ShipmentRepository::class);
+
         parent::__construct();
     }
 
@@ -210,117 +220,99 @@ class OrderLazyArray extends AbstractLazyArray
                     break;
                 }
             }
-
-            OrderReturn::addReturnedQuantity($orderProducts, $order->id);
         }
 
+        OrderReturn::addReturnedQuantity($orderProducts, $order->id);
         $orderProducts = $this->cartPresenter->addCustomizedData($orderProducts, $cart);
 
         return $this->addOrderReferenceToCustomizationFileUrls($orderProducts);
     }
 
-    /**
-     * Retrieve detailed carrier information for the carriers actually used in the order.
-     *
-     * @return array
-     */
     #[LazyArrayAttribute(arrayAccess: true)]
     public function getCarriersProducts(): array
     {
-        $order = $this->order;
-        $carrierIds = $order->getOrderCarrierIds();
-
-        if (empty($carrierIds)) {
-            return [];
-        }
-
-        $cart = new Cart($order->id_cart);
-        $cartLazyArray = $this->cartPresenter->present($cart);
-        $deliveryOptions = $cart->getDeliveryOptionList();
-
-        if (empty($deliveryOptions)) {
-            return [];
-        }
-
-        $languageId = Context::getContext()->language->id;
-        $cartProductsById = $this->indexCartProductsById($cartLazyArray['products'] ?? []);
-
+        $cart = new Cart($this->order->id_cart);
+        $cartProducts = $this->cartPresenter->present($cart)['products'];
+        $shipments = $this->shipmentRepository->findByOrderId($this->order->id);
+        /** @var OrderDetail[] $orderDetails */
+        $orderDetails = $this->order->getOrderDetailList();
+        $orderProducts = $this->order->getProducts();
+        $langId = Context::getContext()->language->id;
+        $includeTaxes = $this->includeTaxes();
         $carriersProductsMapping = [];
 
-        foreach ($deliveryOptions as $optionsForAddress) {
-            foreach ($optionsForAddress as $deliveryOption) {
-                $optionCarrierIds = array_keys($deliveryOption['carrier_list']);
-                if ($this->matchesCarrierIds($carrierIds, $optionCarrierIds)) {
-                    foreach ($carrierIds as $idCarrier) {
-                        $carrierInfo = $deliveryOption['carrier_list'][$idCarrier] ?? null;
-                        if (!$carrierInfo) {
-                            continue;
+        $orderDetailToCartProduct = [];
+        foreach ($orderDetails as $detail) {
+            foreach ($orderProducts as $orderProduct) {
+                if (
+                    $detail['product_id'] === $orderProduct['id_product'] && $detail['product_attribute_id'] === $orderProduct['product_attribute_id']
+                ) {
+                    $product = $orderProduct;
+                    // Use data from OrderDetail in case that the Product has been deleted
+                    $product['name'] = $product['product_name'];
+                    $product['quantity'] = $product['product_quantity'];
+                    $product['id_product'] = $product['product_id'];
+                    $product['id_product_attribute'] = $product['product_attribute_id'];
+
+                    $productPrice = $includeTaxes ? 'product_price_wt' : 'product_price';
+                    $totalPrice = $includeTaxes ? 'total_wt' : 'total_price';
+
+                    $product['price'] = $this->priceFormatter->format(
+                        $product[$productPrice],
+                        Currency::getCurrencyInstance((int) $this->order->id_currency)
+                    );
+                    $product['total'] = $this->priceFormatter->format(
+                        $product[$totalPrice],
+                        Currency::getCurrencyInstance((int) $this->order->id_currency)
+                    );
+
+                    foreach ($cartProducts as $cartProduct) {
+                        if (
+                            $product['product_id'] === $cartProduct['id_product'] && $product['product_attribute_id'] === $cartProduct['id_product_attribute']
+                        ) {
+                            if (isset($cartProduct['attributes'])) {
+                                $product['attributes'] = $cartProduct['attributes'];
+                            } else {
+                                $product['attributes'] = [];
+                            }
+                            $product['cover'] = $cartProduct['cover'];
+                            $product['default_image'] = $cartProduct['default_image'];
+                            $product['unit_price_full'] = $cartProduct['unit_price_full'];
+                            break;
                         }
-
-                        $mappedProducts = $this->mapProductsToCartDetails(
-                            $carrierInfo['product_list'],
-                            $cartProductsById
-                        );
-
-                        $carrierInstance = $carrierInfo['instance'];
-                        $carriersProductsMapping[] = [
-                            'carrier' => [
-                                'name' => $carrierInstance->name,
-                                'delay' => $carrierInstance->delay[$languageId] ?? '',
-                            ],
-                            'products' => $mappedProducts,
-                        ];
                     }
 
-                    // Found the matching option
-                    break 2;
+                    $orderDetailToCartProduct[$detail['id_order_detail']] = $product;
+                    break;
                 }
             }
         }
 
+        foreach ($shipments as $shipment) {
+            $carrier = new Carrier($shipment->getCarrierId());
+
+            $mappedProducts = [];
+            foreach ($shipment->getProducts() as $shipmentProduct) {
+                $orderDetailId = $shipmentProduct->getOrderDetailId();
+                if (isset($orderDetailToCartProduct[$orderDetailId])) {
+                    $mappedProducts[] = $orderDetailToCartProduct[$orderDetailId];
+                }
+            }
+            $mappedProducts = $this->cartPresenter->addCustomizedData($mappedProducts, $cart);
+            OrderReturn::addReturnedQuantity($mappedProducts, $this->order->id);
+
+            if (!empty($mappedProducts)) {
+                $carriersProductsMapping[] = [
+                    'carrier' => [
+                        'name' => $carrier->name,
+                        'delay' => $carrier->delay[$langId] ?? $carrier->delay,
+                    ],
+                    'products' => $this->addOrderReferenceToCustomizationFileUrls($mappedProducts),
+                ];
+            }
+        }
+
         return $carriersProductsMapping;
-    }
-
-    /**
-     * Create a quick lookup of products by ID for easy mapping.
-     */
-    private function indexCartProductsById(array $cartProducts): array
-    {
-        $indexed = [];
-        foreach ($cartProducts as $product) {
-            $indexed[$product['id_product']] = $product;
-        }
-
-        return $indexed;
-    }
-
-    /**
-     * Check if delivery option matches all carriers in the order.
-     *
-     * @param int[] $orderCarrierIds
-     * @param int[] $optionCarrierIds
-     *
-     * @return bool
-     */
-    private function matchesCarrierIds(array $orderCarrierIds, array $optionCarrierIds): bool
-    {
-        return empty(array_diff($orderCarrierIds, $optionCarrierIds));
-    }
-
-    /**
-     * Map product list to detailed cart product info.
-     */
-    private function mapProductsToCartDetails(array $productList, array $cartProductsById): array
-    {
-        $mapped = [];
-        foreach ($productList as $productData) {
-            $idProduct = $productData['id_product'] ?? null;
-            $mapped[] = $idProduct && isset($cartProductsById[$idProduct])
-                ? $cartProductsById[$idProduct]
-                : $productData;
-        }
-
-        return $mapped;
     }
 
     /**
