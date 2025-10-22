@@ -16,7 +16,7 @@ import {
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
 
-const baseContext: string = 'functional_API_endpoints_attributesGroup_getAttributesGroups';
+const baseContext: string = 'functional_API_endpoints_attribute_getAttributesGroups';
 
 describe('API : GET /attributes/groups', async () => {
   let apiContext: APIRequestContext;
