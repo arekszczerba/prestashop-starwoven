@@ -238,7 +238,7 @@ class OrderConfirmationControllerCore extends FrontController
             'HOOK_PAYMENT_RETURN' => $this->displayPaymentReturn($this->order),
             'order' => (new OrderPresenter())->present($this->order),
             'order_customer' => $this->objectPresenter->present($this->customer),
-            'is_multishipment_feature_flag_enabled' => $featureFlagManager->isEnabled(FeatureFlagSettings::FEATURE_FLAG_IMPROVED_SHIPMENT),
+            'is_multishipment_enabled' => $featureFlagManager->isEnabled(FeatureFlagSettings::FEATURE_FLAG_IMPROVED_SHIPMENT),
             'registered_customer_exists' => Customer::customerExists($this->customer->email),
         ]);
         $this->setTemplate('checkout/order-confirmation');

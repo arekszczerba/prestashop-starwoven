@@ -2357,23 +2357,6 @@ class OrderCore extends ObjectModel
                 WHERE `id_order` = ' . (int) $this->id);
     }
 
-    /**
-     * @return int[]|false
-     */
-    public function getOrderCarrierIds()
-    {
-        $carrierIds = Db::getInstance()->executeS('
-                SELECT `id_carrier`
-                FROM `' . _DB_PREFIX_ . 'order_carrier`
-                WHERE `id_order` = ' . (int) $this->id);
-
-        if ($carrierIds) {
-            $carrierIds = array_column($carrierIds, 'id_carrier');
-        }
-
-        return $carrierIds;
-    }
-
     public static function sortDocuments($a, $b)
     {
         if ($a->date_add == $b->date_add) {

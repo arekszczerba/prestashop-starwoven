@@ -234,75 +234,36 @@ class OrderLazyArray extends AbstractLazyArray
         $cart = new Cart($this->order->id_cart);
         $cartProducts = $this->cartPresenter->present($cart)['products'];
         $shipments = $this->shipmentRepository->findByOrderId($this->order->id);
+
         /** @var OrderDetail[] $orderDetails */
         $orderDetails = $this->order->getOrderDetailList();
         $orderProducts = $this->order->getProducts();
+
         $langId = Context::getContext()->language->id;
         $includeTaxes = $this->includeTaxes();
-        $carriersProductsMapping = [];
 
-        $orderDetailToCartProduct = [];
-        foreach ($orderDetails as $detail) {
-            foreach ($orderProducts as $orderProduct) {
-                if (
-                    $detail['product_id'] === $orderProduct['id_product'] && $detail['product_attribute_id'] === $orderProduct['product_attribute_id']
-                ) {
-                    $product = $orderProduct;
-                    // Use data from OrderDetail in case that the Product has been deleted
-                    $product['name'] = $product['product_name'];
-                    $product['quantity'] = $product['product_quantity'];
-                    $product['id_product'] = $product['product_id'];
-                    $product['id_product_attribute'] = $product['product_attribute_id'];
+        // Build a mapping between order details and their enriched product data
+        $orderDetailToProduct = $this->mapOrderDetailsToProducts(
+            $orderDetails,
+            $orderProducts,
+            $cartProducts,
+            $includeTaxes
+        );
 
-                    $productPrice = $includeTaxes ? 'product_price_wt' : 'product_price';
-                    $totalPrice = $includeTaxes ? 'total_wt' : 'total_price';
-
-                    $product['price'] = $this->priceFormatter->format(
-                        $product[$productPrice],
-                        Currency::getCurrencyInstance((int) $this->order->id_currency)
-                    );
-                    $product['total'] = $this->priceFormatter->format(
-                        $product[$totalPrice],
-                        Currency::getCurrencyInstance((int) $this->order->id_currency)
-                    );
-
-                    foreach ($cartProducts as $cartProduct) {
-                        if (
-                            $product['product_id'] === $cartProduct['id_product'] && $product['product_attribute_id'] === $cartProduct['id_product_attribute']
-                        ) {
-                            if (isset($cartProduct['attributes'])) {
-                                $product['attributes'] = $cartProduct['attributes'];
-                            } else {
-                                $product['attributes'] = [];
-                            }
-                            $product['cover'] = $cartProduct['cover'];
-                            $product['default_image'] = $cartProduct['default_image'];
-                            $product['unit_price_full'] = $cartProduct['unit_price_full'];
-                            break;
-                        }
-                    }
-
-                    $orderDetailToCartProduct[$detail['id_order_detail']] = $product;
-                    break;
-                }
-            }
-        }
+        $carriersProducts = [];
 
         foreach ($shipments as $shipment) {
             $carrier = new Carrier($shipment->getCarrierId());
 
-            $mappedProducts = [];
-            foreach ($shipment->getProducts() as $shipmentProduct) {
-                $orderDetailId = $shipmentProduct->getOrderDetailId();
-                if (isset($orderDetailToCartProduct[$orderDetailId])) {
-                    $mappedProducts[] = $orderDetailToCartProduct[$orderDetailId];
-                }
-            }
+            // Retrieve products linked to this shipment
+            $mappedProducts = $this->mapShipmentProductsToCartProducts($shipment, $orderDetailToProduct);
+
+            // Add customizations and returned quantities
             $mappedProducts = $this->cartPresenter->addCustomizedData($mappedProducts, $cart);
             OrderReturn::addReturnedQuantity($mappedProducts, $this->order->id);
 
             if (!empty($mappedProducts)) {
-                $carriersProductsMapping[] = [
+                $carriersProducts[] = [
                     'carrier' => [
                         'name' => $carrier->name,
                         'delay' => $carrier->delay[$langId] ?? $carrier->delay,
@@ -312,7 +273,95 @@ class OrderLazyArray extends AbstractLazyArray
             }
         }
 
-        return $carriersProductsMapping;
+        return $carriersProducts;
+    }
+
+    /**
+     * Maps each OrderDetail to its corresponding enriched product data.
+     */
+    private function mapOrderDetailsToProducts(
+        array $orderDetails,
+        array $orderProducts,
+        array $cartProducts,
+        bool $includeTaxes
+    ): array {
+        $orderDetailToProduct = [];
+
+        foreach ($orderDetails as $detail) {
+            foreach ($orderProducts as $orderProduct) {
+                if (
+                    $detail['product_id'] !== $orderProduct['id_product']
+                    || $detail['product_attribute_id'] !== $orderProduct['product_attribute_id']
+                ) {
+                    continue;
+                }
+
+                $product = $this->buildOrderProductData($orderProduct, $cartProducts, $includeTaxes);
+                $orderDetailToProduct[$detail['id_order_detail']] = $product;
+
+                break; // stop when the match is found
+            }
+        }
+
+        return $orderDetailToProduct;
+    }
+
+    /**
+     * Builds a fully enriched product entry with pricing, attributes, and images.
+     */
+    private function buildOrderProductData(
+        array $orderProduct,
+        array $cartProducts,
+        bool $includeTaxes
+    ): array {
+        $product = $orderProduct;
+
+        // Fallback for deleted products
+        $product['name'] = $product['product_name'];
+        $product['quantity'] = $product['product_quantity'];
+        $product['id_product'] = $product['product_id'];
+        $product['id_product_attribute'] = $product['product_attribute_id'];
+
+        $productPriceKey = $includeTaxes ? 'product_price_wt' : 'product_price';
+        $totalPriceKey = $includeTaxes ? 'total_wt' : 'total_price';
+
+        $currency = Currency::getCurrencyInstance((int) $this->order->id_currency);
+        $product['price'] = $this->priceFormatter->format($product[$productPriceKey], $currency);
+        $product['total'] = $this->priceFormatter->format($product[$totalPriceKey], $currency);
+
+        // Merge additional data from cart product (attributes, images, etc.)
+        foreach ($cartProducts as $cartProduct) {
+            if (
+                $product['product_id'] === $cartProduct['id_product']
+                && $product['product_attribute_id'] === $cartProduct['id_product_attribute']
+            ) {
+                $product['attributes'] = $cartProduct['attributes'] ?? [];
+                $product['cover'] = $cartProduct['cover'];
+                $product['default_image'] = $cartProduct['default_image'];
+                $product['unit_price_full'] = $cartProduct['unit_price_full'];
+                break;
+            }
+        }
+
+        return $product;
+    }
+
+    /**
+     * Returns all products for a shipment, mapped to their corresponding cart products.
+     */
+    private function mapShipmentProductsToCartProducts($shipment, array $orderDetailToProduct): array
+    {
+        $mappedProducts = [];
+
+        foreach ($shipment->getProducts() as $shipmentProduct) {
+            $orderDetailId = $shipmentProduct->getOrderDetailId();
+
+            if (isset($orderDetailToProduct[$orderDetailId])) {
+                $mappedProducts[] = $orderDetailToProduct[$orderDetailId];
+            }
+        }
+
+        return $mappedProducts;
     }
 
     /**
