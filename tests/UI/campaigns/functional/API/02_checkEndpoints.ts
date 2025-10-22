@@ -97,7 +97,7 @@ describe('API : Check endpoints', async () => {
         '/api-client: POST',
         // tests/UI/campaigns/functional/API/02_endpoints/01_apiClient/06_getApiClients.ts
         '/api-clients: GET',
-        // @todo: add tests
+        // tests/UI/campaigns/functional/API/02_endpoints/02_attribute/01_deleteAttributesAttributeId.ts
         '/attributes/attribute/{attributeId}: DELETE',
         // @todo: add tests
         '/attributes/attribute/{attributeId}: GET',
@@ -109,17 +109,17 @@ describe('API : Check endpoints', async () => {
         '/attributes/attributes/delete: PUT',
         // @todo: add tests
         '/attributes/group/{attributeGroupId}/attributes: GET',
-        // tests/UI/campaigns/functional/API/02_endpoints/02_attributesGroup/01_deleteAttributesGroupId.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/02_attribute/07_deleteAttributesGroupId.ts
         '/attributes/group/{attributeGroupId}: DELETE',
-        // tests/UI/campaigns/functional/API/02_endpoints/02_attributesGroup/02_getAttributesGroupId.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/02_attribute/08_getAttributesGroupId.ts
         '/attributes/group/{attributeGroupId}: GET',
-        // tests/UI/campaigns/functional/API/02_endpoints/02_attributesGroup/03_patchAttributesGroupId.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/02_attribute/09_patchAttributesGroupId.ts
         '/attributes/group/{attributeGroupId}: PATCH',
-        // tests/UI/campaigns/functional/API/02_endpoints/02_attributesGroup/04_postAttributesGroup.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/02_attribute/10_postAttributesGroup.ts
         '/attributes/group: POST',
-        // tests/UI/campaigns/functional/API/02_endpoints/02_attributesGroup/05_putAttributesGroupsDelete.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/02_attribute/11_putAttributesGroupsDelete.ts
         '/attributes/groups/delete: PUT',
-        // tests/UI/campaigns/functional/API/02_endpoints/02_attributesGroup/06_getAttributesGroups.ts
+        // tests/UI/campaigns/functional/API/02_endpoints/02_attribute/12_getAttributesGroups.ts
         '/attributes/groups: GET',
         // tests/UI/campaigns/functional/API/02_endpoints/03_category/01_getCategories.ts
         '/categories: GET',
