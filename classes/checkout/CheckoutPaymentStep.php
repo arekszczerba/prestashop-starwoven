@@ -102,6 +102,10 @@ class CheckoutPaymentStepCore extends AbstractCheckoutStep
             unset($selectedDeliveryOption['product_list']);
         }
 
+        $productsCarrierMapping = $this->getCheckoutSession()->getProductsByCarrier();
+        $deliveryOptionKeys = array_filter(explode(',', $deliveryOptionKey));
+        $productsCarrierMapping = array_intersect_key($productsCarrierMapping, array_flip($deliveryOptionKeys));
+
         $assignedVars = [
             'is_free' => $isFree,
             'payment_options' => $paymentOptions,
@@ -110,7 +114,7 @@ class CheckoutPaymentStepCore extends AbstractCheckoutStep
             'selected_delivery_option' => $selectedDeliveryOption,
             'show_final_summary' => Configuration::get('PS_FINAL_SUMMARY_ENABLED'),
             'multishipment_is_enabled' => $this->isMultiShipmentFeatureFlagEnabled,
-            'products_carrier_mapping' => $this->getCheckoutSession()->getProductsByCarrier(),
+            'products_carrier_mapping' => $productsCarrierMapping,
             'is_recyclable_packaging' => $this->getCheckoutSession()->isRecyclable(),
         ];
 

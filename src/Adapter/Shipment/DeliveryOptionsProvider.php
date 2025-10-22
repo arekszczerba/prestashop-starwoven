@@ -88,8 +88,8 @@ class DeliveryOptionsProvider extends DeliveryOptionsFinderCore
         $carriers = [];
 
         foreach ($currentAddressDeliveryOptions as $deliveryOption) {
-            foreach ($deliveryOption['carrier_list'] as $carrier) {
-                $carriers[] = $this->formatCarrierWithProducts($carrier);
+            foreach ($deliveryOption['carrier_list'] as $carrierId => $carrier) {
+                $carriers[$carrierId] = $this->formatCarrierWithProducts($carrier);
             }
         }
 
