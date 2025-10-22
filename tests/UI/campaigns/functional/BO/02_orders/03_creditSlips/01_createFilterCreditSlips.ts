@@ -179,7 +179,6 @@ describe('BO - Orders - Credit slips : Create, filter and check credit slips fil
       const documents = await boOrdersViewBlockTabListPage.getAllDocumentsName(page);
       expect(documents).to.contain('Invoice')
         .and.to.contain('Delivery slip')
-        .and.to.contain('Credit slip')
         .and.to.contain('Credit slip');
     });
   });
