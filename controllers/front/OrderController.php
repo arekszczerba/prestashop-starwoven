@@ -396,9 +396,6 @@ class OrderControllerCore extends FrontController
             $session
         );
 
-        /** @var FeatureFlagStateCheckerInterface $featureFlagManager */
-        $featureFlagManager = $this->get(FeatureFlagStateCheckerInterface::class);
-
         $checkoutProcess
             ->addStep(new CheckoutPersonalInformationStep(
                 $this->context,
@@ -444,7 +441,6 @@ class OrderControllerCore extends FrontController
                     $this->context,
                     $translator
                 ),
-                $featureFlagManager->isEnabled(FeatureFlagSettings::FEATURE_FLAG_IMPROVED_SHIPMENT)
             ));
 
         return $checkoutProcess;
