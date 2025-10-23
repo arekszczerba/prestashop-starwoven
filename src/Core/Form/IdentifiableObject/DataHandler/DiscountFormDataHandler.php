@@ -299,7 +299,7 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
      * @param AddDiscountCommand|UpdateDiscountCommand $command
      * @param array $data
      */
-    private function handleCustomerEligibility($command, array $data): void
+    private function handleCustomerEligibility(mixed $command, array $data): void
     {
         if (!isset($data['usability']['customer_eligibility'])) {
             return;
