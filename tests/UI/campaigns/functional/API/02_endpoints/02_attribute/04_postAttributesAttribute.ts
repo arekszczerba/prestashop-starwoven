@@ -18,7 +18,7 @@ import {
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
 
-const baseContext: string = 'functional_API_endpoints_category_postAttributeAttribute';
+const baseContext: string = 'functional_API_endpoints_attribute_postAttributesAttribute';
 
 describe('API : POST /admin-api/attributes/attribute', async () => {
   let apiContext: APIRequestContext;
