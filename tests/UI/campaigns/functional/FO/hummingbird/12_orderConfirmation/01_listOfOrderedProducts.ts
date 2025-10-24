@@ -41,7 +41,7 @@ describe('FO - Order confirmation : List of ordered products', async () => {
   let orderReference: string;
 
   // Pre-condition : Install Hummingbird
-  //enableHummingbird(`${baseContext}_preTest`);
+  enableHummingbird(`${baseContext}_preTest`);
 
   // before and after functions
   before(async function () {
