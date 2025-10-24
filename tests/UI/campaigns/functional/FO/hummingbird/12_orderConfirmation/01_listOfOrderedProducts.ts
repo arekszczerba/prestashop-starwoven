@@ -41,7 +41,7 @@ describe('FO - Order confirmation : List of ordered products', async () => {
   let orderReference: string;
 
   // Pre-condition : Install Hummingbird
-  enableHummingbird(`${baseContext}_preTest`);
+  //enableHummingbird(`${baseContext}_preTest`);
 
   // before and after functions
   before(async function () {
@@ -80,7 +80,7 @@ describe('FO - Order confirmation : List of ordered products', async () => {
       await foHummingbirdSearchResultsPage.quickViewProduct(page, 1);
 
       await foHummingbirdModalQuickViewPage.addToCartByQuickView(page);
-      await foHummingbirdModalBlockCartPage.closeBlockCartModal(page, true);
+      await foHummingbirdModalBlockCartPage.closeBlockCartModal(page);
     });
 
     it(`should add the product ${dataProducts.demo_5.name} to cart by quick view`, async function () {
@@ -90,7 +90,7 @@ describe('FO - Order confirmation : List of ordered products', async () => {
       await foHummingbirdSearchResultsPage.quickViewProduct(page, 1);
 
       await foHummingbirdModalQuickViewPage.addToCartByQuickView(page);
-      await foHummingbirdModalBlockCartPage.closeBlockCartModal(page, true);
+      await foHummingbirdModalBlockCartPage.closeBlockCartModal(page);
     });
 
     it(`should add the product ${dataProducts.demo_12.name} to cart by quick view`, async function () {
