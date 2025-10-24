@@ -96,7 +96,7 @@ class DeliveryOptionsProvider extends DeliveryOptionsFinderCore
         return $carriers;
     }
 
-    public function formatCarrierWithProducts(array $carrierData): array
+    private function formatCarrierWithProducts(array $carrierData): array
     {
         $carrierProductIds = array_map(function ($product) {
             return $product['id_product'];
