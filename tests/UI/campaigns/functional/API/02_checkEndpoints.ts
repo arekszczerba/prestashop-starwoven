@@ -103,7 +103,7 @@ describe('API : Check endpoints', async () => {
         '/attributes/attribute/{attributeId}: GET',
         // @todo: add tests
         '/attributes/attribute/{attributeId}: PATCH',
-        // @todo: add tests
+        // tests/UI/campaigns/functional/API/02_endpoints/02_attribute/04_postAttributesAttribute.ts
         '/attributes/attribute: POST',
         // @todo: add tests
         '/attributes/attributes/delete: PUT',
