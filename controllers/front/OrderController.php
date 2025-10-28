@@ -129,7 +129,8 @@ class OrderControllerCore extends FrontController
                 $this->context,
                 $this->getTranslator(),
                 $this->objectPresenter,
-                new PriceFormatter()
+                new PriceFormatter(),
+                $this->cart_presenter,
             );
         } else {
             $deliveryOptionsFinder = new DeliveryOptionsFinder(
@@ -439,7 +440,7 @@ class OrderControllerCore extends FrontController
                 new ConditionsToApproveFinder(
                     $this->context,
                     $translator
-                )
+                ),
             ));
 
         return $checkoutProcess;
