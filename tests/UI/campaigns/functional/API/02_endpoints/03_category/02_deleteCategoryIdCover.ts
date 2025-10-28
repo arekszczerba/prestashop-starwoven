@@ -19,7 +19,7 @@ import {
 
 import {expect} from 'chai';
 
-const baseContext: string = 'functional_API_endpoints_category_deleteCategoryId';
+const baseContext: string = 'functional_API_endpoints_category_deleteCategoryIdCover';
 
 describe('API : DELETE /admin-api/category/{categoryId}/cover', async () => {
   let apiContext: APIRequestContext;
