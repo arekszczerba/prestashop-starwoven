@@ -92,4 +92,3 @@ class DiscountCustomerEligibilityChoiceType extends TranslatorAwareType
         return ToggleChildrenChoiceType::class;
     }
 }
-

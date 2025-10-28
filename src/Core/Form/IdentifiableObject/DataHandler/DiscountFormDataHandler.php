@@ -130,11 +130,11 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
             $command->setCode('');
         }
 
-        if (!empty($data['usability']['valid_date_range'])) {
-            $dateRange = $data['usability']['valid_date_range'];
+        if (!empty($data['period']['valid_date_range'])) {
+            $dateRange = $data['period']['valid_date_range'];
             $validFrom = $this->parseDateWithDefaultTime($dateRange['from'] ?? null, '00:00');
 
-            $neverExpires = !empty($data['usability']['period_never_expires']);
+            $neverExpires = !empty($data['period']['period_never_expires']);
             if ($neverExpires) {
                 $validTo = (new DateTime())->modify('+100 years')->setTime(23, 59, 59);
                 $validTo = DateTimeImmutable::createFromMutable($validTo);
@@ -219,12 +219,12 @@ class DiscountFormDataHandler implements FormDataHandlerInterface
             $command->setCode('');
         }
 
-        if (!empty($data['usability']['valid_date_range'])) {
-            $dateRange = $data['usability']['valid_date_range'];
+        if (!empty($data['period']['valid_date_range'])) {
+            $dateRange = $data['period']['valid_date_range'];
             $validFrom = $this->parseDateWithDefaultTime($dateRange['from'] ?? null, '00:00');
 
             // Check if "never expires" checkbox is checked
-            $neverExpires = !empty($data['usability']['period_never_expires']);
+            $neverExpires = !empty($data['period']['period_never_expires']);
             if ($neverExpires) {
                 // Set expiration date to 100 years in the future
                 $validTo = (new DateTime())->modify('+100 years')->setTime(23, 59, 59);

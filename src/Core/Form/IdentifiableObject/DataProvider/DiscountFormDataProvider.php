@@ -90,23 +90,25 @@ class DiscountFormDataProvider implements FormDataProviderInterface
         $endDate = (clone $now)->modify('+1 month')->setTime(23, 59);
 
         return [
+            'period' => [
+                'valid_date_range' => [
+                    'from' => $startDate->format(DateTimeUtil::DEFAULT_DATETIME_FORMAT),
+                    'to' => $endDate->format(DateTimeUtil::DEFAULT_DATETIME_FORMAT),
+                ],
+                'period_never_expires' => false,
+            ],
             'customer_eligibility' => [
                 'eligibility' => [
                     'children_selector' => DiscountCustomerEligibilityChoiceType::ALL_CUSTOMERS,
                     DiscountCustomerEligibilityChoiceType::SINGLE_CUSTOMER => [],
                 ],
             ],
-            'compatibility' => $this->getCompatibilityData(),
-            'valid_date_range' => [
-                'from' => $startDate->format(DateTimeUtil::DEFAULT_DATETIME_FORMAT),
-                'to' => $endDate->format(DateTimeUtil::DEFAULT_DATETIME_FORMAT),
-            ],
-            'period_never_expires' => false,
             'usability' => [
                 'mode' => [
                     'children_selector' => DiscountUsabilityModeType::AUTO_MODE,
                     'code' => '',
                 ],
+                'compatibility' => $this->getCompatibilityData(),
             ],
         ];
     }
@@ -199,20 +201,22 @@ class DiscountFormDataProvider implements FormDataProviderInterface
                     DeliveryConditionsType::COUNTRY => $discountForEditing->getCountryIds(),
                 ],
             ],
-            'valid_date_range' => [
-                'from' => $discountForEditing->getValidFrom() ? $discountForEditing->getValidFrom()->format(DateTimeUtil::DEFAULT_DATETIME_FORMAT) : null,
-                'to' => $discountForEditing->getValidTo() ? $discountForEditing->getValidTo()->format(DateTimeUtil::DEFAULT_DATETIME_FORMAT) : null,
+            'period' => [
+                'valid_date_range' => [
+                    'from' => $discountForEditing->getValidFrom() ? $discountForEditing->getValidFrom()->format(DateTimeUtil::DEFAULT_DATETIME_FORMAT) : null,
+                    'to' => $discountForEditing->getValidTo() ? $discountForEditing->getValidTo()->format(DateTimeUtil::DEFAULT_DATETIME_FORMAT) : null,
+                ],
+                'period_never_expires' => $this->isPeriodNeverExpires($discountForEditing->getValidFrom(), $discountForEditing->getValidTo()),
             ],
-            'period_never_expires' => $this->isPeriodNeverExpires($discountForEditing->getValidFrom(), $discountForEditing->getValidTo()),
             'customer_eligibility' => [
                 'eligibility' => $this->getCustomerEligibilityData($discountForEditing),
             ],
-            'compatibility' => $this->getCompatibilityData($id),
             'usability' => [
                 'mode' => [
                     'children_selector' => $discountForEditing->getCode() ? DiscountUsabilityModeType::CODE_MODE : DiscountUsabilityModeType::AUTO_MODE,
                     'code' => $discountForEditing->getCode(),
                 ],
+                'compatibility' => $this->getCompatibilityData($id),
             ],
         ];
     }
