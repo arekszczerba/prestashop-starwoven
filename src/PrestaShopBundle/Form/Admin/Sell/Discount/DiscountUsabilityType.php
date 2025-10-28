@@ -36,6 +36,7 @@ use PrestaShopBundle\Form\Admin\Type\DateRangeType;
 use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DiscountUsabilityType extends TranslatorAwareType
 {
@@ -47,9 +48,9 @@ class DiscountUsabilityType extends TranslatorAwareType
                 'label_tag_name' => 'h3',
                 'required' => false,
             ])
-            ->add('customer_eligibility', DiscountCustomerEligibilityType::class, [
-                'label' => $this->trans('Select customer eligibility', 'Admin.Catalog.Feature'),
+            ->add('compatibility', DiscountCompatibilityType::class, [
                 'label_tag_name' => 'h3',
+                'available_types' => $options['available_cart_rule_types'] ?? [],
                 'required' => false,
             ])
             ->add('valid_date_range', DateRangeType::class, [
@@ -81,6 +82,15 @@ class DiscountUsabilityType extends TranslatorAwareType
                 ],
             ])
         ;
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        parent::configureOptions($resolver);
+        $resolver->setDefaults([
+            'available_cart_rule_types' => [],
+        ]);
+        $resolver->setAllowedTypes('available_cart_rule_types', ['array']);
     }
 
     public function getParent()

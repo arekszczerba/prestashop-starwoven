@@ -26,7 +26,6 @@
 
 namespace PrestaShopBundle\Form\Admin\Sell\Discount;
 
-use PrestaShopBundle\Form\Admin\Type\CardType;
 use PrestaShopBundle\Form\Admin\Type\CustomerSearchType;
 use PrestaShopBundle\Form\Admin\Type\EntitySearchInputType;
 use PrestaShopBundle\Form\Admin\Type\ToggleChildrenChoiceType;
@@ -37,7 +36,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\When;
 
-class DiscountCustomerEligibilityType extends TranslatorAwareType
+class DiscountCustomerEligibilityChoiceType extends TranslatorAwareType
 {
     public const ALL_CUSTOMERS = 'all_customers';
     public const CUSTOMER_GROUPS = 'customer_groups';
@@ -46,8 +45,36 @@ class DiscountCustomerEligibilityType extends TranslatorAwareType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('eligibility', DiscountCustomerEligibilityChoiceType::class, [
+            ->add(self::ALL_CUSTOMERS, HiddenType::class, [
+                'label' => $this->trans('All customers', 'Admin.Catalog.Feature'),
+            ])
+            ->add(self::CUSTOMER_GROUPS, HiddenType::class, [
+                'label' => $this->trans('Customer groups', 'Admin.Catalog.Feature'),
+                'disabled' => true,
+                'attr' => [
+                    'class' => 'js-customer-groups-placeholder',
+                ],
+            ])
+            ->add(self::SINGLE_CUSTOMER, CustomerSearchType::class, [
+                'label' => $this->trans('Single customer', 'Admin.Catalog.Feature'),
+                'layout' => EntitySearchInputType::LIST_LAYOUT,
                 'required' => false,
+                'constraints' => [
+                    new When(
+                        expression: sprintf(
+                            'this.getParent().get("children_selector").getData() === "%s"',
+                            self::SINGLE_CUSTOMER,
+                        ),
+                        constraints: [
+                            new NotBlank([
+                                'message' => $this->trans(
+                                    'You must select a customer when using the "Single customer" option.',
+                                    'Admin.Catalog.Notification'
+                                ),
+                            ]),
+                        ],
+                    ),
+                ],
             ])
         ;
     }
@@ -56,13 +83,13 @@ class DiscountCustomerEligibilityType extends TranslatorAwareType
     {
         parent::configureOptions($resolver);
         $resolver->setDefaults([
-            'label' => $this->trans('Select customer eligibility', 'Admin.Catalog.Feature'),
             'required' => false,
         ]);
     }
 
     public function getParent()
     {
-        return CardType::class;
+        return ToggleChildrenChoiceType::class;
     }
 }
+
