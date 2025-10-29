@@ -123,7 +123,7 @@ describe('API : Check endpoints', async () => {
         '/attributes/groups: GET',
         // tests/UI/campaigns/functional/API/02_endpoints/03_category/01_getCategories.ts
         '/categories: GET',
-        // @todo: add tests
+        // tests/UI/campaigns/functional/API/02_endpoints/03_category/02_deleteCategoryIdCover.ts
         '/category/{categoryId}/cover: DELETE',
         // @todo: add tests
         '/category/{categoryId}/status: PATCH',
