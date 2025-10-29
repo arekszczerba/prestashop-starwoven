@@ -21,7 +21,7 @@ import {
   utilsPlaywright,
 } from '@prestashop-core/ui-testing';
 
-const baseContext: string = 'functional_BO_catalog_discounts_cartRules_CRUDCartRule_conditions_invalidDateTime';
+const baseContext: string = 'functional_BO_catalog_discounts_cartRules_CRUDCartRule_conditions_validDateTime';
 
 /*
 Scenario:
