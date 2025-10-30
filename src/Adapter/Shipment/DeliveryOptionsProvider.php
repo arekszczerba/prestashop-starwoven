@@ -85,15 +85,31 @@ class DeliveryOptionsProvider extends DeliveryOptionsFinderCore
     {
         $deliveryOptions = $this->context->cart->getDeliveryOptionList();
         $currentAddressDeliveryOptions = $deliveryOptions[$this->context->cart->id_address_delivery];
-        $carriers = [];
+        $result = [];
 
         foreach ($currentAddressDeliveryOptions as $deliveryOption) {
             foreach ($deliveryOption['carrier_list'] as $carrierId => $carrier) {
-                $carriers[$carrierId] = $this->formatCarrierWithProducts($carrier);
+                $formatted = $this->formatCarrierWithProducts($carrier);
+
+                $result[$carrierId] = [
+                    'physical_products' => [],
+                    'virtual_products' => [],
+                ];
+
+                if (!empty($formatted['products'])) {
+                    $result[$carrierId]['physical_products'] = [
+                        'carrier' => $formatted['carrier'],
+                        'products' => array_values($formatted['products']),
+                    ];
+                }
+
+                if (!empty($formatted['virtual_products'])) {
+                    $result[$carrierId]['virtual_products'] = array_values($formatted['virtual_products']);
+                }
             }
         }
 
-        return $carriers;
+        return $result;
     }
 
     private function formatCarrierWithProducts(array $carrierData): array
@@ -107,12 +123,21 @@ class DeliveryOptionsProvider extends DeliveryOptionsFinderCore
             return in_array($product['id_product'], $carrierProductIds);
         });
 
+        $virtualProducts = array_filter($filteredProducts, function ($product) {
+            return $product->getVirtual() == true;
+        });
+
+        $physicalProducts = array_filter($filteredProducts, function ($product) {
+            return $product->getVirtual() == false;
+        });
+
         return [
             'carrier' => [
                 'name' => $carrierData['instance']->name,
                 'delay' => $carrierData['instance']->delay[$this->context->language->id] ?? $carrierData['instance']->delay,
             ],
-            'products' => $filteredProducts,
+            'virtual_products' => $virtualProducts,
+            'products' => $physicalProducts,
         ];
     }
 
