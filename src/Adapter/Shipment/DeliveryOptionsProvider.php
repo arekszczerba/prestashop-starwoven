@@ -108,7 +108,6 @@ class DeliveryOptionsProvider extends DeliveryOptionsFinderCore
                 }
             }
         }
-        dd($result);
 
         return $result;
     }
