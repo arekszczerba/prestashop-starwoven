@@ -121,6 +121,10 @@ describe('API : Check endpoints', async () => {
         '/attributes/groups/delete: PUT',
         // tests/UI/campaigns/functional/API/02_endpoints/02_attribute/12_getAttributesGroups.ts
         '/attributes/groups: GET',
+        // @todo: add tests
+        '/categories/delete: PUT',
+        // @todo: add tests
+        '/categories/toggle-status: PUT',
         // tests/UI/campaigns/functional/API/02_endpoints/03_category/01_getCategories.ts
         '/categories: GET',
         // tests/UI/campaigns/functional/API/02_endpoints/03_category/02_deleteCategoryIdCover.ts
@@ -213,6 +217,16 @@ describe('API : Check endpoints', async () => {
         '/search-aliases/delete: DELETE',
         // @todo: add tests
         '/search-aliases: GET',
+        // @todo: add tests
+        '/store/{storeId}/toggle-status: PUT',
+        // @todo: add tests
+        '/store/{storeId}: DELETE',
+        // @todo: add tests
+        '/store/{storeId}: GET',
+        // @todo: add tests
+        '/stores/delete: PUT',
+        // @todo: add tests
+        '/stores/set-status: PUT',
         // @todo: add tests
         '/supplier/{supplierId}/logo: DELETE',
         // @todo: add tests
