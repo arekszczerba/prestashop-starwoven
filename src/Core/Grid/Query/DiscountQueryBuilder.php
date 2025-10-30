@@ -83,7 +83,7 @@ class DiscountQueryBuilder extends AbstractDoctrineQueryBuilder
     }
 
     /**
-     * Gets query builder with the common sql for discount listing.
+     * Gets query builder with the common sql for discounts listing.
      *
      * @param array $filters
      *
@@ -134,20 +134,20 @@ class DiscountQueryBuilder extends AbstractDoctrineQueryBuilder
         $exactMatchFilters = ['id_discount', 'type', 'active'];
 
         foreach ($filters as $filterName => $value) {
-            if (!array_key_exists($filterName, $allowedFiltersAliasMap) &&
-                $filterName !== 'date_from_filter' &&
-                $filterName !== 'date_to_filter') {
+            if (!array_key_exists($filterName, $allowedFiltersAliasMap)
+                && $filterName !== 'date_from_filter'
+                && $filterName !== 'date_to_filter') {
                 continue;
             }
 
             if ($filterName === 'date_from_filter' && is_array($value)) {
                 if (!empty($value['from'])) {
                     $qb->andWhere('cr.date_from >= :dateFromStart')
-                       ->setParameter('dateFromStart', $value['from']);
+                        ->setParameter('dateFromStart', $value['from']);
                 }
                 if (!empty($value['to'])) {
                     $qb->andWhere('cr.date_from <= :dateFromEnd')
-                       ->setParameter('dateFromEnd', $value['to']);
+                        ->setParameter('dateFromEnd', $value['to']);
                 }
                 continue;
             }
@@ -155,11 +155,11 @@ class DiscountQueryBuilder extends AbstractDoctrineQueryBuilder
             if ($filterName === 'date_to_filter' && is_array($value)) {
                 if (!empty($value['from'])) {
                     $qb->andWhere('cr.date_to >= :dateToStart')
-                       ->setParameter('dateToStart', $value['from']);
+                        ->setParameter('dateToStart', $value['from']);
                 }
                 if (!empty($value['to'])) {
                     $qb->andWhere('cr.date_to <= :dateToEnd')
-                       ->setParameter('dateToEnd', $value['to']);
+                        ->setParameter('dateToEnd', $value['to']);
                 }
                 continue;
             }

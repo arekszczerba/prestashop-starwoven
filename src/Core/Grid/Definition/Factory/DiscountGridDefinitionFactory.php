@@ -39,8 +39,8 @@ use PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\ToggleColumn;
 use PrestaShop\PrestaShop\Core\Grid\Filter\Filter;
 use PrestaShop\PrestaShop\Core\Grid\Filter\FilterCollection;
 use PrestaShop\PrestaShop\Core\Grid\Filter\FilterCollectionInterface;
-use PrestaShopBundle\Form\Admin\Type\SearchAndResetType;
 use PrestaShopBundle\Form\Admin\Type\DateRangeType;
+use PrestaShopBundle\Form\Admin\Type\SearchAndResetType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
@@ -151,14 +151,14 @@ final class DiscountGridDefinitionFactory extends AbstractGridDefinitionFactory 
                     ->setOptions([
                         'actions' => (new RowActionCollection())
                             ->add((new LinkRowAction('edit'))
-                                    ->setName($this->trans('Edit', [], 'Admin.Actions'))
-                                    ->setIcon('edit')
-                                    ->setOptions([
-                                        'route' => 'admin_discount_edit',
-                                        'route_param_name' => 'discountId',
-                                        'route_param_field' => 'id_discount',
-                                        'clickable_row' => true,
-                                    ])
+                                ->setName($this->trans('Edit', [], 'Admin.Actions'))
+                                ->setIcon('edit')
+                                ->setOptions([
+                                    'route' => 'admin_discount_edit',
+                                    'route_param_name' => 'discountId',
+                                    'route_param_field' => 'id_discount',
+                                    'clickable_row' => true,
+                                ])
                             )
                             ->add(
                                 $this->buildDeleteAction(
