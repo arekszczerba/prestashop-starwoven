@@ -36,17 +36,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class ChangeStatesZoneType extends AbstractType
 {
-    /**
-     * @var ConfigurableFormChoiceProviderInterface
-     */
-    private $zoneChoiceProvider;
-
-    /**
-     * @param ConfigurableFormChoiceProviderInterface $zoneChoiceProvider
-     */
-    public function __construct(ConfigurableFormChoiceProviderInterface $zoneChoiceProvider)
+    public function __construct(private ConfigurableFormChoiceProviderInterface $zoneChoiceProvider)
     {
-        $this->zoneChoiceProvider = $zoneChoiceProvider;
     }
 
     /**
