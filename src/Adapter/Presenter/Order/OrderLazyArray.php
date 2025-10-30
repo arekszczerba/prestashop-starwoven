@@ -255,7 +255,7 @@ class OrderLazyArray extends AbstractLazyArray
             if (!empty($product['is_virtual'])) {
                 $virtualProducts[] = $product;
             } else {
-                $indexedOrderProducts[$product['order_detail_id']] = $product;
+                $indexedOrderProducts[$product['id_order_detail']] = $product;
             }
         }
 
