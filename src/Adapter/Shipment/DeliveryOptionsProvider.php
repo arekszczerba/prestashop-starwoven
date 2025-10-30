@@ -108,6 +108,7 @@ class DeliveryOptionsProvider extends DeliveryOptionsFinderCore
                 }
             }
         }
+        dd($result);
 
         return $result;
     }
@@ -119,17 +120,18 @@ class DeliveryOptionsProvider extends DeliveryOptionsFinderCore
         }, $carrierData['product_list']);
 
         $cartProducts = $this->cartPresenter->present($this->context->cart);
-        $filteredProducts = array_filter($cartProducts->getProducts(), function ($product) use ($carrierProductIds) {
-            return in_array($product['id_product'], $carrierProductIds);
-        });
+        $physicalProducts = [];
+        $virtualProducts = [];
 
-        $virtualProducts = array_filter($filteredProducts, function ($product) {
-            return $product->getVirtual() == true;
-        });
-
-        $physicalProducts = array_filter($filteredProducts, function ($product) {
-            return $product->getVirtual() == false;
-        });
+        foreach ($cartProducts->getProducts() as $product) {
+            if (in_array($product['id_product'], $carrierProductIds)) {
+                if ($product->getVirtual() == false) {
+                    $physicalProducts[] = $product;
+                } else {
+                    $virtualProducts[] = $product;
+                }
+            }
+        }
 
         return [
             'carrier' => [
