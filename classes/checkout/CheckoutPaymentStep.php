@@ -106,9 +106,18 @@ class CheckoutPaymentStepCore extends AbstractCheckoutStep
         $deliveryOptionKeys = array_filter(explode(',', $deliveryOptionKey));
         $productsCarrierMapping = array_intersect_key($productsCarrierMapping, array_flip($deliveryOptionKeys));
         $mapping = [
-            'physical_products' => array_filter(array_column($productsCarrierMapping, 'physical_products')),
-            'virtual_products' => array_filter(array_column($productsCarrierMapping, 'virtual_products')),
+            'physical_products' => [],
+            'virtual_products' => [],
         ];
+
+        foreach ($productsCarrierMapping as $product) {
+            if (!empty($product['physical_products'])) {
+                $mapping['physical_products'][] = $product['physical_products'];
+            }
+            if (!empty($product['virtual_products'])) {
+                $mapping['virtual_products'] = $product['virtual_products'];
+            }
+        }
 
         $assignedVars = [
             'is_free' => $isFree,
