@@ -12,6 +12,7 @@
 /themes/*
 !/themes/starwoven/
 !/themes/starwoven/**
+/themes/starwoven/assets/cache/
 
 # Zachowaj plik README (jeśli go stworzysz)
 !README.md
