@@ -26,5 +26,9 @@ meta:
 
 assets:
   use_parent_assets: true
+  css:
+    all:
+      - id: custom-style
+        path: assets/css/custom.css
 
 parent: classic
