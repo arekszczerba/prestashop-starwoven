@@ -1,31 +1,29 @@
-# Ignoruj wszystko domyślnie
+# Ignore everything by default
 *
 
-# --- PLIKI I FOLDERY, KTÓRE CHCEMY W REPOZYTORIUM ---
-
-# Zachowaj pliki konfiguracyjne Dockera
+# Keep Docker configuration files
 !docker-compose.yml
 !/.docker/
 
-# Zachowaj nasz motyw potomny
+# Keep our child theme
 !/themes/
 /themes/*
 !/themes/starwoven/
 !/themes/starwoven/**
 /themes/starwoven/assets/cache/
 
-# Zachowaj plik README (jeśli go stworzysz)
+# Keep the README file
 !README.md
 
-# NIE ignoruj tego pliku .gitignore
+# Do NOT ignore this .gitignore file
 !.gitignore
 
-# --- RZECZY, KTÓRE ZAWSZE MAJĄ BYĆ IGNOROWANE ---
+# --- THINGS THAT SHOULD ALWAYS BE IGNORED ---
 
-# Ignoruj pliki generowane przez system lub edytor
+# Ignore system- or editor-generated files
 .DS_Store
 .idea/
 .vscode/
 
-# Ignoruj folder z danymi bazy danych Dockera
+# Ignore folder with Docker database data
 /db-data/
