@@ -1,0 +1,30 @@
+name: starwoven
+display_name: Starwoven Theme
+version: 1.0.0
+author:
+  name: "Arkadiusz Szczerba"
+  email: "ark.szczerba@gmail.com"
+  url: ""
+
+meta:
+  compatibility:
+    from: 1.7.0
+    to: ~
+  available_layouts:
+    layout-full-width:
+      name: Full Width
+      description: No side columns, ideal for distraction-free pages such as product pages.
+    layout-left-column:
+      name: Left Column
+      description: A left column to display banners, filters, etc.
+    layout-right-column:
+      name: Right Column
+      description: A right column to display banners, filters, etc.
+    layout-both-columns:
+      name: Both Columns
+      description: Two columns, ideal for categories and listings.
+
+assets:
+  use_parent_assets: true
+
+parent: classic

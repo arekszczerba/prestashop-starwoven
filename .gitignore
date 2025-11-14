@@ -161,6 +161,8 @@ themes/*/
 themes/classic
 !themes/_core
 !themes/_libraries
+!/themes/starwoven/
+/themes/starwoven/assets/cache/
 
 # Vendors and dependencies
 
