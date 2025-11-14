@@ -1,3 +1,33 @@
+:root {
+  --text-color: #363636;
+  --heading-color: #2b2b2b;
+  --background-color: #FFFFFF;
+  --primary-color: #D4A373;
+  --light-gray: #f8f8f8;
+
+  --font-body: 'Lato', sans-serif;
+  --font-headings: 'Playfair Display', serif;
+}
+
 body {
-  background-color: #f0f0f0; /* Jasny szary dla testu */
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: var(--font-body);
+  font-weight: 400;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-headings);
+  font-weight: 700;
+  color: var(--heading-color);
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--heading-color);
 }
